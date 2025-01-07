@@ -17,3 +17,4 @@ Route::get('/welcome', function () {
 Route::get('/forgot-password', function () {
     return view('components/forgot-password');
 });
+
