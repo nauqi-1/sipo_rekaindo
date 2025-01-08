@@ -15,11 +15,12 @@
   
   .container {
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     padding: 20px;
   }
   
   .card {
+    height: 500px;
     background: #fff;
     border-radius: 8px;
     border: 1px solid #ddd;
@@ -142,11 +143,11 @@
     font-size: 22px;
     margin-bottom: 10px;
     color: #1E4178;
-    text-align: center; /* Tambahkan ini */
+    text-align: center;
   }
   
   .success_pw {
-    text-align: center; /* Ubah dari left menjadi center */
+    text-align: center;
     font-size: 14px;
     color: #ADACAC;
     margin-bottom: 20px;

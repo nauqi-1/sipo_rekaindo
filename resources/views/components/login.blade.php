@@ -23,7 +23,7 @@
                 <form action="#">
                     <div class="input-group">
                         <i class="bi bi-person"></i>
-                        <input type="email" id="email" name="email" placeholder="Enter username" required>
+                        <input type="email" id="email" name="email" placeholder="Enter email" required>
                     </div>
                     <div class="input-group">
                         <i class="bi bi-lock"></i>
