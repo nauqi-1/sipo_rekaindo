@@ -20,7 +20,8 @@
                 </div>
             </div>
             <div class="card-body">
-                <form action="#">
+                <form action="{{ route('login') }}" method="POST">
+                    @csrf
                     <div class="input-group">
                         <i class="bi bi-person"></i>
                         <input type="email" id="email" name="email" placeholder="Enter email" required>
