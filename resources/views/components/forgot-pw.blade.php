@@ -10,7 +10,7 @@
   <div class="container">
     <div class="card">
       <div class="back-button">
-        <a href="#"><</a>
+        <a href="{{ route('login') }}"><</a>
       </div>
       <div class="logo">
         <img src="/img/logo-reka.png" alt="Reka Inka Group">

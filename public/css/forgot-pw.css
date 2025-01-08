@@ -91,6 +91,7 @@
     background-color: #1E4178;
   }
 
+  /* verif-email */
   .input-verifemail {
     display: flex;
     justify-content: space-between;
@@ -134,6 +135,7 @@
     color: #1E4178;
   }
 
+  /* confirm-pw */
   .success {
     display: flex;
     justify-content: center;

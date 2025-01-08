@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('components/login');
-});
+}) ->name('login');
 
 Route::get('/index', function () {
     return view('index');

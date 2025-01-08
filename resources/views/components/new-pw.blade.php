@@ -20,9 +20,9 @@
       all featuress.</p>
       <form action="{{ route('confirm-success') }}" method="GET">
         <label for="new_pw">Enter New Password</label>
-        <input type="new_pw" id="new_pw" name="new-pw" placeholder="Enter new password" required>
+        <input type="password" id="new_pw" name="new-pw" placeholder="Enter new password" required>
         <label for="confirm_pw">Enter New Password</label>
-        <input type="confirm_pw" id="confirm_pw" name="confirm_pw" placeholder="Confirm password" required>
+        <input type="password" id="confirm_pw" name="confirm_pw" placeholder="Confirm password" required>
         <button type="submit">UPDATE PASSWORD</button>
       </form>
     </div>
