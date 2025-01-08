@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('components/login');
+    return view('pages/login');
 }) ->name('login');
 
 Route::get('/index', function () {
@@ -15,7 +15,7 @@ Route::get('/welcome', function () {
 });
 
 Route::get('/forgot-pw', function () {
-    return view('components/forgot-pw');
+    return view('pages/forgot-pw');
 })->name('forgot-pw');
 
 Route::get('/verif-email', function () {
