@@ -125,11 +125,28 @@
   }
 
   .resend-link {
-      text-decoration: none;
-      color: red;
-      font-weight: bold;
+    text-decoration: none;
+    color: red;
+    font-weight: bold;
   }
 
   .resend-link:hover {
-      color: #1E4178;
+    color: #1E4178;
   }
+
+  .success {
+    display: flex;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #1E4178;
+    text-align: center; /* Tambahkan ini */
+  }
+  
+  .success_pw {
+    text-align: center; /* Ubah dari left menjadi center */
+    font-size: 14px;
+    color: #ADACAC;
+    margin-bottom: 20px;
+  }
+  
