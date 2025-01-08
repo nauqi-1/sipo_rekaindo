@@ -1,0 +1,249 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #ffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+  }
+  
+  .card {
+    background: #fff;
+    background-image: sr;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .header-card {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    background-image: url('/img/backgroundLogin.png'); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .back-button a {
+    text-decoration: none;
+    font-size: 18px;
+    color: #000;
+    margin-right: auto;
+    display: flex;
+  }
+  
+  .logo img {
+    max-width: 150px;
+    margin: 20px auto;
+    margin-top: 1px;
+    margin-bottom: 1px;
+  }
+  
+  h1 {
+    display: flex;
+    font-size: 15px;
+    margin-bottom: 10px;
+    color: #000000;
+  }
+    
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  label {
+    font-size: 14px;
+    color: #1E4178;
+    margin-bottom: 8px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #1E4178;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  button:hover {
+    background-color: #1E4178;
+  }
+
+  .input-verifemail {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .code-input {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+  }
+  
+  .code-input:focus {
+    border-color: #1E4178;
+    box-shadow: 0 0 5px rgba(0, 51, 102, 0.5);
+  }
+
+  .timer {
+    font-size: 14px;
+    color: red;
+    text-align: center;
+  }
+
+  .resend {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .resend-link {
+      text-decoration: none;
+      color: red;
+      font-weight: bold;
+  }
+
+  .resend-link:hover {
+      color: #1E4178;
+  }
+  
+.input-group {
+    position: relative;
+    width: 315px;
+}
+
+.input-group i {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-90%);
+    font-size: 18px;
+    color: #1E4178;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 10px 10px 50px; /* Tambah padding kiri untuk memberi ruang ikon */
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+.input-group input:focus {
+    border-color: #007BFF;
+}
+
+/* FORGOT PASSWORD */
+
+.col {
+    display: flex;
+    justify-content: flex-end;
+    margin-left: 220px;
+}
+
+.col a {
+    color: #007bff; 
+    text-decoration: none; 
+    font-size: 12px; 
+    transition: color 0.3s ease;
+}
+
+.col a:hover {
+    color: #0056b3; 
+    text-decoration: underline; 
+}
+
+/* CHECK BOX REMEMBER ME */
+
+.custom-control {
+    display: flex;
+    align-items: center;
+}
+
+.custom-control-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.custom-control-label {
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #000000;
+    transition: color 0.3s ease;
+}
+
+.custom-control-label::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 1px solid #1f1f1f;
+    border-radius: 4px;
+    background-color: white;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.custom-control.custom-checkbox.small .custom-control-label::before {
+    width: 16px;
+    height: 16px;
+}
+
+.custom-control-label:hover {
+    color: #0056b3;
+}
+
+.custom-control-input:checked ~ .custom-control-label {
+    color: #007bff;
+}
+
+.custom-control-input:focus ~ .custom-control-label::before {
+    box-shadow: 0 0 0 2px rgba(38, 143, 255, 0.5);
+}
