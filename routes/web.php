@@ -1,32 +1,23 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('pages/login');
-}) ->name('login');
-
-Route::get('/index', function () {
-    return view('index');
-});
-
-Route::get('/welcome', function () {
     return view('welcome');
 });
+Route::get('/login.admin', function () {
+    return view('pages.login');
+});
 
-Route::get('/forgot-pw', function () {
-    return view('pages/forgot-pw');
-})->name('forgot-pw');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/verif-email', function () {
-    return view('components/verif-email');
-})->name('verif-email');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-Route::get('/new-pw', function () {
-    return view('components/new-pw');
-})->name('new-pw');
-
-Route::get('/confirm-success', function () {
-    return view('components/confirm-success');
-})->name('confirm-success');
-
+require __DIR__.'/auth.php';

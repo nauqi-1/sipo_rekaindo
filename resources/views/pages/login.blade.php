@@ -20,18 +20,18 @@
                 </div>
             </div>
             <div class="card-body">
-                <form action="{{ route('login') }}" method="POST">
+                <form method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="input-group">
                         <i class="bi bi-person"></i>
-                        <input type="email" id="email" name="email" placeholder="Enter email" required>
+                        <input type="email" id="email" name="email" placeholder="Enter email"  required autofocus autocomplete="email">
                     </div>
                     <div class="input-group">
                         <i class="bi bi-lock"></i>
-                        <input type="password" id="password" name="password" placeholder="Enter password" required>
+                        <input type="password" id="password" name="password" placeholder="Enter password" required autocomplete="current-password">
                     </div>
                     <div class="col">
-                        <a href="{{ route('forgot-pw') }}">Forgot password?</a>
+                        <a href="{{ Route::has('password.request') }}">Forgot password?</a>
                     </div>
                     <div class="custom-control custom-checkbox small">
                         <input type="checkbox" class="custom-control-input" id="customCheck">
