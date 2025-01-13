@@ -156,9 +156,9 @@
                             <div class="col-md-6">
                                 <label for="divisi" class="form-label">Select Divisi</label>
                                 <select name="divisi" id="divisi" class="form-control">
-                                    <option value="Divisi A">HR & GA</option>
-                                    <option value="Divisi B">Pemasaran</option>
-                                    <option value="Divisi C">Keuangan</option>
+                                @foreach($divisi as $d)
+                                    <option value="{{ $d->id_divisi }}">{{ $d->nm_divisi }}</option>
+                                @endforeach
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -173,12 +173,10 @@
                         <div class="mb-3">
                             <label for="role" class="form-label">Module Permissions</label>
                             <div>
-                                <input type="radio" name="role" value="super_admin" id="role_super_admin" required>
-                                <label for="role_super_admin">Super Admin</label>
-                                <input type="radio" name="role" value="admin" id="role_admin" required>
-                                <label for="role_admin">Supervisor</label>
-                                <input type="radio" name="role" value="supervisor" id="role_supervisor" required>
-                                <label for="role_supervisor">Admin Divisi</label>
+                            @foreach ($roles as $role)
+                                <input type="radio" name="role" value="{{ $role->id }}" id="role_{{ $role->id }}" required>
+                                <label for="role_{{ $role->id }}">{{ $role->nm_role }}</label>
+                            @endforeach
                             </div>
                         </div>
                     </div>
@@ -268,9 +266,9 @@
                             <div class="col-md-6">
                                 <label for="divisi" class="form-label">Select Divisi</label>
                                 <select name="divisi" id="divisi" class="form-control">
-                                    <option value="Divisi A">HR & GA</option>
-                                    <option value="Divisi B">Pemasaran</option>
-                                    <option value="Divisi C">Keuangan</option>
+                                @foreach($divisi as $d)
+                                    <option value="{{ $d->id_divisi }}">{{ $d->nm_divisi }}</option>
+                                @endforeach
                                 </select>
                             </div>
                             <div class="col-md-6">
