@@ -36,11 +36,19 @@ h1 {
     margin-bottom: 20px;
 }
 
+.breadcrumb-wrapper {
+    display: inline-block; 
+    margin-right: 20px; 
+}
+
 .breadcrumb {
     font-size: 14px;
     color: #888;
     margin-bottom: 30px;
-    margin-left: 20px;
+    padding: 8px 12px;
+    border: 1px solid #E5E5E5CC;
+    display: flex;
+    justify-content: left;
 }
 
 .breadcrumb a {
@@ -307,7 +315,7 @@ input.form-control {
     padding: 8px 20px;
     font-size: 14px;
     border-radius: 5px;
-    border: 2px solid #8A8383;
+    border: 1px solid #e0e0e0;
     background-color: #ffffff;
     color: #8A8383;
 }
@@ -325,7 +333,7 @@ input.form-control {
 }
 
 #deleteModal .btn-primary:hover {
-    background-color: #004085; 
+    background-color: #004085; /* Warna tombol saat dihover */
     color: #ffffff;
 }
 
@@ -338,7 +346,7 @@ input.form-control {
     font-weight: bold;
 }
 
-/* Modal Success Confirmation */
+/* Modal Delete Success Confirmation */
 #deleteSuccessModal .modal-content {
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -363,6 +371,35 @@ input.form-control {
 }
 
 #deleteSuccessModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}
+
+/* Modal Edit Success Confirmation */
+#editSuccessModal .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#editSuccessModal .modal-body img {
+    width: 80px;
+    height: auto;
+}
+
+#editSuccessModal .modal-body h5 {
+    font-size: 18px;
+    color: #333;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+#editSuccessModal .btn-primary {
+    background-color: #2592F7;
+    color: white;
+    border-radius: 5px;
+}
+
+#editSuccessModal .btn-primary:hover {
     background-color: #004085;
     color: #ffffff;
 }
