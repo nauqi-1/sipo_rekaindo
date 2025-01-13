@@ -36,11 +36,19 @@ h1 {
     margin-bottom: 20px;
 }
 
+.breadcrumb-wrapper {
+    display: inline-block; 
+    margin-right: 20px; 
+}
+
 .breadcrumb {
     font-size: 14px;
     color: #888;
     margin-bottom: 30px;
-    margin-left: 20px;
+    padding: 8px 12px;
+    border: 1px solid #E5E5E5CC;
+    display: flex;
+    justify-content: left;
 }
 
 .breadcrumb a {

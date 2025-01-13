@@ -16,11 +16,15 @@
                 <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>User Management</h1>
+        </div>        
+        <div class="row">
+            <div class="breadcrumb-wrapper">
+                <div class="breadcrumb">
+                    <a href="#">Home</a> / <a href="#">Setting</a> / <a href="#">User Management</a>
+                </div>
+            </div>
         </div>
-        <div class="breadcrumb">
-            <a href="#">Home</a> / <a href="#">Setting</a> / <a href="#">User Management</a>
-        </div>
-        
+
         <!-- Wrapper untuk elemen di luar card -->
         <div class="header-tools">
             <h2 class="title">User</h2>
