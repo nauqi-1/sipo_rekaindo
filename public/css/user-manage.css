@@ -325,7 +325,7 @@ input.form-control {
 }
 
 #deleteModal .btn-primary:hover {
-    background-color: #004085; /* Warna tombol saat dihover */
+    background-color: #004085; 
     color: #ffffff;
 }
 

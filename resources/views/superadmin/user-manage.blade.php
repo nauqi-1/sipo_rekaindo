@@ -21,7 +21,7 @@
             <a href="#">Home</a> / <a href="#">Setting</a> / <a href="#">User Management</a>
         </div>
         
-        <!-- Wrapper untuk elemen di luar card -->
+        <!-- Wrapper untuk elemen luar card -->
         <div class="header-tools">
             <h2 class="title">User</h2>
             <div class="search-filter">
