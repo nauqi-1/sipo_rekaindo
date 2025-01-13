@@ -1,0 +1,242 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 200px; /* Tambahkan lebar sedikit jika ikon terpotong */
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 2px 0 5px #EDF2F8;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    transform: translateX(0);
+    transition: transform 0.3s ease-in-out;
+    overflow-y: auto;
+    z-index: 1001;
+    box-sizing: border-box;
+}
+
+.sidebar.hidden {
+    transform: translateX(-200px);
+}
+
+.sidebar .logo {
+    font-size: 10px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.sidebar .menu {
+    font-size: 14px;
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar .menu li {
+    margin-bottom: 1px;
+    position: relative;
+}
+
+.sidebar .menu a {
+    text-decoration: none;
+    color: #A6ABC8;
+    padding: 10px 10px; /* Tambahkan padding horizontal */
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.sidebar .menu a:hover {
+    background-color: #92C5FF;
+    color: #1E4178;
+}
+
+.sidebar .menu a img {
+    flex-shrink: 0; /* Hindari ikon menyusut */
+}
+
+/* Sidebar Submenu */
+.sidebar .submenu .opsi-icon1, .opsi-icon2, .opsi-icon3 {
+    margin-left: auto;
+}
+
+.sidebar .submenu ul {
+    list-style: none;
+    padding-left: 20px;
+    display: none;
+    margin-top: 5px;
+}
+
+.sidebar .submenu ul.show {
+    display: block;
+}
+
+.sidebar .submenu-items li {
+    justify-content: center;
+}
+
+.sidebar .menu p {
+    font-size: 11px;
+    color: #A6ABC8;
+}
+
+.sidebar .menu .other-title {
+    font-size: 11px;
+    color: #A6ABC8;
+    margin-top: 30px;
+    margin-bottom: 1px;
+}
+
+/* Navbar Styles */
+.navbar {
+    width: calc(100% - 180px); /* Adjusted width to account for sidebar */
+    height: 60px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    left: 180px; /* Positioned after sidebar */
+    z-index: 1000;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+.navbar.hidden {
+    left: 0;
+    width: 100%;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.navbar-menu a:hover {
+    color: #92C5FF;
+}
+
+/* Navbar User Icon and Dropdown */
+.navbar-user {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.user-icon {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.dropdown-arrow {
+    width: 15px;
+    height: 15px;
+    margin-left: 10px;
+    transition: transform 0.3s;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #EDF2F8;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    list-style: none;
+    padding: 10px 0;
+    display: none;
+    z-index: 1001;
+}
+
+.dropdown-menu li {
+    padding: 10px 20px;
+}
+
+.dropdown-menu li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #EDF2F8;
+}
+
+.navbar-user.active .dropdown-menu {
+    display: block;
+}
+
+.navbar-user.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+/* Toggle Button Inside Navbar */
+.toggle-btn {
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+}
+
+.toggle-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.toggle-btn:hover {
+    background-color: #92C5FF;
+}
+
+/* Responsive Behavior */
+@media (max-width: 768px) {
+    .navbar {
+        left: 0;
+        width: 100%;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: calc(100% - 60px);
+        top: 60px;
+    }
+
+    .sidebar.hidden {
+        transform: translateY(-100%);
+    }
+}
