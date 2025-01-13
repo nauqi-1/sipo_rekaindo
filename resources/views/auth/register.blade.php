@@ -57,6 +57,15 @@
             <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
         </div>
 
+        <div class="kelas-dropdown">
+            <button class="kelas-button">Kelas</button>
+            <div class="kelas-dropdown-content">
+                <a href="{{ route('dashboard.index', ['role' => 'superadmin']) }}">Superadmin</a>
+                <a href="{{ route('dashboard.index', ['role' => 'admin']) }}">admin</a>
+                <a href="{{ route('dashboard.index', ['role' => 'manager']) }}">manager</a>
+            </div>
+        </div>
+
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
                 {{ __('Already registered?') }}

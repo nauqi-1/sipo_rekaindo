@@ -1,14 +1,28 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
+Route::get('/p', function () {
     return view('welcome');
 });
-Route::get('/login.admin', function () {
+Route::get('/admin.role', [UserController::class, 'showRole'])->name('user.role');
+Route::get('/', function () {
     return view('pages.login');
 });
+
+
+Route::get('/user-manage', function () {
+    return view('superadmin.user-manage');
+});
+
+Route::get('/user-manage/add', function() {
+    return view('/user-manage.add');
+})->name('user.add');
+
+Route::get('/dashboard/{role}', [DashboardController::class, 'index'])->name('dashboard.index');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
