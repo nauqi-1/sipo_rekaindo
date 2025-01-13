@@ -1,0 +1,425 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.header.back-button a {
+    margin-right: auto;
+    display: flex;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.breadcrumb-wrapper {
+    display: inline-block; 
+    margin-right: 20px; 
+}
+
+.breadcrumb {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 30px;
+    padding: 8px 12px;
+    border: 1px solid #E5E5E5CC;
+    display: flex;
+    justify-content: left;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: #A9A9A9;
+}
+
+.user-info {
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    margin-left: 10px;
+}
+
+.user-info img {
+    width: 50px; 
+    height: 50px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+}
+
+.text-info {
+    line-height: 1.2; 
+    text-align: left;
+    color: #000 !important;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.table thead {
+    background-color: #EFF4FA;
+    color: #8F9BB3;   
+}
+
+.table th,
+.table td {
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 15px;
+}
+
+.table-striped tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.badge {
+    background-color: #0095FF;
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 7px;
+    border: 0;
+    justify-content: center;
+    display: flex;
+}
+
+.btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #1E4178;
+    color: #fff;
+    padding: 5x 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #ffffff !important;
+    color: #878790 !important;
+    margin-right: 4px;
+    border: 2px solid #E5E5E5 !important;
+    border-radius: 4px !important;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-warning {
+    background-color: #f4f2f2;
+    color: #C5CEE0;
+}
+
+.btn-danger {
+    background-color: #f4f2f2;
+    color: #C5CEE0;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.pagination p {
+    color: #B5B7C0;
+}
+
+.pagination ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.pagination ul li {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.pagination ul li.active {
+    background-color: #1E4178;
+    color: white;
+}
+
+.header-tools {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 20px;
+}
+
+.header-tools .title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-left: 20px;
+}
+
+.header-tools .btn-primary {
+    margin-left: 5px; 
+}
+
+.search-filter {
+    position: relative;
+    display: flex;
+    gap: 0; 
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute; 
+    left: 10px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+}
+
+.search-filter .form-control {
+    padding: 5px 5px ;
+    width: 250px;
+    border: 1px solid #E5E5E5;
+    border-radius: 0;
+    margin-right: 10px;
+    color: #878790;
+}
+
+.search-filter .input-group-text {
+    border-radius: 0; 
+    border: 1px solid #E5E5E5;
+    padding: 3px 10px;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.search-filter .btn-secondary {
+    padding: 5px 10px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.modal-content .modal-header {
+    font-size: 17px;
+    color: #222B45;
+}
+
+.modal-content input.form-control {
+    background-color: #ffffff; 
+    color: #000000; 
+    border: 1px solid #EFF4FA; 
+    border-radius: 8px; 
+    padding: 10px; 
+}
+
+.modal-content input.form-control:focus {
+    background-color: #fff; 
+    border-color: #007bff; 
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+}
+
+.modal-content select.form-control {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #EFF4FA;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.modal-content select.form-control option {
+    background-color: #ffffff;
+    color: #222B45;
+    border: 1px solid #EFF4FA;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.modal-content select.form-control:focus {
+    background-color: #fff; 
+    border-color: #007bff; 
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+    font-size: 13px;
+}
+
+.modal-content label.form-label {
+    background-color: #ffffff; 
+    color: #222B45; 
+    font-size: 13px;
+}
+
+select.form-control {
+    font-size: 13px; 
+}
+
+input.form-control {
+    font-size: 13px; 
+}
+
+#deleteModal .btn-outline-secondary {
+    padding: 8px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    color: #8A8383;
+}
+
+#deleteModal .btn-outline-secondary:hover{
+    background-color: #6d6d6d; /* Warna tombol saat dihover */
+    color: #ffffff;
+}
+
+#deleteModal .btn-primary {
+    padding: 8px 33px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #2592F7;
+}
+
+#deleteModal .btn-primary:hover {
+    background-color: #004085; /* Warna tombol saat dihover */
+    color: #ffffff;
+}
+
+#deleteModal img {
+    margin-bottom: 20px;
+}
+
+#deleteModal h5 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Modal Delete Success Confirmation */
+#deleteSuccessModal .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#deleteSuccessModal .modal-body img {
+    width: 80px;
+    height: auto;
+}
+
+#deleteSuccessModal .modal-body h5 {
+    font-size: 18px;
+    color: #333;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+#deleteSuccessModal .btn-primary {
+    background-color: #2592F7;
+    color: white;
+    border-radius: 5px;
+}
+
+#deleteSuccessModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}
+
+/* Modal Edit Success Confirmation */
+#editSuccessModal .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#editSuccessModal .modal-body img {
+    width: 80px;
+    height: auto;
+}
+
+#editSuccessModal .modal-body h5 {
+    font-size: 18px;
+    color: #333;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+#editSuccessModal .btn-primary {
+    background-color: #2592F7;
+    color: white;
+    border-radius: 5px;
+}
+
+#editSuccessModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}
+
+#successModal .modal-content {
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#successModal .btn-primary {
+    padding: 12px 30px; /* Atur padding atas-bawah dan kiri-kanan */
+    font-size: 16px;    /* Sesuaikan ukuran font */
+    border-radius: 8px; /* Tambahkan radius untuk sudut tombol */
+    background-color: #0095FF;
+    border-radius: 15px;
+}
+
+/* Tambahkan hover effect jika diperlukan */
+#successModal .btn-primary:hover {
+    background-color: #004085; /* Warna tombol saat dihover */
+    color: #ffffff;           /* Warna teks */
+}
