@@ -20,9 +20,9 @@ Route::get('/', function () {
 
 Route::get('/user-manage', [UserManageController::class, 'index'])->name('user.manage');
 
-Route::get('/user-manage/add', function() {
-    return view('user-manage.add');
-})->name('user.add');
+// Route::get('/user-manage/add', function() {
+//     return view('user-manage.add');
+// })->name('user.add');
 
 Route::get('/dashboard/{role}', [DashboardController::class, 'index'])->name('dashboard.index');
 Route::get('/dashboard', function () {

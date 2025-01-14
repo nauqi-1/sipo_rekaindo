@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class divisi extends Model
+class Position extends Model
 {
     use HasFactory;
 
@@ -14,14 +14,14 @@ class divisi extends Model
      *
      * @var string
      */
-    protected $table = 'divisi';
+    protected $table = 'position';
 
     /**
      * The primary key associated with the table.
      *
      * @var string
      */
-    protected $primaryKey = 'id_divisi';
+    protected $primaryKey = 'id_position';
 
     /**
      * The attributes that are mass assignable.
@@ -29,7 +29,7 @@ class divisi extends Model
      * @var array
      */
     protected $fillable = [
-        'nm_divisi',
+        'nm_position',
     ];
 
     /**
@@ -42,8 +42,8 @@ class divisi extends Model
     /**
      * Get the documents associated with the division.
      */
-    public function users()
+    public function user()
     {
-        return $this->hasMany(User::class, 'divisi_id_divisi');
+        return $this->hasOne(User::class, 'position_id_position');
     }
 }

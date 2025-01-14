@@ -37,6 +37,9 @@ class RegisteredUserController extends Controller
             'email' => 'required|string|email|max:70|unique:users',
             'password' => 'required|min:8|confirmed',
             'phone_number' => 'required|numeric',
+            'role' => 'required|exists:roles,id_role',
+            'position' => 'required|exists:position,id_position',
+            'divisi' => 'required|exists:divisi,id_divisi',
         ]);
         
 
@@ -47,13 +50,16 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'phone_number' => $request->phone_number,
+            'role_id_role' => $request->role,
+            'position_id_position' => $request->position,
+            'divisi_id_divisi' => $request->divisi,
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('user-manage.add')->with('success', 'User added successfully!');
     }
     
 }

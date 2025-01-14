@@ -104,7 +104,7 @@
     <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form method="POST" action="{{ route('user.add') }}">
+                <form method="POST" action="{{ route('user-manage/add') }}">
                     @csrf
                     <div class="modal-header">
                         <img src="/img/user-manage/addUser.png" alt="addUser" style="margin-right: 10px;">
@@ -125,31 +125,31 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="first_name" class="form-label">First Name :</label>
-                                <input type="text" name="first_name" id="first_name" class="form-control" required>
+                                <input type="text" name="first_name" id="first_name" class="form-control" required autocomplete="firstname">
                             </div>
                             <div class="col-md-6">
                                 <label for="last_name" class="form-label">Last Name :</label>
-                                <input type="text" name="last_name" id="last_name" class="form-control" required>
+                                <input type="text" name="last_name" id="last_name" class="form-control" required autocomplete="lastname">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="username" class="form-label">Username :</label>
-                                <input type="text" name="username" id="username" class="form-control" required>
+                                <input type="text" name="username" id="username" class="form-control" required autocomplete="username">
                             </div>
                             <div class="col-md-6">
                                 <label for="phone_number" class="form-label">Phone Number :</label>
-                                <input type="text" name="phone_number" id="phone_number" class="form-control" required>
+                                <input type="text" name="phone_number" id="phone_number" class="form-control" required autocomplete="phone_number">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="password" class="form-label">Password :</label>
-                                <input type="text" name="password" id="password" class="form-control" required>
+                                <input type="text" name="password" id="password" class="form-control" required autocomplete="new-password">
                             </div>
                             <div class="col-md-6">
                                 <label for="confirm_password" class="form-label">Confirm Password :</label>
-                                <input type="text" name="confirm_password" id="confirm_password" class="form-control" required>
+                                <input type="text" name="confirm_password" id="confirm_password" class="form-control" required autocomplete="new-password">
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -214,7 +214,7 @@
     <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form method="POST" action="{{ route('user.add') }}">
+                <form method="POST" action="{{ route('user-manage/add') }}">
                     @csrf
                     <div class="modal-header">
                         <img src="/img/user-manage/editUser.png" alt="addUser" style="margin-right: 10px;">
@@ -228,38 +228,38 @@
                                 <input type="text" name="user_id" id="user_id" class="form-control" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="email_id" class="form-label">Email ID :</label>
-                                <input type="text" name="email_id" id="email_id" class="form-control" required>
+                                <label for="email" class="form-label">Email :</label>
+                                <input type="text" name="email" id="email" class="form-control" required autofocus autocomplete="email">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="first_name" class="form-label">First Name :</label>
-                                <input type="text" name="first_name" id="first_name" class="form-control" required>
+                                <label for="firstname" class="form-label">First Name :</label>
+                                <input type="text" name="firstname" id="firstname" class="form-control" required autofocus autocomplete="firstname">
                             </div>
                             <div class="col-md-6">
-                                <label for="last_name" class="form-label">Last Name :</label>
-                                <input type="text" name="last_name" id="last_name" class="form-control" required>
+                                <label for="lastname" class="form-label">Last Name :</label>
+                                <input type="text" name="lastname" id="lastname" class="form-control" required autofocus autocomplete="lastname">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="username" class="form-label">Username :</label>
-                                <input type="text" name="username" id="username" class="form-control" required>
+                                <input type="text" name="username" id="username" class="form-control" required autofocus autocomplete="username">
                             </div>
                             <div class="col-md-6">
                                 <label for="phone_number" class="form-label">Phone Number :</label>
-                                <input type="text" name="phone_number" id="phone_number" class="form-control" required>
+                                <input type="text" name="phone_number" id="phone_number" class="form-control" required autofocus autocomplete="phone_number">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="password" class="form-label">Password :</label>
-                                <input type="text" name="password" id="password" class="form-control" required>
+                                <input type="text" name="password" id="password" class="form-control" required autocomplete="new-password">
                             </div>
                             <div class="col-md-6">
                                 <label for="confirm_password" class="form-label">Confirm Password :</label>
-                                <input type="text" name="confirm_password" id="confirm_password" class="form-control" required>
+                                <input type="text" name="confirm_password" id="confirm_password" class="form-control" required autocomplete="new-password">
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -274,9 +274,9 @@
                             <div class="col-md-6">
                                 <label for="position" class="form-label">Select Position</label>
                                 <select name="position" id="position" class="form-control">
-                                    <option value="Manager">Super Admin</option>
-                                    <option value="Supervisor">Supervisor/Manager</option>
-                                    <option value="Admin">Admin Divisi</option>
+                                @foreach($positions as $position)
+                                    <option value="{{ $position->id_position }}">{{ $position->nm_position }}</option>
+                                @endforeach
                                 </select>
                             </div>
                         </div>
