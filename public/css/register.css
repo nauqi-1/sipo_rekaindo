@@ -1,0 +1,36 @@
+.kelas-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.kelas-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.kelas-dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.kelas-dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.kelas-dropdown:hover .kelas-dropdown-content {
+    display: block;
+}
+  .kelas-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    background-color: #d5e1fe;
+    color: #3b73f3;
+    cursor: pointer;
+  }
