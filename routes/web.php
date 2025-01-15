@@ -3,14 +3,16 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DivisiController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserManageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/p', function () {
     return view('welcome');
 });
+
+Route::get('/user-manage/edit/{id}', [UserController::class, 'edit'])->name('user-manage.edit');
+// Route untuk menangani update data
+Route::put('/user-manage/update/{id}', [UserController::class, 'update'])->name('user-manage/update');
 
 Route::get('/role-management', [UserController::class, 'showRole'])->name('user.role');
 

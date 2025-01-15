@@ -58,6 +58,7 @@ class UserManageController extends Controller
             'role_id_role' => $request->role_id_role,
         ]);
 
+        
         return redirect()->route('dashboard')->with('success', 'User added successfully.');
     }
 }
