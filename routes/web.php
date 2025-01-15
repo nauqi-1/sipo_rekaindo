@@ -22,7 +22,7 @@ Route::get('/user-manage', [UserManageController::class, 'index'])->name('user.m
 
 // Route::get('/user-manage/add', function() {
 //     return view('user-manage.add');
-// })->name('user.add');
+// })->name('user-manage/add');
 
 Route::get('/dashboard/{role}', [DashboardController::class, 'index'])->name('dashboard.index');
 Route::get('/dashboard', function () {

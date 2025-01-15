@@ -51,19 +51,28 @@
         </div>
 
         <!-- phone_number -->
-        <div>
+        <div class="mt-4">
             <x-input-label for="phone_number" :value="__('phone_number')" />
             <x-text-input id="phone_number" class="block mt-1 w-full" type="numeric" name="phone_number" :value="old('phone_number')" required autofocus autocomplete="phone_number" />
             <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
         </div>
 
-        <div class="kelas-dropdown">
-            <button class="kelas-button">Kelas</button>
-            <div class="kelas-dropdown-content">
-                <a href="{{ route('dashboard.index', ['role' => 'superadmin']) }}">Superadmin</a>
-                <a href="{{ route('dashboard.index', ['role' => 'admin']) }}">admin</a>
-                <a href="{{ route('dashboard.index', ['role' => 'manager']) }}">manager</a>
-            </div>
+        <div class="mt-4">
+            <x-input-label for="role_id_role" :value="__('role_id_role')" />
+            <x-text-input id="role_id_role" class="block mt-1 w-full" type="numeric" name="role_id_role" :value="old('role_id_role')" required autofocus autocomplete="role_id_role" />
+            <x-input-error :messages="$errors->get('role_id_role')" class="mt-2" />
+        </div>
+
+        <div class="mt-4">
+            <x-input-label for="position_id_position" :value="__('position_id_position')" />
+            <x-text-input id="position_id_position" class="block mt-1 w-full" type="numeric" name="position_id_position" :value="old('position_id_position')" required autofocus autocomplete="position_id_position" />
+            <x-input-error :messages="$errors->get('position_id_position')" class="mt-2" />
+        </div>
+
+        <div class="mt-4">
+            <x-input-label for="divisi_id_divisi" :value="__('divisi_id_divisi')" />
+            <x-text-input id="divisi_id_divisi" class="block mt-1 w-full" type="numeric" name="divisi_id_divisi" :value="old('divisi_id_divisi')" required autofocus autocomplete="divisi_id_divisi" />
+            <x-input-error :messages="$errors->get('divisi_id_divisi')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
@@ -72,7 +81,7 @@
             </a>
 
             <x-primary-button class="ms-4">
-                {{ __('Register') }}
+                {{ __('register') }}
             </x-primary-button>
         </div>
     </form>

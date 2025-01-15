@@ -18,6 +18,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'id_user',
         'firstname',
         'lastname',
         'username',
@@ -54,16 +55,17 @@ class User extends Authenticatable
     }
     public function role()
     {
-        return $this->belongsTo(Role::class, 'role_id_role');
+        return $this->belongsTo(Role::class, 'role_id_role','id_role');
     }
 
     public function position()
     {
-        return $this->belongsTo(Position::class, 'position_id_position');
+        return $this->belongsTo(Position::class, 'position_id_position','id_position');
     }
 
     public function divisi()
     {
-        return $this->belongsTo(Divisi::class, 'divisi_id_divisi');
+        return $this->belongsTo(Divisi::class, 'divisi_id_divisi','id_divisi');
     }
+    
 }
