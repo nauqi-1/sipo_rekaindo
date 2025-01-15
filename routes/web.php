@@ -36,3 +36,7 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/memo', function() {
+    return view('superadmin.memo-superadmin');
+});
