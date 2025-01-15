@@ -37,9 +37,9 @@ class UserManageController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'phone_number' => 'required|string|max:15',
-            'divisi_id_divisi' => 'required|numeric',
-            'position_id_position' => 'required|numeric',
-            'role_id_role' => 'required|numeric',
+            'divisi_id_divisi' => 'required|exists:divis,id_divisi',
+            'position_id_position' => 'required|exists:position,id_position',
+            'role_id_role' => 'required|exists:role,id_role',
         ]);
 
         if ($validator->fails()) {
