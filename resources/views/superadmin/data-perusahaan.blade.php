@@ -33,7 +33,6 @@
                     <div class="col-lg-8">
                         <div>
                             <h5 class="heading-company"><b>Data Perusahaan</b></h5>
-                            <hr>
                         </div>
                         <ul class="list-group">
                             <li class="list-group-card">
@@ -152,6 +151,6 @@
                 }
             });
         });
-            </script>
+    </script>
 </body>
 </html>
