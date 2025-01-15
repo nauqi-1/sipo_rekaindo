@@ -42,3 +42,7 @@ require __DIR__.'/auth.php';
 Route::get('/memo', function() {
     return view('superadmin.memo-superadmin');
 });
+
+Route::get('/add-memo', function() {
+    return view('superadmin.add-memo');
+});

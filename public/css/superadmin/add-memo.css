@@ -1,0 +1,176 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.container {
+    max-width: 80%;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    /* max-width: 1200px; */
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.header.back-button a {
+    margin-right: auto;
+    display: flex;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.breadcrumb-wrapper {
+    display: inline-block; 
+    margin-right: 20px; 
+}
+
+.breadcrumb {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 30px;
+    padding: 8px 12px;
+    border: 1px solid #E5E5E5CC;
+    display: flex;
+    justify-content: left;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: #A9A9A9;
+}
+
+.card {
+    border: 1px solid #EFF4FA;
+}
+
+.card-header {
+    background-color: #fff;
+}
+
+.card-title {
+    padding-top: 7px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+.col-md-6 {
+    border: 1px solid #EFF4FA; 
+    padding: 10px; 
+    border-radius: 5px; 
+    flex: 1;
+    max-width: 46%;
+    color: #1E4178;
+    font-size: 14px;
+}
+
+.col-md-6:hover {
+    border-color: #007bff; /* Mengubah warna border saat hover */
+}
+
+.col-md-6 label{
+    margin-left: 12px;
+}
+
+.col-md-6 input{
+    border: 1px solid #ffffff;
+    font-size: 12px;
+    color: #888;
+}
+
+.col-md-6 select {
+    border: 1px solid #ffffff;
+}
+
+.col-md-6 select option {
+    font-size: 12px;
+    text-align: center;
+}
+
+
+.label-kepada {
+    color: #FF000080;
+    font-size: 10px;
+}
+
+.kolom1-row {
+    display: flex;
+    justify-content: center;
+    /* margin: 10px 12px; */
+    margin: 0 auto;
+    max-width: 100%;
+    padding: 0 23px;
+    border-radius: 8px;
+}
+
+.kolom1-row .col-md-12 {
+    flex: 1;
+    max-width: 100%;
+    border: 1px solid #EFF4FA;
+    padding: 10px;
+    border-radius: 5px;
+    color: #1E4178;
+    font-size: 14px;
+}
+
+.kolom1-row .col-md-12:hover {
+    border-color: #007bff;
+}
+
+.kolom1-row .form-label {
+    margin-left: 12px;
+}
+
+.kolom1-row .form-control {
+    font-size: 12px;
+    color: #888;
+    border: 1px solid #ffffff;
+}
+
+.kolom1-row .upload-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.kolom1-row .upload-button {
+    background-color: #E9EFF4;
+    color: #878790;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.kolom1-row .upload-button:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+.kolom1-row .form-control-file {
+    display: none; /* Sembunyikan elemen file input */
+}

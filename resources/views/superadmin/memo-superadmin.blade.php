@@ -65,9 +65,7 @@
                 @for ($i = 1; $i <= 3; $i++)
                 <tr>
                     <td class="nomor">{{ $i }}</td>
-                    <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">
-                        <img src="/img/memo-superadmin/Rectangle-path.png" alt="file"> Memo Monitoring Risiko
-                    </td>
+                    <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">Memo Monitoring Risiko</td>
                     <td>21-10-2024</td>
                     <td>1596</td>
                     <td>837.06/REKA/GEN/VII/2024</td>
@@ -92,7 +90,7 @@
         </table>
 
         <!-- Pagination -->
-        <div class="d-flex justify-content-end">
+        <!-- <div class="d-flex justify-content-end">
             <nav>
                 <ul class="pagination">
                     <li class="page-item"><a class="page-link" href="#">1</a></li>
@@ -102,7 +100,7 @@
                     <li class="page-item"><a class="page-link" href="#">...</a></li>
                 </ul>
             </nav>
-        </div>
+        </div> -->
     </div>
 
     <!-- Bootstrap JS and Popper.js -->
