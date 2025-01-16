@@ -1,0 +1,233 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    /* max-width: 100%; */
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.header.back-button a {
+    margin-right: auto;
+    display: flex;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.breadcrumb-wrapper {
+    display: inline-block; 
+    margin-right: 20px; 
+}
+
+.breadcrumb {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 30px;
+    padding: 8px 12px;
+    border: 1px solid #E5E5E5CC;
+    display: flex;
+    justify-content: left;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: #A9A9A9;
+}
+
+.table {
+    margin-top: 20px;
+}
+
+.table th  {
+    vertical-align: middle;
+    color: #878790;
+    text-align: center;
+}
+
+.table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.form-control {
+    color: #878790;
+    border: 1px solid #E5E5E5;
+}
+
+.form-control:hover {
+    background-color: #ffffff; 
+    border-color: #0d6efd; 
+    color: #000;
+    box-shadow: 0 0 10px rgba(13, 110, 253, 0.8);
+}
+
+/* Fitur Search */
+.btn-primary {
+    background-color: #ffffff;
+    border: 1px solid #E5E5E5;
+    padding: 0 15px;
+    margin-left: 120px;
+}
+
+.btn-primary:hover {
+    background-color: #ffffff; 
+    border-color: #92C5FF; 
+    color: #92C5FF;
+    box-shadow: 0 0 10px #92C5FF;
+}
+
+.btn-primary:active {
+    background-color: #ffffff !important;
+    color: #000 !important;
+    box-shadow: #92C5FF !important;
+    border-color: #92C5FF !important;
+}
+
+/* Nomor */
+.nomor {
+    background-image: url('/img/memo-superadmin/Rectangle-path.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat; 
+    background-position: center; 
+    color: #ffffff; 
+    width: 50px; 
+    height: 50px; 
+}
+
+/* warna memo monitoring */
+.text-success {
+    color: #28a745; /* Hijau */
+}
+
+/* Button aksi */
+.btn-sm1, .btn-sm2, .btn-sm3 {
+    font-size: 14px;
+    padding: 5px 10px;
+}
+
+.btn-sm1:hover {
+    border: 1px solid #d0d0e7 !important;
+    border-radius: 50px;
+    background-color: #d0d0e7 !important;
+}
+
+.btn-sm1:active {
+    border: 1px solid #d0d0e7 !important;
+    border-radius: 50px;
+    background-color: #d0d0e7 !important;
+}
+
+.btn-sm2:hover {
+    border: 1px solid #fcd5d5 !important;
+    border-radius: 50px;
+    background-color: #fcd5d5 !important;
+}
+
+.btn-sm2:active {
+    border: 1px solid #fcd5d5 !important;
+    border-radius: 50px;
+    background-color: #fcd5d5 !important;
+}
+
+.btn-sm3:hover {
+    border: 1px solid #c8dbf1 !important;
+    border-radius: 50px;
+    background-color: #c8dbf1 !important;
+}
+
+.btn-sm3:active {
+    border: 1px solid #c8dbf1 !important;
+    border-radius: 50px;
+    background-color: #c8dbf1 !important;
+}
+
+/* Delete Overlay */
+#deleteModal .btn-outline-secondary {
+    padding: 8px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    color: #8A8383;
+}
+
+#deleteModal .btn-outline-secondary:hover{
+    background-color: #6d6d6d; /* Warna tombol saat dihover */
+    color: #ffffff;
+}
+
+#deleteModal .btn-primary {
+    padding: 8px 33px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #2592F7;
+    margin-left: 10px;
+}
+
+#deleteModal .btn-primary:hover {
+    background-color: #004085; /* Warna tombol saat dihover */
+    color: #ffffff;
+}
+
+#deleteModal img {
+    margin-bottom: 20px;
+}
+
+#deleteModal h5 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Modal Delete Success Confirmation */
+#deleteSuccessModal .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#deleteSuccessModal .modal-body img {
+    width: 80px;
+    height: auto;
+}
+
+#deleteSuccessModal .modal-body h5 {
+    font-size: 18px;
+    color: #333;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+#deleteSuccessModal .btn-primary {
+    background-color: #2592F7;
+    color: white;
+    border-radius: 5px;
+    display: flex;
+    margin-left: 168px;
+}
+
+#deleteSuccessModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}
