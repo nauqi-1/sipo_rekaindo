@@ -12,21 +12,21 @@ use App\Models\User;
 
 class UserManageController extends Controller
 {
-    public function index()
-    {
-        // Ambil data dari Divisi dan Role
-        $divisi = Divisi::all();  // Ambil data divisi dari database
-        $roles = Role::all();  // Ambil data roles dari database
-        $positions = Position::all();  // Ambil data roles dari database
-        $users = User::all();  // Ambil data roles dari database
-        // Mengambil semua pengguna dengan relasi role
-        $users = User::with(['role', 'divisi', 'position'])->get();
+    public function index($id = null)
+{
+    // Ambil data dari Divisi, Role, dan Position
+    $divisi = Divisi::all();  
+    $roles = Role::all();  
+    $positions = Position::all();  
+    $users = User::with(['role', 'divisi', 'position'])->get();
 
-        // Mengirimkan data ke view
-        
-        // Kirim data ke view user-manage
-        return view('superadmin.user-manage', compact('divisi', 'roles','positions','users'));
-    }
+    // Jika ada ID yang diberikan, ambil data user untuk diedit
+    $user = $id ? User::with(['role', 'divisi', 'position'])->find($id) : null;
+
+    // Kirim data ke view user-manage
+    return view('superadmin.user-manage', compact('divisi', 'roles', 'positions', 'users', 'user'));
+}
+
 
     public function store(Request $request)
     {
@@ -61,4 +61,5 @@ class UserManageController extends Controller
         
         return redirect()->route('dashboard')->with('success', 'User added successfully.');
     }
+    
 }

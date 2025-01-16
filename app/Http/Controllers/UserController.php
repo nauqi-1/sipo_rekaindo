@@ -13,7 +13,7 @@ class UserController extends Controller
     public function showRole()
     {
         
-            $jenjang = Role::all();
+            $role = Role::all();
             return view('user.role', compact('role'));
     
     }
@@ -32,7 +32,7 @@ class UserController extends Controller
      public function update(Request $request, $id)
      {
          $request->validate([
-             'user_id' => 'required',
+             'id' => 'required',
              'email' => 'required|email',
              'firstname' => 'required',
              'lastname' => 'required',
@@ -45,7 +45,7 @@ class UserController extends Controller
          ]);
  
          $user = User::findOrFail($id);
-         $user->user_id = $request->user_id;
+         $user->id = $request->id;
          $user->email = $request->email;
          $user->firstname = $request->firstname;
          $user->lastname = $request->lastname;
@@ -56,9 +56,9 @@ class UserController extends Controller
              $user->password = bcrypt($request->password);
          }
  
-         $user->divisi_id = $request->divisi;
-         $user->position_id = $request->position;
-         $user->role_id = $request->role;
+         $user->divisi_id_divisi = $request->divisi_id_divisi;
+         $user->position_id_position = $request->position_id_position;
+         $user->role_id_role = $request->role_id_role;
          $user->save();
  
          return redirect()->route('user-manage.index')->with('success', 'User updated successfully');

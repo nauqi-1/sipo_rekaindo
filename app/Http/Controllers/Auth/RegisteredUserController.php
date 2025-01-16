@@ -58,9 +58,9 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', 'User added successfully!');
+        return redirect()->route('user.manage')->with('success', 'User added successfully!');
     }
     
 }

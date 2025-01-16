@@ -124,8 +124,8 @@
                     <div class="modal-body">
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="id_user" class="form-label">User ID :</label>
-                                <input type="text" name="id_user" id="id_user" class="form-control" required autocomplete="id_user">
+                                <label for="id" class="form-label">User ID :</label>
+                                <input type="text" name="id" id="id" class="form-control" required autocomplete="id">
                             </div>
                             <div class="col-md-6">
                                 <label for="email" class="form-label">Email :</label>
@@ -169,7 +169,7 @@
                                 <label for="divisi_id_divisi" class="form-label">Select Divisi</label>
                                 <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-control" required autofocus autocomplete="divisi_id_divisi">
                                 @foreach($divisi as $d)
-                                    <option value="{{ $d->id }}">{{ $d->nm_divisi }}</option>
+                                    <option value="{{ $d->id_divisi }}">{{ $d->nm_divisi }}</option>
                                 @endforeach
                                 </select>
                             </div>
@@ -186,8 +186,8 @@
                             <label for="role_id_role" class="form-label">Module Permissions</label>
                             <div>
                             @foreach ($roles as $role)
-                                <input type="radio" name="role_id_role" value="{{ $role->id }}" id="role_{{ $role->id }}" required autofocus autocomplete="role_id_role">
-                                <label for="role_{{ $role->id }}">{{ $role->nm_role }}</label>
+                                <input type="radio" name="role_id_role" value="{{ $role->id_role }}" id="role_{{ $role->id_role }}" required autofocus autocomplete="role_id_role">
+                                <label for="role_{{ $role->id_role }}">{{ $role->nm_role }}</label>
                              @endforeach
                             </div>
                         </div>
@@ -195,7 +195,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <!-- <button type="submit" class="btn btn-primary">Add User</button> -->
-                        <button type="submit" class="btn btn-primary" >Add User</button>
+                        <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="successModal">Add User</button>
                         <!-- data-bs-toggle="modal" data-bs-target="#successModal" -->
                     </div>
                 </form>
@@ -238,8 +238,8 @@
     <div class="modal-body">
         <div class="row mb-3">
             <div class="col-md-6">
-                <label for="user_id" class="form-label">User ID :</label>
-                <input type="text" name="user_id" id="user_id" class="form-control" value="{{ $user->user_id }}" required>
+                <label for="id" class="form-label">User ID :</label>
+                <input type="text" name="id" id="id" class="form-control" value="{{ $user->id }}" required>
             </div>
             <div class="col-md-6">
                 <label for="email" class="form-label">Email :</label>
@@ -281,7 +281,7 @@
                 <label for="divisi" class="form-label">Select Divisi</label>
                 <select name="divisi" id="divisi" class="form-control">
                     @foreach($divisi as $d)
-                        <option value="{{ $d->id }}" {{ $user->divisi_id == $d->id ? 'selected' : '' }}>{{ $d->nm_divisi }}</option>
+                        <option value="{{ $d->id_divisi }}" {{ $user->divisi_id_divisi == $d->id_divisi ? 'selected' : '' }}>{{ $d->nm_divisi }}</option>
                     @endforeach
                 </select>
             </div>
@@ -289,7 +289,7 @@
                 <label for="position" class="form-label">Select Position</label>
                 <select name="position" id="position" class="form-control">
                     @foreach($positions as $position)
-                        <option value="{{ $position->id_position }}" {{ $user->position_id == $position->id_position ? 'selected' : '' }}>{{ $position->nm_position }}</option>
+                        <option value="{{ $position->id_position }}" {{ $user->position_id_position == $position->id_position ? 'selected' : '' }}>{{ $position->nm_position }}</option>
                     @endforeach
                 </select>
             </div>
@@ -298,8 +298,8 @@
             <label for="role" class="form-label">Module Permissions</label>
             <div>
                 @foreach ($roles as $role)
-                    <input type="radio" name="role" value="{{ $role->id }}" id="role_{{ $role->id }}" {{ $user->role_id == $role->id ? 'checked' : '' }} required>
-                    <label for="role_{{ $role->id }}">{{ $role->nm_role }}</label>
+                    <input type="radio" name="role" value="{{ $role->id_role }}" id="role_{{ $role->id_role }}" {{ $user->role_id_role == $role->id_role ? 'checked' : '' }} required>
+                    <label for="role_{{ $role->id_role }}">{{ $role->nm_role }}</label>
                 @endforeach
             </div>
         </div>
