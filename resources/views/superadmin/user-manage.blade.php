@@ -38,8 +38,8 @@
                         Filter by
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" href="#">Aplhabetically A-Z</a></li>
-                        <li><a class="dropdown-item" href="#">Aplhabetically Z-A</a></li>
+                        <li><a class="dropdown-item" href="{{ route('user.manage', ['sort' => 'asc']) }}">Aplhabetically A-Z</a></li>
+                        <li><a class="dropdown-item" href="{{ route('user.manage', ['sort' => 'desc']) }}">Aplhabetically Z-A</a></li>
                     </ul>
                 </div>
                 <!-- Add User Button to Open Mod    al -->

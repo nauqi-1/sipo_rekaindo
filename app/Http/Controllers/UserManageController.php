@@ -61,5 +61,15 @@ class UserManageController extends Controller
         
         return redirect()->route('dashboard')->with('success', 'User added successfully.');
     }
-    
+    public function filter(Request $request)
+    {
+        // Mendapatkan parameter sorting dari request
+        $sortOrder = $request->query('sort', 'asc');
+
+        // Melakukan query ke database dengan pengurutan berdasarkan firstname
+        $users = User::orderBy('firstname', $sortOrder)->get();
+
+        // Mengirim data user ke view
+        return view('user.index', compact('users', 'sortOrder'));
+    }
 }
