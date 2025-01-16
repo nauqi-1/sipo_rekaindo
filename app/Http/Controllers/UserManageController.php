@@ -20,9 +20,15 @@ class UserManageController extends Controller
     $positions = Position::all();  
     $users = User::with(['role', 'divisi', 'position'])->get();
 
+    
+    // Ambil data pengguna dengan pagination
+    $users = User::with(['role', 'divisi', 'position'])->paginate(6); // Menggunakan paginate
     // Jika ada ID yang diberikan, ambil data user untuk diedit
     $user = $id ? User::with(['role', 'divisi', 'position'])->find($id) : null;
 
+    if (request('search')) {
+        $users = User::where('firstname', 'like', '%' . request('search') . '%')->orWhere('lastname', 'like', '%' . request('search') . '%')->paginate(6);
+    }
     // Kirim data ke view user-manage
     return view('superadmin.user-manage', compact('divisi', 'roles', 'positions', 'users', 'user'));
 }

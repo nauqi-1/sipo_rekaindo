@@ -54,3 +54,5 @@ Route::get('/dashboard.superadmin', function () {
 Route::get('/dashboard.manager', function () {
     return view('supervisor.index');
 })->name('manager.dashboard');
+
+// routes/web.php

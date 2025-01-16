@@ -6,6 +6,7 @@
     <title>User Management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/superadmin/user-manage.css') }}">
 </head>
 <body>
@@ -29,10 +30,12 @@
         <div class="header-tools">
             <h2 class="title">User</h2>
             <div class="search-filter">
-                <button class="input-group-text" id="search-icon">
+            <form action="" method="GET" class="d-flex">
+                <button class="input-group-text" id="search-icon" name="search" type="submit">
                     <i class="bi bi-search"></i>
                 </button>
-                <input type="text" class="form-control" placeholder="Search by name...">
+                    <input type="text" name="search" id="search" class="form-control" placeholder="Search by name..." autocomplete="off">
+            </form>
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         Filter by
@@ -97,15 +100,16 @@
                         @endforeach
                     </tbody>
                 </table>
-                <div class="pagination">
+                {{ $users->links('pagination::bootstrap-5') }}
+                <!-- <div class="pagination">
                     <p>Showing data 1 to 8 of 256K entries</p>
-                    <ul>
+                    <<ul>
                         <li class="active">1</li>
                         <li>2</li>
                         <li>3</li>
                         <li>...</li>
                     </ul>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -374,5 +378,6 @@
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
