@@ -89,7 +89,7 @@
                         </td>
                         <td>{{ $user->phone_number }}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal" data-id="{{ $user->id }}">
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal" data-id="{{ $user->id }}" onclick="editUser({{ $user->id }})">
                                     <img src="/img/user-manage/Edit.png" alt="edit">
                                 </button>
                                 <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $user->id }}">
@@ -243,7 +243,7 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label for="id" class="form-label">User ID :</label>
-                <input type="text" name="id" id="id" class="form-control" value="{{ $user->id }}" required>
+                <input type="text" name="id" id="id" class="form-control" value="{{ $user->id }}" readonly>
             </div>
             <div class="col-md-6">
                 <label for="email" class="form-label">Email :</label>
