@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memo Super Admin</title>
+    <title>Undangan Rapat Super Admin</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/superadmin/memo.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/superadmin/undangan-rapat.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="#"><img src="/img/memo-superadmin/Vector_back.png" alt=""></a>
+                <a href="#"><img src="/img/undangan-rapat-superadmin/Vector_back.png" alt=""></a>
             </div>
-            <h1>Memo</h1>
+            <h1>Undangan Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb">
-                    <a href="#">Home</a>/<a href="#">Memo</a>
+                    <a href="#">Home</a>/<a href="#">Undangan Rapat</a>
                 </div>
             </div>
         </div>
@@ -35,16 +35,16 @@
                     <option>Pending</option>
                 </select>
                 <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 200px;">
-                <img src="/img/memo-superadmin/panah.png" alt="panah" class="icon-panah">
+                <img src="/img/undangan-rapat-superadmin/panah.png" alt="panah" class="icon-panah">
                 <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 200px;">                
             </div>
             <div class="d-flex gap-2">
                 <div class="btn btn-primary d-flex align-items-center" style="gap: 5px;">
-                    <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
+                    <img src="/img/undangan-rapat-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
                     <input type="text" class="form-control border-0 bg-transparent" placeholder="Search" style="outline: none; box-shadow: none;">
                 </div>
             </div>
-            <button class="btn btn-success"><a href="{{route('superadmin.add-memo')}}" style="text-decoration: none; color: #878790;">+ Add Memo </a></button>
+            <button class="btn btn-success"><a href="{{route('superadmin.add-undangan-rapat')}}" style="text-decoration: none; color: #878790;">+ Add Undangan Rapat </a></button>
         </div>
 
         <!-- Table -->
@@ -65,7 +65,7 @@
                 @for ($i = 1; $i <= 3; $i++)
                 <tr>
                     <td class="nomor">{{ $i }}</td>
-                    <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">Memo Monitoring Risiko</td>
+                    <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">Undangan Rapat Kajian</td>
                     <td>21-10-2024</td>
                     <td>1596</td>
                     <td>837.06/REKA/GEN/VII/2024</td>
@@ -80,15 +80,15 @@
                         @endif
                     </td>
                     <td>
-                        <button class="btn btn-sm1"><img src="/img/memo-superadmin/share.png" alt="share"></button>
+                        <button class="btn btn-sm1"><img src="/img/undangan-rapat-superadmin/share.png" alt="share"></button>
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            <img src="/img/memo-superadmin/Delete.png" alt="Delete">
+                            <img src="/img/undangan-rapat-superadmin/Delete.png" alt="Delete">
                         </button>
                         <!-- Status Approve -->
                         @if ($i % 3 != 0 && $i % 2 != 0) 
-                            <button class="btn btn-sm4"><img src="/img/memo-superadmin/arsip.png" alt="arsip"></button>
+                            <button class="btn btn-sm4"><img src="/img/undangan-rapat-superadmin/arsip.png" alt="arsip"></button>
                         @else
-                            <button class="btn btn-sm3"><img src="/img/memo-superadmin/edit.png" alt="edit"></button>
+                            <button class="btn btn-sm3"><img src="/img/undangan-rapat-superadmin/edit.png" alt="edit"></button>
                         @endif
                     </td>
                 </tr>
@@ -98,41 +98,40 @@
 
         <!-- Modal Hapus -->
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-            <!-- Tombol Close -->
-            <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-            <div class="modal-body text-center">
-                <!-- Ikon atau Gambar -->
-                <img src="/img/memo-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
-                <!-- Tulisan -->
-                <h5 class="mb-4" style="color: #545050;"><b>Hapus Memo?</b></h5>
-                <!-- Tombol -->
-                <div class="d-flex justify-content-center gap-3">
-                <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('superadmin.memo-superadmin')}}">Cancel</a></button>
-                <button type="button" class="btn-ok" id="confirmDelete">OK</button>
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Tombol Close -->
+                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-body text-center">
+                        <!-- Ikon atau Gambar -->
+                        <img src="/img/undangan-rapat-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
+                        <!-- Tulisan -->
+                        <h5 class="mb-4" style="color: #545050;"><b>Hapus Undangan Rapat?</b></h5>
+                        <!-- Tombol -->
+                        <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('superadmin.undangan-rapat')}}">Cancel</a></button>
+                        <button type="button" class="btn-ok" id="confirmDelete">OK</button>
+                    </div>
                 </div>
             </div>
-            </div>
-        </div>
         </div>
 
         <!-- Modal Berhasil -->
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-            <!-- Tombol Close -->
-            <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-            <div class="modal-body text-center">
-                <!-- Ikon atau Gambar -->
-                <img src="/img/memo-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                <!-- Tulisan -->
-                <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus Memo</b></h5>
-                <!-- Tombol -->
-                <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('superadmin.memo-superadmin')}}">Back</a></button>
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Tombol Close -->
+                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-body text-center">
+                        <!-- Ikon atau Gambar -->
+                        <img src="/img/undangan-rapat-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                        <!-- Tulisan -->
+                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus <br>Undangan Rapat</b></h5>
+                        <!-- Tombol -->
+                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('superadmin.undangan-rapat')}}">Back</a></button>
+                    </div>
+                </div>
             </div>
-            </div>
-        </div>
         </div>
     </div>
 

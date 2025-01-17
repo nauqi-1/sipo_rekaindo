@@ -1,0 +1,164 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.container {
+    max-width: 80%;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    /* max-width: 1200px; */
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.header.back-button a {
+    margin-right: auto;
+    display: flex;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.breadcrumb-wrapper {
+    display: inline-block; 
+    margin-right: 20px; 
+}
+
+.breadcrumb {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 30px;
+    padding: 8px 12px;
+    border: 1px solid #E5E5E5CC;
+    display: flex;
+    justify-content: left;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: #A9A9A9;
+}
+
+.card {
+    border: 1px solid #EFF4FA;
+}
+
+.card-header {
+    background-color: #fff;
+}
+
+.card-title {
+    padding-top: 7px;
+}
+
+.card-blue {
+    background-color: #92C5FF99;
+    border: 1px solid #92C5FF99;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    color: #1E4178;
+}
+
+.card-blue img {
+    margin-right: 10px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+.col-md-6 {
+    border: 1px solid #EFF4FA; 
+    padding: 0px; 
+    border-radius: 5px; 
+    flex: 1;
+    max-width: 46%;
+    color: #1E4178;
+    font-size: 14px;
+}
+
+.col-md-6:hover {
+    border-color: #007bff; /* Mengubah warna border saat hover */
+}
+
+.col-md-6 label{
+    margin-left: 12px;
+}
+
+.col-md-6 input{
+    border: 1px solid #ffffff;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.col-md-6 .form-control {
+    font-size: 12px;
+    color: #222B45;
+    border: 1px solid #ffffff;
+}
+
+p {
+    padding-left: 12px;
+    color: red;
+    font-size: 10px;
+}
+
+/* button */
+.modal-footer {
+    justify-content: left;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    margin-left: 30px;
+}
+
+.btn-secondary {
+    margin-right: 10px;
+    color: #8F9BB3;
+    background-color: #fff;
+    border: 1px solid #8F9BB3;
+}
+
+.btn-secondary:hover {
+    margin-right: 10px;
+    color: #fff;
+    background-color: #8F9BB3;
+    border: 1px solid #8F9BB3;
+}
+
+.btn-primary {
+    margin-right: 10px;
+    color: #fff;
+    background-color: #1E4178;
+    border: 1px solid #1E4178;
+}
+
+.btn-primary:hover {
+    margin-right: 10px;
+    color: #fff;
+    background-color: #92C5FF;
+    border: 1px solid #92C5FF;
+}

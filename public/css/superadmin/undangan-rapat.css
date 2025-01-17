@@ -72,6 +72,29 @@ h1 {
     text-align: center;
 }
 
+.badge {
+    font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Fitur Status */
+.form-select {
+    color: #6e6e71;
+    border: 1px solid #E5E5E5;
+}
+
+.form-select:hover {
+    background-color: #ffffff; 
+    border-color: #0d6efd; 
+    color: #0d6efd;
+    box-shadow: 0 0 10px rgba(13, 110, 253, 0.8);
+}
+
 .form-control {
     color: #878790;
     border: 1px solid #E5E5E5;
@@ -80,8 +103,14 @@ h1 {
 .form-control:hover {
     background-color: #ffffff; 
     border-color: #0d6efd; 
-    color: #000;
+    color: #0d6efd;
     box-shadow: 0 0 10px rgba(13, 110, 253, 0.8);
+}
+
+.icon-panah {
+    width: 24px; 
+    height: 12px; 
+    margin: auto;
 }
 
 /* Fitur Search */
@@ -89,7 +118,7 @@ h1 {
     background-color: #ffffff;
     border: 1px solid #E5E5E5;
     padding: 0 15px;
-    margin-left: 120px;
+    margin-left: 40px;
 }
 
 .btn-primary:hover {
@@ -106,7 +135,25 @@ h1 {
     border-color: #92C5FF !important;
 }
 
-/* Nomor */
+/* Button add */
+.btn-success {
+    background-color: #ffffff;
+    border: 1px solid #E5E5E5;
+    color: #878790;
+}
+
+.btn-success:hover {
+    background-color: #ffffff; 
+    border-color: #92C5FF; 
+    color: #92C5FF;
+    box-shadow: 0 0 10px #92C5FF;
+}
+
+.btn-success:active {
+    background-color: #1E4178 !important;
+    color: #ffffff !important;
+}
+
 .nomor {
     background-image: url('/img/memo-superadmin/Rectangle-path.png');
     background-size: 30px 30px;
@@ -119,14 +166,21 @@ h1 {
 
 /* warna memo monitoring */
 .text-success {
-    color: #28a745; /* Hijau */
+    color: #28a745; 
+}
+
+.text-warning {
+    color: #ffc107; 
+}
+
+.text-danger {
+    color: #dc3545; 
 }
 
 /* Button aksi */
-.btn-sm1, .btn-sm2, .btn-sm3 {
+.btn-sm1, .btn-sm2, .btn-sm3, .btn-sm4{
     font-size: 14px;
     padding: 5px 10px;
-    border-radius: 50px;
 }
 
 .btn-sm1:hover {
@@ -165,94 +219,82 @@ h1 {
     background-color: #c8dbf1 !important;
 }
 
-/* Delete Overlay */
-#deleteModal .btn-outline-secondary {
-    padding: 8px 20px;
+.btn-sm4:hover {
+    border: 1px solid #c8dbf1 !important;
+    border-radius: 50px;
+    background-color: #c8dbf1 !important;
+}
+
+.btn-sm4:active {
+    border: 1px solid #c8dbf1 !important;
+    border-radius: 50px;
+    background-color: #c8dbf1 !important;
+}
+
+/* Tombol Cancel */
+.btn-cancel {
+    background-color: white;
+    border: 1px solid #8A8383;
+    color: #8A8383;
+    padding: 8px 0;
+    border-radius: 6px;
     font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #6d6d6d;
-    background-color: #ffffff;
-    color: #6d6d6d;
-}
-
-#deleteModal .btn-outline-secondary:hover{
-    background-color: #6d6d6d; /* Warna tombol saat dihover */
-    color: #ffffff;
-}
-
-#deleteModal .btn-outline-secondary:active{
-    background-color: #6d6d6d !important;
-    color: #ffffff !important;
-}
-
-#deleteModal .btn-primary {
-    padding: 8px 33px;
-    font-size: 14px;
-    border-radius: 5px;
-    border-color: #2592F7;
-    background-color: #2592F7;
-    margin-left: 10px;
-}
-
-#deleteModal .btn-primary:hover {
-    background-color: #004085;
-    border-color: #004085;
-    box-shadow: none;
-    color: #ffffff;
-}
-
-#deleteModal .btn-primary:active {
-    background-color: #004085 !important;
-    border-color: #004085 !important;
-    box-shadow: none;
-    color: #fff !important;
-}
-
-#deleteModal img {
-    margin-bottom: 20px;
-}
-
-#deleteModal h5 {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-/* Modal Delete Success Confirmation */
-#deleteSuccessModal .modal-content {
-    border-radius: 10px;
-}
-
-#deleteSuccessModal .modal-body img {
-    width: 80px;
-    height: auto;
-}
-
-#deleteSuccessModal .modal-body h5 {
-    font-size: 18px;
-    color: #333;
-    margin-top: 2px;
-    margin-bottom: 2px;
-}
-
-#deleteSuccessModal .btn-primary {
-    background-color: #2592F7;
-    border-color: #2592F7;
-    color: white;
-    border-radius: 5px;
+    font-weight: 500;
     display: flex;
-    margin-left: 168px;
+    justify-content: center;
+    width: 80px;
+    margin-bottom: 10px;
 }
 
-#deleteSuccessModal .btn-primary:hover {
-    border-color: #004085;
-    background-color: #004085;
-    box-shadow: none;
+.btn-cancel:hover {
+    background-color: #f7f7f7;
+    color: #6e6e6e;
+}
+
+.btn-cancel a {
+    background-color: white;
+    color: #8A8383;
+    text-decoration: none;
+}
+
+/* Tombol OK */
+.btn-ok {
+    background-color: #2592F7;
+    border: none;
+    color: white;
+    padding: 8px 0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    width: 80px;
+    margin-bottom: 10px;
+}
+
+.btn-ok:hover {
+    background-color: #1a7cd3;
+}
+
+/* Tombol Back */
+.btn-back {
+    background-color: #2592F7;
+    border: none;
+    color: white;
+    padding: 8px 0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100px;
+    margin-bottom: 10px;
+}
+
+.btn-back:hover {
+    background-color: #1a7cd3;
+}
+
+.btn-back a {
+    background-color: #2592F7;
     color: #ffffff;
-}
-
-#deleteSuccessModal .btn-primary:active {
-    border-color: #004085 !important;
-    background-color: #004085 !important;
-    box-shadow: none;
-    color: #fff !important
+    text-decoration: none;
 }
