@@ -12,6 +12,7 @@ Route::get('/p', function () {
 Route::get('/user-manage/edit/{id}', [UserController::class, 'edit'])->name('user-manage.edit');
 // Route untuk menangani update data
 Route::put('/user-manage/update/{id}', [UserController::class, 'update'])->name('user-manage/update');
+Route::get('/user-manage/paginate', [UserManageController::class, 'paginateUsers'])->name('user-manage.paginate');
 
 Route::get('/role-management', [UserController::class, 'showRole'])->name('user.role');
 

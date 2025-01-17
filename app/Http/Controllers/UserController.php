@@ -24,7 +24,7 @@ class UserController extends Controller
          $divisi = Divisi::all(); // Asumsi Anda memiliki model Divisi
          $positions = Position::all(); // Asumsi Anda memiliki model Position
          $roles = Role::all(); // Asumsi Anda memiliki model Role
- 
+         
          return view('user-manage.edit', compact('user', 'divisi', 'positions', 'roles'));
      }
  
