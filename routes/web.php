@@ -56,3 +56,15 @@ Route::get('/dashboard.manager', function () {
 })->name('manager.dashboard');
 
 // routes/web.php
+
+Route::get('/verif-email', function () {
+    return view('/components/verif-email');
+})->name('verif-email');
+
+Route::get('/undangan-rapat', function() {
+    return view('superadmin.undangan-rapat');
+})->name('superadmin.undangan-rapat');
+
+Route::get('/add-undangan-rapat', function() {
+    return view('superadmin.add-undangan-rapat');
+})->name('superadmin.add-undangan-rapat');

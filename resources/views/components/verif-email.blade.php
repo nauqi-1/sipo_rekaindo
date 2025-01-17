@@ -10,14 +10,14 @@
   <div class="container">
     <div class="card">
       <div class="back-button">
-        <a href="{{ route('forgot-pw') }}"><img src="/img/user-manage/Vector_back.png" alt="back"></a>
+        <a href="#"><img src="/img/user-manage/Vector_back.png" alt="back"></a>
       </div>
       <div class="logo">
         <img src="/img/logo-reka.png" alt="Reka Inka Group">
       </div>
       <h1>Verification</h1>
       <p>Enter your 4 digits code that you received on your email</p>
-      <form action="{{ route('new-pw') }}" method="GET">
+      <form action="#" method="GET">
         <div class="input-verifemail">
           <input type="text" maxlength="1" name="digit1" class="code-input" required>
           <input type="text" maxlength="1" name="digit2" class="code-input" required>

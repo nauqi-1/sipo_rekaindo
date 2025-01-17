@@ -118,7 +118,7 @@ h1 {
     background-color: #ffffff;
     border: 1px solid #E5E5E5;
     padding: 0 15px;
-    margin-left: 120px;
+    margin-left: 40px;
 }
 
 .btn-primary:hover {
@@ -285,7 +285,7 @@ h1 {
     border-radius: 6px;
     font-size: 14px;
     font-weight: 500;
-    width: 80px;
+    width: 100px;
     margin-bottom: 10px;
 }
 
