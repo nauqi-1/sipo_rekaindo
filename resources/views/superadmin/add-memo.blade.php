@@ -13,7 +13,7 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('superadmin.memo-superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Add Memo</h1>
         </div>        
@@ -67,21 +67,43 @@
                     </div>
                     <div class="col-md-6" >
                         <label for="perihal" class="form-label">Perihal</label>
-                        <input type="text" name="perihal" id="perihal" class="form-control" placeholder="Masukkan Perihal/Judul Surat" required>
+                        <input type="text" name="perihal" id="perihal" class="form-control" placeholder="Masukkan Perihal / Judul Surat" required>
                     </div>
                 </div>
 
-                <div class="row mb-4 kolom1-row">
+                <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
+                        <img src="\img\memo-superadmin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
                         <label for="isi-surat">Isi Surat</label>
-                        <div class="rich-text-editor">
-                            <!-- Placeholder untuk editor teks -->
-                            <textarea id="isi-surat" name="isi-surat"></textarea>
+                    </div>
+                </div>
+
+                <div class="row editor-container">
+                    <!-- Kolom Editor -->
+                    <div class="col-12 mb-4">
+                        <textarea id="editor" name="isi_surat"></textarea>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="jenis_surat" class="form-label">Nama Pimpinan</label>
+                        <select name="jenis_surat" id="jenis_surat" class="form-control" required>
+                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
+                            <option value="undangan">Surat Undangan</option>
+                            <option value="biasa">Surat Biasa</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="upload_file" class="form-label">Lampiran</label>
+                        <div class="upload-wrapper">
+                            <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Choose File</button>
+                            <input type="file" id="upload_file" name="upload_file" class="form-control-file" hidden>
                         </div>
                     </div>
                 </div>
 
-                <div class="row mb-4 kolom1-row">
+                <!-- <div class="row mb-4 kolom1-row">
                     <div class="col-md-12">
                         <label for="jenis_surat" class="form-label">Nama Pimpinan</label>
                         <select name="jenis_surat" id="jenis_surat" class="form-control" required>
@@ -99,12 +121,60 @@
                             <input type="file" id="upload_file" name="upload_file" class="form-control-file" hidden>
                         </div>
                     </div>
-                </div>
-
+                </div> -->
 
             </div>
         </div>
     </div>
+    
+    <!-- Modal Upload File -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">
+                        <img src="/img/memo-superadmin/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
+                        Upload files
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-subtitle">Select and upload the files of your choice</p>
+                    <div class="upload-container">
+                        <div class="upload-box" id="uploadBox">
+                            <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
+                            <p class="upload-text">Choose a file or drag & drop it here</p>
+                            <p class="upload-note">PDF file size no more than 20MB</p>
+                            <button class="btn btn-outline-primary" id="selectFileBtn">Select File</button>
+                            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="uploadBtn" >Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Hubungkan tombol "Select File" dengan input file
+        document.getElementById('selectFileBtn').addEventListener('click', function () {
+            document.getElementById('fileInput').click();
+        });
+
+        // Deteksi perubahan file dan aktifkan tombol Upload
+        document.getElementById('fileInput').addEventListener('change', function () {
+            const uploadBtn = document.getElementById('uploadBtn');
+            if (this.files.length > 0) {
+                uploadBtn.disabled = false; // Aktifkan tombol Upload jika ada file terpilih
+            } else {
+                uploadBtn.disabled = true; // Nonaktifkan tombol Upload jika tidak ada file
+            }
+        });
+
+    </script>
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>

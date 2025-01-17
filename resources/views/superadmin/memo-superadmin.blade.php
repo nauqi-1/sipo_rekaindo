@@ -44,7 +44,7 @@
                     <input type="text" class="form-control border-0 bg-transparent" placeholder="Search" style="outline: none; box-shadow: none;">
                 </div>
             </div>
-            <button class="btn btn-success">+ Add Memo</button>
+            <button class="btn btn-success"><a href="{{route('superadmin.add-memo')}}" style="text-decoration: none; color: #878790;">+ Add Memo </a></button>
         </div>
 
         <!-- Table -->

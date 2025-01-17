@@ -108,13 +108,46 @@ h1 {
     text-align: center;
 }
 
+.col-md-6 .form-control {
+    font-size: 12px;
+    color: #222B45;
+    border: 1px solid #ffffff;
+
+}
+
+.col-md-6 .upload-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.col-md-6 .upload-button {
+    background-color: #E9EFF4;
+    color: #878790;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.col-md-6 .upload-button:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+.col-md-6 .form-control-file {
+    display: none; /* Sembunyikan elemen file input */
+}
 
 .label-kepada {
     color: #FF000080;
     font-size: 10px;
 }
 
-.kolom1-row {
+.isi-surat-row {
     display: flex;
     justify-content: center;
     /* margin: 10px 12px; */
@@ -124,7 +157,7 @@ h1 {
     border-radius: 8px;
 }
 
-.kolom1-row .col-md-12 {
+.isi-surat-row .col-md-12 {
     flex: 1;
     max-width: 100%;
     border: 1px solid #EFF4FA;
@@ -132,6 +165,66 @@ h1 {
     border-radius: 5px;
     color: #1E4178;
     font-size: 14px;
+    background-color: #92C5FF99;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+}
+
+.isi-surat-row .col-md-12:hover {
+    border-color: #007bff;
+}
+
+.isi-surat-row .form-label {
+    margin-left: 12px;
+}
+
+.editor-container {
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    padding: 0;
+    margin: auto;
+    background: #fff;
+    /* background-color: #0056b3; */
+}
+
+.editor-container textarea {
+    background-color: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #EFF4FA;
+    display: flex;
+    justify-content: center;
+    text-align: left;
+    margin: auto;
+    min-width: 98%;
+    font-size: 12px;
+}
+
+.editor-container textarea:hover {
+    border-color: #007bff;
+}
+
+/* opsi ke dua */
+.kolom1-row {
+    display: flex;
+    justify-content: center;
+    margin: 10px 12px;
+    margin: 0 auto;
+    max-width: 100%;
+    min-width: 100%;
+    padding: 0 23px;
+    border-radius: 8px;
+}
+
+.kolom1-row .col-md-12 {
+    flex: 1;
+    max-width: 100%;
+    min-width: 100%;
+    border: 1px solid #0d3b74;
+    padding: 10px;
+    border-radius: 5px;
+    color: #1E4178;
+    font-size: 14px;
+
+    width: 600px;
 }
 
 .kolom1-row .col-md-12:hover {
@@ -173,4 +266,61 @@ h1 {
 
 .kolom1-row .form-control-file {
     display: none; /* Sembunyikan elemen file input */
+}
+
+/* upload files */
+.modal-subtitle {
+    font-size: 15px;
+    color: #A9ACB4;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.upload-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.upload-box {
+    width: 100%;
+    max-width: 400px;
+    border: 2px dashed #59BDED;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background-color: #F2F7FF;
+    cursor: pointer;
+}
+
+.upload-text {
+    font-size: 18px;
+    font-weight: 500;
+    color: #292D32;
+}
+
+.upload-note {
+    font-size: 14px;
+    color: #8A8383;
+    margin-bottom: 15px;
+}
+
+/* Button styles */
+#selectFileBtn {
+    margin-top: 10px;
+    background-color: #FFFFFF;
+    color: #8A8383;
+    border: 1px solid #8A8383;
+    font-size: 14px;
+}
+
+#selectFileBtn:hover {
+    border-color: #007bff;
+    border-radius: 5px;
+    color: #1E4178;
+
+}
+
+#uploadBtn {
+    width: 80px;
 }
