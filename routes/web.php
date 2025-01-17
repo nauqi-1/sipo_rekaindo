@@ -26,7 +26,7 @@ Route::get('/user-manage', [UserManageController::class, 'index'])->name('user.m
 // })->name('user-manage/add');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('layouts.app');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

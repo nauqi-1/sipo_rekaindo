@@ -1,147 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Superadmin</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/superadmin/dashboard.css') }}">
-</head>
-<body>
-    <div class="container">
-        <div class="header">
+@extends('layouts.app')
+
+@section('title', 'Superadmin')
+
+@section('content')
+<div class="container">
+        <!-- Header -->
+        <header class="header">
             <h1>Dashboard</h1>
-        </div>        
-        <div class="row">
-            <div class="breadcrumb-wrapper">
-                <div class="breadcrumb">
-                    <a href="#">Dashboard</a>
+        </header>
+
+        <!-- Welcome Message -->
+        <div class="welcome-message">
+            <p>Selamat datang <strong>Mawar</strong> di <span class="system-name">Sistem Persuratan!</span> Anda login sebagai <span class="role-badge">Super Admin</span></p>
+        </div>
+
+        <!-- Overview Section -->
+        <div class="overview-container">
+            <h3>Overview</h3>
+            <div class="overview-cards">
+                <div class="overview-card">
+                    <h4>MEMO</h4>
+                    <p><strong>4</strong> Memo</p>
+                </div>
+                <div class="overview-card">
+                    <h4>RISALAH RAPAT</h4>
+                    <p><strong>7</strong> Risalah Rapat</p>
+                </div>
+                <div class="overview-card">
+                    <h4>UNDANGAN RAPAT</h4>
+                    <p><strong>15</strong> Undangan Rapat</p>
                 </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="breadcrumb-wrapper">
-                <div class="breadcrumb">
-                    <p class="welcome-text">Selamat datang Mawar di <span style="color: #00B087;">SIPO Reka!</span>  Anda login sebagai 
-                    <span class="role">Super Admin</span></p>
+        <!-- Things to Do Section -->
+        <div class="things-to-do-container">
+            <h3>Things to do</h3>
+            <div class="things-to-do-list">
+                <div class="things-to-do-item">
+                    <div class="icon">
+                        <img src="/assets/images/icon-memo.png" alt="Memo Icon">
+                    </div>
+                    <div class="content">
+                        <h4>Meninjau Memo</h4>
+                        <p>Tinjau memo untuk kelangkah selanjutnya</p>
+                    </div>
+                    <div class="date">Hari ini</div>
+                </div>
+
+                <div class="things-to-do-item">
+                    <div class="icon">
+                        <img src="/assets/images/icon-user.png" alt="User Icon">
+                    </div>
+                    <div class="content">
+                        <h4>Tambah User Baru</h4>
+                        <p>Tinjau untuk kelangkah selanjutnya</p>
+                    </div>
+                    <div class="date">Hari ini</div>
+                </div>
+
+                <div class="things-to-do-item">
+                    <div class="icon">
+                        <img src="/assets/images/icon-surat.png" alt="Surat Icon">
+                    </div>
+                    <div class="content">
+                        <h4>Meninjau Permintaan Surat</h4>
+                        <p>Tinjau permintaan surat untuk kelangkah selanjutnya</p>
+                    </div>
+                    <div class="date">Hari ini</div>
                 </div>
             </div>
         </div>
-
-        <div class="card-body">
-            <div class="row">
-            <h4><b>Overview</b></h4><br>
-                <!-- Card Memo -->
-                <div class="col-md-4">
-                    <div class="card text-center">
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h6 class="card-title">MEMO</h6>
-                                <a href="#" class="btn btn-link p-0">View All</a>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-center align-items-center mt-3">
-                                <a href="#" class="icon-box">
-                                    <img src="/img/dashboard/memo.png" alt="Memo" class="me-3">
-                                </a>
-                                <p class="card-text display-6 mb-0">4<span> Memo</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- Card Risalah Rapat -->
-                <div class="col-md-4">
-                    <div class="card text-center">
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h6 class="card-title">RISALAH RAPAT</h6>
-                                <a href="#" class="btn btn-link p-0">View All</a>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-center align-items-center mt-3">
-                                <a href="#" class="icon-box">
-                                    <img src="/img/dashboard/risalah.png" alt="Risalah Rapat" class="me-3">
-                                </a>
-                                <p class="card-text display-6 mb-0">7<span> Risalah Rapat</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Card Undangan Rapat -->
-                <div class="col-md-4">
-                    <div class="card text-center">
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h6 class="card-title">UNDANGAN RAPAT</h6>
-                                <a href="#" class="btn btn-link p-0">View All</a>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-center align-items-center mt-3">
-                                <a href="#" class="icon-box">
-                                    <img src="/img/dashboard/undangan.png" alt="Undangan Rapat" class="me-3">
-                                </a>
-                                <p class="card-text display-6 mb-0">15<span> Undangan Rapat</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Things to do -->
-         <div class="card to-do">
-            <div class="card-body">
-            <h4><b>Things to do</b></h4>
-            <div class="col-12">
-                <ul class="list-group">
-                    <li class="list-group-item d-flex align-items-center">
-                        <div class="d-flex align-items-start">
-                            <a href="#" class="icon-box">
-                                <img src="/img/dashboard/tinjau-memo.png" alt="Memo" class="me-3">
-                            </a>
-                                <div>
-                                <strong>Meninjau Memo</strong> <br>
-                                <small class="text-muted">Tinjau memo untuk kelangkah selanjutnya</small>
-                            </div>
-                        </div>
-                        <span class="badge bg-primary ms-auto">Hari ini</span>
-                    </li>
-                    <li class="list-group-item d-flex align-items-center">
-                        <div class="d-flex align-items-start">
-                            <a href="#" class="icon-box">
-                                <img src="/img/dashboard/tambah-user.png" alt="Memo" class="me-3">
-                            </a>
-                            <div>
-                                <strong>Tambah User Baru</strong> <br>
-                                <small class="text-muted">Tinjau untuk kelangkah selanjutnya</small>
-                            </div>
-                        </div>
-                        <span class="badge bg-primary ms-auto">Hari ini</span>
-                    </li>
-                    <li class="list-group-item d-flex align-items-center">
-                        <div class="d-flex align-items-start">    
-                            <a href="#" class="icon-box">
-                                <img src="/img/dashboard/tinjau-permintaan.png" alt="Memo" class="me-3">
-                            </a>
-                            <div>
-                                <strong>Meninjau Permintaan Surat</strong> <br>
-                                <small class="text-muted">Tinjau permintaan surat untuk kelangkah selanjutnya</small>
-                            </div>
-                        </div>
-                        <span class="badge bg-primary ms-auto">Hari ini</span>
-                    </li>
-                </ul>
-            </div>
-            </div>
-         </div>
     </div>
-
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-</body>
-</html>
+@endsection
