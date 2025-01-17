@@ -10,7 +10,7 @@
   <div class="container">
     <div class="card">
       <div class="back-button">
-        <a href="{{ route('forgot-pw') }}"><</a>
+        <a href="{{ route('forgot-pw') }}"><img src="/img/user-manage/Vector_back.png" alt="back"></a>
       </div>
       <div class="logo">
         <img src="/img/logo-reka.png" alt="Reka Inka Group">
