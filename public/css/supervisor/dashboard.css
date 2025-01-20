@@ -23,7 +23,7 @@
 }
 
 .system-name {
-    color: #007bff;
+    color: #00B087;
     font-weight: bold;
 }
 
@@ -162,4 +162,13 @@
     border: 1px solid #565656 !important;
     border-radius: 50px;
     background-color: #565656 !important;
+}
+
+/* admin */
+.role-badge-admin {
+    background: #0095FF;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;   
 }
