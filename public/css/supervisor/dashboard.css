@@ -1,0 +1,165 @@
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* Welcome Message */
+.welcome-message {
+    margin: 20px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.system-name {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.role-badge {
+    background: #5D5FEF;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+/* Overview Section */
+.overview-container {
+    background: #f8faff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.overview-container h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #000;
+}
+
+.overview-cards {
+    display: flex;
+    gap: 20px;
+}
+
+.overview-card {
+    flex: 1;
+    background: #eaf4ff;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.overview-card h4 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #1e4178;
+    margin-bottom: 10px;
+}
+
+.overview-card p {
+    font-size: 14px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* Things to Do Section */
+.things-to-do-container {
+    padding: 20px;
+}
+
+.things-to-do-container h3 {
+    font-size: 20px;
+    color: #000;
+    margin-bottom: 15px;
+}
+
+.things-to-do-list {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.things-to-do-list .icon1, .icon2, .icon3 {
+    flex-shrink: 0;
+}
+
+.things-to-do-list .icon img {
+    width: 30px;
+    height: 34px;
+}
+
+.things-to-do-list .content {
+    margin-left: 20px;
+    flex-grow: 1;
+}
+
+.things-to-do-list .content h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    margin-top: 14px;
+    color: #000;
+}
+
+.task .content p {
+    font-size: 14px;
+    color: #666;
+    margin: 5px 0 0;
+}
+
+/* Button aksi */
+.icon1 {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 50px;
+    border: 1px solid #0C73E0E5;
+    border-radius: 50px;
+    background-color: #0C73E0E5;
+    color: #fff;
+}
+
+.icon2 {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 50px;
+    border: 1px solid #495BCDE5;
+    border-radius: 50px;
+    background-color: #495BCDE5;
+}
+
+.icon3 {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 50px;
+    border: 1px solid #629584;
+    border-radius: 50px;
+    background-color: #629584;
+}
+
+.icon1:hover, .icon2:hover, .icon3:hover {
+    border: 1px solid #565656 !important;
+    border-radius: 50px;
+    background-color: #565656 !important;
+}
+
+.icon1:active, .icon2:active, .icon3:active {
+    border: 1px solid #565656 !important;
+    border-radius: 50px;
+    background-color: #565656 !important;
+}
