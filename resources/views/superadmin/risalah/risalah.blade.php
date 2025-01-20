@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undangan Rapat Super Admin</title>
+    <title>Risalah Rapat Super Admin</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/superadmin/undangan.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/superadmin/risalah.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="#"><img src="/img/undangan-superadmin/Vector_back.png" alt=""></a>
+                <a href="#"><img src="/img/risalah-superadmin/Vector_back.png" alt=""></a>
             </div>
-            <h1>Undangan Rapat</h1>
+            <h1>Risalah Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb">
-                    <a href="#">Home</a>/<a href="#">Undangan Rapat</a>
+                    <a href="#">Home</a>/<a href="#">Risalah Rapat</a>
                 </div>
             </div>
         </div>
@@ -35,16 +35,16 @@
                     <option>Pending</option>
                 </select>
                 <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 200px;">
-                <img src="/img/undangan-superadmin/panah.png" alt="panah" class="icon-panah">
+                <img src="/img/risalah-superadmin/panah.png" alt="panah" class="icon-panah">
                 <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 200px;">                
             </div>
             <div class="d-flex gap-2">
                 <div class="btn btn-primary d-flex align-items-center" style="gap: 5px;">
-                    <img src="/img/undangan-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
+                    <img src="/img/risalah-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
                     <input type="text" class="form-control border-0 bg-transparent" placeholder="Search" style="outline: none; box-shadow: none;">
                 </div>
             </div>
-            <button class="btn btn-success"><a href="{{route('superadmin.undangan.add-undangan')}}" style="text-decoration: none; color: #878790;">+ Add Undangan Rapat</a></button>
+            <button class="btn btn-success"><a href="{{route('superadmin.risalah.add-risalah')}}" style="text-decoration: none; color: #878790;">+ Add Risalah Rapat</a></button>
         </div>
 
         <!-- Table -->
@@ -65,7 +65,7 @@
                 @for ($i = 1; $i <= 3; $i++)
                 <tr>
                     <td class="nomor">{{ $i }}</td>
-                    <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">Undangan Rapat Kajian</td>
+                    <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">Risalah Rapat Kajian</td>
                     <td>21-10-2024</td>
                     <td>1596</td>
                     <td>837.06/REKA/GEN/VII/2024</td>
@@ -80,21 +80,21 @@
                         @endif
                     </td>
                     <td>
-                        <!-- <button class="btn btn-sm1"><img src="/img/undangan-superadmin/share.png" alt="share"></button> -->
+                        <!-- <button class="btn btn-sm1"><img src="/img/risalah-superadmin/share.png" alt="share"></button> -->
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            <img src="/img/undangan-superadmin/Delete.png" alt="delete">
+                            <img src="/img/risalah-superadmin/Delete.png" alt="delete">
                         </button>
                         <!-- Status Approve -->
                         @if ($i % 3 != 0 && $i % 2 != 0) 
                             <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
-                                <img src="/img/undangan-superadmin/arsip.png" alt="arsip">
+                                <img src="/img/risalah-superadmin/arsip.png" alt="arsip">
                             </button>
                         @else
                             <!-- <button class="btn btn-sm3">
-                                <img src="/img/undangan-superadmin/edit.png" alt="edit">
+                                <img src="/img/risalah-superadmin/edit.png" alt="edit">
                             </button> -->
-                            <a href="{{ route('superadmin.undangan.add-undangan') }}" class="btn btn-sm3">
-                                <img src="/img/undangan-superadmin/edit.png" alt="edit">
+                            <a href="{{ route('superadmin.risalah.add-risalah') }}" class="btn btn-sm3">
+                                <img src="/img/risalah-superadmin/edit.png" alt="edit">
                             </a>
 
                         @endif
@@ -112,12 +112,12 @@
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
                         <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
+                        <img src="/img/risalah-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Hapus Undangan Rapat?</b></h5>
+                        <h5 class="mb-4" style="color: #545050;"><b>Hapus Risalah Rapat?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('superadmin.undangan.undangan')}}">Cancel</a></button>
+                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('superadmin.risalah.risalah')}}">Cancel</a></button>
                             <button type="button" class="btn-ok" id="confirmDelete">OK</button>
                         </div>
                     </div>
@@ -133,11 +133,11 @@
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
                         <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                        <img src="/img/risalah-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus <br> Undangan Rapat</b></h5>
+                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus <br> Risalah Rapat</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('superadmin.undangan.undangan')}}">Back</a></button>
+                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('superadmin.risalah.risalah')}}">Back</a></button>
                     </div>
                 </div>
             </div>
@@ -151,12 +151,12 @@
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
                         <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
+                        <img src="/img/risalah-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Arsip Undangan Rapat?</b></h5>
+                        <h5 class="mb-4" style="color: #545050;"><b>Arsip Risalah Rapat?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('superadmin.undangan.undangan')}}">Cancel</a></button>
+                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('superadmin.risalah.risalah')}}">Cancel</a></button>
                             <button type="button" class="btn-ok" id="confirmArsip">OK</button>
                         </div>
                     </div>
@@ -172,12 +172,12 @@
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
                         <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                        <img src="/img/risalah-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Success</b></h5>
-                        <h6 class="mb-4" style="font-size: 14px; color: #5B5757;">Berhasil Arsip Undangan Rapat</h6>
+                        <h6 class="mb-4" style="font-size: 14px; color: #5B5757;">Berhasil Arsip Risalah Rapat</h6>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('superadmin.undangan.undangan')}}">Back</a></button>
+                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('superadmin.risalah.risalah')}}">Back</a></button>
                     </div>
                 </div>
             </div>

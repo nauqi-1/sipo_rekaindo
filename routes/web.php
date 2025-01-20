@@ -62,14 +62,6 @@ Route::get('/verif-email', function () {
     return view('/components/verif-email');
 })->name('verif-email');
 
-Route::get('/undangan-rapat', function() {
-    return view('superadmin.undangan-rapat');
-})->name('superadmin.undangan-rapat');
-
-Route::get('/add-undangan-rapat', function() {
-    return view('superadmin.add-undangan-rapat');
-})->name('superadmin.add-undangan-rapat');
-
 Route::get('/undangan', function() {
     return view('superadmin.undangan.undangan');
 })->name('superadmin.undangan.undangan');
@@ -77,3 +69,11 @@ Route::get('/undangan', function() {
 Route::get('/add-undangan', function() {
     return view('superadmin.undangan.add-undangan');
 })->name('superadmin.undangan.add-undangan');
+
+Route::get('/risalah', function() {
+    return view('superadmin.risalah.risalah');
+})->name('superadmin.risalah.risalah');
+
+Route::get('/add-risalah', function() {
+    return view('superadmin.risalah.add-risalah');
+})->name('superadmin.risalah.add-risalah');
