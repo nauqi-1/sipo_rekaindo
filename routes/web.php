@@ -39,12 +39,12 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 Route::get('/memo', function() {
-    return view('superadmin.memo-superadmin');
-})->name('superadmin.memo-superadmin');
+    return view('superadmin.memo.memo-superadmin');
+})->name('superadmin.memo.memo-superadmin');
 
 Route::get('/add-memo', function() {
-    return view('superadmin.add-memo');
-})->name('superadmin.add-memo');
+    return view('superadmin.memo.add-memo');
+})->name('superadmin.memo.add-memo');
 
 Route::get('/dashboard.admin', function () {
     return view('admin.index');
@@ -69,3 +69,11 @@ Route::get('/undangan-rapat', function() {
 Route::get('/add-undangan-rapat', function() {
     return view('superadmin.add-undangan-rapat');
 })->name('superadmin.add-undangan-rapat');
+
+Route::get('/undangan', function() {
+    return view('superadmin.undangan.undangan');
+})->name('superadmin.undangan.undangan');
+
+Route::get('/add-undangan', function() {
+    return view('superadmin.undangan.add-undangan');
+})->name('superadmin.undangan.add-undangan');

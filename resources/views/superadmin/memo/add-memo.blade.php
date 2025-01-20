@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memo Super Admin</title>
+    <title>Add Memo Super Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/superadmin/add-memo.css') }}">
@@ -13,7 +17,7 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('superadmin.memo-superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('superadmin.memo.memo-superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Add Memo</h1>
         </div>        
@@ -75,23 +79,24 @@
                     <div class="col-md-12">
                         <img src="\img\memo-superadmin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
                         <label for="isi-surat">Isi Surat</label>
+                        <!-- <div class="row editor-container">
+                            <div class="col-12 mb-4">
+                                <textarea id="summernote" name="isi_surat"></textarea>
+                            </div>
+                        </div> -->
                     </div>
-                </div>
-
-                <div class="row editor-container">
-                    <!-- Kolom Editor -->
-                    <div class="col-12 mb-4">
-                        <textarea id="editor" name="isi_surat"></textarea>
+                    <div class="row editor-container col-12 mb-4">
+                            <textarea id="summernote" name="isi_surat"></textarea>
                     </div>
                 </div>
 
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="jenis_surat" class="form-label">Nama Pimpinan</label>
-                        <select name="jenis_surat" id="jenis_surat" class="form-control" required>
+                        <label for="nama_pimpinan" class="form-label">Nama Pimpinan</label>
+                        <select name="nama_pimpinan" id="nama_pimpinan" class="form-control" required>
                             <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                            <option value="undangan">Surat Undangan</option>
-                            <option value="biasa">Surat Biasa</option>
+                            <option value="pimpinan1">Jokowi</option>
+                            <option value="pimpinan2">Prabowo</option>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -104,7 +109,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn-footer1"><a href="{{route ('superadmin.memo-superadmin')}}">Cancel</a></button>
+                <button class="btn-footer1"><a href="{{route ('superadmin.memo.memo-superadmin')}}">Cancel</a></button>
                 <button class="btn-footer2">Save</button>
             </div>
         </div>
@@ -151,12 +156,26 @@
         document.getElementById('fileInput').addEventListener('change', function () {
             const uploadBtn = document.getElementById('uploadBtn');
             if (this.files.length > 0) {
-                uploadBtn.disabled = false; // Aktifkan tombol Upload jika ada file terpilih
+                uploadBtn.disabled = false;
             } else {
-                uploadBtn.disabled = true; // Nonaktifkan tombol Upload jika tidak ada file
+                uploadBtn.disabled = true;
             }
         });
 
+        $(document).ready(function() {
+            $('#summernote').summernote({
+                height: 300,
+                toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'fontsize', 'color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']],
+                ],
+                fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
+                fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']
+            });
+        });
     </script>
 
     <!-- Bootstrap JS and Popper.js -->
