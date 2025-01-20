@@ -80,7 +80,7 @@
                         @endif
                     </td>
                     <td>
-                        <button class="btn btn-sm1"><img src="/img/undangan-superadmin/share.png" alt="share"></button>
+                        <!-- <button class="btn btn-sm1"><img src="/img/undangan-superadmin/share.png" alt="share"></button> -->
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/undangan-superadmin/Delete.png" alt="delete">
                         </button>
@@ -93,7 +93,7 @@
                             <!-- <button class="btn btn-sm3">
                                 <img src="/img/undangan-superadmin/edit.png" alt="edit">
                             </button> -->
-                            <a href="{{ route('superadmin.undangan.add-undangan') }}" class="btn btn-sm3">
+                            <a href="{{ route('superadmin.undangan.edit-undangan') }}" class="btn btn-sm3">
                                 <img src="/img/undangan-superadmin/edit.png" alt="edit">
                             </a>
 

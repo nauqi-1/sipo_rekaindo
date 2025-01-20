@@ -3,42 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Undangan Rapat Super Admin</title>
+    <title>Edit Memo Super Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/superadmin/add-undangan.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/superadmin/edit-memo.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('superadmin.undangan.undangan')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('superadmin.memo.memo-superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Add Undangan Rapat</h1>
+            <h1>Edit Memo</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb">
-                    <a href="#">Home</a>/<a href="#">Undangan Rapat</a>/<a href="#">Add Undangan Rapat</a>
+                    <a href="#">Home</a>/<a href="#">Memo</a>/<a href="#">Edit Memo</a>
                 </div>
             </div>
         </div>
 
-        <!-- form add undangan rapat -->
+        <!-- form edit memo -->
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title"><b>Form Add Undangan Rapat</b></h5>
+                <h5 class="card-title"><b>Form Edit Memo</b></h5>
             </div>
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="tgl_surat" class="form-label">
-                            <img src="/img/undangan-superadmin/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat
+                            <img src="/img/memo-superadmin/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat
                         </label>
                         <input type="date" name="tgl_surat" id="tgl_surat" class="form-control" required>
                     </div>
@@ -64,7 +64,7 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="kepada" class="form-label">
-                            <img src="/img/undangan-superadmin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada
+                            <img src="/img/memo-superadmin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada
                             <label for="kepada" class="label-kepada">*Pisahkan dengan titik koma(;) jika penerima lebih dari satu</label>
                         </label>
                         <input type="text" name="kepada" id="kepada" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" required>
@@ -77,7 +77,7 @@
 
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
-                        <img src="\img\undangan-superadmin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
+                        <img src="\img\memo-superadmin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
                         <label for="isi-surat">Isi Surat</label>
                         <!-- <div class="row editor-container">
                             <div class="col-12 mb-4">
@@ -109,7 +109,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn-footer1"><a href="{{route ('superadmin.undangan.undangan')}}">Cancel</a></button>
+                <button class="btn-footer1"><a href="{{route ('superadmin.memo.memo-superadmin')}}">Cancel</a></button>
                 <button class="btn-footer2">Save</button>
             </div>
         </div>
@@ -121,7 +121,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="uploadModalLabel">
-                        <img src="/img/undangan-superadmin/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
+                        <img src="/img/memo-superadmin/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
                         Upload files
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -130,7 +130,7 @@
                     <p class="modal-subtitle">Select and upload the files of your choice</p>
                     <div class="upload-container">
                         <div class="upload-box" id="uploadBox">
-                            <img src="/img/undangan-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
+                            <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
                             <p class="upload-text">Choose a file or drag & drop it here</p>
                             <p class="upload-note">PDF file size no more than 20MB</p>
                             <button class="btn btn-outline-primary" id="selectFileBtn">Select File</button>
@@ -140,7 +140,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="uploadBtn">Upload</button>
+                    <button type="button" class="btn btn-primary" id="uploadBtn" >Upload</button>
                 </div>
             </div>
         </div>
