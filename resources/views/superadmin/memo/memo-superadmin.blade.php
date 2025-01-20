@@ -93,7 +93,7 @@
                             <!-- <button class="btn btn-sm3">
                                 <img src="/img/memo-superadmin/edit.png" alt="edit">
                             </button> -->
-                            <a href="{{ route('superadmin.memo.add-memo') }}" class="btn btn-sm3">
+                            <a href="{{ route('superadmin.memo.edit-memo') }}" class="btn btn-sm3">
                                 <img src="/img/memo-superadmin/edit.png" alt="edit">
                             </a>
 

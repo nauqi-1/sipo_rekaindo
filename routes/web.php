@@ -46,6 +46,10 @@ Route::get('/add-memo', function() {
     return view('superadmin.memo.add-memo');
 })->name('superadmin.memo.add-memo');
 
+Route::get('/edit-memo', function() {
+    return view('superadmin.memo.edit-memo');
+})->name('superadmin.memo.edit-memo');
+
 Route::get('/dashboard.admin', function () {
     return view('admin.index');
 })->name('admin.dashboard');
@@ -70,6 +74,10 @@ Route::get('/add-undangan', function() {
     return view('superadmin.undangan.add-undangan');
 })->name('superadmin.undangan.add-undangan');
 
+Route::get('/edit-undangan', function() {
+    return view('superadmin.undangan.edit-undangan');
+})->name('superadmin.undangan.edit-undangan');
+
 Route::get('/risalah', function() {
     return view('superadmin.risalah.risalah');
 })->name('superadmin.risalah.risalah');
@@ -77,3 +85,7 @@ Route::get('/risalah', function() {
 Route::get('/add-risalah', function() {
     return view('superadmin.risalah.add-risalah');
 })->name('superadmin.risalah.add-risalah');
+
+Route::get('/edit-risalah', function() {
+    return view('superadmin.risalah.edit-risalah');
+})->name('superadmin.risalah.edit-risalah');

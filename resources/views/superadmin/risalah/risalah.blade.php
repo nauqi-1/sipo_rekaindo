@@ -93,7 +93,7 @@
                             <!-- <button class="btn btn-sm3">
                                 <img src="/img/risalah-superadmin/edit.png" alt="edit">
                             </button> -->
-                            <a href="{{ route('superadmin.risalah.add-risalah') }}" class="btn btn-sm3">
+                            <a href="{{ route('superadmin.risalah.edit-risalah') }}" class="btn btn-sm3">
                                 <img src="/img/risalah-superadmin/edit.png" alt="edit">
                             </a>
 

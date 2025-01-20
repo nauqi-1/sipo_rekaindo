@@ -93,7 +93,7 @@
                             <!-- <button class="btn btn-sm3">
                                 <img src="/img/undangan-superadmin/edit.png" alt="edit">
                             </button> -->
-                            <a href="{{ route('superadmin.undangan.add-undangan') }}" class="btn btn-sm3">
+                            <a href="{{ route('superadmin.undangan.edit-undangan') }}" class="btn btn-sm3">
                                 <img src="/img/undangan-superadmin/edit.png" alt="edit">
                             </a>
 
