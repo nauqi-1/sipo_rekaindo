@@ -90,8 +90,9 @@
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header">
         <h4>
-            Good Morning,
-            <span class="small text-muted">{{ Auth::user()->username }}</span>
+            Good Morning,{{ Auth::user()->username }}
+            <span class="small text-muted"></span>
+            
         </h4>
           <p class="text-muted">Project Admin</p>
             <a href="#!" class="dropdown-item">

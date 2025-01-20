@@ -82,9 +82,13 @@
                         </td>
                         <td>{{ $user->phone_number }}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal" data-id="{{ $user->id }}" onclick="editUser({{ $user->id }})">
-                                    <img src="/img/user-manage/Edit.png" alt="edit">
-                                </button>
+                            <form method="POST" action="{{ route('user-manage.edit', $user->id) }}" style="display: inline;">
+                            @csrf
+                            @method('GET') <!-- Use GET to navigate to the edit page -->
+                            <button type="submit" class="btn btn-warning btn-sm">
+                                <img src="/img/user-manage/Edit.png" alt="edit">
+                            </button>
+                        </form>
                                 <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $user->id }}">
                                     <img src="/img/user-manage/Trash.png" alt="delete">
                                 </button>
@@ -94,15 +98,6 @@
                     </tbody>
                 </table>
                 {{ $users->links('pagination::bootstrap-5') }}
-                <!-- <div class="pagination">
-                    <p>Showing data 1 to 8 of 256K entries</p>
-                    <<ul>
-                        <li class="active">1</li>
-                        <li>2</li>
-                        <li>3</li>
-                        <li>...</li>
-                    </ul>
-                </div> -->
             </div>
         </div>
     </div>
@@ -122,11 +117,11 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="id" class="form-label">User ID :</label>
-                                <input type="text" name="id" id="id" class="form-control" required autocomplete="id">
+                                <input type="text" name="id" id="id" class="form-control" :value="old('name', $user->id)" required autocomplete="id">
                             </div>
                             <div class="col-md-6">
                                 <label for="email" class="form-label">Email :</label>
-                                <input type="text" name="email" id="email" class="form-control" required autocomplete="email">
+                                <input type="text" name="email" id="email" class="form-control" :value="old('name', $user->email)" required autocomplete="email">
                             </div>
                         </div>
                         <div class="row mb-3">
