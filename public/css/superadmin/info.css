@@ -1,0 +1,122 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.container {
+    max-width: 80%;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.header.back-button a {
+    margin-right: auto;
+    display: flex;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.breadcrumb-wrapper {
+    display: inline-block; 
+    margin-right: 20px; 
+}
+
+.breadcrumb {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 30px;
+    padding: 8px 12px;
+    border: 1px solid #E5E5E5CC;
+    display: flex;
+    justify-content: left;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: #A9A9A9;
+}
+
+.card {
+    border: 1px solid #EFF4FA;
+}
+
+.card-header {
+    background-color: #fff;
+}
+
+.card-title {
+    padding-top: 7px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.bg-container {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    border-radius: 12px;
+    overflow: hidden;
+    background-image: url('/img/bg-infoo.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.bg-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 0;
+}
+
+.bg-container p {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    font-size: 18px;
+    padding: 20px;
+    margin: 0;
+    text-align: left;
+    font-weight: 400;
+}
+
+
+.reka-info {
+    margin-top: 30px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.reka-info img {
+    width: 300px;
+    height: 120px;
+}
