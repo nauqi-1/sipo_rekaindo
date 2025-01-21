@@ -89,3 +89,19 @@ Route::get('/add-risalah', function() {
 Route::get('/edit-risalah', function() {
     return view('superadmin.risalah.edit-risalah');
 })->name('superadmin.risalah.edit-risalah');
+
+Route::get('/memo-admin', function() {
+    return view('admin.memo.memo-admin');
+})->name('admin.memo.memo-admin');
+
+Route::get('/add-memo', function() {
+    return view('admin.memo.add-memo');
+})->name('admin.memo.add-memo');
+
+Route::get('/edit-memo', function() {
+    return view('admin.memo.edit-memo');
+})->name('admin.memo.edit-memo');
+
+Route::get('/kirim-memo', function() {
+    return view('admin.memo.kirim-memo');
+})->name('admin.memo.kirim-memo');
