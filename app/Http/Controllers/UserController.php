@@ -33,7 +33,6 @@ class UserController extends Controller
      {
         $user = User::findOrFail($id);
          $request->validate([
-             'id' => 'required',
              'email' => 'required|email',
              'firstname' => 'required',
              'lastname' => 'required',
@@ -46,7 +45,6 @@ class UserController extends Controller
          ]);
  
          $user = User::findOrFail($id);
-         $user->id = $request->id;
          $user->email = $request->email;
          $user->firstname = $request->firstname;
          $user->lastname = $request->lastname;
@@ -62,13 +60,13 @@ class UserController extends Controller
          $user->role_id_role = $request->role_id_role;
          $user->save();
  
-         return redirect()->route('user-manage/edit')->with('success', 'User updated successfully');
+         return redirect()->route('user-manage')->with('success', 'User updated successfully');
      }
      public function destroy($id)
     {
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('user-manage.index')->with('success', 'User deleted successfully.');
     }
 }

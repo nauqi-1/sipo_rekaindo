@@ -17,14 +17,14 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('superadmin.risalah.risalah')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('risalah.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Add Risalah Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb">
-                    <a href="#">Home</a>/<a href="#">Risalah Rapat</a>/<a href="#">Add Risalah Rapat</a>
+                    <a href="#">Home</a>/<a href="{{route ('risalah.superadmin')}}">Risalah Rapat</a>/<a href="#">Add Risalah Rapat</a>
                 </div>
             </div>
         </div>
@@ -109,7 +109,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn-footer1"><a href="{{route ('superadmin.risalah.risalah')}}">Cancel</a></button>
+                <button class="btn-footer1"><a href="{{route ('risalah.superadmin')}}">Cancel</a></button>
                 <button class="btn-footer2">Save</button>
             </div>
         </div>

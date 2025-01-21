@@ -17,7 +17,7 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('superadmin.risalah.risalah')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('risalah.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Edit Risalah Rapat</h1>
         </div>        
@@ -109,7 +109,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn-footer1"><a href="{{route ('superadmin.risalah.risalah')}}">Cancel</a></button>
+                <button class="btn-footer1"><a href="{{route ('risalah.superadmin')}}">Cancel</a></button>
                 <button class="btn-footer2">Save</button>
             </div>
         </div>

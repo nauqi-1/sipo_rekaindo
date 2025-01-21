@@ -13,14 +13,14 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route('superadmin.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Undangan Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb">
-                    <a href="#">Home</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Undangan Rapat</a>
+                    <a href="{{route('superadmin.dashboard')}}">Home</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Undangan Rapat</a>
                 </div>
             </div>
         </div>

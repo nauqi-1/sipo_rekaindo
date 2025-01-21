@@ -19,19 +19,19 @@
           >
         </li>
         <li class="pc-item">
-          <a href="#!" class="pc-link">
+          <a href="{{ route('memo.superadmin') }}" class="pc-link">
             <span class="pc-micon"><img src="/assets/images/ikon2.png" alt="" srcset=""></span>
             <span class="pc-mtext">Memo</span>
           </a>
         </li>
         <li class="pc-item">
-          <a href="../elements/bc_color.html" class="pc-link">
+          <a href="{{ route('undangan.superadmin') }}" class="pc-link">
             <span class="pc-micon"><img src="/assets/images/ikon3.png" alt="" srcset=""></span>
             <span class="pc-mtext">Undangan Rapat</span>
           </a>
         </li>
         <li class="pc-item">
-          <a href="../elements/icon-tabler.html" class="pc-link">
+          <a href="{{ route('risalah.superadmin') }}" class="pc-link">
             <span class="pc-micon"><img src="/assets/images/ikon4.png" alt="" srcset=""></span>
             <span class="pc-mtext">Risalah Rapat</span>
           </a>
@@ -42,9 +42,9 @@
             ><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
           </a>
           <ul class="pc-submenu">
-            <li class="pc-item"><a class="pc-link" href="#!">Memo</a></li>
-            <li class="pc-item pc-hasmenu"><a href="#!" class="pc-link">Undangan Rapat</span></a></li>
-            <li class="pc-item pc-hasmenu"><a href="#!" class="pc-link">Risalah Rapat</span></a></li>
+            <li class="pc-item"><a class="pc-link" href="{{ route('arsip-memo.superadmin') }}">Memo</a></li>
+            <li class="pc-item pc-hasmenu"><a href="{{ route('arsip-undangan.superadmin') }}" class="pc-link">Undangan Rapat</span></a></li>
+            <li class="pc-item pc-hasmenu"><a href="{{ route('arsip-risalah.superadmin') }}" class="pc-link">Risalah Rapat</span></a></li>
           </ul>
         </li>
         <li class="pc-item pc-hasmenu">

@@ -59,7 +59,7 @@ class UserManageController extends Controller
         ]);
 
         
-        return redirect()->route('dashboard')->with('success', 'User added successfully.');
+        return redirect()->route('user-manage')->with('success', 'User added successfully.');
     }
   
     public function filter(Request $request)
@@ -74,19 +74,6 @@ class UserManageController extends Controller
         return view('user.index', compact('users', 'sortOrder'));
     }
 
-    public function edit($id)
-{
-    // Ambil data dari Divisi, Role, dan Position
-    $divisi = Divisi::all();  
-    $roles = Role::all();  
-    $positions = Position::all();  
-    
-    // Ambil data spesifik pengguna berdasarkan ID
-    $user = User::with(['role', 'divisi', 'position'])->findOrFail($id);
-
-    // Kirim data pengguna ke view form edit
-    return view('superadmin.edit-user', compact('divisi', 'roles', 'positions', 'user'));
-}
 
 public function paginateUsers()
 {

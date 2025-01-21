@@ -13,14 +13,14 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="#"><img src="/img/memo-superadmin/Vector_back.png" alt=""></a>
+                <a href="{{route('superadmin.dashboard')}}"><img src="/img/memo-superadmin/Vector_back.png" alt=""></a>
             </div>
             <h1>Memo</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb">
-                    <a href="#">Home</a>/<a href="#">Memo</a>
+                    <a href="{{route('superadmin.dashboard')}}">Home</a>/<a href="#">Memo</a>
                 </div>
             </div>
         </div>
@@ -44,7 +44,7 @@
                     <input type="text" class="form-control border-0 bg-transparent" placeholder="Search" style="outline: none; box-shadow: none;">
                 </div>
             </div>
-            <button class="btn btn-success"><a href="{{route('superadmin.memo.add-memo')}}" style="text-decoration: none; color: #878790;">+ Add Memo </a></button>
+            <button class="btn btn-success"><a href="{{route('add-memo.superadmin')}}" style="text-decoration: none; color: #878790;">+ Add Memo </a></button>
         </div>
 
         <!-- Table -->
@@ -93,7 +93,7 @@
                             <!-- <button class="btn btn-sm3">
                                 <img src="/img/memo-superadmin/edit.png" alt="edit">
                             </button> -->
-                            <a href="{{ route('superadmin.memo.edit-memo') }}" class="btn btn-sm3">
+                            <a href="{{ route('edit-memo.superadmin') }}" class="btn btn-sm3">
                                 <img src="/img/memo-superadmin/edit.png" alt="edit">
                             </a>
 
@@ -117,7 +117,7 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Hapus Memo?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('superadmin.memo.memo-superadmin')}}">Cancel</a></button>
+                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Cancel</a></button>
                             <button type="button" class="btn-ok" id="confirmDelete">OK</button>
                         </div>
                     </div>
@@ -137,7 +137,7 @@
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus Memo</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('superadmin.memo.memo-superadmin')}}">Back</a></button>
+                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Back</a></button>
                     </div>
                 </div>
             </div>
@@ -156,7 +156,7 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Arsip Memo?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('superadmin.memo.memo-superadmin')}}">Cancel</a></button>
+                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Cancel</a></button>
                             <button type="button" class="btn-ok" id="confirmArsip">OK</button>
                         </div>
                     </div>
@@ -177,7 +177,7 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Success</b></h5>
                         <h6 class="mb-4" style="font-size: 14px; color: #5B5757;">Berhasil Arsip Memo</h6>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('superadmin.memo.memo-superadmin')}}">Back</a></button>
+                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Back</a></button>
                     </div>
                 </div>
             </div>

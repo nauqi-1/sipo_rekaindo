@@ -17,7 +17,7 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('superadmin.memo.memo-superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('memo.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Edit Memo</h1>
         </div>        
@@ -109,7 +109,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn-footer1"><a href="{{route ('superadmin.memo.memo-superadmin')}}">Cancel</a></button>
+                <button class="btn-footer1"><a href="{{route ('memo.superadmin')}}">Cancel</a></button>
                 <button class="btn-footer2">Save</button>
             </div>
         </div>

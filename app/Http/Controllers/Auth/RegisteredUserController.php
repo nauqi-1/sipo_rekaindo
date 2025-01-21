@@ -30,6 +30,9 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // if (Auth::user()->role !== 'superadmin') {
+        //     return redirect()->route('user.manage')->with('error', 'You do not have permission to add users.');
+        // }
         $request->validate([
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
@@ -56,7 +59,7 @@ class RegisteredUserController extends Controller
         ]);
         
 
-        event(new Registered($user));
+        // event(new Registered($user));
 
         // Auth::login($user);
 
