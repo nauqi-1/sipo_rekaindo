@@ -28,7 +28,7 @@
 }
 
 .role-badge {
-    background: #f0ad4e;
+    background: #5D5FEF;
     color: #fff;
     padding: 5px 10px;
     border-radius: 15px;
@@ -79,10 +79,7 @@
 
 /* Things to Do Section */
 .things-to-do-container {
-    background: #fff;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .things-to-do-container h3 {
@@ -93,50 +90,85 @@
 
 .things-to-do-list {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.things-to-do-item {
-    display: flex;
     align-items: center;
-    justify-content: space-between;
-    background: #f9f9f9;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #e5e5e5;
-    transition: box-shadow 0.3s ease;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
 }
 
-.things-to-do-item:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.things-to-do-list .icon1, .icon2, .icon3 {
+    flex-shrink: 0;
 }
 
-.things-to-do-item .icon img {
-    width: 40px;
-    height: 40px;
-    margin-right: 15px;
+.things-to-do-list .icon img {
+    width: 30px;
+    height: 34px;
 }
 
-.things-to-do-item .content {
-    flex: 1;
+.things-to-do-list .content {
+    margin-left: 20px;
+    flex-grow: 1;
 }
 
-.things-to-do-item .content h4 {
+.things-to-do-list .content h4 {
     font-size: 16px;
     font-weight: bold;
     margin: 0;
+    margin-top: 14px;
     color: #000;
 }
 
-.things-to-do-item .content p {
+.task .content p {
     font-size: 14px;
     color: #666;
     margin: 5px 0 0;
 }
 
-.things-to-do-item .date {
+/* Button aksi */
+.icon1 {
     font-size: 14px;
-    color: #888;
-    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 50px;
+    border: 1px solid #0C73E0E5;
+    border-radius: 50px;
+    background-color: #0C73E0E5;
+    color: #fff;
+}
+
+.icon2 {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 50px;
+    border: 1px solid #495BCDE5;
+    border-radius: 50px;
+    background-color: #495BCDE5;
+}
+
+.icon3 {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 50px;
+    border: 1px solid #629584;
+    border-radius: 50px;
+    background-color: #629584;
+}
+
+.icon1:hover, .icon2:hover, .icon3:hover {
+    border: 1px solid #565656 !important;
+    border-radius: 50px;
+    background-color: #565656 !important;
+}
+
+.icon1:active, .icon2:active, .icon3:active {
+    border: 1px solid #565656 !important;
+    border-radius: 50px;
+    background-color: #565656 !important;
+}
+
+/* admin */
+.role-badge-admin {
+    background: #0095FF;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;   
 }

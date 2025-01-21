@@ -100,7 +100,7 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label for="upload_file" class="form-label">Lampiran</label>
+                        <label for="upload_file" class="form-label">Tanda Identitas</label>
                         <div class="upload-wrapper">
                             <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Choose File</button>
                             <input type="file" id="upload_file" name="upload_file" class="form-control-file" hidden>
