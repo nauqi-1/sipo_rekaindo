@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Risalah Rapat</title>
+    <title>Laporan Memo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/supervisor/cetak-laporan.css">
+    <link rel="stylesheet" href="/css/superadmin/cetak-laporan.css">
 </head>
 <body>
     <div class="container">
@@ -15,19 +15,19 @@
             <div class="back-button">
                 <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Laporan Risalah Rapat</h1>
+            <h1>Laporan Memo</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb">
-                    <a href="#">Home</a>/<a href="#">Laporan</a>/<a style="color:#565656" href="#">Laporan Risalah Rapat</a>
+                    <a href="#">Home</a>/<a href="#">Laporan</a>/<a style="color:#565656" href="#">Laporan Memo</a>
                 </div>
             </div>
         </div>
 
         <!-- Filter & Search Bar -->
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5><b>Laporan Risalah Rapat</b></h5>
+            <h5><b>Laporan Memo</b></h5>
             <div class="d-flex gap-2">
                 <div class="btn btn-primary d-flex align-items-center" style="gap: 5px;">
                     <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
@@ -58,7 +58,7 @@
                 @for ($i = 1; $i <= 3; $i++)
                 <tr>
                     <td class="nomor">{{ $i }}</td>
-                    <td class="nama-dokumen text-success">Risalah Rapat Pengesahan</td>
+                    <td class="nama-dokumen text-success">Memo Monitoring Risiko</td>
                     <td>21-10-2024</td>
                     <td>1596</td>
                     <td>837.06/REKA/GEN/VII/2024</td>
@@ -89,7 +89,7 @@
                     <!-- Question Mark Icon -->
                     <img src="/img/user-manage/question_Vector.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
                     <!-- Delete Confirmation Text -->
-                    <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus Laporan Risalah?</h5>
+                    <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus Laporan Memo?</h5>
                     <!-- Buttons -->
                     <div class="d-flex justify-content-center mt-3">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -110,7 +110,7 @@
                     <!-- Success Icon -->
                     <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="my-3" style="width: 80px;">
                     <!-- Success Message -->
-                    <h5><b>Berhasil Menghapus Laporan Risalah</b></h5>
+                    <h5><b>Berhasil Menghapus Laporan Memo</b></h5>
                     <!-- Back Button -->
                     <button class="btn btn-primary mt-4 px-4 py-2" data-bs-dismiss="modal">Back</button>
                 </div>

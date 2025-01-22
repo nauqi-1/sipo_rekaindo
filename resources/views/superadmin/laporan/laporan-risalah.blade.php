@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Undangan Rapat Supervisor</title>
+    <title>Laporan Risalah Rapat Supervisor</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/supervisor/laporan.css">
+    <link rel="stylesheet" href="/css/superadmin/laporan.css">
 </head>
 <body>
     <div class="container">
@@ -15,12 +15,12 @@
             <div class="back-button">
                 <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Laporan Undangan Rapat</h1>
+            <h1>Laporan Risalah Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb">
-                    <a href="#">Home</a>/<a href="#">Laporan</a>/<a href="#">Laporan Undangan Rapat</a>
+                    <a href="#">Home</a>/<a href="#">Laporan</a>/<a href="#">Laporan Risalah Rapat</a>
                 </div>
             </div>
         </div>
@@ -35,7 +35,7 @@
                             <span>Tanggal Awal</span>
                         </div>
                         <input type="date" name="tgl_surat" id="tgl_surat" class="form-control" required>
-                    <p>* Masukkan tanggal awal filter data undangan!</p>
+                    <p>* Masukkan tanggal awal filter data risalah!</p>
                     </div> 
                     <div class="col-md-6">
                         <div class="card-blue">
@@ -43,7 +43,7 @@
                             <span>Tanggal Akhir</span>
                         </div>
                         <input type="date" name="tgl_surat" id="tgl_surat" class="form-control" required>
-                    <p>* Masukkan tanggal akhir filter data undangan!</p>
+                    <p>* Masukkan tanggal akhir filter data risalah!</p>
                     </div>
                 </div>
             </div>
