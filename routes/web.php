@@ -39,15 +39,15 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/memo', function() {
+Route::get('/memoSuperadmin', function() {
     return view('superadmin.memo.memo-superadmin');
 })->name('memo.superadmin');
 
-Route::get('/add-memo', function() {
+Route::get('/add-memoSuperadmin', function() {
     return view('superadmin.memo.add-memo');
 })->name('add-memo.superadmin');
 
-Route::get('/edit-memo', function() {
+Route::get('/edit-memoSuperadmin', function() {
     return view('superadmin.memo.edit-memo');
 })->name('edit-memo.superadmin');
 
@@ -67,27 +67,27 @@ Route::get('/verif-email', function () {
     return view('/components/verif-email');
 })->name('verif-email');
 
-Route::get('/undangan', function() {
+Route::get('/undanganSuperadmin', function() {
     return view('superadmin.undangan.undangan');
 })->name('undangan.superadmin');
 
-Route::get('/add-undangan', function() {
+Route::get('/add-undanganSuperadmin', function() {
     return view('superadmin.undangan.add-undangan');
 })->name('add-undangan.superadmin');
 
-Route::get('/edit-undangan', function() {
+Route::get('/edit-undanganSuperadmin', function() {
     return view('superadmin.undangan.edit-undangan');
 })->name('edit-undangan.superadmin');
 
-Route::get('/risalah', function() {
-    return view('superadmin.risalah.risalah');
+Route::get('/risalahSuperadmin', function() {
+    return view('superadminSuperadmin.risalah.risalah');
 })->name('risalah.superadmin');
 
-Route::get('/add-risalah', function() {
+Route::get('/add-risalahSuperadmin', function() {
     return view('superadmin.risalah.add-risalah');
 })->name('add-risalah.superadmin');
 
-Route::get('/edit-risalah', function() {
+Route::get('/edit-risalahSuperadmin', function() {
     return view('superadmin.risalah.edit-risalah');
 
 })->name('edit-risalah.superadmin');
@@ -107,11 +107,11 @@ Route::get('/memo-admin', function() {
     return view('admin.memo.memo-admin');
 })->name('admin.memo.memo-admin');
 
-Route::get('/add-memo', function() {
+Route::get('/add-memoAdmin', function() {
     return view('admin.memo.add-memo');
 })->name('admin.memo.add-memo');
 
-Route::get('/edit-memo', function() {
+Route::get('/edit-memoAdmin', function() {
     return view('admin.memo.edit-memo');
 })->name('admin.memo.edit-memo');
 
