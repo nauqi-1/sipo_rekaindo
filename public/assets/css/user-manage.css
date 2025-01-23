@@ -70,7 +70,7 @@ h1 {
 }
 
 .card {
-    border: 1px solid #ddd;
+    border: 1px solid #ffffff;
     border-radius: 8px;
     margin-top: 20px;
 }
@@ -127,6 +127,35 @@ h1 {
     cursor: pointer;
 }
 
+.modal-footer {
+    display: flex;
+    justify-content: flex-end !important;
+    align-items: center;
+    gap: 10px;
+    padding: 1rem;
+}
+.btn-cancel {
+    background-color: #ffffff;
+    border: 1px solid #8F9BB3;
+    color: #8F9BB3;
+    width: 10%;
+}
+.btn-cancel:hover{
+    background-color: #8F9BB3;
+    border: 1px solid #8F9BB3;
+    color: #ffffff;
+}
+.btn-save {
+    background-color: #1E4178;
+    color: #ffffff;
+    width: 10%;
+}
+.btn-save:hover {
+    background-color: #92C5FF99;
+    color: #ffffff;
+    width: 10%;
+}
+
 .btn-primary {
     background-color: #1E4178;
     color: #fff;
@@ -152,13 +181,25 @@ h1 {
     background-color: #5a6268;
 }
 
-.btn-warning {
+.btn-edit {
     background-color: #f4f2f2;
     color: #C5CEE0;
 }
 
-.btn-danger {
+.btn-edit:hover {
+    background-color: #1E4178 ;
+    border-radius: 10px;
+    color: #C5CEE0;
+}
+
+.btn-delete {
     background-color: #f4f2f2;
+    color: #C5CEE0;
+}
+
+.btn-delete:hover {
+    background-color: #1E4178 ;
+    border-radius: 10px;
     color: #C5CEE0;
 }
 
@@ -216,6 +257,19 @@ h1 {
     align-items: center;
 }
 
+.search-filter .btn-search {
+    background-color: #FFFFFF;
+    border: 1px solid #DFDFDF;
+    height: 35px;
+    margin-right: 15px;
+}
+
+.search-filter .btn-search:hover {
+    background-color: #FFFFFF;
+    border: 1px solid #DFDFDF;
+    height: 35px;
+}
+
 .search-icon {
     position: absolute; 
     left: 10px; 
@@ -232,20 +286,101 @@ h1 {
     color: #878790;
 }
 
-.search-filter .input-group-text {
-    border-radius: 0; 
-    border: 1px solid #E5E5E5;
-    padding: 3px 10px;
-    background-color: #ffffff;
-    cursor: pointer;
-}
-
 .search-filter .btn-secondary {
     padding: 5px 10px;
     background-color: #6c757d;
     color: white;
     border: none;
     border-radius: 5px;
+}
+
+/* search */
+.search-filter .btn-primary {
+    background-color: #FFFFFF;
+    border: 1px solid #DFDFDF;
+    border-radius: 7px;
+    margin-right: 15px;
+    height: 35px;
+}
+
+.search-filter .btn-primary:hover {
+    box-shadow: none;
+    outline: none;
+}
+
+.search-filter .btn-primary input:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+/* button tambah pengguna */
+.search-filter .btn-add {
+    background-color: #1E4178;
+    color: #FFFFFF;
+    border: 1px solid #DFDFDF;
+    border-radius: 7px;
+    margin-right: 15px;
+    height: 35px;
+}
+
+.search-filter .btn-add:hover {
+    background-color: #92C5FF99;
+    color: #1E4178;
+}
+
+/* tulisan urutkan/filter by */
+.dropdown .me-2 {
+    font-size: 14px;
+    color: #878790;
+    width: 80px;
+    padding: auto;
+}
+
+.dropdown .me-2:hover {
+    color: #878790;
+}
+
+/* panah dropdown */
+.btn-dropdown {
+    font-size: 14px;
+    border: 1px solid #DFDFDF;
+    color: #878790;
+    height: 35px;
+    border-radius: 7px;
+    margin-right: 15px;
+    padding-right: 30px;
+}
+
+.btn-dropdown:hover {
+    background-color: #ffffff;
+    border: 1px solid #DFDFDF !important;
+    color: #878790;
+}
+
+.btn-dropdown:focus {
+    background-color: #ffffff;
+    border: 1px solid #DFDFDF !important;
+    color: #878790;
+}
+
+.dropdown-menu {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+    color: #000;
 }
 
 .modal-content .modal-header {
@@ -261,10 +396,15 @@ h1 {
     padding: 10px; 
 }
 
+.modal-content input.form-control:hover {
+    box-shadow: none;
+    outline: none;
+}
+
 .modal-content input.form-control:focus {
     background-color: #fff; 
-    border-color: #007bff; 
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+    border-color: #92C5FF99; 
+    box-shadow: 4px 4px 4px rgba(146, 197, 255, 0.6); 
 }
 
 .modal-content select.form-control {
@@ -273,6 +413,11 @@ h1 {
     border: 1px solid #EFF4FA;
     border-radius: 8px;
     padding: 10px;
+}
+
+.modal-content select.form-control:hover {
+    outline: none;
+    box-shadow: none;
 }
 
 .modal-content select.form-control option {
@@ -285,7 +430,7 @@ h1 {
 
 .modal-content select.form-control:focus {
     background-color: #fff; 
-    border-color: #007bff; 
+    border-color: #1E4178; 
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
     font-size: 13px;
 }
@@ -415,4 +560,21 @@ input.form-control {
 #successModal .btn-primary:hover {
     background-color: #004085; /* Warna tombol saat dihover */
     color: #ffffff;           /* Warna teks */
+}
+
+.mb-3 .izin {
+    display: flex;
+    justify-content: flex-end; /* Geser elemen ke kanan */
+    gap: 15px;
+    color: #222B45;
+    font-size: 13px;
+    margin-top: 50px;
+}
+
+.mb-3 .izin input {
+    margin-right: 15px;
+}
+
+.mb-3 .izin .form-izin {
+    margin-right: 149px;
 }

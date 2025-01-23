@@ -122,3 +122,25 @@ Route::get('/kirim-memo-admin', function() {
 Route::get('/after-kirim', function() {
     return view('supervisor.after-kirim-memo');
 })->name('after-kirim');
+
+// laporan
+Route::get('/laporan-memo', function() {
+    return view('superadmin.laporan.laporan-memo');
+})->name('laporan-memo.superadmin');
+Route::get('/laporan-risalah', function() {
+    return view('superadmin.laporan.laporan-risalah');
+})->name('laporan-risalah.superadmin');
+Route::get('/laporan-undangan', function() {
+    return view('superadmin.laporan.laporan-undangan');
+})->name('laporan-undangan.superadmin');
+
+// cetak laporan
+Route::get('/cetak-laporan-memo', function() {
+    return view('superadmin.laporan.cetak-laporan-memo');
+})->name('laporan-memo');
+Route::get('/cetak-laporan-risalah', function() {
+    return view('superadmin.laporan.cetak-laporan-risalah');
+})->name('laporan-risalah');
+Route::get('/cetak-laporan-undangan', function() {
+    return view('superadmin.laporan.cetak-laporan-undangan');
+})->name('laporan-undangan');
