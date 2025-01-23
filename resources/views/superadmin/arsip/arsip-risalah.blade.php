@@ -19,8 +19,8 @@
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
-                <div class="breadcrumb">
-                    <a href="{{route('superadmin.dashboard')}}">Home</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Risalah Rapat</a>
+                <div class="breadcrumb" style="gap: 5px;">
+                    <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Risalah Rapat</a>
                 </div>
             </div>
         </div>
@@ -29,9 +29,9 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5><b>Arsip Risalah Rapat</b></h5>
             <div class="d-flex gap-2">
-                <div class="btn btn-primary d-flex align-items-center" style="gap: 5px;">
+                <div class="search">
                     <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
-                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Search" style="outline: none; box-shadow: none;">
+                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
                 </div>
             </div>
         </div>
@@ -46,6 +46,7 @@
                     <th>Seri</th>
                     <th>Dokumen</th>
                     <th>Data Disahkan</th>
+                    <th>Divisi</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
@@ -59,6 +60,7 @@
                     <td>1596</td>
                     <td>837.06/REKA/GEN/VII/2024</td>
                     <td>22-10-2024</td>
+                    <td>HR & GA</td>
                     <td>
                         <span class="badge bg-success">Approve</span>
                     </td>
@@ -88,8 +90,8 @@
                     <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus Risalah Rapat?</h5>
                     <!-- Buttons -->
                     <div class="d-flex justify-content-center mt-3">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="confirmDelete" data-bs-toggle="modal" data-bs-target="#deleteSuccessModal">OK</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-primary" id="confirmDelete" data-bs-toggle="modal" data-bs-target="#deleteSuccessModal">Oke</button>
                     </div>
                 </div>
             </div>
@@ -108,7 +110,7 @@
                     <!-- Success Message -->
                     <h5><b>Berhasil Menghapus Risalah Rapat</b></h5>
                     <!-- Back Button -->
-                    <button class="btn btn-primary mt-4 px-4 py-2" data-bs-dismiss="modal">Back</button>
+                    <button class="btn btn-primary mt-4 px-4 py-2" data-bs-dismiss="modal">Kembali</button>
                 </div>
             </div>
         </div>

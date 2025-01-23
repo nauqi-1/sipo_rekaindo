@@ -19,8 +19,8 @@
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
-                <div class="breadcrumb">
-                    <a href="#">Home</a>/<a href="#">Laporan</a>/<a href="#">Laporan Risalah Rapat</a>
+                <div class="breadcrumb" style="gap: 5px;">
+                    <a href="#">Beranda</a>/<a href="#">Laporan</a>/<a href="#" style="color: #565656">Laporan Risalah Rapat</a>
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@
             <form action="#" method="GET">
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" id="edit-button">Filter</button>
-                    <button type="button" class="btn btn-secondary" id="cancel-button">Cancel</button>
+                    <button type="button" class="btn btn-secondary" id="cancel-button">Batal</button>
                 </div>
             </form>
         </div>

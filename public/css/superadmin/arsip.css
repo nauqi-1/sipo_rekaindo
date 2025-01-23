@@ -1,12 +1,4 @@
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    margin: 0;
-    background-color: #f4f4f4;
-}
-
 .container {
-    /* max-width: 100%; */
     max-width: 1200px;
     margin: 0 auto;
     background: #fff;
@@ -46,6 +38,7 @@ h1 {
     font-size: 14px;
     color: #888;
     margin-bottom: 30px;
+    margin-left: 20px;
     padding: 8px 12px;
     border: 1px solid #E5E5E5CC;
     display: flex;
@@ -57,8 +50,14 @@ h1 {
     color: #A9A9A9;
 }
 
+.title {
+    margin-left: 40px;
+}
+
 .table {
     margin-top: 20px;
+    width: 98%;
+    margin-left: 20px;
 }
 
 .table th  {
@@ -72,38 +71,17 @@ h1 {
     text-align: center;
 }
 
-.form-control {
-    color: #878790;
+.search {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: none;
     border: 1px solid #E5E5E5;
+    border-radius: 10px;
 }
 
-.form-control:hover {
-    background-color: #ffffff; 
-    border-color: #0d6efd; 
-    color: #000;
-    box-shadow: 0 0 10px rgba(13, 110, 253, 0.8);
-}
-
-/* Fitur Search */
-.btn-primary {
-    background-color: #ffffff;
-    border: 1px solid #E5E5E5;
-    padding: 0 15px;
-    margin-left: 120px;
-}
-
-.btn-primary:hover {
-    background-color: #ffffff; 
-    border-color: #92C5FF; 
-    color: #92C5FF;
-    box-shadow: 0 0 10px #92C5FF;
-}
-
-.btn-primary:active {
-    background-color: #ffffff !important;
-    color: #000 !important;
-    box-shadow: #92C5FF !important;
-    border-color: #92C5FF !important;
+.search img {
+    margin-left: 20px;
 }
 
 /* Nomor */
@@ -186,7 +164,7 @@ h1 {
 }
 
 #deleteModal .btn-primary {
-    padding: 8px 33px;
+    padding: 8px 25px;
     font-size: 14px;
     border-radius: 5px;
     border-color: #2592F7;
@@ -240,7 +218,7 @@ h1 {
     color: white;
     border-radius: 5px;
     display: flex;
-    margin-left: 168px;
+    margin-left: 155px;
 }
 
 #deleteSuccessModal .btn-primary:hover {
