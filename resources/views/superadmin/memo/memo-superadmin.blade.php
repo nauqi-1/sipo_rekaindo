@@ -19,32 +19,57 @@
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
-                <div class="breadcrumb">
-                    <a href="{{route('superadmin.dashboard')}}">Home</a>/<a href="#">Memo</a>
+                <div class="breadcrumb" style="gap: 5px;">
+                    <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="#" style="color: #565656;">Memo</a>
                 </div>
             </div>
         </div>
 
         <!-- Filter & Search Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="d-flex gap-2">
-                <select class="form-select" style="width: 150px;">
-                    <option>Status</option>
-                    <option>Approve</option>
-                    <option>Reject</option>
-                    <option>Pending</option>
-                </select>
-                <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 200px;">
-                <img src="/img/memo-superadmin/panah.png" alt="panah" class="icon-panah">
-                <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 200px;">                
-            </div>
-            <div class="d-flex gap-2">
-                <div class="btn btn-primary d-flex align-items-center" style="gap: 5px;">
-                    <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
-                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Search" style="outline: none; box-shadow: none;">
+        <div class="header-tools">
+            <div class="search-filter">
+                <div class="dropdown">
+                    <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="me-2">Status</span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'asc']) }}" style="justify-content: center; text-align: center;">
+                                Disetujui
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
+                                Ditahan
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
+                                Ditolak
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                    <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
+                    <img src="/img/memo-superadmin/kalender.png" alt="Kalender Icon" class="input-icon">
+                </div>
+                <i class="bi bi-arrow-right"></i>
+                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                    <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
+                    <img src="/img/memo-superadmin/kalender.png" alt="Kalender Icon" class="input-icon">
+                </div>
+                <div class="d-flex gap-2">
+                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                        <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
+                        <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+                    </div>
+                </div>
+
+                <!-- Add User Button to Open Modal -->
+                <a href="{{ route('add-memo.superadmin') }}" class="btn btn-add">+ Tambah Memo</a>
+                <!-- <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah Memo</button> -->
             </div>
-            <button class="btn btn-success"><a href="{{route('add-memo.superadmin')}}" style="text-decoration: none; color: #878790;">+ Add Memo </a></button>
         </div>
 
         <!-- Table -->
@@ -53,10 +78,19 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
-                    <th>Data Dibuat</th>
+                    <th>Data Masuk
+                        <button class="data-md">
+                            <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        </button>
+                    </th>
                     <th>Seri</th>
                     <th>Dokumen</th>
-                    <th>Data Disahkan</th>
+                    <th>Data Disahkan
+                        <button class="data-md">
+                            <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        </button>
+                    </th>
+                    <th>Divisi</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
@@ -70,6 +104,7 @@
                     <td>1596</td>
                     <td>837.06/REKA/GEN/VII/2024</td>
                     <td>22-10-2024</td>
+                    <td>HR & GA</td>
                     <td>
                         @if ($i % 3 == 0)
                             <span class="badge bg-danger">Reject</span>
