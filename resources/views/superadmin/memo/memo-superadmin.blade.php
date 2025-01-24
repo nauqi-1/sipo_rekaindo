@@ -35,12 +35,12 @@
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li>
                             <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'asc']) }}" style="justify-content: center; text-align: center;">
-                                Disetujui
+                                Diterima
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
-                                Ditahan
+                                Proses
                             </a>
                         </li>
                         <li>
@@ -107,11 +107,11 @@
                     <td>HR & GA</td>
                     <td>
                         @if ($i % 3 == 0)
-                            <span class="badge bg-danger">Reject</span>
+                            <span class="badge bg-danger">Ditolak</span>
                         @elseif ($i % 2 == 0)
-                            <span class="badge bg-warning">Pending</span>
+                            <span class="badge bg-warning">Proses</span>
                         @else
-                            <span class="badge bg-success">Approve</span>
+                            <span class="badge bg-success">Diterima</span>
                         @endif
                     </td>
                     <td>

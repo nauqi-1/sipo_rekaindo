@@ -35,6 +35,14 @@
     font-size: 14px;
 }
 
+.role-badge-admin {
+    background: #0095FF;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
 /* Overview Section */
 .overview-container {
     background: #f8faff;
@@ -57,24 +65,45 @@
 
 .overview-card {
     flex: 1;
-    background: #eaf4ff;
+    background: #92C5FF4D;
     padding: 15px;
     border-radius: 8px;
     text-align: center;
+}
+
+.overview-card:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.overview-card button {
+    border-radius: 6px;
+    width: 35px;
+    height: 30px;
+    border: #fff;
+    background-color: #fff;
+    margin-right: 8px;
+}
+
+.overview-card button:hover {
+    border: none;
+    background-color: #8888885a;
 }
 
 .overview-card h4 {
     font-size: 16px;
     font-weight: bold;
-    color: #1e4178;
+    color: #000;
     margin-bottom: 10px;
 }
 
-.overview-card p {
+.overview-card a {
     font-size: 14px;
     font-weight: bold;
     color: #000;
+}
+
+.overview-card a:hover {
+    color: #8888885a;
 }
 
 /* Things to Do Section */
@@ -106,10 +135,25 @@
     border-radius: 8px;
     border: 1px solid #e5e5e5;
     transition: box-shadow 0.3s ease;
+    color: #000;
 }
 
 .things-to-do-item:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.things-to-do-item .icon button {
+    width: 35px;
+    height: 30px;
+    border-radius: 6px;
+    border: 1px solid #92C5FF99;
+    background-color: #92C5FF99;
+    margin-right: 10px;
+}
+
+.things-to-do-item .icon button:hover {
+    border: 1px solid #92C5FF4D;
+    background-color: #92C5FF4D;
 }
 
 .things-to-do-item .icon img {
@@ -126,17 +170,24 @@
     font-size: 16px;
     font-weight: bold;
     margin: 0;
-    color: #000;
 }
 
 .things-to-do-item .content p {
     font-size: 14px;
-    color: #666;
     margin: 5px 0 0;
 }
 
 .things-to-do-item .date {
     font-size: 14px;
-    color: #888;
     font-weight: bold;
+}
+
+.things-to-do-item .content a {
+    text-decoration: none;
+    color: #000;
+}
+
+.things-to-do-item .content a:hover {
+    text-decoration: none;
+    color: #888;
 }

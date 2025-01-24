@@ -57,24 +57,45 @@
 
 .overview-card {
     flex: 1;
-    background: #eaf4ff;
+    background: #92C5FF4D;
     padding: 15px;
     border-radius: 8px;
     text-align: center;
+}
+
+.overview-card:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.overview-card button {
+    border-radius: 6px;
+    width: 35px;
+    height: 30px;
+    border: #fff;
+    background-color: #fff;
+    margin-right: 8px;
+}
+
+.overview-card button:hover {
+    border: none;
+    background-color: #8888885a;
 }
 
 .overview-card h4 {
     font-size: 16px;
     font-weight: bold;
-    color: #1e4178;
+    color: #000;
     margin-bottom: 10px;
 }
 
-.overview-card p {
+.overview-card a {
     font-size: 14px;
     font-weight: bold;
     color: #000;
+}
+
+.overview-card a:hover {
+    color: #8888885a;
 }
 
 /* Things to Do Section */
@@ -115,6 +136,15 @@
     margin: 0;
     margin-top: 14px;
     color: #000;
+}
+
+.things-to-do-list .content a {
+    text-decoration: none;
+    color: #000;
+}
+
+.things-to-do-list .content a:hover {
+    color: #666;
 }
 
 .task .content p {

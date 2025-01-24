@@ -6,7 +6,7 @@
 <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1>Dashboard</h1>
+            <h1>Beranda</h1>
         </header>
 
         <!-- Welcome Message -->
@@ -16,33 +16,44 @@
 
         <!-- Overview Section -->
         <div class="overview-container">
-            <h3>Overview</h3>
+            <h3>Tinjauan</h3>
             <div class="overview-cards">
                 <div class="overview-card">
                     <h4>MEMO</h4>
-                    <p><strong>4</strong> Memo</p>
+                    <p>
+                        <button><img src="/img/dashboard/memo.png" alt="memo"></button>
+                        <a href="#"><span>4</span> Memo</a>
+                    </p>
                 </div>
                 <div class="overview-card">
                     <h4>RISALAH RAPAT</h4>
-                    <p><strong>7</strong> Risalah Rapat</p>
+                    <p>
+                        <button><img src="/img/dashboard/risalah.png" alt="memo"></button>
+                        <a href="#"><span>7</span> Risalah Rapat</a>
+                    </p>
                 </div>
                 <div class="overview-card">
                     <h4>UNDANGAN RAPAT</h4>
-                    <p><strong>15</strong> Undangan Rapat</p>
+                    <p>
+                        <button><img src="/img/dashboard/undangan.png" alt="memo"></button>
+                        <a href="#"><span>7</span> Undangan Rapat</a>
+                    </p>
                 </div>
             </div>
         </div>
 
         <!-- Things to Do Section -->
         <div class="things-to-do-container">
-            <h3>Things to do</h3>
+            <h3>Aktivitas</h3>
             <div class="things-to-do-list">
                 <div class="things-to-do-item">
                     <div class="icon">
-                        <img src="/assets/images/icon-memo.png" alt="Memo Icon">
+                        <button>
+                            <img src="/img/dashboard/tinjau-memo.png" alt="Memo Icon" style="width: 22px; height: 20px;">
+                        </button>
                     </div>
                     <div class="content">
-                        <h4>Meninjau Memo</h4>
+                        <h4><a href="#">Meninjau Memo</a></h4>
                         <p>Tinjau memo untuk kelangkah selanjutnya</p>
                     </div>
                     <div class="date">Hari ini</div>
@@ -50,10 +61,12 @@
 
                 <div class="things-to-do-item">
                     <div class="icon">
-                        <img src="/assets/images/icon-user.png" alt="User Icon">
+                        <button>
+                            <img src="/img/dashboard/tambah-user.png" alt="User Icon" style="width: 22px; height: 20px;">
+                        </button>
                     </div>
                     <div class="content">
-                        <h4>Tambah User Baru</h4>
+                        <h4><a href="#">Tambah User Baru</a></h4>
                         <p>Tinjau untuk kelangkah selanjutnya</p>
                     </div>
                     <div class="date">Hari ini</div>
@@ -61,10 +74,12 @@
 
                 <div class="things-to-do-item">
                     <div class="icon">
-                        <img src="/assets/images/icon-surat.png" alt="Surat Icon">
+                        <button>
+                            <img src="/img/dashboard/tinjau-permintaan.png" alt="Surat Icon" style="width: 22px; height: 20px;">
+                        </button>
                     </div>
                     <div class="content">
-                        <h4>Meninjau Permintaan Surat</h4>
+                        <h4><a href="#">Meninjau Permintaan Surat</a></h4>
                         <p>Tinjau permintaan surat untuk kelangkah selanjutnya</p>
                     </div>
                     <div class="date">Hari ini</div>

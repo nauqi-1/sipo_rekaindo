@@ -26,7 +26,7 @@
         </div>
 
         <!-- Filter & Search Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="title d-flex justify-content-between align-items-center mb-3">
             <h5><b>Arsip Memo</b></h5>
             <div class="d-flex gap-2">
                 <div class="search">
@@ -42,10 +42,18 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
-                    <th>Data Masuk</th>
+                    <th>Data Masuk
+                        <button class="data-md">
+                            <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        </button>
+                    </th>
                     <th>Seri</th>
                     <th>Dokumen</th>
-                    <th>Data Disahkan</th>
+                    <th>Data Disahkan
+                        <button class="data-md">
+                            <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        </button>
+                    </th>
                     <th>Divisi</th>
                     <th>Status</th>
                     <th>Aksi</th>
