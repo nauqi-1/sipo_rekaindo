@@ -144,3 +144,12 @@ Route::get('/cetak-laporan-risalah', function() {
 Route::get('/cetak-laporan-undangan', function() {
     return view('superadmin.laporan.cetak-laporan-undangan');
 })->name('laporan-undangan');
+
+// Dashboard
+Route::get('/dashboard-admin', function() {
+    return view('admin.dashboard');
+})->name('dashboard-admin');
+
+Route::get('/dashboard-supervisor', function() {
+    return view('supervisor.dashboard');
+})->name('dashboard-supervisor');
