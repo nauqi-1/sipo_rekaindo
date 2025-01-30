@@ -42,8 +42,8 @@
 
                     <!-- Forgot Password -->
                     <div class="col">
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}">Lupa Password?</a>
+                        @if (Route::has('forgot-password'))
+                            <a href="{{ route('forgot-password') }}">Lupa Password?</a>
                         @endif
                     </div>
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManageController;
+use App\Http\Controllers\ForgotPWController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/p', function () {
@@ -66,6 +67,18 @@ Route::get('/dashboard.manager', function () {
 })->name('manager.dashboard');
 
 // routes/web.php
+Route::middleware('web')->group(function () {
+    Route::get('/forgot-password', [ForgotPwController::class, 'showForgotPasswordForm'])->name('forgot-password');
+    Route::post('/forgot-password', [ForgotPwController::class, 'sendVerificationCode'])->name('forgot-password.send');
+    
+    Route::get('/verify-code', [ForgotPwController::class, 'showVerifyCodeForm'])->name('verify-code');
+    Route::post('/verify-code', [ForgotPwController::class, 'verifyCode'])->name('verify-code.check');
+    
+    
+    Route::get('/reset-password', [ForgotPwController::class, 'showResetPasswordForm'])->name('reset-password');
+    
+    Route::post('/reset-password', [ForgotPwController::class, 'resetPassword'])->name('reset-password.update');
+    });
 
 Route::get('/verif-email', function () {
     return view('/components/verif-email');
