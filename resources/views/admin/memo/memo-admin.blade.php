@@ -6,7 +6,7 @@
     <title>Memo Admin</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('/css/admin/memo.css') }}">
+    <link rel="stylesheet" href="{{ asset('/css/admin/memoAdmin.css') }}">
 </head>
 <body>
     <div class="container">
@@ -19,32 +19,56 @@
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
-                <div class="breadcrumb">
-                    <a href="#">Home</a>/<a href="#">Memo</a>
+                <div class="breadcrumb" style="gap: 5px;">
+                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Memo</a>
                 </div>
             </div>
         </div>
 
         <!-- Filter & Search Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="d-flex gap-2">
-                <select class="form-select" style="width: 150px;">
-                    <option>Status</option>
-                    <option>Approve</option>
-                    <option>Reject</option>
-                    <option>Pending</option>
-                </select>
-                <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 200px;">
-                <img src="/img/memo-admin/panah.png" alt="panah" class="icon-panah">
-                <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 200px;">                
-            </div>
-            <div class="d-flex gap-2">
-                <div class="btn btn-primary d-flex align-items-center" style="gap: 5px;">
-                    <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
-                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Search" style="outline: none; box-shadow: none;">
+        <div class="header-tools">
+            <div class="search-filter">
+                <div class="dropdown">
+                    <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="me-2">Status</span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#" style="justify-content: center; text-align: center;">
+                                Diterima
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#" style="justify-content: center; text-align: center;">
+                                Proses
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#" style="justify-content: center; text-align: center;">
+                                Ditolak
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                    <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
+                    <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
+                </div>
+                <i class="bi bi-arrow-right"></i>
+                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                    <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
+                    <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
+                </div>
+                <div class="d-flex gap-2">
+                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                        <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
+                        <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+                    </div>
+                </div>
+
+                <!-- Add User Button to Open Modal -->
+                <a href="{{ route('admin.memo.add-memo')}}" class="btn btn-add">+ Tambah Memo</a>
             </div>
-            <button class="btn btn-success"><a href="{{route('admin.memo.add-memo')}}" style="text-decoration: none; color: #878790;">+ Add Memo </a></button>
         </div>
 
         <!-- Table -->
@@ -53,10 +77,19 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
-                    <th>Data Dibuat</th>
+                    <th>Data Masuk
+                        <button class="data-md">
+                            <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        </button>
+                    </th>
                     <th>Seri</th>
                     <th>Dokumen</th>
-                    <th>Data Disahkan</th>
+                    <th>Data Disahkan
+                        <button class="data-md">
+                            <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        </button>
+                    </th>
+                    <th>Divisi</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
@@ -70,17 +103,21 @@
                     <td>1596</td>
                     <td>837.06/REKA/GEN/VII/2024</td>
                     <td>22-10-2024</td>
+                    <td>HR & GA</td>
                     <td>
                         @if ($i % 3 == 0)
-                            <span class="badge bg-danger">Reject</span>
+                            <span class="badge bg-danger">Ditolak</span>
                         @elseif ($i % 2 == 0)
-                            <span class="badge bg-warning">Pending</span>
+                            <span class="badge bg-warning">Diproses</span>
                         @else
-                            <span class="badge bg-success">Approve</span>
+                            <span class="badge bg-success">Diterima</span>
                         @endif
                     </td>
                     <td>
-                        <button class="btn btn-sm1"><img src="/img/memo-admin/share.png" alt="share"></button>
+                        <!-- <button class="btn btn-sm1"><img src="/img/memo-admin/share.png" alt="share"></button> -->
+                        <a href="{{ route('kirim-memoAdmin.admin') }}" class="btn btn-sm1">
+                            <img src="/img/memo-admin/share.png" alt="share">
+                        </a>
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/memo-admin/Delete.png" alt="delete">
                         </button>
@@ -90,13 +127,9 @@
                                 <img src="/img/memo-admin/arsip.png" alt="arsip">
                             </button>
                         @else
-                            <!-- <button class="btn btn-sm3">
-                                <img src="/img/memo-admin/edit.png" alt="edit">
-                            </button> -->
                             <a href="{{ route('admin.memo.edit-memo') }}" class="btn btn-sm3">
                                 <img src="/img/memo-admin/edit.png" alt="edit">
                             </a>
-
                         @endif
                     </td>
                 </tr>
@@ -137,7 +170,7 @@
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus Memo</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('admin.memo.memo-admin')}}">Back</a></button>
+                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('admin.memo.memo-admin')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
@@ -174,7 +207,7 @@
                         <!-- Ikon atau Gambar -->
                         <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Success</b></h5>
+                        <h5 class="mb-4" style="color: #545050;"><b>Sukses</b></h5>
                         <h6 class="mb-4" style="font-size: 14px; color: #5B5757;">Berhasil Arsip Memo</h6>
                         <!-- Tombol -->
                         <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('admin.memo.memo-admin')}}">Back</a></button>
@@ -182,7 +215,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <script>

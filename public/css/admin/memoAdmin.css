@@ -1,10 +1,3 @@
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    margin: 0;
-    background-color: #f4f4f4;
-}
-
 .container {
     /* max-width: 100%; */
     max-width: 1200px;
@@ -45,7 +38,9 @@ h1 {
 .breadcrumb {
     font-size: 14px;
     color: #888;
-    margin-bottom: 30px;
+    margin-bottom: 30px !important;
+    margin-top: 0 !important;
+    margin: 19px;
     padding: 8px 12px;
     border: 1px solid #E5E5E5CC;
     display: flex;
@@ -58,18 +53,23 @@ h1 {
 }
 
 .table {
-    margin-top: 20px;
+    margin: 20px; 
+    width: calc(100% - 40px);
+    overflow: hidden;
 }
 
 .table th  {
     vertical-align: middle;
     color: #878790;
     text-align: center;
+    font-size: 13px;
+    background-color: #ffffff;
 }
 
 .table td {
     vertical-align: middle;
     text-align: center;
+    font-size: 13px;
 }
 
 .badge {
@@ -82,81 +82,149 @@ h1 {
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Fitur Status */
-.form-select {
-    color: #6e6e71;
-    border: 1px solid #E5E5E5;
+/* letak component atas table */
+.header-tools {
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 12px; 
 }
 
-.form-select:hover {
-    background-color: #ffffff; 
-    border-color: #0d6efd; 
-    color: #0d6efd;
-    box-shadow: 0 0 10px rgba(13, 110, 253, 0.8);
-}
-
+/* data dibuat dan data keluar */
 .form-control {
     color: #878790;
     border: 1px solid #E5E5E5;
+    height: 35px;
+    border-radius: 7px;
 }
 
 .form-control:hover {
     background-color: #ffffff; 
-    border-color: #0d6efd; 
-    color: #0d6efd;
-    box-shadow: 0 0 10px rgba(13, 110, 253, 0.8);
-}
-
-.icon-panah {
-    width: 24px; 
-    height: 12px; 
-    margin: auto;
-}
-
-/* Fitur Search */
-.btn-primary {
-    background-color: #ffffff;
-    border: 1px solid #E5E5E5;
-    padding: 0 15px;
-    margin-left: 120px;
-}
-
-.btn-primary:hover {
-    background-color: #ffffff; 
-    border-color: #92C5FF; 
-    color: #92C5FF;
-    box-shadow: 0 0 10px #92C5FF;
-}
-
-.btn-primary:active {
-    background-color: #ffffff !important;
-    color: #000 !important;
-    box-shadow: #92C5FF !important;
-    border-color: #92C5FF !important;
-}
-
-/* Button add */
-.btn-success {
-    background-color: #ffffff;
     border: 1px solid #E5E5E5;
     color: #878790;
+    font-size: 14px;
+    box-shadow: none;
+    outline: none;
 }
 
-.btn-success:hover {
+.input-icon {
+    position: absolute; 
+    right: 10px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    width: 15px; 
+    height: 15px; 
+    pointer-events: none;
+    margin-right: 4px;
+}
+
+.form-control:focus {
     background-color: #ffffff; 
-    border-color: #92C5FF; 
-    color: #92C5FF;
-    box-shadow: 0 0 10px #92C5FF;
+    border: 1px solid #E5E5E5;
+    color: #878790;
+    font-size: 14px;
+    box-shadow: none;
+    outline: none;
 }
 
-.btn-success:active {
-    background-color: #1E4178 !important;
-    color: #ffffff !important;
+.form-control:hover {
+    background-color: #ffffff; 
+    border: 1px solid #E5E5E5 !important;
+    color: #878790;
+    font-size: 14px;
+    box-shadow: none;
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: #878790;
+    font-size: 14px;
+}
+
+/* search filter */
+.search-filter {
+    position: relative;
+    display: flex;
+    gap: 32px; 
+    align-items: center;
+    font-size: 14px;
+    width: calc(100% - 40px);
+}
+
+.search-filter .btn-search {
+    background-color: #FFFFFF;
+    border: 1px solid #DFDFDF;
+    height: 35px;
+    /* margin-right: 15px; */
+    width: 300px;
+}
+
+.search-filter .btn-search:hover {
+    background-color: #FFFFFF;
+    border: 1px solid #DFDFDF;
+    height: 35px;
+}
+
+.btn-search input:hover, 
+.btn-search input:valid,
+.btn-search input:invalid {
+    border: none !important;
+    color: #000;
+}
+
+.search-icon {
+    position: absolute; 
+    left: 10px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+}
+
+/* button tambah pengguna */
+.search-filter .btn-add {
+    background-color: #ffffff;
+    color: #878790;
+    border: 1px solid #DFDFDF;
+    border-radius: 7px;
+    height: 35px;
+    font-size: 14px;
+    width: 200px;
+}
+
+.search-filter .btn-add:hover {
+    background-color: #1E4178;
+    color: #ffffff;
+}
+
+.search-filter input {
+    box-sizing: border-box; 
+    width: 100%; 
+    padding: 8px 12px;
+    border: 1px solid #E5E5E5;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #878790;
+    transition: all 0.2s ease-in-out; 
+}
+
+.search-filter input:focus {
+    outline: none; 
+    border: 1px solid #2592F7; 
+    background-color: #ffffff; 
+}
+
+.bi-arrow-right {
+    justify-content: center; 
+    color: #757575;
+}
+
+.data-md {
+    border: none;
+    background-color: #f8f9fa;
 }
 
 .nomor {
     background-image: url('/img/memo-superadmin/Rectangle-path.png');
-    background-size: 30px 30px;
+    background-size: 25px 25px;
     background-repeat: no-repeat; 
     background-position: center; 
     color: #ffffff; 
@@ -181,6 +249,7 @@ h1 {
 .btn-sm1, .btn-sm2, .btn-sm3, .btn-sm4{
     font-size: 14px;
     padding: 5px 10px;
+    border-radius: 50px;
 }
 
 .btn-sm1:hover {
@@ -297,4 +366,58 @@ h1 {
     background-color: #2592F7;
     color: #ffffff;
     text-decoration: none;
+}
+
+/* status filter */
+.dropdown .me-2 {
+    font-size: 14px;
+    color: #878790;
+    width: 80px;
+    padding: auto;
+}
+
+.dropdown .me-2:hover {
+    color: #878790;
+}
+
+.btn-dropdown {
+    font-size: 14px;
+    border: 1px solid #DFDFDF;
+    color: #878790;
+    height: 35px;
+    border-radius: 7px;
+    /* margin-right: 15px; */
+    padding-right: 30px;
+}
+
+.btn-dropdown:hover {
+    background-color: #ffffff;
+    border: 1px solid #DFDFDF !important;
+    color: #878790;
+}
+
+.btn-dropdown:focus {
+    background-color: #ffffff;
+    border: 1px solid #DFDFDF !important;
+    color: #878790;
+}
+
+.dropdown-menu {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+    color: #000;
 }

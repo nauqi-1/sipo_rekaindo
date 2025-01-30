@@ -119,9 +119,9 @@ Route::get('/edit-memoAdmin', function() {
     return view('admin.memo.edit-memo');
 })->name('admin.memo.edit-memo');
 
-Route::get('/kirim-memo-admin', function() {
-    return view('admin.memo.kirim-memoB');
-})->name('admin.memo.kirim-memoB');
+Route::get('/kirim-memoAdmin', function() {
+    return view('admin.memo.kirim-memoAdmin');
+})->name('kirim-memoAdmin.admin');
 
 Route::get('/after-kirim', function() {
     return view('supervisor.after-kirim-memo');

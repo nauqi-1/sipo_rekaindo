@@ -170,7 +170,7 @@
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus Memo</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Back</a></button>
+                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
@@ -207,7 +207,7 @@
                         <!-- Ikon atau Gambar -->
                         <img src="/img/memo-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Success</b></h5>
+                        <h5 class="mb-4" style="color: #545050;"><b>Sukses</b></h5>
                         <h6 class="mb-4" style="font-size: 14px; color: #5B5757;">Berhasil Arsip Memo</h6>
                         <!-- Tombol -->
                         <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Back</a></button>
