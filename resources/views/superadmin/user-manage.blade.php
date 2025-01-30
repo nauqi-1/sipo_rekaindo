@@ -99,9 +99,13 @@
                                 <img src="/img/user-manage/Edit.png" alt="edit">
                             </button>
                             </form>
-                                <button type="submit" class="btn btn-delete btn-sm" >
+                            <form method="POST" action="{{ route('user-manage.destroy', $user->id) }}" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                     <img src="/img/user-manage/Trash.png" alt="delete">
                                 </button>
+                            </form>
                             </td>
                         </tr>
                         @endforeach

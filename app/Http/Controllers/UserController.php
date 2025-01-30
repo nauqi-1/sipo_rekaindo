@@ -21,52 +21,67 @@ class UserController extends Controller
      public function edit($id)
      {
          $user = User::findOrFail($id);
-         $divisi = Divisi::all(); // Asumsi Anda memiliki model Divisi
-         $positions = Position::all(); // Asumsi Anda memiliki model Position
-         $roles = Role::all(); // Asumsi Anda memiliki model Role
+         $divisi = Divisi::all();  
+         $roles = Role::all();  
+         $positions = Position::all();
          
-         return view('superadmin.edit', compact('user', 'divisi', 'positions', 'roles'));
+         return view('superadmin.edit', compact('user', 'divisi', 'roles', 'positions'));
      }
  
      // Menangani update data user
      public function update(Request $request, $id)
      {
         $user = User::findOrFail($id);
-         $request->validate([
-             'email' => 'required|email',
-             'firstname' => 'required',
-             'lastname' => 'required',
-             'username' => 'required',
-             'phone_number' => 'required',
-             'password' => 'nullable|confirmed',
-             'divisi_id_divisi' => 'required',
-             'position_id_position' => 'required',
-             'role_id_role' => 'required',
-         ]);
+
+    $request->validate([
+        'firstname' => 'nullable|string|max:50',
+        'lastname' => 'nullable|string|max:50',
+        'username' => 'nullable|string|max:25',
+        'email' => 'nullable|string|email|max:70|unique:users,email,' . $id,
+        'password' => 'nullable|min:8|confirmed',
+        'phone_number' => 'nullable|numeric',
+        'role_id_role' => 'nullable|exists:role,id_role',
+        'position_id_position' => 'nullable|exists:position,id_position',
+        'divisi_id_divisi' => 'nullable|exists:divisi,id_divisi',
+    ]);
+
+    if ($request->filled('firstname')) {
+        $user->firstname = $request->firstname;
+    }
+    if ($request->filled('lastname')) {
+        $user->lastname = $request->lastname;
+    }
+    if ($request->filled('username')) {
+        $user->username = $request->username;
+    }
+    if ($request->filled('email')) {
+        $user->email = $request->email;
+    }
+    if ($request->filled('phone_number')) {
+        $user->phone_number = $request->phone_number;
+    }
+    if ($request->filled('password')) {
+        $user->password = bcrypt($request->password);
+    }
+    if ($request->filled('divisi_id_divisi')) {
+        $user->divisi_id_divisi = $request->divisi_id_divisi;
+    }
+    if ($request->filled('position_id_position')) {
+        $user->position_id_position = $request->position_id_position;
+    }
+    if ($request->filled('role_id_role')) {
+        $user->role_id_role = $request->role_id_role;
+    }
+
+    $user->save();
  
-         $user = User::findOrFail($id);
-         $user->email = $request->email;
-         $user->firstname = $request->firstname;
-         $user->lastname = $request->lastname;
-         $user->username = $request->username;
-         $user->phone_number = $request->phone_number;
- 
-         if ($request->password) {
-             $user->password = bcrypt($request->password);
-         }
- 
-         $user->divisi_id_divisi = $request->divisi_id_divisi;
-         $user->position_id_position = $request->position_id_position;
-         $user->role_id_role = $request->role_id_role;
-         $user->save();
- 
-         return redirect()->route('user-manage')->with('success', 'User updated successfully');
+         return redirect()->route('user.manage')->with('success', 'User updated successfully');
      }
      public function destroy($id)
     {
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('user-manage.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('user.manage')->with('success', 'User deleted successfully.');
     }
 }

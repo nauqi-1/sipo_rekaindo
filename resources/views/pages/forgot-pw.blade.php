@@ -17,9 +17,10 @@
       </div>
       <h1>Forgot Password</h1>
       <p>Enter your email for the verification process, we will send 4 digits code for your email.</p>
-      <form action="{{ route('verif-email') }}" method="GET">
+      <form action="{{ route('forgot-password.send') }}" method="POST">
+      @csrf
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="Enter username" required>
+        <input type="email" id="email" name="email" placeholder="Enter email" required>
         <button type="submit">CONTINUE</button>
       </form>
     </div>

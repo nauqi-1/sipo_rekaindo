@@ -17,56 +17,56 @@
       </div>
       <h1>Verification</h1>
       <p>Enter your 4 digits code that you received on your email</p>
-      <form action="#" method="GET">
+      <form action="{{ route('verify-code.check') }}" method="POST">
+        @csrf
         <div class="input-verifemail">
+          <input type="hidden" name="email" value="{{ $email }}">
           <input type="text" maxlength="1" name="digit1" class="code-input" required>
           <input type="text" maxlength="1" name="digit2" class="code-input" required>
           <input type="text" maxlength="1" name="digit3" class="code-input" required>
           <input type="text" maxlength="1" name="digit4" class="code-input" required>
         </div>
-        <p id="timer" class="timer">15s</p>
+        <p id="timer" class="timer">60s</p>
         <button type="submit">VERIFY</button>
       </form>
       <p class="resend">If you didn't receive a code! <a href="#" class="resend-link">Resend</a></p>
     </div>
   </div>
 
+
   <script>
-        // Menambahkan countdown timer
-        let countdown = 15; // Set initial time (15 seconds)
-        const timerElement = document.getElementById('timer');
+    // Automatically focus the next input field
+    const inputs = document.querySelectorAll('.code-input');
+    inputs.forEach((input, index) => {
+      input.addEventListener('input', () => {
+        if (input.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
 
-        const timerInterval = setInterval(() => {
-            if (countdown > 0) {
-            timerElement.textContent = `${countdown--}s`;
-            } else {
-            clearInterval(timerInterval); // Hentikan timer setelah 0
-            timerElement.textContent = 'Time is up!';
-            }
-        }, 1000); // Update timer setiap detik (1000ms)
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && input.value === '' && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
 
-        // Pindah fokus ke input berikutnya setelah mengetik angka
-        document.querySelectorAll('.code-input').forEach((input, index, inputs) => {
-            input.addEventListener('input', () => {
-            // Jika input sudah penuh, fokuskan ke input berikutnya
-            if (input.value.length === input.maxLength) {
-                const nextInput = inputs[index + 1];
-                if (nextInput) {
-                nextInput.focus();
-                }
-            }
-            });
-
-            // Jika user menghapus digit, fokuskan ke input sebelumnya
-            input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && input.value === '') {
-                const prevInput = inputs[index - 1];
-                if (prevInput) {
-                prevInput.focus();
-                }
-            }
-            });
-        });
+    let timeLeft = 60;
+    const timerElement = document.getElementById('timer');
+    const countdown = setInterval(() => {
+      if (timeLeft > 0) {
+        timeLeft--;
+        timerElement.textContent = `${timeLeft}s`;
+      } else {
+        clearInterval(countdown);
+        timerElement.textContent = "Expired!";
+        // Optionally disable the form
+        document.querySelector('button').disabled = true;
+      }
+    }, 1000);
+        
+        
+       
         </script>
 
 </body>

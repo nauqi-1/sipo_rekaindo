@@ -18,11 +18,13 @@
       <h1>New Password</h1>
       <p>Set the new password for your account so you can login and access 
       all featuress.</p>
-      <form action="{{ route('confirm-success') }}" method="GET">
-        <label for="new_pw">Enter New Password</label>
-        <input type="password" id="new_pw" name="new-pw" placeholder="Enter new password" required>
-        <label for="confirm_pw">Confirm Password</label>
-        <input type="password" id="confirm_pw" name="confirm_pw" placeholder="Confirm password" required>
+      <form action="{{ route('reset-password.update') }}" method="POST">
+      @csrf
+        <input type="hidden" name="email" value="{{ $email }}">
+        <label for="password">Enter New Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter new password" required autocomplete="new-password">
+        <label for="password_confirmation">Confirm Password</label>
+        <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm password" required autocomplete="new-password">
         <button type="submit">UPDATE PASSWORD</button>
       </form>
     </div>
