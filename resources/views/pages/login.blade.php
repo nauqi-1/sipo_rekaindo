@@ -43,18 +43,18 @@
                     <!-- Forgot Password -->
                     <div class="col">
                         @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}">Forgot password?</a>
+                            <a href="{{ route('password.request') }}">Lupa Password?</a>
                         @endif
                     </div>
 
                     <!-- Remember Me -->
                     <div class="custom-control custom-checkbox small">
                         <input type="checkbox" class="custom-control-input" id="customCheck" name="remember">
-                        <label class="custom-control-label" for="customCheck">Remember Me</label>
+                        <label class="custom-control-label" for="customCheck">Ingatkan Saya</label>
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit">LOGIN</button>
+                    <button type="submit">MASUK</button>
                 </form>
             </div>
         </div>

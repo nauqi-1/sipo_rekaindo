@@ -217,7 +217,7 @@ select.btn-dropdown:focus {
 .btn.cancel a {
     text-decoration: none;
     color: #8F9BB3;
-    font-size: 13px;
+    font-size: 14px;
 }
 .btn.back a:hover,
 .btn.cancel a:hover{
@@ -230,20 +230,22 @@ select.btn-dropdown:focus {
     font-size: 13px;
 }
 .btn.submit:hover,
-.btn.ok:hover {
+.btn.ok:hover,
+.btn.backPage {
     background-color: #92C5FF99;
     color: #ffffff;
 }
 
 .btn.submit a,
-.btn.ok a{
-    /* background-color: #1E4178; */
+.btn.ok a,
+.btn.backPage a{
     color: #ffffff;
-    font-size: 13px;
+    font-size: 14px;
     text-decoration: none;
 }
 .btn.submit a:hover,
-.btn.ok a:hover {
+.btn.ok a:hover,
+.btn.backPage a:hover {
     /* background-color: #92C5FF99; */
     color: #1E4178 !important;
 }
@@ -252,11 +254,17 @@ select.btn-dropdown:focus {
     border: 1px solid #8F9BB3;
     color: #8F9BB3;
     width: 15%;
-    font-size: 13px;
+    font-size: 14px;
 }
 .btn.ok {
-    background-color: #1E4178;
+    background-color: #2592F7;
     color: #ffffff;
     width: 15%;
-    font-size: 13px;
+    font-size: 14px;
+}
+.btn.backPage {
+    background-color: #2592F7;
+    color: #ffffff;
+    width: 20%;
+    font-size: 14px;
 }

@@ -169,12 +169,24 @@
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirimkan Memo</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Back</a></button>
+                        <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
+    <script>
+        $(document).ready(function () {
+            $("#confirmDelete").click(function () {
+                // Tutup modal kirim
+                $("#submit").modal("hide");
+
+                // Tunggu sebentar sebelum menampilkan modal berhasil
+                setTimeout(function () {
+                    $("#successModal").modal("show");
+                }, 500); // Delay 500ms agar transition lebih smooth
+            });
+        });
+    </script>
 </body>
 </html>
