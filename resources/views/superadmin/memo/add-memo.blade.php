@@ -23,8 +23,8 @@
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
-                <div class="breadcrumb">
-                    <a href="#">Home</a>/<a href="#">Memo</a>/<a href="#">Add Memo</a>
+                <div class="breadcrumb" style="gap: 5px;">
+                    <a href="#">Home</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Add Memo</a>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
         <!-- form add memo -->
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title"><b>Form Add Memo</b></h5>
+                <h5 class="card-title" style="font-size: 18px;"><b>Form Add Memo</b></h5>
             </div>
             <div class="card-body">
                 <div class="row mb-4">
@@ -52,14 +52,28 @@
                         <label for="nomor_surat" class="form-label">Nomor Surat</label>
                         <input type="text" name="nomor_surat" id="nomor_surat" class="form-control" placeholder="Masukkan Nomor Surat" required>
                     </div>
-                    <div class="col-md-6">
-                        <label for="jenis_surat" class="form-label">Jenis Surat</label>
-                        <select name="jenis_surat" id="jenis_surat" class="form-control" required>
-                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                            <option value="undangan">Surat Undangan</option>
-                            <option value="biasa">Surat Biasa</option>
-                        </select>
+                    <!-- <div class="col-md-6 dropdown">
+                        <label for="dropdownMenuButton">Divisi Pembuat</label>
+                        <div class="separator"></div>
+                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
+                            <option disabled selected style="text-align: left;">--Pilih--</option>
+                            <option value="hr_ga">HR & GA</option>
+                            <option value="keuangan">Keuangan</option>
+                            <option value="logistik_gudang">Logistik & Gudang</option>
+                            <option value="pemasaran">Pemasaran</option>
+                            <option value="sekretaris_perusahaan">Sekretaris Perusahaan</option>
+                            <option value="mrh">MRH</option>
+                            <option value="teknologi">Teknologi</option>
+                            <option value="quality_control">Quality Control</option>
+                            <option value="qm_she">QM & SHE (OT dan K3)</option>
+                            <option value="ppc">PPC</option>
+                        </select>                      
+                    </div> -->
+                    <div class="col-md-6" >
+                        <label for="perihal" class="form-label">Perihal</label>
+                        <input type="text" name="perihal" id="perihal" class="form-control" placeholder="Masukkan Perihal / Judul Surat" required>
                     </div>
+
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
@@ -69,9 +83,12 @@
                         </label>
                         <input type="text" name="kepada" id="kepada" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" required>
                     </div>
-                    <div class="col-md-6" >
-                        <label for="perihal" class="form-label">Perihal</label>
-                        <input type="text" name="perihal" id="perihal" class="form-control" placeholder="Masukkan Perihal / Judul Surat" required>
+                    <div class="col-md-6 lampiran">
+                        <label for="upload_file" class="form-label">Lampiran</label>
+                        <div class="upload-wrapper">
+                            <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
+                            <input type="file" id="upload_file" name="upload_file" class="form-control-file" hidden>
+                        </div>
                     </div>
                 </div>
 
@@ -79,38 +96,49 @@
                     <div class="col-md-12">
                         <img src="\img\memo-superadmin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
                         <label for="isi-surat">Isi Surat</label>
-                        <!-- <div class="row editor-container">
-                            <div class="col-12 mb-4">
-                                <textarea id="summernote" name="isi_surat"></textarea>
-                            </div>
-                        </div> -->
                     </div>
-                    <div class="row editor-container col-12 mb-4">
+                    <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_surat"></textarea>
                     </div>
                 </div>
-
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="nama_pimpinan" class="form-label">Nama Pimpinan</label>
-                        <select name="nama_pimpinan" id="nama_pimpinan" class="form-control" required>
-                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                            <option value="pimpinan1">Jokowi</option>
-                            <option value="pimpinan2">Prabowo</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="upload_file" class="form-label">Tanda Identitas</label>
-                        <div class="upload-wrapper">
-                            <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Choose File</button>
-                            <input type="file" id="upload_file" name="upload_file" class="form-control-file" hidden>
+            </div>
+            <div class="row mb-4 need-row">
+                <div class="col-md-12">
+                    <label for="need" class="need">Keperluan Lain</label>
+                    <label for="isi" class="fill">*Isi keperluan barang jika dibutuhkan</label>
+                </div>
+            </div>
+            <div class="row mb-4 need-row">
+                <div class="col">
+                    <label for="need" class="need" style="font-size: 14px; color: #1E4178">Tambah Kategori Barang</label>
+                </div>
+                <div class="col">
+                    <div class="cek d-flex" style="font-size: 14px;">
+                        <div class="radio">
+                            <input type="radio" name="keperluan" value="ya" onclick="toggleFields(true)">
+                            <label for="ya">Ya</label>
+                        </div>
+                        <div class="radio">
+                            <input type="radio" name="keperluan" value="tidak" onclick="toggleFields(false)">
+                            <label for="tidak">Tidak</label>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div id="additionalFields" class="card-body2" style="display: none;">
+                <div class="row mb-3">
+                    <div class="colom">
+                        <label for="jumlah_kolom" class="form-label">Jumlah Kategori Barang</label>
+                        <input type="number" id="jumlah_kolom" name="jumlah_kolom" class="form-control" placeholder="Masukkan jumlah kategori barang yang ingin diinput" min="1" onchange="updateFields()">
+                    </div>
+                </div>
+            </div>
+            <div id="dynamicFields"></div>
+
             <div class="card-footer">
-                <button class="btn-footer1"><a href="{{route ('memo.superadmin')}}">Cancel</a></button>
-                <button class="btn-footer2">Save</button>
+                <button type="button" class="btn btn-cancel"><a href="{{route ('memo.superadmin')}}">Batal</a></button>
+                <button type="submit" class="btn btn-save"><a href="{{route ('memo.superadmin')}}">Simpan</a></button>
             </div>
         </div>
     </div>
@@ -122,31 +150,43 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="uploadModalLabel">
                         <img src="/img/memo-superadmin/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
-                        Upload files
+                        Unggah file
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="modal-subtitle">Select and upload the files of your choice</p>
+                    <p class="modal-subtitle">Pilih dan unggah file pilihan Anda</p>
                     <div class="upload-container">
                         <div class="upload-box" id="uploadBox">
                             <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
-                            <p class="upload-text">Choose a file or drag & drop it here</p>
-                            <p class="upload-note">PDF file size no more than 20MB</p>
-                            <button class="btn btn-outline-primary" id="selectFileBtn">Select File</button>
+                            <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
+                            <p class="upload-note">Ukuran file PDF tidak lebih dari 20MB</p>
+                            <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
                             <input type="file" id="fileInput" accept=".pdf" style="display: none;">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="uploadBtn" >Upload</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="uploadBtn" >Unggah</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        $(document).ready(function() {
+            $('#dropdownMenuButton').on('change', function() {
+                // Saat opsi dipilih, teks akan ke kiri
+                $(this).css('text-align', 'left');
+
+                // Jika kembali ke opsi default (Pilih), teks akan kembali ke center
+                if($(this).val() === null || $(this).val() === "") {
+                    $(this).css('text-align', 'center');
+                }
+            });
+        });
+
         // Hubungkan tombol "Select File" dengan input file
         document.getElementById('selectFileBtn').addEventListener('click', function () {
             document.getElementById('fileInput').click();
@@ -176,6 +216,115 @@
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']
             });
         });
+
+        function toggleFields(show) {
+            const fields = document.getElementById('additionalFields');
+            if (show) {
+                fields.style.display = 'block'; // Show additional fields
+            } else {
+                fields.style.display = 'none'; // Hide additional fields
+            }
+        }
+
+        // Fungsi untuk menampilkan dan menyembunyikan fields tambahan
+        function toggleFields(show) {
+            const fields = document.getElementById('additionalFields');
+            if (show) {
+                fields.style.display = 'block'; // Menampilkan fields tambahan
+            } else {
+                fields.style.display = 'none'; // Menyembunyikan fields tambahan
+            }
+        }
+
+        // Fungsi untuk memperbarui dan menampilkan fields berdasarkan jumlah kolom yang dimasukkan
+        function updateFields() {
+            const jumlahKolom = document.getElementById('jumlah_kolom').value;
+            const dynamicFieldsContainer = document.getElementById('dynamicFields');
+            dynamicFieldsContainer.innerHTML = ''; // Kosongkan container sebelum menambahkan field baru
+
+            for (let i = 0; i < jumlahKolom; i++) {
+                // Buat row baru untuk setiap kolom
+                const row = document.createElement('div');
+                row.classList.add('row', 'mb-3');
+                row.style.display = 'flex';
+                row.style.gap = '2px';
+                row.style.marginLeft = '47px';
+                row.style.marginRight = '47px';
+                row.style.marginTop = '10px';
+                
+                // Buat kolom untuk Nomor
+                const colNomor = document.createElement('div');
+                colNomor.classList.add('col-md-6');
+                const labelNomor = document.createElement('label');
+                labelNomor.setAttribute('for', 'nomor_' + i);
+                labelNomor.textContent = 'Nomor';
+                const inputNomor = document.createElement('input');
+                inputNomor.setAttribute('type', 'text');
+                inputNomor.setAttribute('id', 'nomor_' + i);
+                inputNomor.setAttribute('name', 'nomor_' + i);
+                inputNomor.classList.add('form-control');
+                inputNomor.setAttribute('placeholder', 'Masukkan nomor');
+                colNomor.appendChild(labelNomor);
+                colNomor.appendChild(inputNomor);
+
+                // Buat kolom untuk Barang
+                const colBarang = document.createElement('div');
+                colBarang.classList.add('col-md-6');
+                const labelBarang = document.createElement('label');
+                labelBarang.setAttribute('for', 'barang_' + i);
+                labelBarang.textContent = 'Barang';
+                const inputBarang = document.createElement('input');
+                inputBarang.setAttribute('type', 'text');
+                inputBarang.setAttribute('id', 'barang_' + i);
+                inputBarang.setAttribute('name', 'barang_' + i);
+                inputBarang.classList.add('form-control');
+                inputBarang.setAttribute('placeholder', 'Masukkan barang');
+                colBarang.appendChild(labelBarang);
+                colBarang.appendChild(inputBarang);
+
+                // Tambahkan kolom Nomor dan Barang ke dalam row
+                row.appendChild(colNomor);
+                row.appendChild(colBarang);
+
+                // Buat kolom untuk Qty
+                const colQty = document.createElement('div');
+                colQty.classList.add('col-md-6');
+                const labelQty = document.createElement('label');
+                labelQty.setAttribute('for', 'qty_' + i);
+                labelQty.textContent = 'Qty';
+                const inputQty = document.createElement('input');
+                inputQty.setAttribute('type', 'number');
+                inputQty.setAttribute('id', 'qty_' + i);
+                inputQty.setAttribute('name', 'qty_' + i);
+                inputQty.classList.add('form-control');
+                inputQty.setAttribute('placeholder', 'Masukkan jumlah');
+                colQty.appendChild(labelQty);
+                colQty.appendChild(inputQty);
+
+                // Buat kolom untuk Satuan
+                const colSatuan = document.createElement('div');
+                colSatuan.classList.add('col-md-6');
+                const labelSatuan = document.createElement('label');
+                labelSatuan.setAttribute('for', 'satuan_' + i);
+                labelSatuan.textContent = 'Satuan';
+                const inputSatuan = document.createElement('input');
+                inputSatuan.setAttribute('type', 'text');
+                inputSatuan.setAttribute('id', 'satuan_' + i);
+                inputSatuan.setAttribute('name', 'satuan_' + i);
+                inputSatuan.classList.add('form-control');
+                inputSatuan.setAttribute('placeholder', 'Masukkan satuan');
+                colSatuan.appendChild(labelSatuan);
+                colSatuan.appendChild(inputSatuan);
+
+                // Tambahkan kolom Qty dan Satuan ke dalam row
+                row.appendChild(colQty);
+                row.appendChild(colSatuan);
+
+                // Tambahkan row ke dalam container dynamicFields
+                dynamicFieldsContainer.appendChild(row);
+            }
+        }
+
     </script>
 
     <!-- Bootstrap JS and Popper.js -->

@@ -51,6 +51,10 @@ Route::get('/edit-memoSuperadmin', function() {
     return view('superadmin.memo.edit-memo');
 })->name('edit-memo.superadmin');
 
+Route::get('/kirim-memoSuperadmin', function() {
+    return view('superadmin.memo.kirim-memoSuperadmin');
+})->name('kirim-memoSuperadmin.superadmin');
+
 Route::get('/dashboard.admin', function () {
     return view('admin.index');
 })->name('admin.dashboard');

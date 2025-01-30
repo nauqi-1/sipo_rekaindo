@@ -68,7 +68,6 @@
 
                 <!-- Add User Button to Open Modal -->
                 <a href="{{ route('add-memo.superadmin') }}" class="btn btn-add">+ Tambah Memo</a>
-                <!-- <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah Memo</button> -->
             </div>
         </div>
 
@@ -109,13 +108,16 @@
                         @if ($i % 3 == 0)
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($i % 2 == 0)
-                            <span class="badge bg-warning">Proses</span>
+                            <span class="badge bg-warning">Diproses</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
                         @endif
                     </td>
                     <td>
                         <!-- <button class="btn btn-sm1"><img src="/img/memo-superadmin/share.png" alt="share"></button> -->
+                        <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
+                            <img src="/img/memo-superadmin/share.png" alt="share">
+                        </a>
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/memo-superadmin/Delete.png" alt="delete">
                         </button>
@@ -125,13 +127,9 @@
                                 <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                             </button>
                         @else
-                            <!-- <button class="btn btn-sm3">
-                                <img src="/img/memo-superadmin/edit.png" alt="edit">
-                            </button> -->
                             <a href="{{ route('edit-memo.superadmin') }}" class="btn btn-sm3">
                                 <img src="/img/memo-superadmin/edit.png" alt="edit">
                             </a>
-
                         @endif
                     </td>
                 </tr>
