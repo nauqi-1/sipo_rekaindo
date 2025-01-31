@@ -139,7 +139,7 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Hapus Memo Diterima?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}">Cancel</a></button>
+                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}">Batal</a></button>
                             <button type="button" class="btn ok" id="confirmDelete">Oke</button>
                         </div>
                     </div>

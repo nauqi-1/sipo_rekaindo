@@ -150,8 +150,8 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Hapus Memo?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Cancel</a></button>
-                            <button type="button" class="btn-ok" id="confirmDelete">OK</button>
+                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Batal</a></button>
+                            <button type="button" class="btn ok" id="confirmDelete">Oke</button>
                         </div>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus Memo</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Kembali</a></button>
+                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
@@ -189,8 +189,8 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Arsip Memo?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Cancel</a></button>
-                            <button type="button" class="btn-ok" id="confirmArsip">OK</button>
+                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Batal</a></button>
+                            <button type="button" class="btn ok" id="confirmArsip">Oke</button>
                         </div>
                     </div>
                 </div>
@@ -210,7 +210,7 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Sukses</b></h5>
                         <h6 class="mb-4" style="font-size: 14px; color: #5B5757;">Berhasil Arsip Memo</h6>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Kembali</a></button>
+                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
@@ -219,28 +219,35 @@
     </div>
 
     <script>
-    // Tambahkan event listener untuk tombol OK pada modal Hapus
-    document.getElementById('confirmDelete').addEventListener('click', function () {
-        // Tutup modal Hapus
-        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        deleteModal.hide();
+        document.getElementById('confirmDelete').addEventListener('click', function () {
+            // Ambil referensi modal
+            const deleteModalEl = document.getElementById('deleteModal');
+            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
+            
+            // Tutup modal Hapus terlebih dahulu
+            deleteModal.hide();
+            
+            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
+            deleteModalEl.addEventListener('hidden.bs.modal', function () {
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+            }, { once: true }); // Tambahkan event listener hanya sekali
+        });
 
-        // Tampilkan modal Berhasil
-        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-        successModal.show();
-    });
-
-    // Tambahkan event listener untuk tombol OK pada modal Arsip
-    document.getElementById('confirmArsip').addEventListener('click', function () {
-        // Tutup modal Arsip
-        const arsipModal = new bootstrap.Modal(document.getElementById('arsipModal'));
-        arsipModal.hide();
-
-        // Tampilkan modal Berhasil
-        const successArsipModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
-        successArsipModal.show();
-    });
-
+        document.getElementById('confirmArsip').addEventListener('click', function () {
+            // Ambil referensi modal
+            const deleteModalEl = document.getElementById('arsipModal');
+            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
+            
+            // Tutup modal Hapus terlebih dahulu
+            deleteModal.hide();
+            
+            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
+            deleteModalEl.addEventListener('hidden.bs.modal', function () {
+                const successModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
+                successModal.show();
+            }, { once: true }); // Tambahkan event listener hanya sekali
+        });
     </script>
 
 
