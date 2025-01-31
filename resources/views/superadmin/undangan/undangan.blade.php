@@ -13,7 +13,7 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route('superadmin.dashboard')}}"><img src="/img/undangan-superadmin/Vector_back.png" alt=""></a>
+                <a href="{{route('superadmin.dashboard')}}"><img src="/img/undangan/Vector_back.png" alt=""></a>
             </div>
             <h1>Undangan Rapat</h1>
         </div>        
@@ -52,16 +52,16 @@
                 </div>
                 <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                     <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                    <img src="/img/undangan-superadmin/kalender.png" alt="Kalender Icon" class="input-icon">
+                    <img src="/img/undangan/kalender.png" alt="Kalender Icon" class="input-icon">
                 </div>
                 <i class="bi bi-arrow-right"></i>
                 <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                     <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                    <img src="/img/undangan-superadmin/kalender.png" alt="Kalender Icon" class="input-icon">
+                    <img src="/img/undangan/kalender.png" alt="Kalender Icon" class="input-icon">
                 </div>
                 <div class="d-flex gap-2">
                     <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                        <img src="/img/undangan-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
+                        <img src="/img/undangan/search.png" alt="search" style="width: 20px; height: 20px;">
                         <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
                     </div>
                 </div>
@@ -115,19 +115,19 @@
                     </td>
                     <td>
                         <!-- <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
-                            <img src="/img/memo-superadmin/share.png" alt="share">
+                            <img src="/img/memo/share.png" alt="share">
                         </a> -->
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            <img src="/img/undangan-superadmin/Delete.png" alt="delete">
+                            <img src="/img/undangan/Delete.png" alt="delete">
                         </button>
                         <!-- Status Approve -->
                         @if ($i % 3 != 0 && $i % 2 != 0) 
                             <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
-                                <img src="/img/undangan-superadmin/arsip.png" alt="arsip">
+                                <img src="/img/undangan/arsip.png" alt="arsip">
                             </button>
                         @else
                             <a href="#" class="btn btn-sm3">
-                                <img src="/img/undangan-superadmin/edit.png" alt="edit">
+                                <img src="/img/undangan/edit.png" alt="edit">
                             </a>
                         @endif
                     </td>
@@ -144,7 +144,7 @@
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
                         <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
+                        <img src="/img/undangan/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Hapus Undangan Rapat?</b></h5>
                         <!-- Tombol -->
@@ -165,7 +165,7 @@
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
                         <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                        <img src="/img/undangan/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050; font-size: 20px;"><b>Berhasil Menghapus <br>Undangan Rapat</b></h5>
                         <!-- Tombol -->
@@ -183,7 +183,7 @@
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
                         <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
+                        <img src="/img/undangan/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Arsip Undangan Rapat?</b></h5>
                         <!-- Tombol -->
@@ -204,7 +204,7 @@
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
                         <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                        <img src="/img/undangan/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Sukses</b></h5>
                         <h6 class="mb-4" style="font-size: 14px; color: #5B5757;">Berhasil Arsip Undangan Rapat</h6>

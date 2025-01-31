@@ -180,3 +180,7 @@ Route::get('/view-memoDiterima', function() {
     return view('supervisor.memo.view-memoDiterima'); })->name('view.memo-diterima');
 Route::get('/view-memoTerkirim', function() {
     return view('supervisor.memo.view-memoTerkirim'); })->name('view.memo-terkirim');
+
+// undangan admin
+Route::get('/undanganAdmin', function() {
+    return view('admin.undangan.undangan-admin'); })->name('undangan.admin');
