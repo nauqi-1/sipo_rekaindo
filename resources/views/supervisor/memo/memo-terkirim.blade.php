@@ -111,16 +111,15 @@
                         @endif
                     </td>
                     <td>
-                        <!-- <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1"> -->
-                        <a href="#" class="btn btn-sm1">
+                        <!-- <a href="#" class="btn btn-sm1">
                             <img src="/img/memo-supervisor/share.png" alt="share">
-                        </a>
+                        </a> -->
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/memo-supervisor/Delete.png" alt="delete">
                         </button>
-                        <button class="btn btn-sm3">
+                        <a class="btn btn-sm3" href="{{ route('view.memo-terkirim') }}">
                             <img src="/img/memo-supervisor/viewBlue.png" alt="view">
-                        </button>
+                        </a>
                     </td>
                 </tr>
                 @endfor
@@ -140,8 +139,8 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Hapus Memo Terkirim?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.terkirim')}}">Cancel</a></button>
-                            <button type="button" class="btn-ok" id="confirmDelete">OK</button>
+                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('memo.terkirim')}}">Cancel</a></button>
+                            <button type="button" class="btn ok" id="confirmDelete">Oke</button>
                         </div>
                     </div>
                 </div>
@@ -158,9 +157,9 @@
                         <!-- Ikon atau Gambar -->
                         <img src="/img/memo-supervisor/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus <br>Memo Terkirim</b></h5>
+                        <h5 class="mb-4" style="color: #545050; font-size: 20px;"><b>Berhasil Menghapus <br>Memo Terkirim</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.terkirim')}}">Kembali</a></button>
+                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('memo.terkirim')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
@@ -168,30 +167,21 @@
     </div>
 
     <script>
-    // Tambahkan event listener untuk tombol OK pada modal Hapus
-    document.getElementById('confirmDelete').addEventListener('click', function () {
-        // Tutup modal Hapus
-        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        deleteModal.hide();
-
-        // Tampilkan modal Berhasil
-        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-        successModal.show();
-    });
-
-    // Tambahkan event listener untuk tombol OK pada modal Arsip
-    document.getElementById('confirmArsip').addEventListener('click', function () {
-        // Tutup modal Arsip
-        const arsipModal = new bootstrap.Modal(document.getElementById('arsipModal'));
-        arsipModal.hide();
-
-        // Tampilkan modal Berhasil
-        const successArsipModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
-        successArsipModal.show();
-    });
-
+        document.getElementById('confirmDelete').addEventListener('click', function () {
+            // Ambil referensi modal
+            const deleteModalEl = document.getElementById('deleteModal');
+            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
+            
+            // Tutup modal Hapus terlebih dahulu
+            deleteModal.hide();
+            
+            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
+            deleteModalEl.addEventListener('hidden.bs.modal', function () {
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+            }, { once: true }); // Tambahkan event listener hanya sekali
+        });
     </script>
-
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>

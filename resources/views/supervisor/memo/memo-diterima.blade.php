@@ -167,30 +167,21 @@
     </div>
 
     <script>
-    // Tambahkan event listener untuk tombol OK pada modal Hapus
-    document.getElementById('confirmDelete').addEventListener('click', function () {
-        // Tutup modal Hapus
-        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        deleteModal.hide();
-
-        // Tampilkan modal Berhasil
-        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-        successModal.show();
-    });
-
-    // Tambahkan event listener untuk tombol OK pada modal Arsip
-    document.getElementById('confirmArsip').addEventListener('click', function () {
-        // Tutup modal Arsip
-        const arsipModal = new bootstrap.Modal(document.getElementById('arsipModal'));
-        arsipModal.hide();
-
-        // Tampilkan modal Berhasil
-        const successArsipModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
-        successArsipModal.show();
-    });
-
+        document.getElementById('confirmDelete').addEventListener('click', function () {
+            // Ambil referensi modal
+            const deleteModalEl = document.getElementById('deleteModal');
+            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
+            
+            // Tutup modal Hapus terlebih dahulu
+            deleteModal.hide();
+            
+            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
+            deleteModalEl.addEventListener('hidden.bs.modal', function () {
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+            }, { once: true }); // Tambahkan event listener hanya sekali
+        });
     </script>
-
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>

@@ -300,71 +300,54 @@ h1 {
     background-color: #c8dbf1 !important;
 }
 
-/* Tombol Cancel */
-.btn-cancel {
-    background-color: white;
-    border: 1px solid #8A8383;
-    color: #8A8383;
-    padding: 8px 0;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    display: flex;
-    justify-content: center;
-    width: 80px;
-    margin-bottom: 10px;
+.btn.cancel {
+    background-color: #ffffff;
+    border: 1px solid #8F9BB3;
+    color: #8F9BB3;
+    width: 15%;
+    font-size: 13px;
 }
-
-.btn-cancel:hover {
-    background-color: #f7f7f7;
-    color: #6e6e6e;
-}
-
-.btn-cancel a {
-    background-color: white;
-    color: #8A8383;
-    text-decoration: none;
-}
-
-/* Tombol OK */
-.btn-ok {
-    background-color: #2592F7;
-    border: none;
-    color: white;
-    padding: 8px 0;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    display: flex;
-    justify-content: center;
-    width: 80px;
-    margin-bottom: 10px;
-}
-
-.btn-ok:hover {
-    background-color: #1a7cd3;
-}
-
-/* Tombol Back */
-.btn-back {
-    background-color: #2592F7;
-    border: none;
-    color: white;
-    padding: 8px 0;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    width: 80px;
-    margin-bottom: 10px;
-}
-
-.btn-back:hover {
-    background-color: #1a7cd3;
-}
-
-.btn-back a {
+.btn.ok {
     background-color: #2592F7;
     color: #ffffff;
+    width: 15%;
+    font-size: 13px;
+}
+.btn.cancel:hover{
+    background-color: #8F9BB3;
+    border: 1px solid #8F9BB3;
+    color: #ffffff;
+}
+.btn.cancel a {
+    text-decoration: none;
+    color: #8F9BB3;
+    font-size: 13px;
+}
+.btn.cancel a:hover{
+    color: #ffffff;
+}
+.btn.ok:hover,
+.btn.back:hover {
+    background-color: #92C5FF99;
+    color: #ffffff;
+}
+.btn.ok a,
+.btn.back a {
+    /* background-color: #1E4178; */
+    color: #ffffff;
+    font-size: 13px;
+    text-decoration: none;
+}
+.btn.ok a:hover,
+.btn.back a:hover {
+    /* background-color: #92C5FF99; */
+    color: #1E4178 !important;
+}
+.btn.back {
+    background-color: #2592F7;
+    color: #ffffff;
+    width: 20%;
+    font-size: 13px;
     text-decoration: none;
 }
 
