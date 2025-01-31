@@ -202,16 +202,17 @@ select.btn-dropdown:hover {
 }
 
 .form-check1 {
-    margin-left: 44%;
-}
-.form-check1 input {
-    margin-left: 10px;
-    border-radius: 50% !important;
+    margin-left: 24%;
 }
 .form-check2 {
-    margin-left: 40px;
+    margin-left: 30px;
 }
-.form-check2 input {
+.form-check3 {
+    margin-left: 30px;
+}
+.form-check1 input,
+.form-check2 input,
+.form-check3 input {
     margin-left: 10px;
     border-radius: 50% !important;
 }
@@ -267,20 +268,23 @@ select.btn-dropdown:hover {
     font-size: 13px;
 }
 .btn.submit:hover,
-.btn.ok:hover {
+.btn.ok:hover,
+.btn.success:hover {
     background-color: #92C5FF99;
     color: #ffffff;
 }
 
 .btn.submit a,
-.btn.ok a{
+.btn.ok a,
+.btn.success a {
     /* background-color: #1E4178; */
     color: #ffffff;
     font-size: 13px;
     text-decoration: none;
 }
 .btn.submit a:hover,
-.btn.ok a:hover {
+.btn.ok a:hover,
+.btn.success a:hover {
     /* background-color: #92C5FF99; */
     color: #1E4178 !important;
 }
@@ -292,8 +296,15 @@ select.btn-dropdown:hover {
     font-size: 13px;
 }
 .btn.ok {
-    background-color: #1E4178;
+    background-color: #2592F7;
     color: #ffffff;
     width: 15%;
     font-size: 13px;
+}
+.btn.success {
+    background-color: #2592F7;
+    color: #ffffff;
+    width: 20%;
+    font-size: 13px;
+    text-decoration: none;
 }

@@ -111,16 +111,15 @@
                         @endif
                     </td>
                     <td>
-                        <!-- <button class="btn btn-sm1"><img src="/img/memo-supervisor/share.png" alt="share"></button> -->
-                        <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
+                        <!-- <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
                             <img src="/img/memo-supervisor/share.png" alt="share">
-                        </a>
+                        </a> -->
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/memo-supervisor/Delete.png" alt="delete">
                         </button>
-                        <button class="btn btn-sm3">
+                        <a class="btn btn-sm3" href="{{ route('view.memo-diterima') }}">
                             <img src="/img/memo-supervisor/viewBlue.png" alt="view">
-                        </button>
+                        </a>
                     </td>
                 </tr>
                 @endfor
@@ -140,8 +139,8 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Hapus Memo Diterima?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}">Cancel</a></button>
-                            <button type="button" class="btn-ok" id="confirmDelete">OK</button>
+                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}">Cancel</a></button>
+                            <button type="button" class="btn ok" id="confirmDelete">Oke</button>
                         </div>
                     </div>
                 </div>
@@ -158,54 +157,13 @@
                         <!-- Ikon atau Gambar -->
                         <img src="/img/memo-supervisor/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus <br>Memo Diterima</b></h5>
+                        <h5 class="mb-4" style="color: #545050; font-size: 20px;"><b>Berhasil Menghapus <br>Memo Diterima</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}">Kembali</a></button>
+                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Modal Arsip -->
-        <div class="modal fade" id="arsipModal" tabindex="-1" aria-labelledby="arsipModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/memo-supervisor/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Arsip Memo?</b></h5>
-                        <!-- Tombol -->
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}">Cancel</a></button>
-                            <button type="button" class="btn-ok" id="confirmArsip">OK</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Arsip Berhasil -->
-        <div class="modal fade" id="successArsipModal" tabindex="-1" aria-labelledby="successArsipModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/memo-supervisor/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Sukses</b></h5>
-                        <h6 class="mb-4" style="font-size: 14px; color: #5B5757;">Berhasil Arsip Memo</h6>
-                        <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}">Kembali</a></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <script>

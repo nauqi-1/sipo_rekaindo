@@ -25,7 +25,7 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Kirim Memo</a>
+                    <a href="#">Beranda</a>/<a href="{{route ('memo.diterima')}}">Memo Diterima</a>/<a href="#" style="color: #565656;">Lihat Memo</a>
                 </div>
             </div>
         </div>
@@ -108,6 +108,10 @@
                             <label class="form-check-label" for="reject">Ditolak</label>
                             <input type="checkbox" class="form-check-input" id="reject" name="approval" value="reject">
                         </div>
+                        <div class="form-check3">
+                            <label class="form-check-label" for="reject">Dikoreksi</label>
+                            <input type="checkbox" class="form-check-input" id="reject" name="approval" value="reject">
+                        </div>
                     </div>
                     <div class="card-blue1">Tindakan Selanjutnya</div>
                     <div class="card-white">
@@ -139,7 +143,7 @@
                         <!-- Ikon atau Gambar -->
                         <img src="/img/memo-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Kirim Memo?</b></h5>
+                        <h5 class="mb-4" style="color: #545050;"><b>Kirim Memo Diterima?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
                             <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="#">Batal</a></button>
@@ -162,7 +166,7 @@
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirim Memo</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="#">Kembali</a></button>
+                        <button type="button" class="btn success" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>

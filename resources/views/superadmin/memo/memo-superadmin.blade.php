@@ -115,9 +115,9 @@
                     </td>
                     <td>
                         <!-- <button class="btn btn-sm1"><img src="/img/memo-superadmin/share.png" alt="share"></button> -->
-                        <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
+                        <!-- <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
                             <img src="/img/memo-superadmin/share.png" alt="share">
-                        </a>
+                        </a> -->
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/memo-superadmin/Delete.png" alt="delete">
                         </button>
