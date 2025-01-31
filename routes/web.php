@@ -170,3 +170,11 @@ Route::get('/dashboard-admin', function() {
 Route::get('/dashboard-supervisor', function() {
     return view('supervisor.dashboard');
 })->name('dashboard-supervisor');
+
+// memo supervisor
+Route::get('/memo-terkirim', function() {
+    return view('supervisor.memo.memo-terkirim'); })->name('memo.terkirim');
+Route::get('/memo-diterima', function() {
+    return view('supervisor.memo.memo-diterima'); })->name('memo.diterima');
+Route::get('/view-memoDiterima', function() {
+    return view('supervisor.memo.view-memoDiterima'); })->name('view.memo-diterima');
