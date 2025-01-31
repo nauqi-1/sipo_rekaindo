@@ -3,36 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memo Terkirim</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <title>After Kirim Memo</title>
+    <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/supervisor/after-kirim.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('/css/supervisor/after-kirim.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('memo.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Memo Terkirim</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
-                <div class="breadcrumb">
-                    <a href="#">Beranda</a>/<a href="#">Memo</a>/<a href="#">Memo Terkirim</a>
+                <div class="breadcrumb" style="gap: 5px;">
+                    <a href="#">Beranda</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Memo Terkirim</a>
                 </div>
             </div>
         </div>
-
-        <!-- form add memo -->
         <div class="card-body">
-            <div class="row-mb-4">
-                <div class="col-md-6">
+            <div class="row mb-4" style="gap: 20px;">
+                <div class="col">
                     <div class="card-blue">
-                        <img src="/img/laporan/tanggal.png" alt="date">
-                        <span>Informasi Detail Surat</span>
+                        <label for="tgl_surat" class="form-label">
+                            <img src="/img/memo-admin/info.png" alt="info surat">Informasi Detail Surat
+                        </label>
                     </div>
                     <div class="card-white">
                         <label for="nomor">No Surat</label>
@@ -42,7 +45,7 @@
                     <div class="card-white">
                         <label for="divisi">Divisi</label>
                         <div class="separator"></div>
-                        <input type="text" id="divisi">
+                        <input type="text" id="seri">
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
@@ -50,71 +53,61 @@
                         <input type="text" id="perihal">
                     </div>
                     <div class="card-white">
-                        <label for="tanggal">Tanggal Surat</label>
+                        <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tanggal">
+                        <input type="text" id="tgl">
                     </div>
                     <div class="card-white">
                         <label for="lampiran">Lampiran</label>
                         <div class="separator"></div>
-                        <input type="text" id="lampiran">
+                        <input type="text" id="kepada">
                     </div>
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
-                        <button><img src="/img/mata.png" alt="preview"> Lihat</button>
-                        <button style="margin-left: 5px;"><img src="/img/download.png" alt="unduh"> Unduh</button>
+                        <button class="btn-file"><img src="/img/mata.png" alt="view"><a href="#">Lihat</a></button>
+                        <button class="down btn-file"><img src="/img/download.png" alt="down"><a href="#">Unduh</a></button>
                     </div>
                     <div class="card-white">
-                        <label for="status">Status Surat</label>
+                        <label for="status">Status</label>
                         <div class="separator"></div>
-                        <span class="badge bg-success">Diterima</span>
+                        <button class="status">Diproses</button>
                     </div>
                 </div>
             </div>
-        </div>
-        <br>
-        <div class="card-body">
-            <div class="row-mb-4">
-                <div class="col-md-6">
-                    <div class="card-blue">
-                        <img src="/img/laporan/tanggal.png" alt="date">
-                        <span>Informasi Penerima</span>
-                    </div>
-                    <div class="card-white">
-                        <label for="penerima">Penerima</label>
-                        <div class="separator"></div>
-                        <div class="col-md-6">
-                            <div class="select-wrapper">
-                            <select name="user" id="user" class="form-control" required autofocus autocomplete="user">
-                                <option value="" disabled selected>-- Pilih User-- </option>
-                                <option value="undangan">Prabowo</option>
-                                <option value="biasa">Jokowi</option>
-                            </select>
-                            <span class="chevron-down">
-                                <i class="bi bi-chevron-down"></i>
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-white">
-                        <label for="catatan">Catatan</label>
-                        <div class="separator"></div>
-                        <textarea id="catatan" rows="3" placeholder="Masukkan catatan..."></textarea>
-                    </div>
+            <div class="row mb-4" style="gap: 20px;">
+                <div class="card-blue">
+                    <label for="tindakan">Tindakan Selanjutnya</label>
                 </div>
+                <div class="col">
+                    <div class="card-white">
+                        <label for="file">Penerima</label>
+                        <div class="separator"></div>
+                        <input type="text" id="penerima">                  
+                    </div>                        
+                    <div class="card-white">
+                        <label for="file">Catatan</label>
+                        <div class="separator"></div>
+                        <input type="text-area" id="catatan">                   
+                    </div>
+                </div>             
             </div>
         </div>
-        <form action="#" method="GET">
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" id="edit-button">Simpan</button>
-                <button type="button" class="btn btn-secondary" id="cancel-button">Batal</button>
-            </div>
-        </form>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectElements = document.querySelectorAll("select");
 
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+            selectElements.forEach(select => {
+                select.addEventListener("change", function () {
+                    if (this.value === "koreksi" || this.value === "user") {
+                        this.style.textAlign = "left";
+                    } else {
+                        this.style.textAlign = "center";
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

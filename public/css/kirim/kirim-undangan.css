@@ -162,6 +162,39 @@ h1 {
     margin-bottom: 3px;
 }
 
+.card-blue1 {
+    background-color: #92C5FF40;
+    color: #1E4178;
+    font-size: 14px;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+    margin: 0 auto;
+}
+
+select.btn-dropdown {
+    background-color: #ffffff;
+    border: none;
+    color: #1E4178;
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+select.btn-dropdown:hover {
+    background-color: #ffffff;
+    color: #222B45;
+    box-shadow: none;
+    outline: none;
+    border: none;
+}
+
+.btn-dropdown option {
+    font-size: 13px;
+}
+
 .footer {
     display: flex;
     justify-content: flex-end !important;
@@ -169,4 +202,64 @@ h1 {
     gap: 20px;
     padding: 1rem;
     background-color: white;
+}
+.btn.back {
+    background-color: #ffffff;
+    border: 1px solid #8F9BB3;
+    color: #8F9BB3;
+    width: auto;
+    font-size: 13px;
+}
+.btn.back:hover,
+.btn.cancel:hover{
+    background-color: #8F9BB3;
+    border: 1px solid #8F9BB3;
+    color: #ffffff;
+}
+.btn.back a,
+.btn.cancel a {
+    text-decoration: none;
+    color: #8F9BB3;
+    font-size: 13px;
+}
+.btn.back a:hover,
+.btn.cancel a:hover{
+    color: #ffffff;
+}
+.btn.submit {
+    background-color: #1E4178;
+    color: #ffffff;
+    width: 7%;
+    font-size: 13px;
+}
+.btn.submit:hover,
+.btn.ok:hover {
+    background-color: #92C5FF99;
+    color: #ffffff;
+}
+
+.btn.submit a,
+.btn.ok a{
+    /* background-color: #1E4178; */
+    color: #ffffff;
+    font-size: 13px;
+    text-decoration: none;
+}
+.btn.submit a:hover,
+.btn.ok a:hover {
+    /* background-color: #92C5FF99; */
+    color: #1E4178 !important;
+}
+.btn.cancel {
+    background-color: #ffffff;
+    border: 1px solid #8F9BB3;
+    color: #8F9BB3;
+    width: 15%;
+    font-size: 13px;
+}
+.btn.ok {
+    background-color: #1E4178;
+    color: #ffffff;
+    width: 15%;
+    font-size: 13px;
 }
