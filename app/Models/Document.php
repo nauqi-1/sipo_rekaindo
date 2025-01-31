@@ -56,6 +56,10 @@ class Document extends Model
     {
         return $this->belongsTo(Divisi::class, 'id_divisi');
     }
+    public function kategoriBarang()
+    {
+        return $this->hasMany(kategori_barang::class);
+    }
     public function updateStatus()
     {
         $recipients = $this->recipients;

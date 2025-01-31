@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\kategori_barang;
 use Illuminate\Http\Request;
 use App\Models\Document;
 use App\Models\User;
@@ -113,6 +114,17 @@ class DocumentController extends Controller
             'tanda_identitas' => $fileContent,
 
         ]);
+        if ($request->has('jumlah_kolom')) {
+            for ($i = 0; $i < $request->jumlah_kolom; $i++) {
+                kategori_barang::create([
+                    'memo_id' => $document->id,
+                    'nomor' => $request->input('nomor_' . $i),
+                    'barang' => $request->input('barang_' . $i),
+                    'qty' => $request->input('qty_' . $i),
+                    'satuan' => $request->input('satuan_' . $i),
+                ]);
+            }
+        }
     
         return redirect()->route('memo.superadmin')->with('success', 'Dokumen berhasil dibuat.');
     }
