@@ -3,38 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Undangan Rapat Superadmin</title>
+    <title>Edit Undangan Rapat Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/superadmin/add-undangan.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/edit-undangan.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('undangan.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('undangan.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Tambah Undangan Rapat</h1>
+            <h1>Edit Undangan Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Home</a>/<a href="#">Undangan Rapat</a>/<a href="#" style="color: #565656;">Tambah Undangan Rapat</a>
+                    <a href="#">Home</a>/<a href="#">Undangan Rapat</a>/<a href="#" style="color: #565656;">Edit Undangan Rapat</a>
                 </div>
             </div>
         </div>
 
-        <!-- form add undangan -->
-        <form method="POST" action="{{ route('undangan.superadmin') }}">
+        <!-- form edit undangan -->
+        <form method="POST" action="{{ route('undangan.admin') }}">
         @csrf 
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title" style="font-size: 18px;"><b>Formulir Tambah Undangan Rapat</b></h5>
+                <h5 class="card-title" style="font-size: 18px;"><b>Formulir Edit Undangan Rapat</b></h5>
             </div>
             <div class="card-body">
                 <div class="row mb-4">
@@ -101,8 +101,8 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.superadmin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save"><a href="{{route ('undangan.superadmin')}}">Simpan</a></button>
+                <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.admin')}}">Batal</a></button>
+                <button type="submit" class="btn btn-save"><a href="{{route ('undangan.admin')}}">Simpan</a></button>
             </div>
         </div>
         </form>

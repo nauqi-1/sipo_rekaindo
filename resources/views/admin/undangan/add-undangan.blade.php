@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Undangan Rapat Superadmin</title>
+    <title>Tambah Undangan Rapat Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/superadmin/add-undangan.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/add-undangan.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('undangan.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('undangan.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Tambah Undangan Rapat</h1>
         </div>        
@@ -30,7 +30,7 @@
         </div>
 
         <!-- form add undangan -->
-        <form method="POST" action="{{ route('undangan.superadmin') }}">
+        <form method="POST" action="{{ route('undangan.admin') }}">
         @csrf 
         <div class="card">
             <div class="card-header">
@@ -101,8 +101,8 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.superadmin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save"><a href="{{route ('undangan.superadmin')}}">Simpan</a></button>
+                <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.admin')}}">Batal</a></button>
+                <button type="submit" class="btn btn-save"><a href="{{route ('undangan.admin')}}">Simpan</a></button>
             </div>
         </div>
         </form>

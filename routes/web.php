@@ -97,7 +97,7 @@ Route::get('/edit-undanganSuperadmin', function() {
 })->name('edit-undangan.superadmin');
 
 Route::get('/risalahSuperadmin', function() {
-    return view('superadminSuperadmin.risalah.risalah');
+    return view('superadmin.risalah.risalah');
 })->name('risalah.superadmin');
 
 Route::get('/add-risalahSuperadmin', function() {
@@ -184,3 +184,8 @@ Route::get('/view-memoTerkirim', function() {
 // undangan admin
 Route::get('/undanganAdmin', function() {
     return view('admin.undangan.undangan-admin'); })->name('undangan.admin');
+Route::get('/add-undanganAdmin', function() {
+    return view('admin.undangan.add-undangan'); })->name('add-undangan.admin');
+Route::get('/edit-undanganAdmin', function() {
+    return view('admin.undangan.edit-undangan'); })->name('edit-undangan.admin');
+

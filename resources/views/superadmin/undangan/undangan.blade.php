@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undangan Rapat Super Admin</title>
+    <title>Undangan Rapat Superadmin</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/superadmin/undangan.css') }}">
@@ -67,7 +67,7 @@
                 </div>
 
                 <!-- Add User Button to Open Modal -->
-                <a href="#" class="btn btn-add">+ Tambah Undangan Rapat</a>
+                <a href="{{route ('add-undangan.superadmin')}}" class="btn btn-add">+ Tambah Undangan Rapat</a>
             </div>
         </div>
 
@@ -126,7 +126,7 @@
                                 <img src="/img/undangan/arsip.png" alt="arsip">
                             </button>
                         @else
-                            <a href="#" class="btn btn-sm3">
+                            <a href="{{route ('edit-undangan.superadmin')}}" class="btn btn-sm3">
                                 <img src="/img/undangan/edit.png" alt="edit">
                             </a>
                         @endif

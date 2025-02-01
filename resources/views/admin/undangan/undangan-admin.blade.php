@@ -67,7 +67,7 @@
                 </div>
 
                 <!-- Add User Button to Open Modal -->
-                <a href="#" class="btn btn-add">+ Tambah Undangan Rapat</a>
+                <a href="{{route ('add-undangan.admin')}}" class="btn btn-add">+ Tambah Undangan Rapat</a>
             </div>
         </div>
 
@@ -126,7 +126,7 @@
                                 <img src="/img/undangan/arsip.png" alt="arsip">
                             </button>
                         @else
-                            <a href="#" class="btn btn-sm3">
+                            <a href="{{route ('edit-undangan.admin')}}" class="btn btn-sm3">
                                 <img src="/img/undangan/edit.png" alt="edit">
                             </a>
                         @endif
