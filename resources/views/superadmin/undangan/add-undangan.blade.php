@@ -24,7 +24,7 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Home</a>/<a href="#">Undangan Rapat</a>/<a href="#" style="color: #565656;">Tambah Undangan Rapat</a>
+                    <a href="#">Beranda</a>/<a href="#">Undangan Rapat</a>/<a href="#" style="color: #565656;">Tambah Undangan Rapat</a>
                 </div>
             </div>
         </div>
@@ -81,7 +81,7 @@
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="nama_pimpinan" class="form-label">Nama Pimpinan</label>
+                        <label for="nama_pimpinan" class="form-label">Nama yang Bertanda Tangan</label>
                         <!-- <select name="nama_pimpinan" id="nama_pimpinan" class="form-control" required>
                             <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                         </select> -->

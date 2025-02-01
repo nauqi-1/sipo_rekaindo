@@ -81,7 +81,7 @@
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="nama_pimpinan" class="form-label">Nama Pimpinan</label>
+                        <label for="nama_pimpinan" class="form-label">Nama yang Bertanda Tangan</label>
                         <!-- <select name="nama_pimpinan" id="nama_pimpinan" class="form-control" required>
                             <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                         </select> -->
