@@ -196,3 +196,7 @@ Route::get('/add-risalahAdmin', function() {
     return view('admin.risalah.add-risalah'); })->name('add-risalah.admin');
 Route::get('/edit-risalahAdmin', function() {
     return view('admin.risalah.edit-risalah'); })->name('edit-risalah.admin');
+
+// undangan supervisor
+Route::get('/undanganSupervisor', function() {
+    return view('supervisor.undangan.undangan-supervisor'); })->name('undangan.supervisor');
