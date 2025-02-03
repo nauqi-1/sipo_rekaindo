@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManageController;
 use App\Http\Controllers\ForgotPWController;
+use App\Models\Risalah;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/p', function () {
@@ -200,3 +201,7 @@ Route::get('/edit-risalahAdmin', function() {
 // undangan supervisor
 Route::get('/undanganSupervisor', function() {
     return view('supervisor.undangan.undangan-supervisor'); })->name('undangan.supervisor');
+
+// risalah supervisor
+Route::get('/risalahSupervisor', function() {
+    return view('supervisor.risalah.risalah-supervisor'); })->name('risalah.supervisor');
