@@ -1,0 +1,88 @@
+.container {
+    font-family: arial;
+    width: 21cm;
+    height: 29.7cm;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    background-image: url('/img/format-surat/border-surat.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-size: 12px;
+}
+
+.title {
+    margin-top: 15%;
+    font-size: 20px;
+    justify-items: center;
+}
+
+.letter {
+    justify-content: start;
+    margin-left: 2cm;
+    margin-right: 2cm;
+    background-color: #ffffff;
+    line-height: 0.7cm;
+}
+
+.header1 tr td:first-child {
+    width: 20%;
+}
+
+.header2 table {
+    margin-top: 15px;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.header2 th {
+    border-top: 3px solid black;
+    border-bottom: 3px solid black;
+    border-left: none;
+    border-right: none;
+    text-align: center;
+    font-weight: normal;
+    padding: 10px;
+}
+
+/* Menambahkan garis tengah pemisah antar <th> */
+.header2 th + th {
+    border-left: 3px solid black;
+}
+
+.fill {
+    margin-top: 20px;
+}
+
+.fill table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.fill table th {
+    border: 1px solid black;
+    text-align: center;
+    padding: 5px;
+}
+
+.fill table td {
+    border: 1px solid black;
+    text-align: center;
+}
+
+.contents {
+    text-align: justify;
+    line-height: 0.7cm;
+}
+
+.signature {
+    margin-top: 5%;
+    text-align: left !important;
+    width: fit-content;
+    margin-left: auto;
+}
+
+.signature p {
+    text-align: center;
+    margin: 0;
+}

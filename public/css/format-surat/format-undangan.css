@@ -1,0 +1,80 @@
+.container {
+    font-family: arial;
+    width: 21cm;
+    height: 29.7cm;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    background-image: url('/img/format-surat/border-surat.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-size: 12px;
+}
+
+.date {
+    margin-right: 2cm;
+    margin-top: 15%;
+    justify-items: end;
+}
+
+.letter {
+    justify-content: start;
+    margin-left: 2cm;
+    margin-right: 2cm;
+    background-color: #ffffff;
+    line-height: 0.7cm;
+}
+
+header table tr td:first-child {
+    width: 20%;
+}
+
+.goal h4 {
+    margin-bottom: 0px;
+    margin-top: 5%;
+}
+
+.fill table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.goal p {
+    margin-top: 0px;
+    margin-bottom: 4%;
+}
+
+.contents {
+    text-align: justify;
+    line-height: 0.7cm;
+}
+
+.fill table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.fill table td {
+    line-height: 0.5cm;
+}
+
+/* Atur lebar kolom "Hari, tanggal" */
+.fill table tr td:first-child {
+    width: 20%; /* Sesuaikan lebar sesuai kebutuhan */
+}
+
+footer {
+    margin-top: 6%;
+}
+
+.signature {
+    margin-top: 5%;
+    text-align: left !important;
+    width: fit-content;
+    margin-left: auto;
+}
+
+.signature p {
+    text-align: center;
+    margin: 0;
+}
