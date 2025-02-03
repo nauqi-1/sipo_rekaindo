@@ -39,11 +39,10 @@
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="tgl_surat" class="form-label">
+                        <label for="tgl_dibuat" class="form-label">
                             <img src="/img/risalah/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat
                         </label>
-                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" required>
-                        <input type="hidden" name="tgl_disahkan" >
+                        <input type="text" name="tgl_dibuat" id="tgl_dibuat" class="form-control" placeholder="mm/dd/yyyy" required>
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
@@ -68,23 +67,58 @@
                         </label>
                         <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" required>
                     </div>
-                    <div class="col-md-6" style="border: none;"></div>
-                </div>
-                <div class="row mb-4 isi-surat-row">
-                    <div class="col-md-12">
-                        <img src="\img\risalah\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                        <label for="isi_document">Isi Surat</label>
-                    </div>
-                    <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
-                            <textarea id="summernote" name="isi_document"></textarea>
+                    <div class="col-md-6" >
+                        <label for="judul" class="form-label">Agenda</label>
+                        <input type="text" name="agenda" id="agenda" class="form-control" placeholder="Masukkan Agenda Rapat" required>
                     </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
+                        <label for="judul" class="form-label">Tempat</label>
+                        <input type="text" name="tempat" id="tempat" class="form-control" placeholder="Masukkan Tempat Rapat" required>
+                    </div>
+                    <div class="col-md-6" style="border: none;"></div>                        
+                </div>
+                <div class="row mb-4 isi-surat-row">
+                    <div class="col-md-12">
+                        <img src="\img\risalah\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
+                        <label for="isi_document">Isi Risalah Rapat</label>
+                    </div>
+                </div>
+                <div id="risalahContainer">
+                    <div class="isi-surat-row">
+                        <div class="col-md-1">
+                            <label for="no">No</label>
+                            <input type="text" class="form-control" name="no[]">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="topik">Topik</label>
+                            <textarea class="form-control" name="topik[]" placeholder="Topik Pembahasan" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="pembahasan">Pembahasan</label>
+                            <textarea class="form-control" name="pembahasan[]" placeholder="Pembahasan" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tindak-lanjut">Tindak Lanjut</label>
+                            <textarea class="form-control" name="tindak_lanjut[]" placeholder="Tindak Lanjut" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="target">Target</label>
+                            <textarea class="form-control" name="target[]" placeholder="Target" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="pic">PIC</label>
+                            <textarea class="form-control" name="pic[]" placeholder="PIC" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-tambah" style="margin-bottom: 10px;">
+                    <button class="btn btn-tambah" id="tambahIsiRisalahBtn">Tambah Isi Risalah</button>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-6">
                         <label for="nama_pimpinan" class="form-label">Nama yang Bertanda Tangan</label>
-                        <!-- <select name="nama_pimpinan" id="nama_pimpinan" class="form-control" required>
-                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                        </select> -->
                         <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
                             <option disabled selected style="text-align: left;">--Pilih--</option>
                             <option value="pimpinan1">Jokowi</option>
@@ -102,7 +136,7 @@
             </div>
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('risalah.superadmin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save"><a href="{{route ('risalah.superadmin')}}">Simpan</a></button>
+                <button type="submit" class="btn btn-save">Simpan</button>
             </div>
         </div>
         </form>
@@ -142,22 +176,17 @@
     <script>
         $(document).ready(function() {
             $('#dropdownMenuButton').on('change', function() {
-                // Saat opsi dipilih, teks akan ke kiri
                 $(this).css('text-align', 'left');
-
-                // Jika kembali ke opsi default (Pilih), teks akan kembali ke center
                 if($(this).val() === null || $(this).val() === "") {
                     $(this).css('text-align', 'center');
                 }
             });
         });
 
-        // Hubungkan tombol "Select File" dengan input file
         document.getElementById('selectFileBtn').addEventListener('click', function () {
             document.getElementById('fileInput').click();
         });
 
-        // Deteksi perubahan file dan aktifkan tombol Upload
         document.getElementById('fileInput').addEventListener('change', function () {
             const uploadBtn = document.getElementById('uploadBtn');
             if (this.files.length > 0) {
@@ -182,6 +211,55 @@
             });
         });
 
+        document.getElementById('tgl_dibuat').addEventListener('focus', function() {
+            this.type = 'date'; 
+        });
+
+        document.getElementById('tgl_dibuat').addEventListener('blur', function() {
+            if (this.value) { 
+                const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+                let inputTanggal = new Date(this.value);
+                
+                let namaHari = hari[inputTanggal.getDay()];
+                let tanggal = inputTanggal.getDate().toString().padStart(2, '0');
+                let bulan = (inputTanggal.getMonth() + 1).toString().padStart(2, '0');
+                let tahun = inputTanggal.getFullYear();
+                
+                this.type = 'text'; 
+                this.value = `${namaHari}, ${tanggal}-${bulan}-${tahun}`; 
+            } else {
+                this.type = 'text';
+                this.placeholder = "mm/dd/yyyy"; 
+            }
+        });  
+
+        document.getElementById('tambahIsiRisalahBtn').addEventListener('click', function() {
+        var newRow = document.createElement('div');
+        newRow.classList.add('isi-surat-row', 'row');  
+        newRow.style.gap = '0';  
+
+        newRow.innerHTML = `
+            <div class="col-md-1">
+                <input type="text" class="form-control" name="no[]">
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="topik[]" placeholder="Topik Pembahasan" rows="2"></textarea>
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="pembahasan[]" placeholder="Pembahasan" rows="2"></textarea>
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="tindak_lanjut[]" placeholder="Tindak Lanjut" rows="2"></textarea>
+            </div>
+            <div class="col-md-2">
+                <textarea class="form-control" name="target[]" placeholder="Target" rows="2"></textarea>
+            </div>
+            <div class="col-md-2">
+                <textarea class="form-control" name="pic[]" placeholder="PIC" rows="2"></textarea>
+            </div>
+        `;
+        document.getElementById('risalahContainer').appendChild(newRow);
+    });
     </script>
 
     <!-- Bootstrap JS and Popper.js -->

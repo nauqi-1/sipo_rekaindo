@@ -189,3 +189,10 @@ Route::get('/add-undanganAdmin', function() {
 Route::get('/edit-undanganAdmin', function() {
     return view('admin.undangan.edit-undangan'); })->name('edit-undangan.admin');
 
+// risalah admin
+Route::get('/risalahAdmin', function() {
+    return view('admin.risalah.risalah-admin'); })->name('risalah.admin');
+Route::get('/add-risalahAdmin', function() {
+    return view('admin.risalah.add-risalah'); })->name('add-risalah.admin');
+Route::get('/edit-risalahAdmin', function() {
+    return view('admin.risalah.edit-risalah'); })->name('edit-risalah.admin');
