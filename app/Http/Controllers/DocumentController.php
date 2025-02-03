@@ -117,7 +117,7 @@ class DocumentController extends Controller
         if ($request->has('jumlah_kolom')) {
             for ($i = 0; $i < $request->jumlah_kolom; $i++) {
                 kategori_barang::create([
-                    'memo_id' => $document->id,
+                    'document_id_document' => $document->id_document,
                     'nomor' => $request->input('nomor_' . $i),
                     'barang' => $request->input('barang_' . $i),
                     'qty' => $request->input('qty_' . $i),

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Memo Super Admin</title>
+    <title>Tambah Memo Super Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
@@ -19,12 +19,12 @@
             <div class="back-button">
                 <a href="{{route ('memo-superadmin.store')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Add Memo</h1>
+            <h1>Tambah Memo</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Home</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Add Memo</a>
+                    <a href="#">Beranda</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Tambah Memo</a>
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
         @csrf 
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title" style="font-size: 18px;"><b>Form Add Memo</b></h5>
+                <h5 class="card-title" style="font-size: 18px;"><b>Formulir Tambah Memo</b></h5>
             </div>
             <div class="card-body">
                 <div class="row mb-4">
@@ -100,8 +100,8 @@
                     </div>
                 </div>
                 <div class="row mb-4">
-                <div class="col-md-6">
-                        <label for="nama_pimpinan" class="form-label">Nama Pimpinan</label>
+                    <div class="col-md-6">
+                        <label for="nama_pimpinan" class="form-label">Nama yang Bertanda Tangan</label>
                         <select name="nama_pimpinan" id="nama_pimpinan" class="form-control" required>
                             <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                             @foreach($managers as $manager)
@@ -109,7 +109,8 @@
                             @endforeach
                         </select>
                     </div>
-                    </div>
+                    <div class="col-md-6" style="border: none;"></div>
+                </div>
 
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
