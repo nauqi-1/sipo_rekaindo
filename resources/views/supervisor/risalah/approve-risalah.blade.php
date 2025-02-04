@@ -25,7 +25,7 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Risalah Rapat</a>
+                    <a href="#">Beranda</a>/<a href="{{route ('risalah.supervisor')}}">Risalah Rapat</a>/<a href="#" style="color: #565656;">Tindak Lanjut Risalah</a>
                 </div>
             </div>
         </div>
@@ -136,7 +136,7 @@
             </div>
         </div>
         <div class="footer">
-            <button type="button" class="btn back" id="backBtn">Kembali</button>
+            <button type="button" class="btn back" id="backBtn"><a href="{{route ('risalah.supervisor')}}">Kembali</a></button>
             <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
         </div>
     </div>

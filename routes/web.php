@@ -191,17 +191,17 @@ Route::get('/edit-risalahAdmin', function() {
 Route::get('/undanganSupervisor', function() {
     return view('supervisor.undangan.undangan-supervisor'); })->name('undangan.supervisor');
 Route::get('/approve-undangan', function() {
-        return view('supervisor.undangan.approve-undangan'); })->name('approve-undangan');
+        return view('supervisor.undangan.approve-undangan'); })->name('approve.undangan');
 Route::get('/view-undangan', function() {
-    return view('supervisor.undangan.view-undangan'); })->name('view-undangan');
+    return view('supervisor.undangan.view-undangan'); })->name('view.undangan');
 
 // risalah supervisor
 Route::get('/risalahSupervisor', function() {
     return view('supervisor.risalah.risalah-supervisor'); })->name('risalah.supervisor');
 Route::get('/approve-risalah', function() {
-    return view('supervisor.risalah.approve-risalah'); })->name('approve-risalah');
+    return view('supervisor.risalah.approve-risalah'); })->name('approve.risalah');
 Route::get('/view-risalah', function() {
-    return view('supervisor.risalah.view-risalah'); })->name('view-risalah');   
+    return view('supervisor.risalah.view-risalah'); })->name('view.risalah');   
 
 // Arsip Superadmin
 Route::get('/arsip-risalah', function() {
