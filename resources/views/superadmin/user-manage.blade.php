@@ -52,7 +52,6 @@
                 <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah Pengguna</button>
             </div>
         </div>
-
         <!-- Card untuk tabel -->
         <!-- <div class="card"> -->
             <div class="card-body">
