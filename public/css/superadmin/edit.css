@@ -128,23 +128,24 @@ h1 {
     background-color: #ffffff;
     border: 1px solid #8F9BB3;
     color: #8F9BB3;
-    width: 10%;
+    width: 11%;
 }
 .btn-cancel:hover{
     background-color: #8F9BB3;
     border: 1px solid #8F9BB3;
+    width: 11%;
     color: #ffffff;
 }
 
 .btn-save {
     background-color: #1E4178;
     color: #ffffff;
-    width: 10%;
+    width: 11%;
 }
 .btn-save:hover {
     background-color: #92C5FF99;
     color: #ffffff;
-    width: 10%;
+    width: 11%;
 }
 
 .btn-primary {
@@ -578,8 +579,8 @@ input.form-control {
 
 .mb-3 .izin {
     display: flex;
-    justify-content: flex-end; /* Geser elemen ke kanan */
-    gap: 15px;
+    justify-content: center; 
+    gap: 35px;
     color: #222B45;
     font-size: 13px;
     margin-top: 50px;
