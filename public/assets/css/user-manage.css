@@ -173,27 +173,27 @@ h1 {
 .btn-edit {
     font-size: 14px;
     border-radius: 50px;
-    width: 25%;
+    width: 36%;
     margin: 0 auto;
 }
 .btn-delete {
     font-size: 14px;
     border-radius: 50px;
-    width: 27%;
+    width: 39%;
     margin: 0 auto;
 }
 .btn-edit:hover,
 .btn-edit:active {
     border: none !important;
     border-radius: 50px;
-    width: 25%;
+    width: 36%;
     background-color: #92C5FF99 !important;
 }
 .btn-delete:hover,
 .btn-delete:active {
     border: none !important;
     border-radius: 50px;
-    width: 27%;
+    width: 39%;
     background-color: #92C5FF99 !important;
 }
 
