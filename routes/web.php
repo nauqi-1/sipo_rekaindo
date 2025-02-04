@@ -106,17 +106,6 @@ Route::get('/edit-risalahSuperadmin', function() {
 
 })->name('edit-risalah.superadmin');
 
-Route::get('/arsip-risalah', function() {
-    return view('superadmin.arsip.arsip-risalah');
-})->name('arsip-risalah.superadmin');
-Route::get('/arsip-undangan', function() {
-    return view('superadmin.arsip.arsip-undangan');
-})->name('arsip-undangan.superadmin');
-Route::get('/arsip-memo', function() {
-    return view('superadmin.arsip.arsip-memo');
-})->name('arsip-memo.superadmin');
-
-
 Route::get('/memo-admin', function() {
     return view('admin.memo.memo-admin');
 })->name('admin.memo.memo-admin');
@@ -197,7 +186,37 @@ Route::get('/edit-risalahAdmin', function() {
 // undangan supervisor
 Route::get('/undanganSupervisor', function() {
     return view('supervisor.undangan.undangan-supervisor'); })->name('undangan.supervisor');
+Route::get('/approve-undangan', function() {
+        return view('supervisor.undangan.approve-undangan'); })->name('approve.undangan');
+Route::get('/view-undangan', function() {
+    return view('supervisor.undangan.view-undangan'); })->name('view.undangan');
 
 // risalah supervisor
 Route::get('/risalahSupervisor', function() {
     return view('supervisor.risalah.risalah-supervisor'); })->name('risalah.supervisor');
+Route::get('/approve-risalah', function() {
+    return view('supervisor.risalah.approve-risalah'); })->name('approve.risalah');
+Route::get('/view-risalah', function() {
+    return view('supervisor.risalah.view-risalah'); })->name('view.risalah');   
+
+// Arsip Superadmin
+Route::get('/arsip-risalah', function() {
+    return view('superadmin.arsip.arsip-risalah');
+})->name('arsip-risalah.superadmin');
+Route::get('/arsip-undangan', function() {
+    return view('superadmin.arsip.arsip-undangan');
+})->name('arsip-undangan.superadmin');
+Route::get('/arsip-memo', function() {
+    return view('superadmin.arsip.arsip-memo');
+})->name('arsip-memo.superadmin');
+
+// Arsip Admin
+Route::get('/arsip-risalah-admin', function() {
+    return view('admin.arsip.arsip-risalah');
+})->name('arsip-risalah.admin');
+Route::get('/arsip-undangan-admin', function() {
+    return view('admin.arsip.arsip-undangan');
+})->name('arsip-undangan.admin');
+Route::get('/arsip-memo-admin', function() {
+    return view('admin.arsip.arsip-memo');
+})->name('arsip-memo.admin');

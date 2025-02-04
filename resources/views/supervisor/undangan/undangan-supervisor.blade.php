@@ -111,7 +111,7 @@
                         @endif
                     </td>
                     <td>
-                        <a href="#" class="btn btn-sm1">
+                        <a href="{{route ('approve.undangan')}}" class="btn btn-sm1">
                             <img src="/img/undangan/share.png" alt="share">
                         </a>
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
