@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Approve Undangan Rapat</title>
+    <title>Approve Risalah Rapat</title>
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
@@ -11,21 +11,21 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('/css/supervisor/approve-undangan.css') }}">
+    <link rel="stylesheet" href="{{ asset('/css/supervisor/approve-risalah.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('undangan.supervisor')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('risalah.supervisor')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Undangan Rapat</h1>
+            <h1>Risalah Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Undangan Rapat</a>
+                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Risalah Rapat</a>
                 </div>
             </div>
         </div>
@@ -66,7 +66,7 @@
                 <div class="col">
                     <div class="card-blue">
                         <label for="tgl_surat" class="form-label">
-                            <img src="/img/undangan/info.png" alt="info surat">Informasi Detail Surat
+                            <img src="/img/risalah/info.png" alt="info surat">Informasi Detail Surat
                         </label>
                     </div>
                     <div class="card-white">
