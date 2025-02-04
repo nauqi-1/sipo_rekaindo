@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\kategori_barang;
 use Illuminate\Http\Request;
 use App\Models\Document;
-use App\Models\User;
+use App\Models\User;    
 
 class DocumentController extends Controller
 {
