@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManageController;
 use App\Http\Controllers\ForgotPWController;
-use App\Models\Risalah;
+use App\Http\Controllers\CetakPDFController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/p', function () {
@@ -25,19 +25,15 @@ Route::get('/', function () {
 
 Route::get('/user-manage', [UserManageController::class, 'index'])->name('user.manage');
 
-// Route::get('/user-manage/add', function() {
-//     return view('user-manage.add');
-// })->name('user-manage/add');
+
 
 Route::get('/dashboard', function () {
     return view('layouts.app');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
+Route::middleware('auth')->group(function () {
+    Route::get('berkas/cetak', [CetakPDFController::class, 'cetakmemoPDF'])->name('cetakmemo');
+});
 
 require __DIR__.'/auth.php';
 

@@ -122,6 +122,7 @@ class DocumentController extends Controller
                     'barang' => $request->input('barang_' . $i),
                     'qty' => $request->input('qty_' . $i),
                     'satuan' => $request->input('satuan_' . $i),
+                    
                 ]);
             }
         }
