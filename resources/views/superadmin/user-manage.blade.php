@@ -189,7 +189,6 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <!-- <label for="role_id_role" class="form-label">Izin Modul</label> -->
                             <div class="izin">
                                 <label for="role_id_role" class="form-izin">Izin Akses</label>
                             @foreach ($roles as $role)

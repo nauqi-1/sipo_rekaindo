@@ -29,12 +29,8 @@ class Memo extends Model
      * @var array
      */
     protected $fillable = [
-        'nm_memo',
-        'tgl_buat',
-        'tgl_disahkan',
-        'lampiran',
-        'id_divisi',
-        'id_document',
+        'judul', 'tujuan', 'isi_memo', 'tgl_dibuat', 'tgl_disahkan', 'status',
+        'nomor_memo', 'nama_bertandatangan', 'tanda_identitas', 'divisi_id_divisi', 'seri_surat'
     ];
 
     /**
@@ -42,10 +38,13 @@ class Memo extends Model
      *
      * @var bool
      */
-    public $timestamps = false;
+    protected $casts = [
+        'tgl_dibuat' => 'datetime',
+        'tgl_disahkan' => 'datetime',
+    ];
 
     /**
-     * Get the division associated with the memo.
+     * Get the division associated with the document.
      */
     public function division()
     {
@@ -55,8 +54,5 @@ class Memo extends Model
     /**
      * Get the document associated with the memo.
      */
-    public function document()
-    {
-        return $this->belongsTo(Document::class, 'id_document');
-    }
+
 }
