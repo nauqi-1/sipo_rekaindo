@@ -66,7 +66,7 @@
                 <div class="col">
                     <div class="card-blue">
                         <label for="tgl_surat" class="form-label">
-                            <img src="/img/risalah/info.png" alt="info surat">Informasi Detail Surat
+                            <img src="/img/risalah/info.png" alt="info surat">Informasi Detail Risalah Rapat
                         </label>
                     </div>
                     <div class="card-white">
@@ -139,6 +139,57 @@
             <button type="button" class="btn back" id="backBtn"><a href="{{route ('risalah.supervisor')}}">Kembali</a></button>
             <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
         </div>
+        <!-- Modal kirim -->
+        <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Tombol Close -->
+                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-body text-center">
+                        <!-- Ikon atau Gambar -->
+                        <img src="/img/risalah/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
+                        <!-- Tulisan -->
+                        <h5 class="mb-4" style="color: #545050;"><b>Kirim dan Konfirmasi Risalah?</b></h5>
+                        <!-- Tombol -->
+                        <div class="d-flex justify-content-center gap-3">
+                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="#">Batal</a></button>
+                            <button type="button" class="btn ok" id="confirmSubmit">Oke</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Berhasil -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Tombol Close -->
+                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-body text-center">
+                        <!-- Ikon atau Gambar -->
+                        <img src="/img/risalah/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                        <!-- Tulisan -->
+                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirim</b></h5>
+                        <!-- Tombol -->
+                        <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('risalah.supervisor')}}">Kembali</a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <script>
+        $(document).ready(function () {
+            $("#confirmSubmit").click(function () {
+                // Tutup modal kirim
+                $("#submit").modal("hide");
+
+                // Tunggu sebentar sebelum menampilkan modal berhasil
+                setTimeout(function () {
+                    $("#successModal").modal("show");
+                }, 500); // Delay 500ms agar transition lebih smooth
+            });
+        });
+    </script>
 </body>
 </html>

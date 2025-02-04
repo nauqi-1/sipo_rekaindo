@@ -246,17 +246,27 @@ select.btn-dropdown:hover {
     width: auto;
     font-size: 13px;
 }
-.btn.back:hover{
+.btn.cancel {
+    background-color: #ffffff;
+    border: 1px solid #8F9BB3;
+    color: #8F9BB3;
+    width: 15%;
+    font-size: 14px;
+}
+.btn.back:hover,
+.btn.cancel:hover{
     background-color: #8F9BB3;
     border: 1px solid #8F9BB3;
     color: #ffffff;
 }
-.btn.back a {
+.btn.back a,
+.btn.cancel a {
     text-decoration: none;
     color: #8F9BB3;
     font-size: 13px;
 }
-.btn.back a:hover {
+.btn.back a:hover,
+.btn.cancel a:hover {
     color: #ffffff;
 }
 .btn.submit {
@@ -265,18 +275,34 @@ select.btn-dropdown:hover {
     width: 7%;
     font-size: 13px;
 }
-.btn.submit:hover {
+.btn.ok {
+    background-color: #2592F7;
+    color: #ffffff;
+    width: 15%;
+    font-size: 14px;
+}
+.btn.backPage {
+    background-color: #2592F7;
+    color: #ffffff;
+    width: 20%;
+    font-size: 14px;
+}
+.btn.submit:hover,
+.btn.ok:hover,
+.btn.backPage:hover{
     background-color: #92C5FF99;
     color: #ffffff;
 }
 
-.btn.submit a {
-    /* background-color: #1E4178; */
+.btn.submit a,
+.btn.ok a,
+.btn.backPage a{
     color: #ffffff;
     font-size: 13px;
     text-decoration: none;
 }
-.btn.submit a:hover {
-    /* background-color: #92C5FF99; */
+.btn.submit a:hover,
+.btn.ok a:hover,
+.btn.backPage a:hover {
     color: #1E4178 !important;
 }
