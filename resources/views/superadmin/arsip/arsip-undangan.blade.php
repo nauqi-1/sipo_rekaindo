@@ -22,7 +22,7 @@
 
         <!-- Filter & Search Bar -->
         <div class="title d-flex justify-content-between align-items-center mb-3">
-            <h2><b>Arsip Memo</b></h2>
+            <h2><b>Arsip Undangan Rapat</b></h2>
             <div class="d-flex gap-2">
                 <div class="search">
                     <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
@@ -72,7 +72,7 @@
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/arsip/delete.png" alt="delete">
                         </button>
-                        <button class="btn btn-sm3"><img src="/img/arsip/preview.png" alt="preview"></button>
+                        <a class="btn btn-sm3" href="{{route('arsip-viewUndangan.superadmin')}}"><img src="/img/arsip/preview.png" alt="preview"></a>
                     </td>
                 </tr>
                 @endfor

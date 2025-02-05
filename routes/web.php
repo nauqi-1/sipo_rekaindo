@@ -221,6 +221,14 @@ Route::get('/arsip-memo-admin', function() {
     return view('admin.arsip.arsip-memo');
 })->name('arsip-memo.admin');
 
+// View Arsip
+Route::get('/view-arsipMemo-superadmin', function() {
+    return view('superadmin.arsip.view-arsipMemo'); })->name('arsip-viewMemo.superadmin');    
+Route::get('/view-arsipUndangan-superadmin', function() {
+    return view('superadmin.arsip.view-arsipUndangan'); })->name('arsip-viewUndangan.superadmin');    
+Route::get('/view-arsipRisalah-superadmin', function() {
+    return view('superadmin.arsip.view-arsipRisalah'); })->name('arsip-viewRisalah.superadmin');    
+
 Route::get('/superadmin/memo', [MemoController::class, 'index'])->name('memo.superadmin');
 
 Route::get('/info', function() {
