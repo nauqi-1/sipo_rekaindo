@@ -222,3 +222,7 @@ Route::get('/arsip-memo-admin', function() {
 })->name('arsip-memo.admin');
 
 Route::get('/superadmin/memo', [MemoController::class, 'index'])->name('memo.superadmin');
+
+Route::get('/info', function() {
+    return view('superadmin.info');
+})->name('info');

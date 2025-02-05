@@ -73,7 +73,7 @@
           </ul>
         </li>
         <li class="pc-item">
-          <a href="../other/sample-page.html" class="pc-link">
+          <a href="{{ route('info') }}" class="pc-link">
             <span class="pc-micon"><img src="/assets/images/ikon8.png" alt="" srcset=""></span>
             <span class="pc-mtext">info</span>
           </a>

@@ -95,45 +95,45 @@
                 </tr>
             </thead>
             <tbody>
-                @for ($i = 1; $i <= 3; $i++)
+                @foreach ($memos as $index => $memo)
                 <tr>
-                    <td class="nomor">{{ $i }}</td>
-                    <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">Memo Monitoring Risiko</td>
-                    <td>21-10-2024</td>
-                    <td>1596</td>
-                    <td>837.06/REKA/GEN/VII/2024</td>
-                    <td>22-10-2024</td>
-                    <td>HR & GA</td>
+                    <td class="nomor">{{ $index + 1 }}</td>
+                    <td class="nama-dokumen 
+                        {{ $memo->status == 'Reject' ? 'text-danger' : ($memo->status == 'Pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $memo->judul }}
+                    </td>
+                    <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
+                    <td>{{ $memo->seri_surat }}</td>
+                    <td>{{ $memo->nomor_memo }}</td>
+                    <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $memo->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                    </td>
                     <td>
-                        @if ($i % 3 == 0)
+                        @if ($memo->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($i % 2 == 0)
+                        @elseif ($memo->status == 'pending')
                             <span class="badge bg-warning">Diproses</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
                         @endif
                     </td>
                     <td>
-                        <!-- <button class="btn btn-sm1"><img src="/img/memo-superadmin/share.png" alt="share"></button> -->
-                        <!-- <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
-                            <img src="/img/memo-superadmin/share.png" alt="share">
-                        </a> -->
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/memo-superadmin/Delete.png" alt="delete">
                         </button>
-                        <!-- Status Approve -->
-                        @if ($i % 3 != 0 && $i % 2 != 0) 
+                        
+                        @if ($memo->status == 'Approve')
                             <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
                                 <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                             </button>
                         @else
-                            <a href="{{ route('edit-memo.superadmin') }}" class="btn btn-sm3">
+                            <a href="{{ route('edit-memo.superadmin', $memo->id) }}" class="btn btn-sm3">
                                 <img src="/img/memo-superadmin/edit.png" alt="edit">
                             </a>
                         @endif
                     </td>
                 </tr>
-                @endfor
+                @endforeach
             </tbody>
         </table>
 

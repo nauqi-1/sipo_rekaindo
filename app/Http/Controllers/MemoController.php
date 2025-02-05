@@ -6,15 +6,19 @@ use App\Models\kategori_barang;
 use App\Models\Memo;
 use App\Models\Seri;
 use App\Models\User;
+use App\Models\Divisi;
 use Illuminate\Http\Request;
 
 class MemoController extends Controller
 {
     public function index()
     {
+        $divisi = Divisi::all();
+        $seri = Seri::all();  
         $memos = Memo::with('divisi')->orderBy('tgl_dibuat', 'desc')->get();
+        
     
-        return view('superadmin.memo.memo-superadmin', compact('memos'));
+        return view('superadmin.memo.memo-superadmin', compact('memos','divisi','seri'));
     }
     public function create()
     {
