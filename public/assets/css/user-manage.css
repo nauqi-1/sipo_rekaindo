@@ -49,8 +49,8 @@ h1 {
     margin-left: 10px;
 }
 .user-info img {
-    width: 50px; 
-    height: 50px; 
+    width: 30px; 
+    height: 30px; 
     border-radius: 50%; 
     object-fit: cover; 
 }
@@ -58,6 +58,10 @@ h1 {
     line-height: 1.2; 
     text-align: left;
     color: #000 !important;
+}
+.text-email {
+    text-align: center;
+    font-size: 13px;
 }
 
 .card {
@@ -90,7 +94,7 @@ h1 {
     text-align: center;
     padding: 10px;
     border-bottom: 1px solid #ddd;
-    font-size: 15px;
+    font-size: 13px;
 }
 .table-striped tbody tr:nth-child(even) {
     background-color: #f9f9f9;
@@ -181,6 +185,12 @@ h1 {
     border-radius: 50px;
     width: 39%;
     margin: 0 auto;
+}
+.btn-edit img,
+.btn-delete img {
+    width: 12px;
+    height: 14px;
+    margin-right: 1px;
 }
 .btn-edit:hover,
 .btn-edit:active {

@@ -60,6 +60,7 @@
                     <thead>
                         <tr>
                             <th>Nama</th>
+                            <th>Email</th>
                             <th>Izin</th>
                             <th>Divisi</th>
                             <th>Posisi</th>
@@ -75,8 +76,13 @@
                                 <img src="\img\user-manage\user.png" alt="User Image" class="rounded-circle-light">
                                 <div class="text-info">
                                     <span>{{ $user->firstname }} {{ $user->lastname }}</span>
-                                    <br><small>{{ $user->email }}</small>
+                                    <!-- <br><small>{{ $user->email }}</small> -->
                                 </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-email">
+                                <span>{{ $user->email }}</span>
                             </div>
                         </td>
                         <td>
