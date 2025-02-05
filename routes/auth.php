@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\MemoController;
+use App\Http\Controllers\UndanganController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -15,9 +16,13 @@ use Illuminate\Support\Facades\Route;
 
     Route::get('memo-superadmin/add', [MemoController::class, 'create'])
         ->name('memo-superadmin/add');
-
     Route::post('memo-superadmin/add/doc', [MemoController::class, 'store'])
     ->name('memo-superadmin.store');
+
+    Route::get('undangan-superadmin/add', [UndanganController::class, 'create'])
+        ->name('undangan-superadmin/add');
+    Route::post('undangan-superadmin/add/doc', [UndanganController::class, 'store'])
+    ->name('undangan-superadmin.store');
 
 
 

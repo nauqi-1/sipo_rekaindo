@@ -30,11 +30,11 @@
         </div>
 
         <!-- form add undangan -->
-        <form method="POST" action="{{ route('undangan.superadmin') }}">
+        <form method="POST" action="{{ route('undangan-superadmin.store') }}">
         @csrf 
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title" style="font-size: 18px;"><b>Formulir Tambah Undangan Rapat</b></h5>
+                <h5 class="card-title" style="font-size: 18px;"><b>Formulir Tambah Undangan</b></h5>
             </div>
             <div class="card-body">
                 <div class="row mb-4">
@@ -47,18 +47,20 @@
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
-                        <input type="text" name="jenis_document" id="seru-surat" class="form-control" placeholder="Masukkan Seri Surat" required>
+                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan }}"  readonly>
+                        <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
                     </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="nomor_document" class="form-label">Nomor Surat</label>
-                        <input type="text" name="jenis_document" id="nomor-surat" class="form-control" placeholder="Masukkan Nomor Surat" required>
+                        <label for="nomor_undangan" class="form-label">Nomor Surat</label>
+                        <input type="text" name="nomor_undangan" id="nomor_undangan" class="form-control" value="{{ $nomorDokumen }}" readonly>
                     </div>
                     <div class="col-md-6" >
                         <label for="judul" class="form-label">Perihal</label>
                         <input type="text" name="judul" id="judul" class="form-control" placeholder="Masukkan Perihal / Judul Surat" required>
                     </div>
+
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
@@ -68,29 +70,6 @@
                         </label>
                         <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" required>
                     </div>
-                    <div class="col-md-6" style="border: none;"></div>
-                </div>
-                <div class="row mb-4 isi-surat-row">
-                    <div class="col-md-12">
-                        <img src="\img\undangan\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                        <label for="isi_document">Isi Surat</label>
-                    </div>
-                    <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
-                            <textarea id="summernote" name="isi_document"></textarea>
-                    </div>
-                </div>
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="nama_pimpinan" class="form-label">Nama yang Bertanda Tangan</label>
-                        <!-- <select name="nama_pimpinan" id="nama_pimpinan" class="form-control" required>
-                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                        </select> -->
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
-                            <option disabled selected style="text-align: left;">--Pilih--</option>
-                            <option value="pimpinan1">Jokowi</option>
-                            <option value="pimpinan2">Prabowo</option>
-                        </select>
-                    </div>
                     <div class="col-md-6 lampiran">
                         <label for="tanda_identitas" class="form-label">Lampiran</label>
                         <div class="upload-wrapper">
@@ -99,10 +78,32 @@
                         </div>
                     </div>
                 </div>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan</label>
+                        <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
+                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
+                            @foreach($managers as $manager)
+                                <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname . ' ' . $manager->lastname }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6" style="border: none;"></div>
+                </div>
+
+                <div class="row mb-4 isi-surat-row">
+                    <div class="col-md-12">
+                        <img src="\img\undangan\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
+                        <label for="isi_undangan">Isi Surat</label>
+                    </div>
+                    <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
+                            <textarea id="summernote" name="isi_undangan"></textarea>
+                    </div>
+                </div>
             </div>
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.superadmin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save"><a href="{{route ('undangan.superadmin')}}">Simpan</a></button>
+                <button type="submit" class="btn btn-save">Simpan></button>
             </div>
         </div>
         </form>

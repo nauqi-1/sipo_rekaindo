@@ -46,4 +46,8 @@ class divisi extends Model
     {
         return $this->hasMany(User::class, 'divisi_id_divisi');
     }
+    public function undangan()
+    {
+        return $this->hasMany(Undangan::class, 'divisi_id_divisi');
+    }
 }

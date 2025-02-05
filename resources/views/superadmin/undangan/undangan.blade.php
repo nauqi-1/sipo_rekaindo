@@ -67,7 +67,7 @@
                 </div>
 
                 <!-- Add User Button to Open Modal -->
-                <a href="{{route ('add-undangan.superadmin')}}" class="btn btn-add">+ Tambah Undangan Rapat</a>
+                <a href="{{route ('undangan-superadmin/add')}}" class="btn btn-add">+ Tambah Undangan Rapat</a>
             </div>
         </div>
 

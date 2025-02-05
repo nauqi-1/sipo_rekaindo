@@ -2,9 +2,150 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Seri;
+use App\Models\User;
+use App\Models\Divisi;
+use App\Models\Undangan;
+
 use Illuminate\Http\Request;
 
 class UndanganController extends Controller
 {
-    //
+    public function index()
+    {
+        $divisi = Divisi::all();
+        $seri = Seri::all();  
+        $undangans = Undangan::with('divisi')->orderBy('tgl_dibuat', 'desc')->get();
+        
+    
+        return view('superadmin.undangan.undangan', compact('undangans','divisi','seri'));
+    }
+    public function create()
+    {
+        $divisiId = auth()->user()->divisi_id_divisi;
+    $divisiName = auth()->user()->divisi->nm_divisi;
+
+    // Ambil nomor seri berikutnya
+    $seri = Seri::getNextSeri($divisiId);
+
+    // Konversi bulan ke angka Romawi
+    $bulanRomawi = $this->convertToRoman(now()->month);
+
+    // Format nomor dokumen
+    $nomorDokumen = sprintf(
+        "%d.%d/REKA/GEN/%s/%s/%d",
+        $seri['seri_bulanan'],
+        $seri['seri_tahunan'],
+        strtoupper($divisiName),
+        $bulanRomawi,
+        now()->year
+    );
+
+    $managers = User::where('divisi_id_divisi', $divisiId)
+        ->where('position_id_position', '2')
+        ->get(['id', 'firstname', 'lastname']);
+
+    return view('superadmin.undangan.add-undangan', [
+        'nomorSeriTahunan' => $seri['seri_tahunan'], // Tambahkan nomor seri tahunan
+        'nomorDokumen' => $nomorDokumen,
+        'managers' => $managers
+    ]);  
+    }
+    public function store(Request $request)
+    {
+        // dd($request->all());
+
+
+        $request->validate([
+            'judul' => 'required|string|max:70',
+            'isi_undangan' => 'required|string',
+            'tujuan' => 'required|string|max:255',
+            'nomor_undangan' => 'required|string|max:255',
+            'nama_bertandatangan' => 'required|string|max:255',
+            'tgl_dibuat' => 'required|date',
+            'seri_surat' => 'required|numeric',
+            'tgl_disahkan' => 'nullable|date',
+            'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
+            'tanda_identitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ],[
+            'tanda_identitas.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
+            'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
+        ]);
+
+        $fileContent = null;
+        if ($request->hasFile('tanda_identitas')) {
+            $file = $request->file('tanda_identitas');
+            $fileContent = file_get_contents($file->getRealPath()); // Membaca file sebagai binary
+        }
+
+        $divisiId = auth()->user()->divisi_id_divisi;
+        $seri = Seri::where('divisi_id_divisi', $divisiId)
+                ->where('tahun', now()->year)
+                ->latest()
+                ->first();
+
+        if (!$seri) {
+            return back()->with('error', 'Nomor seri tidak ditemukan.');
+        }
+        
+
+
+        // Simpan dokumen
+        $Undangan = Undangan::create([
+            'divisi_id_divisi' => $request->input('divisi_id_divisi'),
+            'judul' => $request->input('judul'),
+            'tujuan' => $request->input('tujuan'),
+            'isi_undangan' => $request->input('isi_undangan'),
+            'nomor_undangan' => $request->input('nomor_undangan'),
+            'tgl_dibuat' => $request->input('tgl_dibuat'),
+            'tgl_disahkan' => $request->input('tgl_disahkan'),
+            'seri_surat' => $request->input('seri_surat'),
+            'status' => 'pending',
+            'nama_bertandatangan' => $request->input('nama_bertandatangan'),
+            'tanda_identitas' => $fileContent,
+
+        ]);
+    
+        return redirect()->route('undangan.superadmin')->with('success', 'Dokumen berhasil dibuat.');
+    }
+    private function convertToRoman($number) {
+        $map = [
+            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI',
+            7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
+        ];
+        return $map[$number];
+    }
+    public function updateDocumentStatus(Undangan $undangan) {
+        $recipients = $undangan->recipients;
+    
+        if ($recipients->every(fn($recipient) => $recipient->status === 'approve')) {
+            $undangan->update(['status' => 'approve']);
+        } elseif ($recipients->contains(fn($recipient) => $recipient->status === 'reject')) {
+            $undangan->update(['status' => 'reject']);
+        } else {
+            $undangan->update(['status' => 'pending']);
+        }
+    }
+    
+    public function updateDocumentApprovalDate(Undangan $undangan) {
+        if ($undangan->status !== 'pending') {
+            $undangan->update(['tanggal_disahkan' => now()]);
+        }
+    }
+    public function approve(Undangan $undangan) {
+        $undangan->update([
+            'status' => 'approve',
+            'tanggal_disahkan' => now() // Set tanggal disahkan
+        ]);
+    
+        return redirect()->back()->with('success', 'Dokumen berhasil disetujui.');
+    }
+    public function reject(Undangan $undangan) {
+        $undangan->update([
+            'status' => 'reject',
+            'tanggal_disahkan' => now() // Set tanggal disahkan
+        ]);
+    
+        return redirect()->back()->with('error', 'Dokumen ditolak.');
+    }
 }

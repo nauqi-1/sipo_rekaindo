@@ -26,7 +26,7 @@ class Undangan extends Model
     /**
      * Get the division associated with the document.
      */
-    public function division()
+    public function divisi()
     {
         return $this->belongsTo(Divisi::class, 'id_divisi');
     }

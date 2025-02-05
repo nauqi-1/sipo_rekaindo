@@ -6,6 +6,7 @@ use App\Http\Controllers\UserManageController;
 use App\Http\Controllers\ForgotPWController;
 use App\Http\Controllers\CetakPDFController;
 use App\Http\Controllers\MemoController;
+use App\Http\Controllers\UndanganController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/p', function () {
@@ -222,6 +223,7 @@ Route::get('/arsip-memo-admin', function() {
 })->name('arsip-memo.admin');
 
 Route::get('/superadmin/memo', [MemoController::class, 'index'])->name('memo.superadmin');
+Route::get('/superadmin/undangan', [UndanganController::class, 'index'])->name('undangan.superadmin');
 
 Route::get('/info', function() {
     return view('superadmin.info');
