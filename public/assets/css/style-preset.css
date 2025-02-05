@@ -48,6 +48,35 @@ body {
   --dt-row-selected: 33, 150, 243;
   --bs-body-bg: #eef2f6;
 }
+/* btn-sm */
+[data-pc-preset=preset-1] .btn-sm1 {
+  --btn-sm1-hover-border: #d0d0e7;
+  --btn-sm1-hover-background: #d0d0e7;
+}
+[data-pc-preset=preset-1] .btn-sm1:hover {
+  border: #d0d0e7;
+  background-color: #d0d0e7;
+  --btn-sm1-hover-border: #d0d0e7;
+}
+[data-pc-preset=preset-1] .btn-sm2 {
+  --btn-sm2-hover-border: #fcd5d5;
+  --btn-sm2-hover-background: #fcd5d5;
+}
+[data-pc-preset=preset-1] .btn-sm2:hover {
+  border: #fcd5d5;
+  background-color: #fcd5d5;
+  --btn-sm2-hover-border: #fcd5d5;
+}
+[data-pc-preset=preset-1] .btn-sm3 {
+  --btn-sm3-hover-border: #c8dbf1;
+  --btn-sm3-hover-background: #c8dbf1;
+}
+[data-pc-preset=preset-1] .btn-sm3:hover {
+  border: #c8dbf1;
+  background-color: #c8dbf1;
+  --btn-sm3-hover-border: #c8dbf1;
+}
+
 [data-pc-preset=preset-1] .bg-primary-dark {
   background: #1c76da;
   color: #1c76da;

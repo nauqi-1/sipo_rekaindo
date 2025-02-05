@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arsip Undangan Rapat</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/superadmin/arsip.css') }}">
-</head>
+@extends('layouts.app')
+
+@section('title', 'Arsip Undangan Rapat')
+      
+@section('content')
 <body>
     <div class="container">
         <div class="header">
@@ -27,7 +22,7 @@
 
         <!-- Filter & Search Bar -->
         <div class="title d-flex justify-content-between align-items-center mb-3">
-            <h5><b>Arsip Memo</b></h5>
+            <h2><b>Arsip Memo</b></h2>
             <div class="d-flex gap-2">
                 <div class="search">
                     <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
@@ -37,8 +32,8 @@
         </div>
 
         <!-- Table -->
-        <table class="table">
-            <thead class="table-light">
+        <table class="table-light">
+            <thead>
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
@@ -129,3 +124,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
+@endsection

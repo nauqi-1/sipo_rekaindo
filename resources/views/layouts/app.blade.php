@@ -22,6 +22,8 @@
  <!-- [Google Font] Family -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" id="main-font-link" />
 <!-- [phosphor Icons] https://phosphoricons.com/ -->
+ <!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 <link rel="stylesheet" href="../assets/fonts/phosphor/duotone/style.css" />
 <!-- [Tabler Icons] https://tablericons.com -->
 <link rel="stylesheet" href="../assets/fonts/tabler-icons.min.css" />
@@ -40,6 +42,7 @@
 <link rel="stylesheet" href="../assets/css/user-manage.css" />
 <link rel="stylesheet" href="../assets/css/data-perusahaan.css" />
 <link rel="stylesheet" href="../assets/css/profile.css" />
+<link rel="stylesheet" href="{{ asset('css/superadmin/arsip.css') }}"
 
   </head>
   <!-- [Head] end -->

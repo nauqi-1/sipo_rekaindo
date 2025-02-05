@@ -72,7 +72,7 @@
                     <tr>
                         <td>
                             <div class="user-info">
-                                <img src="/img/user-manage/me1.jpg" alt="User Image" class="rounded-circle">
+                                <img src="\img\user-manage\user.png" alt="User Image" class="rounded-circle-light">
                                 <div class="text-info">
                                     <span>{{ $user->firstname }} {{ $user->lastname }}</span>
                                     <br><small>{{ $user->email }}</small>
