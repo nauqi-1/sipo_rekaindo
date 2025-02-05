@@ -117,7 +117,7 @@
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/undangan/Delete.png" alt="delete">
                         </button>
-                        <a class="btn btn-sm3" href="#">
+                        <a class="btn btn-sm3" href="{{route ('view.undangan')}}">
                             <img src="/img/undangan/viewBlue.png" alt="view">
                         </a>
                     </td>
