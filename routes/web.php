@@ -236,3 +236,14 @@ Route::get('/superadmin/undangan', [UndanganController::class, 'index'])->name('
 Route::get('/info', function() {
     return view('superadmin.info');
 })->name('info');
+
+// Format Surat
+Route::get('/format-memo', function() {
+    return view('format-surat.format-memo');
+})->name('format-memo');
+Route::get('/format-undangan', function() {
+    return view('format-surat.format-undangan');
+})->name('format-undangan');
+Route::get('/format-risalah', function() {
+    return view('format-surat.format-risalah');
+})->name('format-risalah');
