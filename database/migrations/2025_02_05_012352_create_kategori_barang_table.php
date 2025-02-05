@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kategori_barang', function (Blueprint $table) {
-            $table->integer('id_kategori_barang');
+            $table->integer('id_kategori_barang', true);
             $table->integer('nomor');
             $table->string('barang', 100);
             $table->integer('qty');
             $table->string('satuan', 50);
             $table->timestamps();
-            $table->integer('document_id_document');
-            $table->integer('document_divisi_id_divisi');
+            $table->integer('memo_id_memo');
+            $table->integer('memo_divisi_id_divisi');
 
-            $table->index(['document_id_document', 'document_divisi_id_divisi'], 'fk_kategori_barang_document1_idx');
-            $table->primary(['id_kategori_barang', 'document_id_document', 'document_divisi_id_divisi']);
+            $table->index(['memo_id_memo', 'memo_divisi_id_divisi'], 'fk_kategori_barang_memo1_idx');
+            $table->primary(['id_kategori_barang', 'memo_id_memo', 'memo_divisi_id_divisi']);
         });
     }
 

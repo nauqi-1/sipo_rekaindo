@@ -10,6 +10,12 @@ use Illuminate\Http\Request;
 
 class MemoController extends Controller
 {
+    public function index()
+    {
+        $memos = Memo::with('divisi')->orderBy('tgl_dibuat', 'desc')->get();
+    
+        return view('superadmin.memo.memo-superadmin', compact('memos'));
+    }
     public function create()
     {
         $divisiId = auth()->user()->divisi_id_divisi;
@@ -24,8 +30,8 @@ class MemoController extends Controller
     // Format nomor dokumen
     $nomorDokumen = sprintf(
         "%d.%d/REKA/GEN/%s/%s/%d",
-        $seri['nomor_bulanan'],
-        $seri['nomor_tahunan'],
+        $seri['seri_bulanan'],
+        $seri['seri_tahunan'],
         strtoupper($divisiName),
         $bulanRomawi,
         now()->year
@@ -36,20 +42,24 @@ class MemoController extends Controller
         ->get(['id', 'firstname', 'lastname']);
 
     return view('superadmin.memo.add-memo', [
-        'nomorSeriTahunan' => $seri['nomor_tahunan'], // Tambahkan nomor seri tahunan
+        'nomorSeriTahunan' => $seri['seri_tahunan'], // Tambahkan nomor seri tahunan
         'nomorDokumen' => $nomorDokumen,
         'managers' => $managers
     ]);  
     }
     public function store(Request $request)
     {
+        // dd($request->all());
+
+
         $request->validate([
             'judul' => 'required|string|max:70',
             'isi_memo' => 'required|string',
             'tujuan' => 'required|string|max:255',
             'nomor_memo' => 'required|string|max:255',
-            'nama_pimpinan' => 'required|string|max:255',
+            'nama_bertandatangan' => 'required|string|max:255',
             'tgl_dibuat' => 'required|date',
+            'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
             'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
             'tanda_identitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
@@ -58,38 +68,48 @@ class MemoController extends Controller
             'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
         ]);
 
-
-        
-
         $fileContent = null;
         if ($request->hasFile('tanda_identitas')) {
             $file = $request->file('tanda_identitas');
             $fileContent = file_get_contents($file->getRealPath()); // Membaca file sebagai binary
         }
 
+        $divisiId = auth()->user()->divisi_id_divisi;
+        $seri = Seri::where('divisi_id_divisi', $divisiId)
+                ->where('tahun', now()->year)
+                ->latest()
+                ->first();
+
+        if (!$seri) {
+            return back()->with('error', 'Nomor seri tidak ditemukan.');
+        }
+        
+
+
         // Simpan dokumen
         $memo = Memo::create([
             'divisi_id_divisi' => $request->input('divisi_id_divisi'),
             'judul' => $request->input('judul'),
             'tujuan' => $request->input('tujuan'),
-            'isi_memo' => $request->input('isi_document'),
-            'nomor_memo' => $request->input('nomor_document'),
+            'isi_memo' => $request->input('isi_memo'),
+            'nomor_memo' => $request->input('nomor_memo'),
             'tgl_dibuat' => $request->input('tgl_dibuat'),
             'tgl_disahkan' => $request->input('tgl_disahkan'),
+            'seri_surat' => $request->input('seri_surat'),
             'status' => 'pending',
-            'nama_pimpinan' => $request->input('nama_pimpinan'),
+            'nama_bertandatangan' => $request->input('nama_bertandatangan'),
             'tanda_identitas' => $fileContent,
 
         ]);
         if ($request->has('jumlah_kolom')) {
-            for ($i = 0; $i < $request->jumlah_kolom; $i++) {
+            foreach ($request->nomor as $key => $nomor) {
                 kategori_barang::create([
-                    'document_id_document' => $memo->id_memo,
-                    'nomor' => $request->input('nomor_' . $i),
-                    'barang' => $request->input('barang_' . $i),
-                    'qty' => $request->input('qty_' . $i),
-                    'satuan' => $request->input('satuan_' . $i),
-                    
+                    'memo_id_memo' => $memo->id_memo,
+                    'memo_divisi_id_divisi' => $memo->divisi_id_divisi, // Gunakan dari memo
+                    'nomor' => $nomor, // Ambil dari array
+                    'barang' => $request->barang[$key] ?? null,
+                    'qty' => $request->qty[$key] ?? null,
+                    'satuan' => $request->satuan[$key] ?? null,
                 ]);
             }
         }

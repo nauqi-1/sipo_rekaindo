@@ -11,10 +11,10 @@ class kategori_barang extends Model
     use HasFactory;
     protected $table = 'kategori_barang';
     protected $primaryKey = 'id_kategori_barang';
-    protected $fillable = [ 'nomor', 'barang', 'qty', 'satuan', 'document_id_document', 'document_divisi_id_divisi'];
+    protected $fillable = [ 'nomor', 'barang', 'qty', 'satuan', 'memo_id_memo', 'memo_divisi_id_divisi'];
 
-    public function document()
+    public function memo()
     {
-        return $this->belongsTo(Document::class, 'document_id_document', 'id_document');
+        return $this->belongsTo(Document::class, 'memo_id_memo', 'id_memo');
     }
 }

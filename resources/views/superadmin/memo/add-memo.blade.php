@@ -17,7 +17,7 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('memo-superadmin.store')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('memo.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Tambah Memo</h1>
         </div>        
@@ -47,18 +47,14 @@
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
-                        <input type="text" name="seri_tahunan" id="seri_tahunan" class="form-control" value="{{ $nomorSeriTahunan }}"  readonly>
-                        <input type="hidden" name="seri_bulanan" id="seri_bulanan" class="form-control" value="{{ $nomorSeriBulanan }}" readonly>
+                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan }}"  readonly>
                         <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
-                        <input type="hidden" name="bulan" value="{{ now()->month }}">
-                        <input type="hidden" name="tahun" value="{{ now()->year }}">
-                        <input type="hidden" name="jenis_document" value="memo">
                     </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="nomor_document" class="form-label">Nomor Surat</label>
-                        <input type="text" name="nomor_document" id="nomor_document" class="form-control" value="{{ $nomorDokumen }}" readonly>
+                        <label for="nomor_memo" class="form-label">Nomor Surat</label>
+                        <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $nomorDokumen }}" readonly>
                     </div>
                     <!-- <div class="col-md-6 dropdown">
                         <label for="dropdownMenuButton">Divisi Pembuat</label>
@@ -101,8 +97,8 @@
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="nama_pimpinan" class="form-label">Nama yang Bertanda Tangan</label>
-                        <select name="nama_pimpinan" id="nama_pimpinan" class="form-control" required>
+                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan</label>
+                        <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
                             <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                             @foreach($managers as $manager)
                                 <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname . ' ' . $manager->lastname }}</option>
@@ -115,10 +111,10 @@
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
                         <img src="\img\memo-superadmin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                        <label for="isi_document">Isi Surat</label>
+                        <label for="isi_memo">Isi Surat</label>
                     </div>
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
-                            <textarea id="summernote" name="isi_document"></textarea>
+                            <textarea id="summernote" name="isi_memo"></textarea>
                     </div>
                 </div>
             </div>
@@ -259,92 +255,44 @@
 
         // Fungsi untuk memperbarui dan menampilkan fields berdasarkan jumlah kolom yang dimasukkan
         function updateFields() {
-            const jumlahKolom = document.getElementById('jumlah_kolom').value;
-            const dynamicFieldsContainer = document.getElementById('dynamicFields');
-            dynamicFieldsContainer.innerHTML = ''; // Kosongkan container sebelum menambahkan field baru
+        const jumlahKolom = document.getElementById('jumlah_kolom').value;
+        const dynamicFieldsContainer = document.getElementById('dynamicFields');
+        dynamicFieldsContainer.innerHTML = ''; // Kosongkan container sebelum menambahkan field baru
 
-            for (let i = 0; i < jumlahKolom; i++) {
-                // Buat row baru untuk setiap kolom
-                const row = document.createElement('div');
-                row.classList.add('row', 'mb-3');
-                row.style.display = 'flex';
-                row.style.gap = '2px';
-                row.style.marginLeft = '47px';
-                row.style.marginRight = '47px';
-                row.style.marginTop = '10px';
-                
-                // Buat kolom untuk Nomor
-                const colNomor = document.createElement('div');
-                colNomor.classList.add('col-md-6');
-                const labelNomor = document.createElement('label');
-                labelNomor.setAttribute('for', 'nomor_' + i);
-                labelNomor.textContent = 'Nomor';
-                const inputNomor = document.createElement('input');
-                inputNomor.setAttribute('type', 'text');
-                inputNomor.setAttribute('id', 'nomor_' + i);
-                inputNomor.setAttribute('name', 'nomor_' + i);
-                inputNomor.classList.add('form-control');
-                inputNomor.setAttribute('placeholder', 'Masukkan nomor');
-                colNomor.appendChild(labelNomor);
-                colNomor.appendChild(inputNomor);
+        for (let i = 0; i < jumlahKolom; i++) {
+            // Buat row baru untuk setiap kolom
+            const row = document.createElement('div');
+            row.classList.add('row', 'mb-3');
+            row.style.display = 'flex';
+            row.style.gap = '10px';
+            row.style.margin = '10px 47px';
 
-                // Buat kolom untuk Barang
-                const colBarang = document.createElement('div');
-                colBarang.classList.add('col-md-6');
-                const labelBarang = document.createElement('label');
-                labelBarang.setAttribute('for', 'barang_' + i);
-                labelBarang.textContent = 'Barang';
-                const inputBarang = document.createElement('input');
-                inputBarang.setAttribute('type', 'text');
-                inputBarang.setAttribute('id', 'barang_' + i);
-                inputBarang.setAttribute('name', 'barang_' + i);
-                inputBarang.classList.add('form-control');
-                inputBarang.setAttribute('placeholder', 'Masukkan barang');
-                colBarang.appendChild(labelBarang);
-                colBarang.appendChild(inputBarang);
+            // Template untuk input field
+            row.innerHTML = `
+                <div class="col-md-3">
+                    <label for="nomor_${i}">Nomor</label>
+                    <input type="text" id="nomor_${i}" name="nomor[]" class="form-control" placeholder="Masukkan nomor">
+                    <input type="hidden" name="memo_divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="barang_${i}">Barang</label>
+                    <input type="text" id="barang_${i}" name="barang[]" class="form-control" placeholder="Masukkan barang">
+                </div>
+                <div class="col-md-3">
+                    <label for="qty_${i}">Qty</label>
+                    <input type="number" id="qty_${i}" name="qty[]" class="form-control" placeholder="Masukkan jumlah">
+                </div>
+                <div class="col-md-3">
+                    <label for="satuan_${i}">Satuan</label>
+                    <input type="text" id="satuan_${i}" name="satuan[]" class="form-control" placeholder="Masukkan satuan">
+                </div>
+            `;
 
-                // Tambahkan kolom Nomor dan Barang ke dalam row
-                row.appendChild(colNomor);
-                row.appendChild(colBarang);
-
-                // Buat kolom untuk Qty
-                const colQty = document.createElement('div');
-                colQty.classList.add('col-md-6');
-                const labelQty = document.createElement('label');
-                labelQty.setAttribute('for', 'qty_' + i);
-                labelQty.textContent = 'Qty';
-                const inputQty = document.createElement('input');
-                inputQty.setAttribute('type', 'number');
-                inputQty.setAttribute('id', 'qty_' + i);
-                inputQty.setAttribute('name', 'qty_' + i);
-                inputQty.classList.add('form-control');
-                inputQty.setAttribute('placeholder', 'Masukkan jumlah');
-                colQty.appendChild(labelQty);
-                colQty.appendChild(inputQty);
-
-                // Buat kolom untuk Satuan
-                const colSatuan = document.createElement('div');
-                colSatuan.classList.add('col-md-6');
-                const labelSatuan = document.createElement('label');
-                labelSatuan.setAttribute('for', 'satuan_' + i);
-                labelSatuan.textContent = 'Satuan';
-                const inputSatuan = document.createElement('input');
-                inputSatuan.setAttribute('type', 'text');
-                inputSatuan.setAttribute('id', 'satuan_' + i);
-                inputSatuan.setAttribute('name', 'satuan_' + i);
-                inputSatuan.classList.add('form-control');
-                inputSatuan.setAttribute('placeholder', 'Masukkan satuan');
-                colSatuan.appendChild(labelSatuan);
-                colSatuan.appendChild(inputSatuan);
-
-                // Tambahkan kolom Qty dan Satuan ke dalam row
-                row.appendChild(colQty);
-                row.appendChild(colSatuan);
-
-                // Tambahkan row ke dalam container dynamicFields
-                dynamicFieldsContainer.appendChild(row);
-            }
+            // Tambahkan row ke dalam container dynamicFields
+            dynamicFieldsContainer.appendChild(row);
         }
+    }
+
 
     </script>
 

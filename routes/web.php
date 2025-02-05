@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManageController;
 use App\Http\Controllers\ForgotPWController;
 use App\Http\Controllers\CetakPDFController;
+use App\Http\Controllers\MemoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/p', function () {
@@ -37,9 +38,8 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/memoSuperadmin', function() {
-    return view('superadmin.memo.memo-superadmin');
-})->name('memo.superadmin');
+Route::get('/memoSuperadmin',[MemoController::class, 'index'])
+->name('memo.superadmin');
 
 Route::get('/add-memoSuperadmin', function() {
     return view('superadmin.memo.add-memo');
@@ -220,3 +220,5 @@ Route::get('/arsip-undangan-admin', function() {
 Route::get('/arsip-memo-admin', function() {
     return view('admin.arsip.arsip-memo');
 })->name('arsip-memo.admin');
+
+Route::get('/superadmin/memo', [MemoController::class, 'index'])->name('memo.superadmin');

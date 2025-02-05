@@ -10,48 +10,51 @@ class Seri extends Model
     use HasFactory;
 
     protected $table = 'seri_berkas'; 
+    protected $primaryKey = 'id_seri';
 
     protected $fillable = ['divisi_id_divisi', 'bulan', 'tahun', 'seri_bulanan', 'seri_tahunan'];
 
-    public static function getNextSeries($divisiId)
-    {
-        $currentMonth = now()->month;
-        $currentYear = now()->year;
-        $divisiId = auth()->user()->divisi_id_divisi;
-
-        // Cek apakah sudah ada nomor seri untuk divisi ini
-        $seri = self::where('divisi_id_divisi', $divisiId)
-            ->where('tahun', $currentYear)
-            ->latest()
-            ->first();
-
-        if (!$seri) {
-            // Jika belum ada, buat yang baru dengan nomor 1
-            $series = self::create([
+    public static function getNextSeri($idSeri)
+        {
+            $currentMonth = now()->month;
+            $currentYear = now()->year;
+            $divisiId = auth()->user()->divisi_id_divisi;
+    
+            // Cari nomor seri terakhir berdasarkan tahun & divisi
+            $lastSeri = self::where('divisi_id_divisi', $divisiId)
+                ->where('tahun', $currentYear)
+                ->latest()
+                ->first();
+    
+            if (!$lastSeri) {
+                // Jika tidak ada data sebelumnya, buat nomor seri pertama
+                $seriBulanan = 1;
+                $seriTahunan = 1;
+            } else {
+                // Periksa apakah bulan berubah untuk reset nomor seri bulanan
+                if ($lastSeri->bulan != $currentMonth) {
+                    $seriBulanan = 1; // Reset seri bulanan
+                } else {
+                    $seriBulanan = $lastSeri->seri_bulanan + 1;
+                }
+    
+                // Nomor seri tahunan terus bertambah
+                $seriTahunan = $lastSeri->seri_tahunan + 1;
+            }
+    
+            // Simpan nomor seri baru ke database
+            $newSeri = self::create([
                 'divisi_id_divisi' => $divisiId,
                 'bulan' => $currentMonth,
                 'tahun' => $currentYear,
-                'seri_bulanan' => 1,
-                'seri_tahunan' => 1,
+                'seri_bulanan' => $seriBulanan,
+                'seri_tahunan' => $seriTahunan,
             ]);
-        } else {
-            // Cek apakah bulan sudah berubah
-            if ($seri->bulan != $currentMonth) {
-                $seri->seri_bulanan = 1; // Reset nomor bulanan
-                $seri->bulan = $currentMonth;
-            } else {
-                $seri->seri_bulanan += 1;
-            }
-
-            // Tambah nomor tahunan
-            $seri->seri_tahunan += 1;
-
-            $seri->save();
+    
+            return [
+                'seri_bulanan' => $newSeri->seri_bulanan,
+                'seri_tahunan' => $newSeri->seri_tahunan
+            ];
         }
 
-        return [
-            'seri_bulanan' => $seri->seri_bulanan,
-            'seri_tahunan' => $seri->seri_tahunan
-        ];
-    }
 }
