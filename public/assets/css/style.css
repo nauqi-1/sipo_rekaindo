@@ -60,7 +60,7 @@ body {
   --bs-gray-900: #212529;
   --bs-primary: #2689e2;
   --bs-secondary: #6610f2;
-  --bs-success: #00c853;
+  --bs-success: #00B087;
   --bs-info: #3ec9d6;
   --bs-warning: #ffc107;
   --bs-danger: #f44336;
@@ -221,6 +221,16 @@ body {
   :root {
     scroll-behavior: smooth;
   }
+}
+
+.bg-success {
+  --bs-bg-opacity: 1;
+  background-color: #00B087 !important;
+}
+
+.text-success {
+  --bs-text-opacity: 1;
+  color: #00B087 !important;
 }
 
 body {
@@ -8634,11 +8644,6 @@ textarea.form-control-lg {
   color: rgba(var(--bs-secondary-rgb), var(--bs-text-opacity)) !important;
 }
 
-.text-success {
-  --bs-text-opacity: 1;
-  color: rgba(var(--bs-success-rgb), var(--bs-text-opacity)) !important;
-}
-
 .text-info {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-info-rgb), var(--bs-text-opacity)) !important;
@@ -8936,11 +8941,6 @@ textarea.form-control-lg {
 .bg-secondary {
   --bs-bg-opacity: 1;
   background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
-}
-
-.bg-success {
-  --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity)) !important;
 }
 
 .bg-info {
