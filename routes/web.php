@@ -255,5 +255,8 @@ Route::get('/data-perusahaan', function() {
 
 // edit profile
 Route::get('/edit-profileSuperadmin', function() {
-    return view('superadmin.edit-profileSuperadmin');
-})->name('edit-profile.superadmin');
+    return view('superadmin.edit-profileSuperadmin'); })->name('edit-profile.superadmin');
+Route::get('/edit-profileAdmin', function() {
+    return view('admin.edit-profileAdmin'); })->name('edit-profile.admin');
+Route::get('/edit-profileSupervisor', function() {
+    return view('supervisor.edit-profileSupervisor'); })->name('edit-profile.supervisor');

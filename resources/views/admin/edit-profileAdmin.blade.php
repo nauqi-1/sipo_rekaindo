@@ -6,7 +6,7 @@
     <title>Edit Profil</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/superadmin/edit-profile.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/edit-profile.css') }}">
 </head>
 <body>
     <div class="container">
@@ -28,7 +28,7 @@
         <!-- Card untuk tabel -->
         <div class="card">
             <div class="card-header">
-                <label for="label" class="heading-profile">Foto Profil</label>
+                <label for="label" class="heading-profile">Foto Profil Admin</label>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -36,8 +36,8 @@
                         <div class="profil-container" style="margin: 30px;">
                             <img id="profileImage" class="rounded-circle" src="/img/setting/default-logo.png" alt="profile-logo">
                             <div class="profil-info">
-                                <h5>Super Admin</h5>
-                                <p>superadmin@gmail.com</p>
+                                <h5>Admin</h5>
+                                <p>admin@gmail.com</p>
                                 <button id="editPhotoButton" data-bs-toggle="modal" data-bs-target="#uploadModal">Edit Foto</button>
                             </div>
                         </div>
