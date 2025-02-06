@@ -19,8 +19,8 @@
         </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
-                <div class="breadcrumb">
-                    <a href="#">Home</a>/<a href="#"><b>Info</b></a>
+                <div class="breadcrumb" style="gap: 5px;">
+                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;"><b>Info</b></a>
                 </div>
             </div>
         </div>

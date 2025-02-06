@@ -19,8 +19,8 @@
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
-                <div class="breadcrumb">
-                    <a href="#">Home</a> / <a href="#">Setting</a> / <a href="#">Data Lembaga</a>
+                <div class="breadcrumb" style="gap: 5px;">
+                    <a href="#">Beranda</a> / <a href="#">Pengaturan</a> / <a href="#" style="color: #565656;">Data Perusahaan</a>
                 </div>
             </div>
         </div>
@@ -43,13 +43,13 @@
                             </li>
                             <li class="list-group-card">
                                 <div>
-                                    <strong class="list-group-text">Alamat Website</strong><br>
+                                    <strong class="list-group-text">Alamat Situs Web</strong><br>
                                     <label><input type="text" name="alamat-web" class="form-control" disabled></label>
                                 </div>
                             </li>
                             <li class="list-group-card">
                                 <div>
-                                    <strong class="list-group-text">Telp</strong><br>
+                                    <strong class="list-group-text">Telepon</strong><br>
                                     <label><input type="text" name="telp" class="form-control" disabled></label>
                                 </div>
                             </li>
@@ -81,8 +81,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="edit-button">Edit</button>
-                    <button type="button" class="btn btn-secondary d-none" id="cancel-button">Cancel</button>
-                    <button type="submit" class="btn btn-primary d-none" id="save-button">Save Changes</button>
+                    <button type="button" class="btn btn-secondary d-none" id="cancel-button">Batal</button>
+                    <button type="submit" class="btn btn-primary d-none" id="save-button">Simpan</button>
                 </div>
             </div>
         </div>

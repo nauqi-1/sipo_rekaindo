@@ -207,7 +207,7 @@ Route::get('/arsip-risalah', function() {
 Route::get('/arsip-undangan', function() {
     return view('superadmin.arsip.arsip-undangan');
 })->name('arsip-undangan.superadmin');
-Route::get('/arsip-memo', function() {
+Route::get('/arsip-memoSuperadmin', function() {
     return view('superadmin.arsip.arsip-memo');
 })->name('arsip-memo.superadmin');
 
@@ -247,3 +247,13 @@ Route::get('/format-undangan', function() {
 Route::get('/format-risalah', function() {
     return view('format-surat.format-risalah');
 })->name('format-risalah');
+
+// data perusahaan 
+Route::get('/data-perusahaan', function() {
+    return view('superadmin.data-perusahaan');
+})->name('data-perusahaan');
+
+// edit profile
+Route::get('/edit-profileSuperadmin', function() {
+    return view('superadmin.edit-profileSuperadmin');
+})->name('edit-profile.superadmin');

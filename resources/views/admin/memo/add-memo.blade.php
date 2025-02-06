@@ -136,7 +136,7 @@
 
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('admin.memo.memo-admin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save">Simpan></button>
+                <button type="submit" class="btn btn-save">Simpan</button>
             </div>
         </div>
         </form>
