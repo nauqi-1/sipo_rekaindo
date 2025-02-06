@@ -178,6 +178,8 @@ Route::get('/add-undanganAdmin', function() {
     return view('admin.undangan.add-undangan'); })->name('add-undangan.admin');
 Route::get('/edit-undanganAdmin', function() {
     return view('admin.undangan.edit-undangan'); })->name('edit-undangan.admin');
+Route::get('/kirim-undanganAdmin', function() {
+    return view('admin.undangan.kirim-undanganAdmin'); })->name('kirim-undanganAdmin.admin');
 
 // risalah admin
 Route::get('/risalahAdmin', function() {
@@ -186,6 +188,8 @@ Route::get('/add-risalahAdmin', function() {
     return view('admin.risalah.add-risalah'); })->name('add-risalah.admin');
 Route::get('/edit-risalahAdmin', function() {
     return view('admin.risalah.edit-risalah'); })->name('edit-risalah.admin');
+Route::get('/kirim-risalahAdmin', function() {
+    return view('admin.risalah.kirim-risalahAdmin'); })->name('kirim-risalahAdmin.admin');    
 
 // undangan supervisor
 Route::get('/undanganSupervisor', function() {
@@ -210,7 +214,7 @@ Route::get('/arsip-risalah', function() {
 Route::get('/arsip-undangan', function() {
     return view('superadmin.arsip.arsip-undangan');
 })->name('arsip-undangan.superadmin');
-Route::get('/arsip-memo', function() {
+Route::get('/arsip-memoSuperadmin', function() {
     return view('superadmin.arsip.arsip-memo');
 })->name('arsip-memo.superadmin');
 
@@ -225,13 +229,21 @@ Route::get('/arsip-memo-admin', function() {
     return view('admin.arsip.arsip-memo');
 })->name('arsip-memo.admin');
 
-// View Arsip
+// View Arsip Superadmin
 Route::get('/view-arsipMemo-superadmin', function() {
     return view('superadmin.arsip.view-arsipMemo'); })->name('arsip-viewMemo.superadmin');    
 Route::get('/view-arsipUndangan-superadmin', function() {
     return view('superadmin.arsip.view-arsipUndangan'); })->name('arsip-viewUndangan.superadmin');    
 Route::get('/view-arsipRisalah-superadmin', function() {
     return view('superadmin.arsip.view-arsipRisalah'); })->name('arsip-viewRisalah.superadmin');    
+
+// View Arsip Admin
+Route::get('/view-arsipMemo-admin', function() {
+    return view('admin.arsip.view-arsipMemo-admin'); })->name('arsip-viewMemo.admin');    
+Route::get('/view-arsipUndangan-admin', function() {
+    return view('admin.arsip.view-arsipUndangan-admin'); })->name('arsip-viewUndangan.admin');    
+Route::get('/view-arsipRisalah-admin', function() {
+    return view('admin.arsip.view-arsipRisalah-admin'); })->name('arsip-viewRisalah.admin');    
 
 Route::get('/superadmin/memo', [MemoController::class, 'index'])->name('memo.superadmin');
 Route::get('/superadmin/undangan', [UndanganController::class, 'index'])->name('undangan.superadmin');
@@ -250,3 +262,16 @@ Route::get('/format-undangan', function() {
 Route::get('/format-risalah', function() {
     return view('format-surat.format-risalah');
 })->name('format-risalah');
+
+// data perusahaan 
+Route::get('/data-perusahaan', function() {
+    return view('superadmin.data-perusahaan');
+})->name('data-perusahaan');
+
+// edit profile
+Route::get('/edit-profileSuperadmin', function() {
+    return view('superadmin.edit-profileSuperadmin'); })->name('edit-profile.superadmin');
+Route::get('/edit-profileAdmin', function() {
+    return view('admin.edit-profileAdmin'); })->name('edit-profile.admin');
+Route::get('/edit-profileSupervisor', function() {
+    return view('supervisor.edit-profileSupervisor'); })->name('edit-profile.supervisor');

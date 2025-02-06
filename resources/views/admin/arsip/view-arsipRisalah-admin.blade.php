@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Arsip Risalah Superadmin</title>
+    <title>View Arsip Risalah Admin</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="{{ asset('/css/superadmin/viewArsip.css') }}">
+    <link rel="stylesheet" href="{{ asset('/css/admin/viewArsip.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('arsip-risalah.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('arsip-risalah.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Detail Arsip Risalah</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                <a href="{{route('superadmin.dashboard')}}">Beranda</a>/
+                <a href="{{route('admin.dashboard')}}">Beranda</a>/
                 <a href="#">Arsip</a>/
-                <a href="{{route ('arsip-risalah.superadmin')}}">Arsip Risalah</a>/
+                <a href="{{route ('arsip-risalah.admin')}}">Arsip Risalah</a>/
                 <a style="color:#565656" href="#">Detail Arsip Risalah</a>
                 </div>
             </div>
