@@ -114,7 +114,6 @@
                         @endif
                     </td>
                     <td>
-                        <!-- <button class="btn btn-sm1"><img src="/img/memo-admin/share.png" alt="share"></button> -->
                         <a href="{{ route('kirim-memoAdmin.admin') }}" class="btn btn-sm1">
                             <img src="/img/memo-admin/share.png" alt="share">
                         </a>

@@ -175,6 +175,8 @@ Route::get('/add-undanganAdmin', function() {
     return view('admin.undangan.add-undangan'); })->name('add-undangan.admin');
 Route::get('/edit-undanganAdmin', function() {
     return view('admin.undangan.edit-undangan'); })->name('edit-undangan.admin');
+Route::get('/kirim-undanganAdmin', function() {
+    return view('admin.undangan.kirim-undanganAdmin'); })->name('kirim-undanganAdmin.admin');
 
 // risalah admin
 Route::get('/risalahAdmin', function() {
@@ -183,6 +185,8 @@ Route::get('/add-risalahAdmin', function() {
     return view('admin.risalah.add-risalah'); })->name('add-risalah.admin');
 Route::get('/edit-risalahAdmin', function() {
     return view('admin.risalah.edit-risalah'); })->name('edit-risalah.admin');
+Route::get('/kirim-risalahAdmin', function() {
+    return view('admin.risalah.kirim-risalahAdmin'); })->name('kirim-risalahAdmin.admin');    
 
 // undangan supervisor
 Route::get('/undanganSupervisor', function() {

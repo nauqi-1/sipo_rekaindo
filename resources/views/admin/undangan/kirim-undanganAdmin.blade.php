@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kirim Memo Admin</title>
+    <title>Kirim Undangan Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
@@ -20,14 +20,14 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('admin.memo.memo-admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('undangan.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Kirim Memo</h1>
+            <h1>Kirim Undangan Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Kirim Memo</a>
+                    <a href="#">Beranda</a>/<a href="{{route ('undangan.admin')}}">Undangan</a>/<a href="#" style="color: #565656;">Kirim Undangan Rapat</a>
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
                 <div class="col">
                     <div class="card-blue">
                         <label for="tgl_surat" class="form-label">
-                            <img src="/img/memo-admin/info.png" alt="date">Informasi Detail Memo
+                            <img src="/img/undangan/info.png" alt="date">Informasi Detail Undangan Rapat
                         </label>
                     </div>
                     <div class="card-white">
@@ -68,7 +68,7 @@
                 <div class="col">
                     <div class="card-blue">
                         <label for="tgl_surat" class="form-label">
-                            <img src="/img/memo-admin/detail.png" alt="date" style="margin-right: 5px;">Detail
+                            <img src="/img/undangan/detail.png" alt="date" style="margin-right: 5px;">Detail
                         </label>
                     </div>
                     <div class="card-white">
@@ -89,8 +89,8 @@
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
-                        <button class="view"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
-                        <button class="down"><img src="/img/memo-admin/down.png" alt="down">Unduh</button>
+                        <button class="view"> <img src="/img/undangan/view.png" alt="view">Lihat</button>
+                        <button class="down"><img src="/img/undangan/down.png" alt="down">Unduh</button>
                     </div>
                 </div>
             </div>
@@ -99,7 +99,7 @@
                     <div class="card-blue1">
                         <label for="tindakan">Tindakan Selanjutnya</label>
                         <label for="isi" style="color: #FF000080; font-size: 10px; margin-left: 5px;">
-                            *Pilih opsi posisi dan divisi tujuan untuk mengirimkan memo kepada pihak yang dituju.
+                            *Pilih opsi posisi dan divisi tujuan untuk mengirimkan undangan kepada pihak yang dituju.
                         </label>
                     </div>
                     <div class="card-white">
@@ -144,9 +144,9 @@
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
                         <!-- Ikon atau Gambar -->
-                        <img src="/img/memo-admin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
+                        <img src="/img/undangan/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Kirim Memo?</b></h5>
+                        <h5 class="mb-4" style="color: #545050;"><b>Kirim Undangan Rapat?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
                             <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="#">Batal</a></button>
@@ -165,11 +165,11 @@
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
                         <!-- Ikon atau Gambar -->
-                        <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                        <img src="/img/undangan/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirimkan Memo</b></h5>
+                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirimkan <br>Undangan Rapat</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('admin.memo.memo-admin')}}">Kembali</a></button>
+                        <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('undangan.admin')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
