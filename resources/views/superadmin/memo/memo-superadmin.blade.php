@@ -118,16 +118,20 @@
                         @endif
                     </td>
                     <td>
+                    <form method="POST" action="{{ route('memo.destroy', $memo->id_memo) }}" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/memo-superadmin/Delete.png" alt="delete">
                         </button>
+                        </form>
                         
                         @if ($memo->status == 'Approve')
                             <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
                                 <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                             </button>
                         @else
-                            <a href="{{ route('edit-memo.superadmin', $memo->id) }}" class="btn btn-sm3">
+                            <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
                                 <img src="/img/memo-superadmin/edit.png" alt="edit">
                             </a>
                         @endif
@@ -136,6 +140,7 @@
                 @endforeach
             </tbody>
         </table>
+        {{ $memos->links('pagination::bootstrap-5') }}
 
         <!-- Modal Hapus -->
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -151,7 +156,9 @@
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
                             <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Batal</a></button>
+                            
                             <button type="button" class="btn ok" id="confirmDelete">Oke</button>
+                            
                         </div>
                     </div>
                 </div>

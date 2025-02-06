@@ -50,6 +50,10 @@ class Memo extends Model
     {
         return $this->belongsTo(Divisi::class, 'divisi_id_divisi', 'id_divisi');
     }
+    public function kategoriBarang()
+    {
+        return $this->hasMany(kategori_barang::class, 'memo_id_memo', 'id_memo');
+    }
 
     /**
      * Get the document associated with the memo.

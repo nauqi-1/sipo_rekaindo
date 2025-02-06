@@ -46,9 +46,12 @@ Route::get('/add-memoSuperadmin', function() {
     return view('superadmin.memo.add-memo');
 })->name('add-memo.superadmin');
 
-Route::get('/edit-memoSuperadmin', function() {
-    return view('superadmin.memo.edit-memo');
-})->name('edit-memo.superadmin');
+// Route::get('/edit-memoSuperadmin', function() {
+//     return view('superadmin.memo.edit-memo');
+// })->name('edit-memo.superadmin');
+Route::get('/memo/edit/{id_memo}', [MemoController::class, 'edit'])->name('memo.edit');
+Route::delete('/memo/delete/{id_memo}', [MemoController::class, 'destroy'])->name('memo.destroy');
+Route::put('/memo/update/{id_memo}', [MemoController::class, 'update'])->name('memo/update');
 
 Route::get('/kirim-memoSuperadmin', function() {
     return view('superadmin.memo.kirim-memoSuperadmin');

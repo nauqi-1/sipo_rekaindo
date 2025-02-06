@@ -50,4 +50,12 @@ class divisi extends Model
     {
         return $this->hasMany(Undangan::class, 'divisi_id_divisi');
     }
+    public function memo()
+    {
+        return $this->hasMany(Memo::class, 'divisi_id_divisi');
+    }
+    public function seri()
+    {
+        return $this->hasMany(Seri::class, 'divisi_id_divisi');
+    }
 }

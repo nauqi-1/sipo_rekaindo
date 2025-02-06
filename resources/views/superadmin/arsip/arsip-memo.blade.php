@@ -21,12 +21,14 @@
         </div>
 
         <!-- Filter & Search Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="title"><b>Arsip Memo</b></h2>
-            <div class="d-flex gap-2">
-                <div class="search">
-                    <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
-                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+        <div class="arsip">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="title"><b>Arsip Memo</b></h2>
+                <div class="d-flex gap-2">
+                    <div class="search">
+                        <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
+                        <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+                    </div>
                 </div>
             </div>
         </div>

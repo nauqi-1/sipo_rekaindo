@@ -56,5 +56,8 @@ class Seri extends Model
                 'seri_tahunan' => $newSeri->seri_tahunan
             ];
         }
-
+        public function divisi()
+        {
+            return $this->belongsTo(Divisi::class, 'divisi_id_divisi', 'id_divisi');
+        }
 }

@@ -33,47 +33,47 @@ class UserController extends Controller
      {
         $user = User::findOrFail($id);
 
-    $request->validate([
-        'firstname' => 'nullable|string|max:50',
-        'lastname' => 'nullable|string|max:50',
-        'username' => 'nullable|string|max:25',
-        'email' => 'nullable|string|email|max:70|unique:users,email,' . $id,
-        'password' => 'nullable|min:8|confirmed',
-        'phone_number' => 'nullable|numeric',
-        'role_id_role' => 'nullable|exists:role,id_role',
-        'position_id_position' => 'nullable|exists:position,id_position',
-        'divisi_id_divisi' => 'nullable|exists:divisi,id_divisi',
-    ]);
+        $request->validate([
+            'firstname' => 'nullable|string|max:50',
+            'lastname' => 'nullable|string|max:50',
+            'username' => 'nullable|string|max:25',
+            'email' => 'nullable|string|email|max:70|unique:users,email,' . $id,
+            'password' => 'nullable|min:8|confirmed',
+            'phone_number' => 'nullable|numeric',
+            'role_id_role' => 'nullable|exists:role,id_role',
+            'position_id_position' => 'nullable|exists:position,id_position',
+            'divisi_id_divisi' => 'nullable|exists:divisi,id_divisi',
+        ]);
 
-    if ($request->filled('firstname')) {
-        $user->firstname = $request->firstname;
-    }
-    if ($request->filled('lastname')) {
-        $user->lastname = $request->lastname;
-    }
-    if ($request->filled('username')) {
-        $user->username = $request->username;
-    }
-    if ($request->filled('email')) {
-        $user->email = $request->email;
-    }
-    if ($request->filled('phone_number')) {
-        $user->phone_number = $request->phone_number;
-    }
-    if ($request->filled('password')) {
-        $user->password = bcrypt($request->password);
-    }
-    if ($request->filled('divisi_id_divisi')) {
-        $user->divisi_id_divisi = $request->divisi_id_divisi;
-    }
-    if ($request->filled('position_id_position')) {
-        $user->position_id_position = $request->position_id_position;
-    }
-    if ($request->filled('role_id_role')) {
-        $user->role_id_role = $request->role_id_role;
-    }
+        if ($request->filled('firstname')) {
+            $user->firstname = $request->firstname;
+        }
+        if ($request->filled('lastname')) {
+            $user->lastname = $request->lastname;
+        }
+        if ($request->filled('username')) {
+            $user->username = $request->username;
+        }
+        if ($request->filled('email')) {
+            $user->email = $request->email;
+        }
+        if ($request->filled('phone_number')) {
+            $user->phone_number = $request->phone_number;
+        }
+        if ($request->filled('password')) {
+            $user->password = bcrypt($request->password);
+        }
+        if ($request->filled('divisi_id_divisi')) {
+            $user->divisi_id_divisi = $request->divisi_id_divisi;
+        }
+        if ($request->filled('position_id_position')) {
+            $user->position_id_position = $request->position_id_position;
+        }
+        if ($request->filled('role_id_role')) {
+            $user->role_id_role = $request->role_id_role;
+        }
 
-    $user->save();
+        $user->save();
  
          return redirect()->route('user.manage')->with('success', 'User updated successfully');
      }

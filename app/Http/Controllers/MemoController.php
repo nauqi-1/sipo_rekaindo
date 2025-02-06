@@ -15,7 +15,7 @@ class MemoController extends Controller
     {
         $divisi = Divisi::all();
         $seri = Seri::all();  
-        $memos = Memo::with('divisi')->orderBy('tgl_dibuat', 'desc')->get();
+        $memos = Memo::with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(6);
         
     
         return view('superadmin.memo.memo-superadmin', compact('memos','divisi','seri'));
@@ -160,4 +160,81 @@ class MemoController extends Controller
     
         return redirect()->back()->with('error', 'Dokumen ditolak.');
     }
+    public function edit($id)
+     {
+         $memo = Memo::findOrFail($id);
+         $divisi = Divisi::all();
+         $seri = Seri::all();  
+         
+         return view('superadmin.memo.edit-memo', compact('memo', 'divisi', 'seri'));
+     }
+     public function update(Request $request, $id)
+     {
+        $memo = Memo::findOrFail($id);
+
+        $request->validate([
+            'judul' => 'required|string|max:70',
+            'isi_memo' => 'required|string',
+            'tujuan' => 'required|string|max:255',
+            'nomor_memo' => 'required|string|max:255',
+            'nama_bertandatangan' => 'required|string|max:255',
+            'tgl_dibuat' => 'required|date',
+            'seri_surat' => 'required|numeric',
+            'tgl_disahkan' => 'nullable|date',
+            'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
+            'tanda_identitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ],[
+            'tanda_identitas.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
+            'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
+        ]);
+
+        if ($request->filled('judul')) {
+            $memo->judul = $request->judul;
+        }
+        if ($request->filled('isi_memo')) {
+            $memo->isi_memo = $request->isi_memo;
+        }
+        if ($request->filled('tujuan')) {
+            $memo->tujuan = $request->tujuan;
+        }
+        if ($request->filled('nomor_memo')) {
+            $memo->nomor_memo = $request->nomor_memo;
+        }
+        if ($request->filled('nama_bertandatangan')) {
+            $memo->nama_bertandatangan = $request->nama_bertandatangan;
+        }
+        if ($request->filled('tgl_surat')) {
+            $memo->tgl_dibuat = bcrypt($request->tgl_dibuat);
+        }
+        if ($request->filled('seri_suart')) {
+            $memo->seri_memo = $request->seri_memo;
+        }
+        if ($request->filled('tgl_disahkan')) {
+            $memo->tgl_disahkan = $request->tgl_disahkan;
+        }
+        if ($request->filled('divisi_id_divisi')) {
+            $memo->divisi_id_divisi = $request->divisi_id_divisi;
+        }
+        
+
+        $memo->save();
+ 
+         return redirect()->route('memo.superadmin')->with('success', 'User updated successfully');
+     }
+     public function destroy($id)
+     {
+         $memo = Memo::findOrFail($id);
+         $memo->delete();
+ 
+         return redirect()->route('memo.superadmin')->with('success', 'Memo deleted successfully.');
+     }
+     public function paginateMemo()
+{
+    // Ambil data pengguna dengan pagination
+    $memo = Memo::with(['seri', 'divisi'])->paginate(6);
+
+    
+    // Kirim data ke view user-manage dengan pagination
+    return view('superadmin.user-pagination', compact('memo'));
+}
 }

@@ -139,7 +139,7 @@
 
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('memo.superadmin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save">Simpan></button>
+                <button type="submit" class="btn btn-save">Simpan</button>
             </div>
         </div>
         </form>

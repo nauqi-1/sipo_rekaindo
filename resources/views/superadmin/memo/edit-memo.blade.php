@@ -24,12 +24,15 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Home</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Edit Memo</a>
+                    <a href="#">Beranda</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Edit Memo</a>
                 </div>
             </div>
         </div>
 
         <!-- form add memo -->
+        <form method="POST" action="{{ route('memo/update', $memo->id_memo) }}">
+        @csrf
+        @method('PUT')
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title" style="font-size: 18px;"><b>Form Edit Memo</b></h5>
@@ -40,38 +43,21 @@
                         <label for="tgl_surat" class="form-label">
                             <img src="/img/memo-superadmin/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat
                         </label>
-                        <input type="date" name="tgl_surat" id="tgl_surat" class="form-control" required>
+                        <input type="date" name="tgl_surat" id="tgl_surat" class="form-control" value="{{ $memo->tgl_dibuat }}" required>
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
-                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" placeholder="Masukkan Seri Surat" required>
+                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $memo->seri_surat }}" required>
                     </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="nomor_surat" class="form-label">Nomor Surat</label>
-                        <input type="text" name="nomor_surat" id="nomor_surat" class="form-control" placeholder="Masukkan Nomor Surat" required>
+                        <input type="text" name="nomor_surat" id="nomor_surat" class="form-control" value="{{ $memo->nomor_memo }}" required>
                     </div>
-                    <!-- <div class="col-md-6 dropdown">
-                        <label for="dropdownMenuButton">Divisi Pembuat</label>
-                        <div class="separator"></div>
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
-                            <option disabled selected style="text-align: left;">--Pilih--</option>
-                            <option value="hr_ga">HR & GA</option>
-                            <option value="keuangan">Keuangan</option>
-                            <option value="logistik_gudang">Logistik & Gudang</option>
-                            <option value="pemasaran">Pemasaran</option>
-                            <option value="sekretaris_perusahaan">Sekretaris Perusahaan</option>
-                            <option value="mrh">MRH</option>
-                            <option value="teknologi">Teknologi</option>
-                            <option value="quality_control">Quality Control</option>
-                            <option value="qm_she">QM & SHE (OT dan K3)</option>
-                            <option value="ppc">PPC</option>
-                        </select>                      
-                    </div> -->
                     <div class="col-md-6" >
                         <label for="perihal" class="form-label">Perihal</label>
-                        <input type="text" name="perihal" id="perihal" class="form-control" placeholder="Masukkan Perihal / Judul Surat" required>
+                        <input type="text" name="perihal" id="perihal" class="form-control" value="{{ $memo->judul }}" required>
                     </div>
 
                 </div>
@@ -81,13 +67,13 @@
                             <img src="/img/memo-superadmin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada
                             <label for="kepada" class="label-kepada">*Pisahkan dengan titik koma(;) jika penerima lebih dari satu</label>
                         </label>
-                        <input type="text" name="kepada" id="kepada" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" required>
+                        <input type="text" name="kepada" id="kepada" class="form-control" value="{{ $memo->tujuan }}" required>
                     </div>
                     <div class="col-md-6 lampiran">
                         <label for="upload_file" class="form-label">Lampiran</label>
                         <div class="upload-wrapper">
                             <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
-                            <input type="file" id="upload_file" name="upload_file" class="form-control-file" hidden>
+                            <input type="file" id="upload_file" name="upload_file" class="form-control-file" value="{{ $memo->tanda_identitas }}" hidden>
                         </div>
                     </div>
                 </div>
@@ -98,17 +84,42 @@
                         <label for="isi-surat">Isi Surat</label>
                     </div>
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
-                            <textarea id="summernote" name="isi_surat"></textarea>
+                            <textarea id="summernote" name="isi_surat" >{{ $memo->isi_memo }}</textarea>
                     </div>
                 </div>
             </div>
             <div class="row mb-4 need-row">
                 <div class="col-md-12">
+                    <label for="need" class="need">Keperluan Barang</label>
+                </div>
+            </div>
+            @foreach ($memo->kategoriBarang as $index => $barang)
+            <div class="row mb-4 isi">
+                <div class="col-md-6">
+                    <label for="kategori_barang_{{ $index }}_nomor">Nomor</label>
+                    <input type="text" id="kategori_barang_{{ $index }}_nomor" name="kategori_barang[{{ $index }}][nomor]" class="form-control" value="{{ $barang->nomor }}">
+                </div>
+                <div class="col-md-6">
+                    <label for="kategori_barang_{{ $index }}_nama_barang">Barang</label>
+                    <input type="text" id="kategori_barang_{{ $index }}_nama_barang" name="kategori_barang[{{ $index }}][nama_barang]" class="form-control" value="{{ $barang->nama_barang }}">
+                </div>
+                <div class="col-md-6">
+                    <label for="kategori_barang_{{ $index }}_qty">Qty</label>
+                    <input type="number" id="kategori_barang_{{ $index }}_qty" name="kategori_barang[{{ $index }}][qty]" class="form-control" value="{{ $barang->qty }}">
+                </div>
+                <div class="col-md-6">
+                    <label for="kategori_barang_{{ $index }}_satuan">Satuan</label>
+                    <input type="text" id="kategori_barang_{{ $index }}_satuan" name="kategori_barang[{{ $index }}][satuan]" class="form-control" value="{{ $barang->satuan }}">
+                </div>
+            </div>
+        @endforeach
+            <!-- <div class="row mb-4 need-row">
+                <div class="col-md-12">
                     <label for="need" class="need">Keperluan Lain</label>
                     <label for="isi" class="fill">*Isi keperluan barang jika dibutuhkan</label>
                 </div>
-            </div>
-            <div class="row mb-4 need-row">
+            </div> -->
+            <!-- <div class="row mb-4 need-row">
                 <div class="col">
                     <label for="need" class="need" style="font-size: 14px; color: #1E4178">Tambah Kategori Barang</label>
                 </div>
@@ -124,9 +135,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
-            <div id="additionalFields" class="card-body2" style="display: none;">
+            <!-- <div id="additionalFields" class="card-body2" style="display: none;">
                 <div class="row mb-3">
                     <div class="colom">
                         <label for="jumlah_kolom" class="form-label">Jumlah Kategori Barang</label>
@@ -134,13 +145,14 @@
                     </div>
                 </div>
             </div>
-            <div id="dynamicFields"></div>
+            <div id="dynamicFields"></div> -->
 
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('memo.superadmin')}}">Batal</a></button>
                 <button type="submit" class="btn btn-save"><a href="{{route ('memo.superadmin')}}">Simpan</a></button>
             </div>
         </div>
+        </form>
     </div>
     
     <!-- Modal Upload File -->

@@ -20,6 +20,7 @@
         </div>
 
         <!-- Wrapper untuk elemen di luar card -->
+        <div class="user-manage">
         <div class="header-tools">
             <h2 class="title">Pengguna</h2>
             <div class="search-filter">
@@ -118,6 +119,7 @@
                     </tbody>
                 </table>
                 {{ $users->links('pagination::bootstrap-5') }}
+            </div>
             </div>
         </div>
     </div>

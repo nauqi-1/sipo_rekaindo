@@ -466,6 +466,11 @@ select.btn-dropdown:focus {
     outline: none;
 }
 
+.isi {
+    width: 93.5%;
+    margin: 0 auto;
+}
+
 .col .cek .radio {
     margin-left: 110px;
 }
