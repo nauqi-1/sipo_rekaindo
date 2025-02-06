@@ -17,7 +17,7 @@
             <div class="back-button">
                 <a href="{{route ('arsip-undangan.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Lihat Arsip Undangan</h1>
+            <h1>Detail Arsip Undangan</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
@@ -25,7 +25,7 @@
                 <a href="{{route('superadmin.dashboard')}}">Beranda</a>/
                 <a href="#">Arsip</a>/
                 <a href="{{route ('arsip-undangan.superadmin')}}">Arsip Undangan</a>/
-                <a style="color:#565656" href="#">Lihat Arsip Undangan</a>
+                <a style="color:#565656" href="#">Detail Arsip Undangan</a>
                 </div>
             </div>
         </div>

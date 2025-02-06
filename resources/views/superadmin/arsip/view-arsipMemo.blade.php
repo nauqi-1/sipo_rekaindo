@@ -17,7 +17,7 @@
             <div class="back-button">
                 <a href="{{route ('arsip-memo.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Lihat Arsip Memo</h1>
+            <h1>Detail Arsip Memo</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
@@ -25,7 +25,7 @@
                 <a href="{{route('superadmin.dashboard')}}">Beranda</a>/
                 <a href="#">Arsip</a>/
                 <a href="{{route ('arsip-memo.superadmin')}}">Arsip Memo</a>/
-                <a style="color:#565656" href="#">Lihat Arsip Memo</a>
+                <a style="color:#565656" href="#">Detail Arsip Memo</a>
                 </div>
             </div>
         </div>
