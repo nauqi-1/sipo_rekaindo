@@ -248,9 +248,12 @@ Route::get('/view-arsipRisalah-admin', function() {
 Route::get('/superadmin/memo', [MemoController::class, 'index'])->name('memo.superadmin');
 Route::get('/superadmin/undangan', [UndanganController::class, 'index'])->name('undangan.superadmin');
 
-Route::get('/info', function() {
-    return view('superadmin.info');
-})->name('info');
+Route::get('/info-superadmin', function() {
+    return view('superadmin.infoSuperadmin'); })->name('info-superadmin');
+Route::get('/info-admin', function() {
+    return view('admin.infoAdmin'); })->name('info-admin');
+Route::get('/info-supervisor', function() {
+    return view('supervisor.infoSupervisor'); })->name('info-supervisor');
 
 // Format Surat
 Route::get('/format-memo', function() {
