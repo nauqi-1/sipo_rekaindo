@@ -264,6 +264,9 @@ Route::get('/format-undangan', function() {
 Route::get('/format-risalah', function() {
     return view('format-surat.format-risalah');
 })->name('format-risalah');
+Route::get('/format-cetakLaporan', function() {
+    return view('format-surat.format-cetakLaporan');
+})->name('format-cetakLaporan');
 
 // data perusahaan 
 Route::get('/data-perusahaan', function() {
