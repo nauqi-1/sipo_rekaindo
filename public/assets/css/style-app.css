@@ -1,0 +1,223 @@
+/* All View */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.header.back-button a {
+    margin-right: auto;
+    display: flex;
+}
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+h1 {
+    margin-bottom: 20px;
+}
+.breadcrumb-wrapper {
+    display: inline-block; 
+    margin-right: 40px; 
+}
+.breadcrumb {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 30px;
+    padding: 8px 12px;
+    border: 1px solid #E5E5E5CC;
+    display: flex;
+    justify-content: left;
+}
+.breadcrumb a {
+    text-decoration: none;
+    color: #A9A9A9;
+}
+
+/* Overlay Delete Success Confirm  */
+.modal-content .modal-header {
+    font-size: 17px;
+    color: #222B45;
+}
+
+.modal-content input.form-control {
+    background-color: #ffffff; 
+    color: #000000; 
+    border: 1px solid #EFF4FA; 
+    border-radius: 8px; 
+    padding: 10px; 
+}
+
+.modal-content input.form-control:hover {
+    box-shadow: none;
+    outline: none;
+}
+
+.modal-content input.form-control:focus {
+    background-color: #fff; 
+    border-color: #92C5FF99; 
+    box-shadow: 4px 4px 4px rgba(146, 197, 255, 0.6); 
+}
+
+.modal-content select.form-control {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #EFF4FA;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.modal-content select.form-control:hover {
+    outline: none;
+    box-shadow: none;
+}
+
+.modal-content select.form-control option {
+    background-color: #ffffff;
+    color: #222B45;
+    border: 1px solid #EFF4FA;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.modal-content select.form-control:focus {
+    background-color: #fff; 
+    border-color: #1E4178; 
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+    font-size: 13px;
+}
+
+.modal-content label.form-label {
+    background-color: #ffffff; 
+    color: #222B45; 
+    font-size: 13px;
+}
+
+select.form-control {
+    font-size: 13px; 
+}
+
+input.form-control {
+    font-size: 13px; 
+}
+
+#deleteModal .btn-outline-secondary {
+    padding: 8px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    color: #8A8383;
+}
+
+#deleteModal .btn-outline-secondary:hover{
+    background-color: #6d6d6d;
+    color: #ffffff;
+}
+
+#deleteModal .btn-primary {
+    padding: 8px 33px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #2592F7;
+}
+
+#deleteModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}
+
+#deleteModal img {
+    margin-bottom: 20px;
+}
+
+#deleteModal h5 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Modal Delete Success Confirmation */
+#deleteSuccessModal .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#deleteSuccessModal .modal-body img {
+    width: 80px;
+    height: auto;
+}
+
+#deleteSuccessModal .modal-body h5 {
+    font-size: 18px;
+    color: #333;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+#deleteSuccessModal .btn-primary {
+    background-color: #2592F7;
+    color: white;
+    border-radius: 5px;
+}
+
+#deleteSuccessModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}
+
+/* Modal Edit Success Confirmation */
+#editSuccessModal .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#editSuccessModal .modal-body img {
+    width: 80px;
+    height: auto;
+}
+
+#editSuccessModal .modal-body h5 {
+    font-size: 18px;
+    color: #333;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+#editSuccessModal .btn-primary {
+    background-color: #2592F7;
+    color: white;
+    border-radius: 5px;
+}
+
+#editSuccessModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}
+
+#successModal .modal-content {
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#successModal .btn-primary {
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 8px;
+    background-color: #0095FF;
+    border-radius: 15px;
+}
+
+#successModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}

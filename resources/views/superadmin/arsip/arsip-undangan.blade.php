@@ -21,12 +21,14 @@
         </div>
 
         <!-- Filter & Search Bar -->
-        <div class="title d-flex justify-content-between align-items-center mb-3">
-            <h2><b>Arsip Undangan Rapat</b></h2>
-            <div class="d-flex gap-2">
-                <div class="search">
-                    <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
-                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+        <div clas="arsip">
+            <div class="title d-flex justify-content-between align-items-center mb-3">
+                <h2><b>Arsip Undangan Rapat</b></h2>
+                <div class="d-flex gap-2">
+                    <div class="search">
+                        <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
+                        <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+                    </div>
                 </div>
             </div>
         </div>

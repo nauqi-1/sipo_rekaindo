@@ -37,6 +37,7 @@
 <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
 <link rel="stylesheet" href="../assets/css/style-preset.css" />
 <link rel="stylesheet" href="../assets/css/style-preset.css" />
+<link rel="stylesheet" href="../assets/css/style-app.css" />
 <link rel="stylesheet" href="../assets/css/dashboard.css" />
 <link rel="stylesheet" href="../assets/css/memo.css" />
 <link rel="stylesheet" href="../assets/css/user-manage.css" />
@@ -44,6 +45,8 @@
 <link rel="stylesheet" href="../assets/css/profile.css" />
 <link rel="stylesheet" href="../css/superadmin/arsip.css"/>
 <link rel="stylesheet" href="../css/superadmin/undangan.css"/>
+<link rel="stylesheet" href="../css/superadmin/laporan.css"/>
+<link rel="stylesheet" href="../css/superadmin/cetak-laporan.css"/>
 
   </head>
   <!-- [Head] end -->
