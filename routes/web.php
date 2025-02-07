@@ -251,8 +251,8 @@ Route::get('/superadmin/memo', [MemoController::class, 'index'])->name('memo.sup
 Route::get('/superadmin/undangan', [UndanganController::class, 'index'])->name('undangan.superadmin');
 
 Route::get('/info', function() {
-    return view('superadmin.info');
-})->name('info');
+    return view('info'); })->name('info');
+
 
 // Format Surat
 Route::get('/format-memo', function() {

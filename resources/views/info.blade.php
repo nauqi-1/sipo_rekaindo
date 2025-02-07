@@ -6,7 +6,7 @@
     <title>Tentang Sistem</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/superadmin/info.css">
+    <link rel="stylesheet" href="/css/info.css">
 </head>
 <body>
     <div class="container">
@@ -20,7 +20,7 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;"><b>Info</b></a>
+                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Info</a>
                 </div>
             </div>
         </div>
@@ -29,7 +29,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="row bg-container">
-                    <p>Tentang Sistem<br><br>Sistem manajemen persuratan ini dirancang untuk memudahkan pengelolaan memo, undangan rapat, dan risalah rapat di dalam ruang lingkup PT Rekaindo Global Jasa. Sistem ini memungkinkan pembuatan, pengeditan, persetujuan, dan pengarsipan dokumen secara efisien.</p>
+                    <p>Tentang Sistem<br><br>Sistem manajemen persuratan ini dirancang untuk memudahkan pengelolaan Memo, Undangan Rapat, dan Risalah Rapat di dalam ruang lingkup PT Rekaindo Global Jasa. Sistem ini memungkinkan pembuatan, pengeditan, persetujuan, dan pengarsipan dokumen secara efisien.</p>
                 </div>
                 <div class="reka-info">
                     <img src="/img/reka-info.png" alt="">
