@@ -80,9 +80,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="edit-button">Edit</button>
-                    <button type="button" class="btn btn-secondary d-none" id="cancel-button">Batal</button>
-                    <button type="submit" class="btn btn-primary d-none" id="save-button">Simpan</button>
+                    <button type="button" class="btn btn-edit" id="edit-button">Edit</button>
+                    <button type="button" class="btn btn-cancel d-none" id="cancel-button">Batal</button>
+                    <button type="submit" class="btn btn-save d-none" id="save-button">Simpan</button>
                 </div>
             </div>
         </div>
