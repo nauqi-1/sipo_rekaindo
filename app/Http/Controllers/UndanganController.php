@@ -148,4 +148,72 @@ class UndanganController extends Controller
     
         return redirect()->back()->with('error', 'Dokumen ditolak.');
     }
+    public function edit($id)
+     {
+         $undangan = Undangan::findOrFail($id);
+         $divisi = Divisi::all();
+         $seri = Seri::all();  
+         
+         return view('superadmin.undangan.edit-undangan', compact('undangan', 'divisi', 'seri'));
+     }
+     public function update(Request $request, $id)
+     {
+        $undangan = Undangan::findOrFail($id);
+
+        $request->validate([
+            'judul' => 'required|string|max:70',
+            'isi_undangan' => 'required|string',
+            'tujuan' => 'required|string|max:255',
+            'nomor_undangan' => 'required|string|max:255',
+            'nama_bertandatangan' => 'required|string|max:255',
+            'tgl_dibuat' => 'required|date',
+            'seri_surat' => 'required|numeric',
+            'tgl_disahkan' => 'nullable|date',
+            'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
+            'tanda_identitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ],[
+            'tanda_identitas.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
+            'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
+        ]);
+
+        if ($request->filled('judul')) {
+            $undangan->judul = $request->judul;
+        }
+        if ($request->filled('isi_memo')) {
+            $undangan->isi_undangan = $request->isi_undangan;
+        }
+        if ($request->filled('tujuan')) {
+            $undangan->tujuan = $request->tujuan;
+        }
+        if ($request->filled('nomor_undangan')) {
+            $undangan->nomor_undangan = $request->nomor_undangan;
+        }
+        if ($request->filled('nama_bertandatangan')) {
+            $undangan->nama_bertandatangan = $request->nama_bertandatangan;
+        }
+        if ($request->filled('tgl_surat')) {
+            $undangan->tgl_dibuat = bcrypt($request->tgl_dibuat);
+        }
+        if ($request->filled('seri_surat')) {
+            $undangan->seri_undangan = $request->seri_undangan;
+        }
+        if ($request->filled('tgl_disahkan')) {
+            $undangan->tgl_disahkan = $request->tgl_disahkan;
+        }
+        if ($request->filled('divisi_id_divisi')) {
+            $undangan->divisi_id_divisi = $request->divisi_id_divisi;
+        }
+        
+
+        $undangan->save();
+ 
+         return redirect()->route('undangan.superadmin')->with('success', 'Undangan updated successfully');
+     }
+     public function destroy($id)
+     {
+         $undangan = Undangan::findOrFail($id);
+         $undangan->delete();
+ 
+         return redirect()->route('undangan.superadmin')->with('success', 'Undangan deleted successfully.');
+     }
 }

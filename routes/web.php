@@ -53,6 +53,10 @@ Route::get('/memo/edit/{id_memo}', [MemoController::class, 'edit'])->name('memo.
 Route::delete('/memo/delete/{id_memo}', [MemoController::class, 'destroy'])->name('memo.destroy');
 Route::put('/memo/update/{id_memo}', [MemoController::class, 'update'])->name('memo/update');
 
+Route::get('/undangan/edit/{id_undangan}', [UndanganController::class, 'edit'])->name('undangan.edit');
+Route::delete('/undangan/delete/{id_undangan}', [UndanganController::class, 'destroy'])->name('undangan.destroy');
+Route::put('/undangan/update/{id_undangan}', [UndanganController::class, 'update'])->name('undangan/update');
+
 Route::get('/kirim-memoSuperadmin', function() {
     return view('superadmin.memo.kirim-memoSuperadmin');
 })->name('kirim-memoSuperadmin.superadmin');
@@ -88,11 +92,9 @@ Route::get('/verif-email', function () {
 Route::get('/undanganSuperadmin', function() {
     return view('superadmin.undangan.undangan');
 })->name('undangan.superadmin');
-
 Route::get('/add-undanganSuperadmin', function() {
     return view('superadmin.undangan.add-undangan');
 })->name('add-undangan.superadmin');
-
 Route::get('/edit-undanganSuperadmin', function() {
     return view('superadmin.undangan.edit-undangan');
 })->name('edit-undangan.superadmin');

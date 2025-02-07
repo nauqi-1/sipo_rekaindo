@@ -228,13 +228,5 @@ class MemoController extends Controller
  
          return redirect()->route('memo.superadmin')->with('success', 'Memo deleted successfully.');
      }
-     public function paginateMemo()
-{
-    // Ambil data pengguna dengan pagination
-    $memo = Memo::with(['seri', 'divisi'])->paginate(6);
-
-    
-    // Kirim data ke view user-manage dengan pagination
-    return view('superadmin.user-pagination', compact('memo'));
-}
+     
 }
