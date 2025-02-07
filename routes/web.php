@@ -146,13 +146,13 @@ Route::get('/laporan-undangan', function() {
 // cetak laporan
 Route::get('/cetak-laporan-memo', function() {
     return view('superadmin.laporan.cetak-laporan-memo');
-})->name('laporan-memo');
+})->name('cetak-laporan-memo.superadmin');
 Route::get('/cetak-laporan-risalah', function() {
     return view('superadmin.laporan.cetak-laporan-risalah');
-})->name('laporan-risalah');
+})->name('cetak-laporan-risalah.superadmin');
 Route::get('/cetak-laporan-undangan', function() {
     return view('superadmin.laporan.cetak-laporan-undangan');
-})->name('laporan-undangan');
+})->name('cetak-laporan-undangan.superadmin');
 
 // Dashboard
 Route::get('/dashboard-admin', function() {
