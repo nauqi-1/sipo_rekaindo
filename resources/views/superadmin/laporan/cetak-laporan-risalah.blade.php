@@ -7,7 +7,7 @@
     <div class="header">
         <!-- Back Button -->
         <div class="back-button">
-            <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+            <a href="{{ route('laporan-risalah.superadmin') }}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
         </div>
         <h1>Laporan Risalah Rapat</h1>
     </div>        
@@ -83,42 +83,42 @@
             @endfor
         </tbody>
     </table>
-</div>
 
-<!-- Overlay Delete Confirmation -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center p-4">
-            <div class="modal-body">
-                <!-- Close Button -->
-                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-                <!-- Question Mark Icon -->
-                <img src="/img/user-manage/question_Vector.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
-                <!-- Delete Confirmation Text -->
-                <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus Laporan Risalah?</h5>
-                <!-- Buttons -->
-                <div class="d-flex justify-content-center mt-3">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="confirmDelete" data-bs-toggle="modal" data-bs-target="#deleteSuccessModal">Oke</button>
+    <!-- Modal Hapus -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Tombol Close -->
+                <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-body text-center">
+                    <!-- Ikon atau Gambar -->
+                    <img src="/img/risalah/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
+                    <!-- Tulisan -->
+                    <h5 class="mb-4" style="color: #545050;"><b>Hapus Risalah?</b></h5>
+                    <!-- Tombol -->
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('cetak-laporan-risalah.superadmin')}}">Batal</a></button>
+                        <button type="button" class="btn ok" id="confirmDelete">Oke</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Overlay Confirmation Delete Success -->
-<div class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center p-4">
-            <div class="modal-body">
-                <!-- Close Button -->
-                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-                <!-- Success Icon -->
-                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="my-3" style="width: 80px;">
-                <!-- Success Message -->
-                <h5><b>Berhasil Menghapus Laporan Risalah</b></h5>
-                <!-- Back Button -->
-                <button class="btn btn-primary mt-4 px-4 py-2" data-bs-dismiss="modal">Kembali</button>
+    <!-- Modal Berhasil -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Tombol Close -->
+                <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-body text-center">
+                    <!-- Ikon atau Gambar -->
+                    <img src="/img/risalah/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                    <!-- Tulisan -->
+                    <h5 class="mb-4" style="color: #545050; font-size: 20px;"><b>Berhasil Menghapus <br>Risalah</b></h5>
+                    <!-- Tombol -->
+                    <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('cetak-laporan-risalah.superadmin')}}">Kembali</a></button>
+                </div>
             </div>
         </div>
     </div>

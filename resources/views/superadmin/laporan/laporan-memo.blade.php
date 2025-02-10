@@ -44,7 +44,7 @@
             </div>
             <div class="modal-footer">
                 <form action="{{ route('cetak-laporan-memo.superadmin') }}">
-                    <button type="submit" class="btn btn-primary" id="edit-button">Filter</button>
+                    <button type="submit" class="btn btn-primary" id="filter-button">Filter</button>
                 </form>
                 <button type="button" class="btn btn-secondary" id="cancel-button">Batal</button>
             </div>

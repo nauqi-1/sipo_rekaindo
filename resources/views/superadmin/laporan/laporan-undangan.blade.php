@@ -42,14 +42,12 @@
                     </div>
                 </div>
             </div>
-            <form action="#" method="GET">
-                <div class="modal-footer">
-                    <form action="{{ route('cetak-laporan-undangan.superadmin') }}">
-                        <button type="submit" class="btn btn-primary" id="edit-button">Filter</button>
-                    </form>
-                    <button type="button" class="btn btn-secondary" id="cancel-button">Batal</button>
-                </div>
-            </form>
+            <div class="modal-footer">
+                <form action="{{ route('cetak-laporan-undangan.superadmin') }}">
+                    <button type="submit" class="btn btn-primary" id="filter-button">Filter</button>
+                </form>
+                <button type="button" class="btn btn-secondary" id="cancel-button">Batal</button>
+            </div>
         </div>
     </div>
 </div>

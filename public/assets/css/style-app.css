@@ -43,6 +43,81 @@ h1 {
     color: #A9A9A9;
 }
 
+.title {
+    margin-left: 40px;
+}
+
+.table-light {
+    margin-top: 20px;
+    width: calc(100% - 40px);
+    margin-left: 20px;
+}
+.table-light thead  {
+    vertical-align: middle;
+    color: #878790;
+    text-align: center;
+    background-color: #fff;
+    font-size: 13px;
+}
+.table-light th,
+.table-light td {
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 13px;
+}
+.table-light tbody tr {
+    background-color: #FFFFFF;
+}
+
+.data-md {
+    border: none;
+    background-color: #f8f9fa;
+}
+
+/* Nomor */
+.nomor {
+    background-image: url('/img/memo-superadmin/Rectangle-path.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat; 
+    background-position: center center; 
+    color: #ffffff; 
+    width: 50px; 
+    height: 50px; 
+}
+
+/* status */
+.badge {
+    font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nama-dokumen {
+    white-space: normal;
+    word-wrap: break-word;
+    max-width: 150px;
+    overflow-wrap: break-word;
+}
+
+/* Button aksi */
+.btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-sm1, .btn-sm2, .btn-sm3 {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 50px;
+}
+
 /* Overlay Delete Success Confirm  */
 .modal-content .modal-header {
     font-size: 17px;
@@ -87,12 +162,13 @@ h1 {
     border: 1px solid #EFF4FA;
     border-radius: 8px;
     padding: 10px;
+    font-size: 13px;
 }
 
 .modal-content select.form-control:focus {
     background-color: #fff; 
-    border-color: #1E4178; 
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+    border-color: #92C5FF99; 
+    box-shadow: 4px 4px 4px rgba(146, 197, 255, 0.6); 
     font-size: 13px;
 }
 

@@ -1,3 +1,32 @@
+/* Style diatur pada file style-app.css */
+/* Fitur Search */
+.cetak-laporan .search {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: none;
+    border: 1px solid #E5E5E5;
+    border-radius: 10px;
+    width: calc(100% - 20px);
+}
+
+.cetak-laporan .search img {
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.cetak-laporan .search input {
+    color: black !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+  
+.cetak-laporan .search input:focus {
+    color: black !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
 /* Fitur print */
 .btn-primary-print {
     background-color: #1E4178;

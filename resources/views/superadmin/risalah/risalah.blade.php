@@ -47,12 +47,10 @@
                 </div>
                 <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                     <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                    <img src="/img/risalah/kalender.png" alt="Kalender Icon" class="input-icon">
                 </div>
                 <i class="bi bi-arrow-right"></i>
                 <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                     <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                    <img src="/img/risalah/kalender.png" alt="Kalender Icon" class="input-icon">
                 </div>
                 <div class="d-flex gap-2">
                     <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
