@@ -16,7 +16,7 @@
                     <div class="logo">
                         <img src="/img/logo-reka.png" alt="logo reka">
                     </div>
-                    <h1>SISTEM INFORMASI PERSURATAN ONLINE</h1>
+                    <h1>SISTEM INFORMASI PENGARSIPAN SURAT</h1>
                 </div>
             </div>
             <div class="card-body">
