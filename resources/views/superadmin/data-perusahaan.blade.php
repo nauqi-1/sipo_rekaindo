@@ -1,31 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Perusahaan</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/superadmin/data-perusahaan.css') }}">
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <!-- Back Button -->
-            <div class="back-button">
-                <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
-            </div>
-            <h1>Data Perusahaan</h1>
-        </div>        
-        <div class="row">
-            <div class="breadcrumb-wrapper">
-                <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a> / <a href="#">Pengaturan</a> / <a href="#" style="color: #565656;">Data Perusahaan</a>
-                </div>
+@extends('layouts.app')
+
+@section('title', 'Data Perusahaan')
+      
+@section('content')
+<div class="container">
+    <div class="header">
+        <!-- Back Button -->
+        <div class="back-button">
+            <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+        </div>
+        <h1>Data Perusahaan</h1>
+    </div>        
+    <div class="row">
+        <div class="breadcrumb-wrapper">
+            <div class="breadcrumb" style="gap: 5px;">
+                <a href="#">Beranda</a> / <a href="#">Pengaturan</a> / <a href="#" style="color: #565656;">Data Perusahaan</a>
             </div>
         </div>
+    </div>
 
-        <!-- Card untuk tabel -->
+    <!-- Card untuk tabel -->
+    <div class="data-perusahaan">
         <div class="card">
             <div class="card-body">
                 <div class="row">
@@ -91,70 +86,5 @@
             </div>
         </div>
     </div>
-
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const editButton = document.getElementById("edit-button");
-            const cancelButton = document.getElementById("cancel-button");
-            const saveButton = document.getElementById("save-button");
-            const inputs = document.querySelectorAll('input[type="text"], input[type="email"]');
-            const photoInput = document.getElementById("company-photo");
-            const photoPreview = document.getElementById("company-photo-preview");
-
-            // Set gambar default
-            const defaultImage = "/img/setting/question.png"; // Path gambar default
-            photoPreview.src = defaultImage; // Set gambar default awal
-
-            // Disable all inputs at the start
-            inputs.forEach(input => input.disabled = true);
-            photoInput.disabled = true;
-
-            // Ketika tombol Edit ditekan
-            editButton.addEventListener("click", () => {
-                inputs.forEach(input => input.disabled = false);
-                photoInput.disabled = false;
-                editButton.classList.add("d-none");
-                cancelButton.classList.remove("d-none");
-                saveButton.classList.remove("d-none");
-            });
-
-            // Ketika tombol Cancel ditekan
-            cancelButton.addEventListener("click", () => {
-                inputs.forEach(input => input.disabled = true);
-                photoInput.disabled = true;
-                editButton.classList.remove("d-none");
-                cancelButton.classList.add("d-none");
-                saveButton.classList.add("d-none");
-            });
-
-            // Ketika tombol Save Changes ditekan
-            saveButton.addEventListener("click", () => {
-                inputs.forEach(input => input.disabled = true);
-                photoInput.disabled = true;
-                editButton.classList.remove("d-none");
-                cancelButton.classList.add("d-none");
-                saveButton.classList.add("d-none");
-                console.log("Data telah disimpan");
-            });
-
-            // Menangani perubahan gambar
-            photoInput.addEventListener("change", (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        photoPreview.src = e.target.result; // Update dengan gambar baru
-                    };
-                    reader.readAsDataURL(file); // Baca file gambar
-                } else {
-                    // Jika tidak ada file, tampilkan gambar default
-                    photoPreview.src = defaultImage;
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+</div>
+@endsection

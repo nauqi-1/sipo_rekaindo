@@ -143,13 +143,13 @@ Route::get('/laporan-undangan', function() {
 // cetak laporan
 Route::get('/cetak-laporan-memo', function() {
     return view('superadmin.laporan.cetak-laporan-memo');
-})->name('laporan-memo');
+})->name('cetak-laporan-memo.superadmin');
 Route::get('/cetak-laporan-risalah', function() {
     return view('superadmin.laporan.cetak-laporan-risalah');
-})->name('laporan-risalah');
+})->name('cetak-laporan-risalah.superadmin');
 Route::get('/cetak-laporan-undangan', function() {
     return view('superadmin.laporan.cetak-laporan-undangan');
-})->name('laporan-undangan');
+})->name('cetak-laporan-undangan.superadmin');
 
 
 
@@ -253,6 +253,9 @@ Route::get('/format-undangan', function() {
 Route::get('/format-risalah', function() {
     return view('format-surat.format-risalah');
 })->name('format-risalah');
+Route::get('/format-cetakLaporan', function() {
+    return view('format-surat.format-cetakLaporan');
+})->name('format-cetakLaporan');
 
 // data perusahaan 
 Route::get('/data-perusahaan', function() {

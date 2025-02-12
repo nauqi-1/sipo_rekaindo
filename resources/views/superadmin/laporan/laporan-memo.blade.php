@@ -1,31 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Memo Supervisor</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/superadmin/laporan.css">
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <!-- Back Button -->
-            <div class="back-button">
-                <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
-            </div>
-            <h1>Laporan Memo</h1>
-        </div>        
-        <div class="row">
-            <div class="breadcrumb-wrapper">
-                <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#">Laporan</a>/<a href="#" style="color: #565656">Laporan Memo</a>
-                </div>
+@extends('layouts.app')
+
+@section('title', 'Laporan Memo')
+      
+@section('content')
+<div class="container">
+    <div class="header">
+        <!-- Back Button -->
+        <div class="back-button">
+            <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+        </div>
+        <h1>Laporan Memo</h1>
+    </div>        
+    <div class="row">
+        <div class="breadcrumb-wrapper">
+            <div class="breadcrumb" style="gap: 5px;">
+                <a href="#">Beranda</a>/<a href="#">Laporan</a>/<a href="#" style="color: #565656">Laporan Memo</a>
             </div>
         </div>
+    </div>
 
-        <!-- form add memo -->
+    <!-- form add memo -->
+    <div class="laporan">
         <div class="card">
             <div class="card-body">
                 <div class="row mb-4">
@@ -47,17 +42,13 @@
                     </div>
                 </div>
             </div>
-            <form action="#" method="GET">
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" id="edit-button">Filter</button>
-                    <button type="button" class="btn btn-secondary" id="cancel-button">Batal</button>
-                </div>
-            </form>
+            <div class="modal-footer">
+                <form action="{{ route('cetak-laporan-memo.superadmin') }}">
+                    <button type="submit" class="btn btn-primary" id="filter-button">Filter</button>
+                </form>
+                <button type="button" class="btn btn-secondary" id="cancel-button">Batal</button>
+            </div>
         </div>
     </div>
-
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-</body>
-</html>
+</div>
+@endsection

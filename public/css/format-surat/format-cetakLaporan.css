@@ -1,0 +1,132 @@
+.container {
+    font-family: arial;
+    width: 21cm;
+    height: 29.7cm;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    background-image: url('/img/border-surat.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-size: 12px;
+}
+
+.title {
+    margin-top: 25%;
+    font-size: 18px;
+    justify-items: center;
+    text-align: center;
+}
+
+/* .letter {
+    justify-content: start;
+    margin-left: 2cm;
+    margin-right: 2cm;
+    background-color: #ffffff;
+    line-height: 0.7cm;
+} */
+
+/* .fill {
+    margin: 0;
+} */
+
+header table tr td:first-child {
+    width: 25%;
+}
+
+header table tr {
+    line-height: 0.5cm;
+}
+
+/* .fill {
+    margin: 20px -0.8cm 0px -0.7cm;
+}
+
+.fill table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.fill table th {
+    border: 1px solid black;
+    font-weight: normal;
+    text-align: center;
+    padding: 3px;
+    background-color: #92C5FF99;
+}
+
+.fill table td {
+    border: 1px solid black;
+    text-align: center;
+    align-content: start;
+    padding: 2px;
+} */
+
+.letter {
+    display: flex;
+    justify-content: center;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.col-md-12 {
+    width: 100%;
+    padding: 10px;
+}
+
+.fill {
+    padding: 15px;
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    border-radius: 5px;
+}
+
+.fill table {
+    width: 98%;
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+.fill th, .fill td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+    font-weight: normal;
+}
+
+.fill th {
+    background-color: #92C5FF99;
+}
+
+.agenda {
+    text-align: center !important;
+}
+
+.signature {
+    display: flex;
+    justify-content: flex-end; 
+    margin-top: 30px; 
+}
+
+.signature table {
+    border-collapse: separate;
+    border-spacing: 60px;
+    text-align: center;
+    width: 47%;
+}
+
+.signature td {
+    padding: 10px; 
+    text-align: center; 
+    font-size: 14px;
+}
+
+h3 {
+    font-weight: normal;
+    margin-top: 5px;
+    margin-left: 6px;
+}

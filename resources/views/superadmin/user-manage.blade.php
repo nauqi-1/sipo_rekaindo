@@ -21,41 +21,40 @@
 
         <!-- Wrapper untuk elemen di luar card -->
         <div class="user-manage">
-        <div class="header-tools">
-            <h2 class="title">Pengguna</h2>
-            <div class="search-filter">
-                <div class="d-flex gap-2">
-                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                        <img src="/img/user-manage/search.png" alt="search" style="width: 20px; height: 20px;">
-                        <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari berdasarkan nama ..." style="outline: none; box-shadow: none;">
+            <div class="header-tools">
+                <h2 class="title">Pengguna</h2>
+                <div class="search-filter">
+                    <div class="d-flex gap-2">
+                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                            <img src="/img/user-manage/search.png" alt="search" style="width: 20px; height: 20px;">
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari berdasarkan nama ..." style="outline: none; box-shadow: none;">
+                        </div>
                     </div>
-                </div>
 
-                <div class="dropdown">
-                    <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="me-2">Filter</span>
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'asc']) }}" style="justify-content: center; text-align: center;">
-                                Urutkan abjad A-Z
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
-                                Urutkan abjad Z-A
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                    <div class="dropdown">
+                        <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="me-2">Filter</span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'asc']) }}" style="justify-content: center; text-align: center;">
+                                    Urutkan abjad A-Z
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
+                                    Urutkan abjad Z-A
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
 
-                
-                <!-- Add User Button to Open Mod    al -->
-                <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah Pengguna</button>
+                    
+                    <!-- Add User Button to Open Mod    al -->
+                    <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah Pengguna</button>
+                </div>
             </div>
-        </div>
-        <!-- Card untuk tabel -->
-        <!-- <div class="card"> -->
+            <!-- Card untuk tabel -->
             <div class="card-body">
                 <table class="table">
                     <thead>
@@ -119,7 +118,6 @@
                     </tbody>
                 </table>
                 {{ $users->links('pagination::bootstrap-5') }}
-            </div>
             </div>
         </div>
     </div>
