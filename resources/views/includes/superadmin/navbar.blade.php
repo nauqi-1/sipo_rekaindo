@@ -95,7 +95,7 @@
             
         </h4>
           <p class="text-muted">Project Admin</p>
-            <a href="#!" class="dropdown-item">
+            <a href="{{ route('edit-profile.superadmin') }}" class="dropdown-item">
               <i class="ti ti-user"></i>
               <span>Edit Profile</span>
             </a>
