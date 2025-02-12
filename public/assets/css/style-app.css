@@ -297,3 +297,30 @@ input.form-control {
     background-color: #004085;
     color: #ffffff;
 }
+
+.data-perusahaan .btn-edit,
+.data-perusahaan .btn-edit:hover {
+    background-color: #1E4178;
+    color: #ffffff;
+    width: 105px;
+    border-radius: 5px;
+    display: end;
+    margin-right: 1px;
+}
+.data-perusahaan input.form-control {
+    background-color: #ffffff; 
+    color: #000000; 
+    border: 1px solid #EFF4FA; 
+    border-radius: 8px; 
+    padding: 10px; 
+    margin-top: 10px;
+}
+.data-perusahaan input.form-control:hover {
+    box-shadow: none;
+    outline: none;
+}
+.data-perusahaan input.form-control:focus {
+    background-color: #fff; 
+    border-color: #92C5FF99; 
+    box-shadow: 4px 4px 4px rgba(146, 197, 255, 0.6); 
+}

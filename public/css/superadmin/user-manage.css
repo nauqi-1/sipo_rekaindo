@@ -571,19 +571,19 @@ input.form-control {
     color: #ffffff;           /* Warna teks */
 }
 
-.mb-3 .izin {
+.izin {
     display: flex;
     justify-content: flex-end; /* Geser elemen ke kanan */
-    gap: 15px;
+    gap: 10px;
     color: #222B45;
     font-size: 13px;
     margin-top: 50px;
 }
 
-.mb-3 .izin input {
+.izin input {
     margin-right: 15px;
 }
 
-.mb-3 .izin .form-izin {
+.izin .form-izin {
     margin-right: 149px;
 }
