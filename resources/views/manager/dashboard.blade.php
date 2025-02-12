@@ -1,14 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beranda Supervisor</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/supervisor/dashboard.css">
-</head>
-<body>
+@extends('layouts.app')
+
+@section('title', 'Manager')
+
+@section('content')
     <div class="container">
         <!-- Header -->
         <header class="header">
@@ -17,7 +11,7 @@
 
         <!-- Welcome Message -->
         <div class="welcome-message">
-            <p>Selamat datang <strong>Mawar</strong> di <span class="system-name">Sistem Persuratan!</span> Anda login sebagai <span class="role-badge">Supervisor</span></p>
+            <p>Selamat datang <strong>{{ Auth::user()->username }}</strong> di <span class="system-name">Sistem Persuratan!</span> Anda login sebagai <span class="role-badge">Manager</span></p>
         </div>
 
         <!-- Overview Section -->
@@ -113,5 +107,4 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+@endsection

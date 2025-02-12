@@ -13,14 +13,14 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route('superadmin.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route('admin.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Memo</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Memo</a>
+                    <a href="{{route('admin.dashboard')}}">Beranda</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Memo</a>
                 </div>
             </div>
         </div>

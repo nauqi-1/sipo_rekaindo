@@ -28,6 +28,6 @@ class Undangan extends Model
      */
     public function divisi()
     {
-        return $this->belongsTo(Divisi::class, 'id_divisi');
+        return $this->belongsTo(Divisi::class, 'divisi_id_divisi','id_divisi');
     }
 }

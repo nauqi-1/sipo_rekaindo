@@ -44,6 +44,7 @@
 <link rel="stylesheet" href="../assets/css/profile.css" />
 <link rel="stylesheet" href="../css/superadmin/arsip.css"/>
 <link rel="stylesheet" href="../css/superadmin/undangan.css"/>
+<link rel="stylesheet" href="/css/supervisor/dashboard.css">
 
   </head>
   <!-- [Head] end -->
