@@ -26,8 +26,8 @@ h1 {
     margin-bottom: 20px;
 }
 .breadcrumb-wrapper {
-    display: inline-block; 
     margin-right: 40px; 
+    margin-left: 10px;
 }
 .breadcrumb {
     font-size: 14px;
