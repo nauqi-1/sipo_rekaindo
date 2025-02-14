@@ -16,6 +16,7 @@
       content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard"
     />
     <meta name="author" content="codedthemes" />
+    <!-- <meta name="csrf-token" content="{{ csrf_token() }}"> -->
 
     <!-- [Favicon] icon -->
     <link rel="icon" href="../assets/images/favicon.svg" type="image/x-icon" />
@@ -40,12 +41,12 @@
 <link rel="stylesheet" href="../assets/css/style-app.css" />
 <link rel="stylesheet" href="../assets/css/dashboard.css" />
 <link rel="stylesheet" href="../assets/css/user-manage.css" />
+<link rel="stylesheet" href="../assets/css/data-perusahaan.css" />
 <link rel="stylesheet" href="../css/superadmin.edit-profile.css" />
 <link rel="stylesheet" href="../css/superadmin/arsip.css"/>
 <link rel="stylesheet" href="../css/superadmin/undangan.css"/>
 <link rel="stylesheet" href="../css/superadmin/laporan.css"/>
 <link rel="stylesheet" href="../css/superadmin/cetak-laporan.css"/>
-<link rel="stylesheet" href="/css/supervisor/dashboard.css">
 
   </head>
   <!-- [Head] end -->

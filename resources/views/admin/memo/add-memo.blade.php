@@ -17,7 +17,7 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('admin.memo.memo-admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('memo.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Tambah Memo</h1>
         </div>        
@@ -135,7 +135,7 @@
             <div id="barangTable"></div>
 
             <div class="card-footer">
-                <button type="button" class="btn btn-cancel"><a href="{{route ('admin.memo.memo-admin')}}">Batal</a></button>
+                <button type="button" class="btn btn-cancel"><a href="{{route ('memo.admin')}}">Batal</a></button>
                 <button type="submit" class="btn btn-save">Simpan</button>
             </div>
         </div>

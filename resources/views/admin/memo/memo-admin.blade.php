@@ -156,11 +156,9 @@
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
                             <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Cancel</a></button>
-                            <form method="POST" action="{{ route('memo.destroy', $memo->id_memo) }}" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
+                            
                             <button type="button" class="btn-ok" id="confirmDelete">OK</button>
-                            </form>
+
                         </div>
                     </div>
                 </div>
