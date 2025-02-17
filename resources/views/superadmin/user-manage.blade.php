@@ -76,7 +76,6 @@
                                 <img src="\img\user-manage\user.png" alt="User Image" class="rounded-circle-light">
                                 <div class="text-info">
                                     <span>{{ $user->firstname }} {{ $user->lastname }}</span>
-                                    <!-- <br><small>{{ $user->email }}</small> -->
                                 </div>
                             </div>
                         </td>
@@ -86,9 +85,28 @@
                             </div>
                         </td>
                         <td>
-                            <span class="badge bg-primary">
-                             {{ $user->role->nm_role ?? 'No Role Assigned' }} <!-- Menampilkan nama role -->
-                            </span>
+                            <!-- <span class="badge bg-primary">
+                             {{ $user->role->nm_role ?? 'No Role Assigned' }} 
+                            </span> -->
+                            <!-- <span class="badge {{ $user->role->nm_role == 'Superadmin' ? 'role-superadmin' : ($user->role->nm_role == 'Admin' ? 'role-admin' : 'role-manager') }}">
+                                {{ $user->role->nm_role ?? 'No Role Assigned' }}
+                            </span> -->
+                            @if ($user->role->nm_role == 'superadmin')
+                                <span class="badge role-superadmin">
+                                    <!-- {{ $user->role->nm_role ?? 'No Role Assigned' }} -->
+                                      superadmin
+                                </span>
+                            @elseif ($user->role->nm_role == 'admin')
+                                <span class="badge role-admin">
+                                    <!-- {{ $user->role->nm_role ?? 'No Role Assigned'}} -->
+                                      admin
+                                </span>
+                            @else
+                                <span class="badge role-manager">
+                                    <!-- {{ $user->role->nm_role ?? 'No Role Assigned' }} -->
+                                      manager
+                                </span>
+                            @endif
                         </td>
                         <td>
                             {{ $user->divisi->nm_divisi ?? 'No Divisi Assigned' }} <!-- Menampilkan nama divisi -->
@@ -100,7 +118,7 @@
                             <td>
                             <form method="POST" action="{{ route('user-manage.edit', $user->id) }}" style="display: inline;">
                                 @csrf
-                                @method('GET') <!-- Use GET to navigate to the edit page -->
+                                @method('GET') 
                                 <button type="submit" class="btn btn-edit btn-sm">
                                     <img src="/img/user-manage/Edit.png" alt="edit">
                                 </button>
@@ -198,7 +216,7 @@
                             @foreach ($roles as $role)
                                 <label for="role_{{ $role->id_role }}">{{ $role->nm_role }}</label>
                                 <input type="radio" name="role_id_role" value="{{ $role->id_role }}" id="role_{{ $role->id_role }}" required autofocus autocomplete="role_id_role">
-                             @endforeach
+                            @endforeach
                             </div>
                         </div>
                     </div>
