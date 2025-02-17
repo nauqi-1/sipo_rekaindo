@@ -49,7 +49,6 @@
                         </ul>
                     </div>
 
-                    
                     <!-- Add User Button to Open Mod    al -->
                     <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah Pengguna</button>
                 </div>
@@ -85,27 +84,12 @@
                             </div>
                         </td>
                         <td>
-                            <!-- <span class="badge bg-primary">
-                             {{ $user->role->nm_role ?? 'No Role Assigned' }} 
-                            </span> -->
-                            <!-- <span class="badge {{ $user->role->nm_role == 'Superadmin' ? 'role-superadmin' : ($user->role->nm_role == 'Admin' ? 'role-admin' : 'role-manager') }}">
-                                {{ $user->role->nm_role ?? 'No Role Assigned' }}
-                            </span> -->
                             @if ($user->role->nm_role == 'superadmin')
-                                <span class="badge role-superadmin">
-                                    <!-- {{ $user->role->nm_role ?? 'No Role Assigned' }} -->
-                                      superadmin
-                                </span>
+                                <span class="badge role-superadmin">superadmin</span>
                             @elseif ($user->role->nm_role == 'admin')
-                                <span class="badge role-admin">
-                                    <!-- {{ $user->role->nm_role ?? 'No Role Assigned'}} -->
-                                      admin
-                                </span>
+                                <span class="badge role-admin">admin</span>
                             @else
-                                <span class="badge role-manager">
-                                    <!-- {{ $user->role->nm_role ?? 'No Role Assigned' }} -->
-                                      manager
-                                </span>
+                                <span class="badge role-manager">manager</span>
                             @endif
                         </td>
                         <td>
@@ -120,13 +104,13 @@
                                 @csrf
                                 @method('GET') 
                                 <button type="submit" class="btn btn-edit btn-sm">
-                                    <img src="/img/user-manage/Edit.png" alt="edit">
+                                    <img src="/img/user-manage/Edit1.png" alt="edit">
                                 </button>
                             </form>
                             <button type="button" class="btn btn-delete btn-sm" 
                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
                                 data-user-id="{{ $user->id }}">
-                                <img src="/img/user-manage/Trash.png" alt="delete">
+                                <img src="/img/user-manage/Trash1.png" alt="delete">
                             </button>
                             </td>
                         </tr>

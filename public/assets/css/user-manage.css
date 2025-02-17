@@ -96,14 +96,14 @@
     border: none !important;
     border-radius: 50px;
     width: 36%;
-    background-color: #92C5FF99 !important;
+    background-color: #0095FF !important;
 }
 .btn-delete:hover,
 .btn-delete:active {
     border: none !important;
     border-radius: 50px;
     width: 39%;
-    background-color: #92C5FF99 !important;
+    background-color: #FF0000 !important;
 }
 .user-manage .header-tools {
     display: flex; 
@@ -267,7 +267,6 @@
 }
 
 .badge.role-superadmin {
-    /* background-color: #0062ff; */
     background-color: #3e58c0;
     color: white;
 }
