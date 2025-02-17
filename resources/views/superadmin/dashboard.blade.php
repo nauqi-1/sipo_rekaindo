@@ -20,24 +20,33 @@
             <div class="overview-cards">
                 <div class="overview-card">
                     <h4>MEMO</h4>
-                    <p>
-                        <button><img src="/img/dashboard/memo.png" alt="memo"></button>
-                        <a href="#"><span>4</span> Memo</a>
-                    </p>
+                    <hr>
+                    <form action="">
+                        <p>
+                            <button><img src="/img/dashboard/memo.png" alt="memo"></button>
+                            <span><span>4</span> Memo</span>
+                        </p>
+                    </form>
                 </div>
                 <div class="overview-card">
                     <h4>RISALAH RAPAT</h4>
-                    <p>
-                        <button><img src="/img/dashboard/risalah.png" alt="memo"></button>
-                        <a href="#"><span>7</span> Risalah Rapat</a>
-                    </p>
+                    <hr>
+                    <form action="">
+                        <p>
+                            <button><img src="/img/dashboard/risalah.png" alt="memo"></button>
+                            <span><span>7</span> Risalah Rapat</span>
+                        </p>
+                    </form>
                 </div>
                 <div class="overview-card">
                     <h4>UNDANGAN RAPAT</h4>
-                    <p>
-                        <button><img src="/img/dashboard/undangan.png" alt="memo"></button>
-                        <a href="#"><span>7</span> Undangan Rapat</a>
-                    </p>
+                    <hr>
+                    <form action="">
+                        <p>
+                            <button><img src="/img/dashboard/undangan.png" alt="memo"></button>
+                            <span><span>7</span>  Undangan Rapat</span>
+                        </p>
+                    </form>
                 </div>
             </div>
         </div>
@@ -46,44 +55,57 @@
         <div class="things-to-do-container">
             <h3>Aktivitas</h3>
             <div class="things-to-do-list">
-                <div class="things-to-do-item">
-                    <div class="icon">
-                        <button>
-                            <img src="/img/dashboard/tinjau-memo.png" alt="Memo Icon" style="width: 22px; height: 20px;">
-                        </button>
+                <form action="">
+                    <div class="things-to-do-item">
+                        <div class="icon">
+                            <button>
+                                <img src="/img/dashboard/tinjau-memo.png" alt="Memo Icon" style="width: 22px; height: 20px;">
+                            </button>
+                        </div>
+                        <div class="content">
+                            <form action="">
+                                <h4>Meninjau Memo</h4>
+                                <p>Tinjau memo untuk kelangkah selanjutnya</p>
+                            </form>
+                        </div>
+                        <div class="date">Hari ini</div>
                     </div>
-                    <div class="content">
-                        <h4><a href="#">Meninjau Memo</a></h4>
-                        <p>Tinjau memo untuk kelangkah selanjutnya</p>
+                </form>
+                
+                <form action="">
+                    <div class="things-to-do-item">
+                        <div class="icon">
+                            <button>
+                                <img src="/img/dashboard/tambah-user.png" alt="User Icon" style="width: 22px; height: 20px;">
+                            </button>
+                        </div>
+                        <div class="content">
+                            <form action="">
+                                <h4>Tambah User</h4>
+                                <p>Tambah user baru untuk kelangkah selanjutnya</p>
+                            </form>                        
+                        </div>
+                        <div class="date">Hari ini</div>
                     </div>
-                    <div class="date">Hari ini</div>
-                </div>
-
-                <div class="things-to-do-item">
-                    <div class="icon">
-                        <button>
-                            <img src="/img/dashboard/tambah-user.png" alt="User Icon" style="width: 22px; height: 20px;">
-                        </button>
+                </form>
+                
+                <form action="">
+                    <div class="things-to-do-item">
+                        <div class="icon">
+                            <button>
+                                <img src="/img/dashboard/tinjau-permintaan.png" alt="Surat Icon" style="width: 22px; height: 20px;">
+                            </button>
+                        </div>
+                        <div class="content">
+                            <form action="">
+                                <h4>Meninjau Permintaan Surat</h4>
+                                <p>Tinjau permintaan surat untuk kelangkah selanjutnya</p>
+                            </form>
+                        </div>
+                        <div class="date">Hari ini</div>
                     </div>
-                    <div class="content">
-                        <h4><a href="#">Tambah User Baru</a></h4>
-                        <p>Tinjau untuk kelangkah selanjutnya</p>
-                    </div>
-                    <div class="date">Hari ini</div>
-                </div>
-
-                <div class="things-to-do-item">
-                    <div class="icon">
-                        <button>
-                            <img src="/img/dashboard/tinjau-permintaan.png" alt="Surat Icon" style="width: 22px; height: 20px;">
-                        </button>
-                    </div>
-                    <div class="content">
-                        <h4><a href="#">Meninjau Permintaan Surat</a></h4>
-                        <p>Tinjau permintaan surat untuk kelangkah selanjutnya</p>
-                    </div>
-                    <div class="date">Hari ini</div>
-                </div>
+                </form>
+                
             </div>
         </div>
     </div>
