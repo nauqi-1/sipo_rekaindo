@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.superadmin')
 
 @section('title', 'Undangan Rapat')
       
@@ -107,7 +107,7 @@
                     <td>
                         @if ($undangan->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($undangan->status == 'pending')
+                        @elseif ($undangan->status == 'Pending')
                             <span class="badge bg-warning">Diproses</span>
                         @else
                             <span class="badge bg-success">Diterima</span>

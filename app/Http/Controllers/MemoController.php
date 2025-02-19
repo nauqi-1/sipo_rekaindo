@@ -18,9 +18,9 @@ class MemoController extends Controller
         $seri = Seri::all();  
         $memos = Memo::with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(6);
         
-    
         return view( Auth::user()->role->nm_role.'.memo.memo-'. Auth::user()->role->nm_role, compact('memos','divisi','seri'));
     }
+
     public function create()
     {
         $divisiId = auth()->user()->divisi_id_divisi;

@@ -90,20 +90,37 @@
 }
 
 .overview-card h4 {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     color: #000;
     margin-bottom: 10px;
+    margin-left: 5px;
+    text-align: left;
+    display: inline-block;
+    float: left;
 }
-
 .overview-card a {
-    font-size: 14px;
-    font-weight: bold;
-    color: #000;
+    font-size: 13px;
+    font-weight: bold !important;
+    display: inline-block;
+    float: right; 
+    margin-right: 5px;
+    font-weight: normal;
+    text-decoration: underline;
 }
 
 .overview-card a:hover {
-    color: #8888885a;
+    color: #1E4178;
+}
+
+.overview-card p {
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    gap: 5px; 
+}
+hr {
+    margin-top: 35px;
 }
 
 /* Things to Do Section */
@@ -190,4 +207,13 @@
 .things-to-do-item .content a:hover {
     text-decoration: none;
     color: #888;
+}
+
+span.jumlah {
+    font-weight: bold;
+    font-size: 25px;
+}
+span.text {
+    font-size: 14px;
+    font-weight: bold;
 }

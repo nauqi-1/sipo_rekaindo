@@ -18,14 +18,14 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('risalah.supervisor')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Risalah Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="{{route ('risalah.supervisor')}}" >Risalah Rapat</a>/ <a href="#" style="color: #565656;">Detail Risalah Rapat</a>
+                    <a href="#">Beranda</a>/<a href="#" >Risalah Rapat</a>/ <a href="#" style="color: #565656;">Detail Risalah Rapat</a>
                 </div>
             </div>
         </div>
