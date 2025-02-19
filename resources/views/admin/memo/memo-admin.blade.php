@@ -1,19 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memo Admin</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('/css/admin/memoAdmin.css') }}">
-</head>
-<body>
+@extends('layouts.admin')
+
+@section('title', 'Admin')
+
+@section('content')
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="#"><img src="/img/memo-admin/Vector_back.png" alt=""></a>
+                <a href="{{ route('admin.dashboard')}}"><img src="/img/memo-admin/Vector_back.png" alt=""></a>
             </div>
             <h1>Memo</h1>
         </div>        
@@ -95,19 +89,23 @@
                 </tr>
             </thead>
             <tbody>
-                @for ($i = 1; $i <= 3; $i++)
+                @foreach ($memos as $index => $memo)
                 <tr>
-                    <td class="nomor">{{ $i }}</td>
-                    <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">Memo Monitoring Risiko</td>
-                    <td>21-10-2024</td>
-                    <td>1596</td>
-                    <td>837.06/REKA/GEN/VII/2024</td>
-                    <td>22-10-2024</td>
-                    <td>HR & GA</td>
+                    <td class="nomor">{{ $index + 1 }}</td>
+                    <td class="nama-dokumen 
+                        {{ $memo->status == 'Reject' ? 'text-danger' : ($memo->status == 'Pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $memo->judul }}
+                    </td>
+                    <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
+                    <td>{{ $memo->seri_surat }}</td>
+                    <td>{{ $memo->nomor_memo }}</td>
+                    <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $memo->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                    </td>
                     <td>
-                        @if ($i % 3 == 0)
+                        @if ($memo->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($i % 2 == 0)
+                        @elseif ($memo->status == 'pending')
                             <span class="badge bg-warning">Diproses</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
@@ -117,22 +115,24 @@
                         <a href="{{ route('kirim-memoAdmin.admin') }}" class="btn btn-sm1">
                             <img src="/img/memo-admin/share.png" alt="share">
                         </a>
+                        
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/memo-admin/Delete.png" alt="delete">
                         </button>
+                       
                         <!-- Status Approve -->
-                        @if ($i % 3 != 0 && $i % 2 != 0) 
+                        @if ($memo->status == 'approve') 
                             <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
                                 <img src="/img/memo-admin/arsip.png" alt="arsip">
                             </button>
                         @else
-                            <a href="{{ route('admin.memo.edit-memo') }}" class="btn btn-sm3">
+                            <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
                                 <img src="/img/memo-admin/edit.png" alt="edit">
                             </a>
                         @endif
                     </td>
                 </tr>
-                @endfor
+                @endforeach
             </tbody>
         </table>
 
@@ -149,8 +149,12 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Hapus Memo?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('admin.memo.memo-admin')}}">Cancel</a></button>
+                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Cancel</a></button>
+                            <form method="POST" action="{{ route('memo.destroy', $memo->id_memo) }}" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
                             <button type="button" class="btn-ok" id="confirmDelete">OK</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -169,7 +173,7 @@
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus Memo</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('admin.memo.memo-admin')}}">Kembali</a></button>
+                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
@@ -188,7 +192,7 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Arsip Memo?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('admin.memo.memo-admin')}}">Cancel</a></button>
+                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Cancel</a></button>
                             <button type="button" class="btn-ok" id="confirmArsip">OK</button>
                         </div>
                     </div>
@@ -209,7 +213,7 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Sukses</b></h5>
                         <h6 class="mb-4" style="font-size: 14px; color: #5B5757;">Berhasil Arsip Memo</h6>
                         <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('admin.memo.memo-admin')}}">Kembali</a></button>
+                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
@@ -245,5 +249,4 @@
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-</body>
-</html>
+@endsection

@@ -1,14 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undangan Rapat Admin</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/admin/undanganAdmin.css') }}">
-</head>
-<body>
+@extends('layouts.manager')
+
+@section('title', 'undangan Manager')
+
+@section('content')
     <div class="container">
         <div class="header">
             <!-- Back Button -->
@@ -65,9 +59,6 @@
                         <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
                     </div>
                 </div>
-
-                <!-- Add User Button to Open Modal -->
-                <a href="{{route ('add-undangan.admin')}}" class="btn btn-add">+ Tambah Undangan Rapat</a>
             </div>
         </div>
 
@@ -114,22 +105,15 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{route ('kirim-undanganAdmin.admin')}}" class="btn btn-sm1">
+                        <a href="{{route ('approve.undangan')}}" class="btn btn-sm1">
                             <img src="/img/undangan/share.png" alt="share">
                         </a>
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/undangan/Delete.png" alt="delete">
                         </button>
-                        <!-- Status Approve -->
-                        @if ($i % 3 != 0 && $i % 2 != 0) 
-                            <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
-                                <img src="/img/undangan/arsip.png" alt="arsip">
-                            </button>
-                        @else
-                            <a href="{{route ('edit-undangan.admin')}}" class="btn btn-sm3">
-                                <img src="/img/undangan/edit.png" alt="edit">
-                            </a>
-                        @endif
+                        <a class="btn btn-sm3" href="{{route ('view.undangan')}}">
+                            <img src="/img/undangan/viewBlue.png" alt="view">
+                        </a>
                     </td>
                 </tr>
                 @endfor
@@ -149,7 +133,7 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Hapus Undangan Rapat?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('undangan.admin')}}">Batal</a></button>
+                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('undangan.supervisor')}}">Batal</a></button>
                             <button type="button" class="btn ok" id="confirmDelete">Oke</button>
                         </div>
                     </div>
@@ -169,7 +153,7 @@
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050; font-size: 20px;"><b>Berhasil Menghapus <br>Undangan Rapat</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('undangan.admin')}}">Kembali</a></button>
+                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('undangan.supervisor')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
@@ -252,5 +236,4 @@
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-</body>
-</html>
+@endsection

@@ -32,16 +32,8 @@ class AuthenticatedSessionController extends Controller
     $user = $request->user();
 
     // Cek role user dan redirect sesuai role
-    switch ($user->role->nm_role) {
-        case 'superadmin':
-            return redirect()->route('superadmin.dashboard');
-        case 'admin':
-            return redirect()->route('admin.dashboard');
-        case 'manager':
-            return redirect()->route('manager.dashboard');
-        default:
-            return redirect()->route('dashboard'); // Route default jika role tidak sesuai
-    }
+    
+            return redirect()->route(Auth::user()->role->nm_role.'.dashboard');
     }
 
     /**
