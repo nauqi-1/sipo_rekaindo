@@ -8,6 +8,7 @@ use App\Models\Memo;
 use App\Models\Seri;
 use App\Models\User;
 use App\Models\Divisi;
+use App\Models\Kirim_Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 class MemoController extends Controller
@@ -64,6 +65,8 @@ class MemoController extends Controller
             'tujuan' => 'required|string|max:255',
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
+            'pembuat'=>'required|string|max:255',
+            'catatan'=>'required|string|max:255',
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
@@ -104,6 +107,8 @@ class MemoController extends Controller
             'nomor_memo' => $request->input('nomor_memo'),
             'tgl_dibuat' => $request->input('tgl_dibuat'),
             'tgl_disahkan' => $request->input('tgl_disahkan'),
+            'pembuat' => $request->input('pembuat'),
+            'catatan' => $request->input('catatan'),
             'seri_surat' => $request->input('seri_surat'),
             'status' => 'pending',
             'nama_bertandatangan' => $request->input('nama_bertandatangan'),

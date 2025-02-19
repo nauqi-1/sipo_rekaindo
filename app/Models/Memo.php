@@ -48,8 +48,8 @@ class Memo extends Model
      * @var bool
      */
     protected $casts = [
-        'tgl_dibuat' => 'datetime',
-        'tgl_disahkan' => 'datetime',
+        'tgl_dibuat' => 'date',
+        'tgl_disahkan' => 'date',
     ];
 
     /**
@@ -63,6 +63,10 @@ class Memo extends Model
     {
         return $this->hasMany(kategori_barang::class, 'memo_id_memo', 'id_memo');
     }
+    public function kirimDocument()
+{
+    return $this->hasMany(Kirim_Document::class, 'id_document');
+}
 
     /**
      * Get the document associated with the memo.

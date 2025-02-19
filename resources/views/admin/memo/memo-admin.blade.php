@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memo Admin</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('/css/admin/memoAdmin.css') }}">
-</head>
-<body>
+@extends('layouts.admin')
+
+@section('title', 'Admin')
+
+@section('content')
+
     <div class="container">
         <div class="header">
             <!-- Back Button -->
@@ -67,7 +62,7 @@
                 </div>
 
                 <!-- Add User Button to Open Modal -->
-                <a href="{{ route('admin.memo.add-memo')}}" class="btn btn-add">+ Tambah Memo</a>
+                <a href="{{ route('memo-admin/add')}}" class="btn btn-add">+ Tambah Memo</a>
             </div>
         </div>
 
@@ -118,7 +113,7 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('kirim-memoAdmin.admin') }}" class="btn btn-sm1">
+                        <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
                             <img src="/img/memo-admin/share.png" alt="share">
                         </a>
                         
@@ -156,9 +151,11 @@
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
                             <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Cancel</a></button>
-                            
+                            <form method="POST" action="{{ route('memo.destroy', $memo->id_memo) }}" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
                             <button type="button" class="btn-ok" id="confirmDelete">OK</button>
-                            
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -253,5 +250,5 @@
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-</body>
-</html>
+@endsection
+@endsection

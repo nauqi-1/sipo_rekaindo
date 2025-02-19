@@ -5,10 +5,11 @@
     margin-left: 10px;
 }
 .user-info img {
-    width: 50px; 
-    height: 50px; 
+    width: 35px; 
+    height: 35px; 
     border-radius: 50%; 
     object-fit: cover; 
+    margin-right: 5px;
 }
 .text-info {
     line-height: 1.2; 
@@ -22,9 +23,15 @@
 }
 .user-manage .table thead {
     background-color: #EFF4FA;
-    color: #8F9BB3;  
+    color: #8F9BB3;
 }
-.user-manage .table th,
+.user-manage .table th {
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 15px;
+    color: #8F9BB3;
+}
 .user-manage .table td {
     text-align: center;
     padding: 10px;
@@ -89,14 +96,14 @@
     border: none !important;
     border-radius: 50px;
     width: 36%;
-    background-color: #92C5FF99 !important;
+    background-color: #0095FF !important;
 }
 .btn-delete:hover,
 .btn-delete:active {
     border: none !important;
     border-radius: 50px;
     width: 39%;
-    background-color: #92C5FF99 !important;
+    background-color: #FF0000 !important;
 }
 .user-manage .header-tools {
     display: flex; 
@@ -257,4 +264,17 @@
 
 .mb-3 .izin .form-izin {
     margin-right: 149px;
+}
+
+.badge.role-superadmin {
+    background-color: #3e58c0;
+    color: white;
+}
+.badge.role-admin {
+    background-color: #0095FF;
+    color: white;
+}
+.badge.role-manager {
+    background-color: #5D5FEF;
+    color: white;
 }

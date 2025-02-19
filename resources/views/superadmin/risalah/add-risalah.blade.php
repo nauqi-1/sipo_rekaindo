@@ -90,6 +90,7 @@
                         <div class="col-md-1">
                             <label for="no">No</label>
                             <input type="text" class="form-control" name="no[]">
+                            <input type="hidden" name="pembuat" value="{{ auth()->user()->firstname . auth()->user()->lastname }}">
                         </div>
                         <div class="col-md-3">
                             <label for="topik">Topik</label>

@@ -1,14 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memo Terkirim Supervisor</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/supervisor/memo-terkirim.css') }}">
-</head>
-<body>
+@extends('layouts.manager')
+
+@section('title', 'Memo Terkirim')
+
+@section('content')
     <div class="container">
         <div class="header">
             <!-- Back Button -->
@@ -92,37 +86,38 @@
                 </tr>
             </thead>
             <tbody>
-                @for ($i = 1; $i <= 3; $i++)
+            @foreach ($memoTerkirim as $index => $kirim)
                 <tr>
-                    <td class="nomor">{{ $i }}</td>
-                    <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">Memo Monitoring Risiko</td>
-                    <td>21-10-2024</td>
-                    <td>1596</td>
-                    <td>837.06/REKA/GEN/VII/2024</td>
-                    <td>22-10-2024</td>
-                    <td>HR & GA</td>
+                    <td class="nomor">{{ $index + 1 }}</td>
+                    <td class="nama-dokumen {{ $kirim->memo->status == 'Reject' ? 'text-danger' : ($kirim->memo->status == 'Pending' ? 'text-warning' : 'text-success') }}">
+                    {{ $kirim->memo->judul }}</td>
+                    <td>{{ $kirim->memo->tgl_dibuat }}</td>
+                    <td>{{ $kirim->memo->seri_surat }}</td>
+                    <td>{{ $kirim->memo->nomor_memo }}</td>
+                    <td>{{ $kirim->memo->tgl_disahkan ? \Carbon\Carbon::parse($kirim->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $kirim->memo->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
                     <td>
-                        @if ($i % 3 == 0)
+                        @if ($kirim->memo->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($i % 2 == 0)
+                        @elseif ($kirim->memo->status == 'pending')
                             <span class="badge bg-warning">Diproses</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
                         @endif
                     </td>
                     <td>
-                        <!-- <a href="#" class="btn btn-sm1">
+                        <!-- <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
                             <img src="/img/memo-supervisor/share.png" alt="share">
                         </a> -->
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/memo-supervisor/Delete.png" alt="delete">
                         </button>
-                        <a class="btn btn-sm3" href="{{ route('view.memo-terkirim') }}">
+                        <a class="btn btn-sm3" href="{{ route('view.memo-terkirim', $kirim->id_document) }}">
                             <img src="/img/memo-supervisor/viewBlue.png" alt="view">
                         </a>
                     </td>
                 </tr>
-                @endfor
+                @endforeach
             </tbody>
         </table>
 
@@ -166,25 +161,5 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('confirmDelete').addEventListener('click', function () {
-            // Ambil referensi modal
-            const deleteModalEl = document.getElementById('deleteModal');
-            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
-            
-            // Tutup modal Hapus terlebih dahulu
-            deleteModal.hide();
-            
-            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
-            deleteModalEl.addEventListener('hidden.bs.modal', function () {
-                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                successModal.show();
-            }, { once: true }); // Tambahkan event listener hanya sekali
-        });
-    </script>
 
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-</body>
-</html>
+@endsection

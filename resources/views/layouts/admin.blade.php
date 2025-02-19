@@ -16,7 +16,6 @@
       content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard"
     />
     <meta name="author" content="codedthemes" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- [Favicon] icon -->
     <link rel="icon" href="../assets/images/favicon.svg" type="image/x-icon" />
@@ -38,15 +37,17 @@
 <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
 <link rel="stylesheet" href="../assets/css/style-preset.css" />
 <link rel="stylesheet" href="../assets/css/style-preset.css" />
-<link rel="stylesheet" href="../assets/css/style-app.css" />
 <link rel="stylesheet" href="../assets/css/dashboard.css" />
+<link rel="stylesheet" href="../assets/css/memo.css" />
 <link rel="stylesheet" href="../assets/css/user-manage.css" />
-<link rel="stylesheet" href="../css/superadmin.edit-profile.css" />
+<link rel="stylesheet" href="../assets/css/data-perusahaan.css" />
+<link rel="stylesheet" href="../assets/css/profile.css" />
 <link rel="stylesheet" href="../css/superadmin/arsip.css"/>
+<link rel="stylesheet" href="../css/superadmin.edit-profile.css" />
 <link rel="stylesheet" href="../css/superadmin/undangan.css"/>
-<link rel="stylesheet" href="../css/superadmin/laporan.css"/>
 <link rel="stylesheet" href="../css/superadmin/cetak-laporan.css"/>
-<link rel="stylesheet" href="../assets/css/dashboard.css">
+
+
 
   </head>
   <!-- [Head] end -->
@@ -130,6 +131,39 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script Overlay Delete -->
+    <script>
+        document.getElementById('confirmDelete').addEventListener('click', function () {
+            // Ambil referensi modal
+            const deleteModalEl = document.getElementById('deleteModal');
+            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
+            
+            // Tutup modal Hapus terlebih dahulu
+            deleteModal.hide();
+            
+            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
+            deleteModalEl.addEventListener('hidden.bs.modal', function () {
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+            }, { once: true }); // Tambahkan event listener hanya sekali
+        });
+
+        document.getElementById('confirmArsip').addEventListener('click', function () {
+            // Ambil referensi modal
+            const deleteModalEl = document.getElementById('arsipModal');
+            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
+            
+            // Tutup modal Hapus terlebih dahulu
+            deleteModal.hide();
+            
+            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
+            deleteModalEl.addEventListener('hidden.bs.modal', function () {
+                const successModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
+                successModal.show();
+            }, { once: true }); // Tambahkan event listener hanya sekali
+        });
+    </script>
   </body>
   <!-- [Body] end -->
 </html>

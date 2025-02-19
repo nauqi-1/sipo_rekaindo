@@ -18,14 +18,14 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('undangan.supervisor')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('undangan.manager')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Undangan Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="{{route ('undangan.supervisor')}}">Undangan Rapat</a>/<a href="#" style="color: #565656;">Tindak Lanjut Undangan</a>
+                    <a href="#">Beranda</a>/<a href="{{route ('undangan.manager')}}">Undangan Rapat</a>/<a href="#" style="color: #565656;">Tindak Lanjut Undangan</a>
                 </div>
             </div>
         </div>
@@ -136,7 +136,7 @@
             </div>
         </div>
         <div class="footer">
-            <button type="button" class="btn back" id="backBtn"><a href="{{route ('undangan.supervisor')}}">Kembali</a></button>
+            <button type="button" class="btn back" id="backBtn"><a href="{{route ('undangan.manager')}}">Kembali</a></button>
             <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
         </div>
         <!-- Modal kirim -->
@@ -172,7 +172,7 @@
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirim</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('undangan.supervisor')}}">Kembali</a></button>
+                        <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('undangan.manager')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>

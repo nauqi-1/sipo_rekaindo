@@ -25,6 +25,7 @@ return new class extends Migration
             $table->binary('tanda_identitas')->nullable();
             $table->integer('seri_surat');
             $table->timestamps();
+            $table->string('pembuat');
 
             $table->primary(['id_risalah', 'divisi_id_divisi']);
         });

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.superadmin')
 
 @section('title', 'User Management')
       
@@ -49,7 +49,6 @@
                         </ul>
                     </div>
 
-                    
                     <!-- Add User Button to Open Mod    al -->
                     <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah Pengguna</button>
                 </div>
@@ -76,7 +75,6 @@
                                 <img src="\img\user-manage\user.png" alt="User Image" class="rounded-circle-light">
                                 <div class="text-info">
                                     <span>{{ $user->firstname }} {{ $user->lastname }}</span>
-                                    <!-- <br><small>{{ $user->email }}</small> -->
                                 </div>
                             </div>
                         </td>
@@ -86,9 +84,13 @@
                             </div>
                         </td>
                         <td>
-                            <span class="badge bg-primary">
-                             {{ $user->role->nm_role ?? 'No Role Assigned' }} <!-- Menampilkan nama role -->
-                            </span>
+                            @if ($user->role->nm_role == 'superadmin')
+                                <span class="badge role-superadmin">superadmin</span>
+                            @elseif ($user->role->nm_role == 'admin')
+                                <span class="badge role-admin">admin</span>
+                            @else
+                                <span class="badge role-manager">manager</span>
+                            @endif
                         </td>
                         <td>
                             {{ $user->divisi->nm_divisi ?? 'No Divisi Assigned' }} <!-- Menampilkan nama divisi -->
@@ -99,18 +101,35 @@
                         <td>{{ $user->phone_number }}</td>
                             <td>
                             <form method="POST" action="{{ route('user-manage.edit', $user->id) }}" style="display: inline;">
-                                @csrf
-                                @method('GET') <!-- Use GET to navigate to the edit page -->
-                                <button type="submit" class="btn btn-edit btn-sm">
-                                    <img src="/img/user-manage/Edit.png" alt="edit">
-                                </button>
+                            @csrf
+                            @method('GET') <!-- Use GET to navigate to the edit page -->
+                            <button type="submit" class="btn btn-edit btn-sm">
+                                <img src="/img/user-manage/Edit.png" alt="edit">
+                            </button>
                             </form>
+                            <!-- <form method="POST" action="{{ route('user-manage.destroy', $user->id) }}" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                                <button type="submit" class="btn btn-delete btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                    <img src="/img/user-manage/Trash.png" alt="delete">
+                                @csrf
+                                @method('GET') 
+                                <button type="submit" class="btn btn-edit btn-sm">
+                                    <img src="/img/user-manage/Edit1.png" alt="edit">
+                                </button>
+                            </form> -->
                             <button type="button" class="btn btn-delete btn-sm" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#deleteModal" 
                                 data-user-id="{{ $user->id }}"
                                 data-route="{{ route('user-manage.destroy', $user->id) }}">
                                 <img src="/img/user-manage/Trash.png" alt="delete">
+                            </button>
+                            </form>
+                            <button type="button" class="btn btn-delete btn-sm" 
+                                data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                data-user-id="{{ $user->id }}">
+                                <img src="/img/user-manage/Trash1.png" alt="delete">
                             </button>
                             </td>
                         </tr>
@@ -200,7 +219,7 @@
                             @foreach ($roles as $role)
                                 <label for="role_{{ $role->id_role }}">{{ $role->nm_role }}</label>
                                 <input type="radio" name="role_id_role" value="{{ $role->id_role }}" id="role_{{ $role->id_role }}" required autofocus autocomplete="role_id_role">
-                             @endforeach
+                            @endforeach
                             </div>
                         </div>
                     </div>
@@ -261,7 +280,7 @@
                     <!-- Question Mark Icon -->
                     <img src="/img/user-manage/question_Vector.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
                     <!-- Delete Confirmation Text -->
-                    <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus user?</h5>
+                    <!-- <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus user?</h5> -->
                     <!-- Buttons -->
                     <form id="deleteUserForm" method="POST">
                         @csrf

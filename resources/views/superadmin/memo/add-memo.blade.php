@@ -44,11 +44,13 @@
                         </label>
                         <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" required>
                         <input type="hidden" name="tgl_disahkan" >
+                        <input type="hidden" name="catatan" >
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
                         <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan ?? '' }}"  readonly>
                         <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
+                        <input type="hidden" name="pembuat" value="{{ auth()->user()->position->nm_position . auth()->user()->role->nm_role }}">
                     </div>
                 </div>
                 <div class="row mb-4">

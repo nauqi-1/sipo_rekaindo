@@ -30,7 +30,7 @@
         </div>
 
         <!-- form add memo -->
-        <form method="POST" action="#">
+        <form method="POST" action="{{ route('memo-admin.store') }}">
         @csrf 
         <div class="card">
             <div class="card-header">
@@ -44,17 +44,20 @@
                         </label>
                         <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" required>
                         <input type="hidden" name="tgl_disahkan" >
+                        <input type="hidden" name="catatan" >
+                        <input type="hidden" name="pembuat" value="{{ auth()->user()->position->nm_position .' '. auth()->user()->role->nm_role }}">
+                        
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
-                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" readonly>
+                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan ?? '' }}" readonly>
                         <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
                     </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="nomor_memo" class="form-label">Nomor Surat</label>
-                        <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" readonly>
+                        <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $nomorDokumen }}"readonly>
                     </div>
                     <div class="col-md-6" >
                         <label for="judul" class="form-label">Perihal</label>
@@ -80,9 +83,12 @@
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan</label>
+                    <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan</label>
                         <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
                             <option value="" disabled selected style="text-align: left;">--Pilih--</option>
+                            @foreach($managers as $manager)
+                                <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname . ' ' . $manager->lastname }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="col-md-6" style="border: none;"></div>

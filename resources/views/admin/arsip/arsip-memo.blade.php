@@ -1,24 +1,23 @@
+@extends('layouts.admin')
 
-@extends('layouts.app')
+@section('title', 'Admin')
 
-@section('title', 'Arsip Memo')
-      
 @section('content')
-<div class="container">
-    <div class="header">
-        <!-- Back Button -->
-        <div class="back-button">
-            <a href="{{route('superadmin.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
-        </div>
-        <h1>Memo</h1>
-    </div>        
-    <div class="row">
-        <div class="breadcrumb-wrapper">
-            <div class="breadcrumb" style="gap: 5px;">
-                <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Memo</a>
+    <div class="container">
+        <div class="header">
+            <!-- Back Button -->
+            <div class="back-button">
+                <a href="{{route('admin.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+            </div>
+            <h1>Memo</h1>
+        </div>        
+        <div class="row">
+            <div class="breadcrumb-wrapper">
+                <div class="breadcrumb" style="gap: 5px;">
+                    <a href="{{route('admin.dashboard')}}">Beranda</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Memo</a>
+                </div>
             </div>
         </div>
-    </div>
 
     <!-- Filter & Search Bar -->
     <div class="title d-flex justify-content-between align-items-center mb-3">
@@ -101,21 +100,25 @@
     </div>
 </div>
 
-<!-- Overlay Confirmation Delete Success -->
-<div class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center p-4">
-            <div class="modal-body">
-                <!-- Close Button -->
-                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-                <!-- Success Icon -->
-                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="my-3" style="width: 80px;">
-                <!-- Success Message -->
-                <h5><b>Berhasil Menghapus Memo</b></h5>
-                <!-- Back Button -->
-                <button class="btn btn-primary mt-4 px-4 py-2" data-bs-dismiss="modal">Kembali</button>
+    <!-- Overlay Confirmation Delete Success -->
+    <div class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <!-- Close Button -->
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <!-- Success Icon -->
+                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="my-3" style="width: 80px;">
+                    <!-- Success Message -->
+                    <h5><b>Berhasil Menghapus Memo</b></h5>
+                    <!-- Back Button -->
+                    <button class="btn btn-primary mt-4 px-4 py-2" data-bs-dismiss="modal">Kembali</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 @endsection
