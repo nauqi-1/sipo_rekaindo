@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Approve Undangan Rapat</title>
+    <title>Detail Memo Diterima</title>
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
@@ -11,28 +11,28 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('/css/supervisor/approve-undangan.css') }}">
+    <link rel="stylesheet" href="{{ asset('/css/supervisor/view-memoDiterima.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('undangan.supervisor')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('memo.diterima')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Undangan Rapat</h1>
+            <h1>Memo Diterima</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="{{route ('undangan.supervisor')}}">Undangan Rapat</a>/<a href="#" style="color: #565656;">Tindak Lanjut Undangan</a>
+                    <a href="#">Beranda</a>/<a href="{{route ('memo.diterima')}}">Memo Diterima</a>/<a href="#" style="color: #565656;">Detail Memo</a>
                 </div>
             </div>
         </div>
         <div class="card-body">
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
-                    <div class="card-blue">
+                <div class="card-blue">
                         <label for="tgl_surat" class="form-label">No Agenda</label>
                     </div>
                     <div class="card-white">
@@ -47,7 +47,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card-blue">
+                <div class="card-blue">
                         <label for="tgl_surat" class="form-label">Status Surat</label>
                     </div>
                     <div class="card-white">
@@ -66,28 +66,28 @@
                 <div class="col">
                     <div class="card-blue">
                         <label for="tgl_surat" class="form-label">
-                            <img src="/img/undangan/info.png" alt="info surat">Informasi Detail Surat
+                            <img src="/img/risalah/info.png" alt="info surat">Informasi Detail Surat
                         </label>
                     </div>
                     <div class="card-white">
                         <label for="nomor">No Dokumen</label>
                         <div class="separator"></div>
-                        <input type="text" id="nomor">
+                        <input type="text" id="nomor" value="{{ $memo->memo->nomor_memo }}">
                     </div>
                     <div class="card-white">
                         <label for="divisi">Divisi</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri">
+                        <input type="text" id="seri" value="{{ $memo->memo->divisi->nm_divisi }}">
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
                         <div class="separator"></div>
-                        <input type="text" id="perihal">
+                        <input type="text" id="perihal" value="{{ $memo->memo->judul }}">
                     </div>
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl">
+                        <input type="text" id="tgl"value="{{ $memo->memo->tgl_dibuat }}">
                     </div>
                     <div class="card-white">
                         <label for="lampiran">Lampiran</label>
@@ -102,6 +102,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="label1 card-blue1">
@@ -136,9 +137,10 @@
             </div>
         </div>
         <div class="footer">
-            <button type="button" class="btn back" id="backBtn"><a href="{{route ('undangan.supervisor')}}">Kembali</a></button>
+            <button type="button" class="btn back" id="backBtn">Kembali</button>
             <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
         </div>
+
         <!-- Modal kirim -->
         <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -147,13 +149,13 @@
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
                         <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
+                        <img src="/img/memo-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Kirim dan Konfirmasi Undangan?</b></h5>
+                        <h5 class="mb-4" style="color: #545050;"><b>Kirim Memo Diterima?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
                             <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="#">Batal</a></button>
-                            <button type="button" class="btn ok" id="confirmSubmit">Oke</button>
+                            <button type="button" class="btn ok" id="confirmSubmit" data-bs-toggle="modal" data-bs-target="#successModal">Oke</button>
                         </div>
                     </div>
                 </div>
@@ -168,28 +170,15 @@
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
                         <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                        <img src="/img/memo-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirim</b></h5>
+                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirim Memo</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('undangan.supervisor')}}">Kembali</a></button>
+                        <button type="button" class="btn success" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-                $(document).ready(function () {
-            $("#confirmSubmit").click(function () {
-                // Tutup modal kirim
-                $("#submit").modal("hide");
-
-                // Tunggu sebentar sebelum menampilkan modal berhasil
-                setTimeout(function () {
-                    $("#successModal").modal("show");
-                }, 500); // Delay 500ms agar transition lebih smooth
-            });
-        });
-    </script>
 </body>
 </html>

@@ -20,7 +20,7 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('admin.memo.memo-admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('memo.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Kirim Memo</h1>
         </div>        
@@ -31,6 +31,10 @@
                 </div>
             </div>
         </div>
+        <form action="{{ route('documents.send') }}" method="POST">
+        @csrf
+        <input type="hidden" name="id_document" value="{{ $memo->id_memo }}">
+        <input type="hidden" name="jenis_document" value="memo">
         <div class="card-body">
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
@@ -42,27 +46,27 @@
                     <div class="card-white">
                         <label for="nomor">No Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="nomor">
+                        <input type="text" id="nomor" value="{{ $memo->nomor_memo }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="seri">Seri Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri">
+                        <input type="text" id="seri" value="{{ $memo->seri_surat }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
                         <div class="separator"></div>
-                        <input type="text" id="perihal">
+                        <input type="text" id="perihal" value="{{ $memo->judul }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="tgl">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl">
+                        <input type="text" id="tgl" value="{{ $memo->tgl_dibuat }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="kepada">Kepada</label>
                         <div class="separator"></div>
-                        <input type="text" id="kepada">
+                        <input type="text" id="kepada" value="{{ $memo->tujuan }}" readonly>
                     </div>
                 </div>
                 <div class="col">
@@ -74,7 +78,7 @@
                     <div class="card-white">
                         <label for="pembuat">Pembuat</label>
                         <div class="separator"></div>
-                        <input type="text" id="pembuat">
+                        <input type="text" id="pembuat" value="{{ $memo->pembuat }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="status">Status</label>
@@ -84,7 +88,7 @@
                     <div class="card-white">
                         <label for="tgl-buat">Dibuat Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl-buat">
+                        <input type="text" id="tgl-buat" value="{{ $memo->tgl_dibuat }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="file">File</label>
@@ -103,38 +107,33 @@
                         </label>
                     </div>
                     <div class="card-white">
-                        <label for="dropdownMenuButton">Posisi Penerima</label>
+                        <label for="posisi_penerima">Posisi Penerima</label>
                         <div class="separator"></div>
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
+                        <select name="posisi_penerima" id="posisi_penerima" class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" required autofocus autocomplete="posisi_penerima">
                             <option disabled selected style="text-align: left;">--Pilih--</option>
-                            <option value="hr_ga">Supervisor/Manager</option>
-                            <option value="keuangan">Admin Divisi</option>
+                            @foreach($position as $p)
+                                <option value="{{ $p->id_position }}">{{ $p->nm_position }}</option>
+                            @endforeach
                         </select>                    
                     </div>
                     <div class="card-white">
-                        <label for="dropdownMenuButton">Divisi Penerima</label>
+                        <label for="divisi_penerima" class="form-label">Divisi Penerima</label>
                         <div class="separator"></div>
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
-                            <option disabled selected style="text-align: left;">--Pilih--</option>
-                            <option value="hr_ga">HR & GA</option>
-                            <option value="keuangan">Keuangan</option>
-                            <option value="logistik_gudang">Logistik & Gudang</option>
-                            <option value="pemasaran">Pemasaran</option>
-                            <option value="sekretaris_perusahaan">Sekretaris Perusahaan</option>
-                            <option value="mrh">MRH</option>
-                            <option value="teknologi">Teknologi</option>
-                            <option value="quality_control">Quality Control</option>
-                            <option value="qm_she">QM & SHE (OT dan K3)</option>
-                            <option value="ppc">PPC</option>
-                        </select>                      
+                         <select name="divisi_penerima" id="divisi_penerima" class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" required autofocus autocomplete="divisi_penerima">
+                         <option disabled selected style="text-align: left;">--Pilih--</option>
+                         @foreach($divisi as $d)
+                            <option value="{{ $d->id_divisi }}">{{ $d->nm_divisi }}</option>
+                        @endforeach
+                        </select>                  
                     </div>
                 </div>
             </div>
         </div>
         <div class="footer">
             <button type="button" class="btn back" id="backBtn">Kembali</button>
-            <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+            <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
         </div>
+        </form>
 
         <!-- Modal kirim -->
         <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
@@ -169,7 +168,7 @@
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirimkan Memo</b></h5>
                         <!-- Tombol -->
-                        <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('admin.memo.memo-admin')}}">Kembali</a></button>
+                        <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>

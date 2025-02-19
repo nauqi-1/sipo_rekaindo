@@ -14,7 +14,7 @@ class Seri extends Model
 
     protected $fillable = ['divisi_id_divisi', 'bulan', 'tahun', 'seri_bulanan', 'seri_tahunan'];
 
-    public static function getNextSeri($idSeri)
+    public static function getNextSeri($save = false)
         {
             $currentMonth = now()->month;
             $currentYear = now()->year;
@@ -41,19 +41,32 @@ class Seri extends Model
                 // Nomor seri tahunan terus bertambah
                 $seriTahunan = $lastSeri->seri_tahunan + 1;
             }
+
+            if (!$save) {
+                return [
+                    'seri_bulanan' => $seriBulanan,
+                    'seri_tahunan' => $seriTahunan
+                ];
+            }
     
-            // Simpan nomor seri baru ke database
-            $newSeri = self::create([
-                'divisi_id_divisi' => $divisiId,
-                'bulan' => $currentMonth,
-                'tahun' => $currentYear,
-                'seri_bulanan' => $seriBulanan,
-                'seri_tahunan' => $seriTahunan,
-            ]);
-    
+            if ($save) {
+                // Simpan ke database hanya jika parameter $save = true
+                $newSeri = self::create([
+                    'divisi_id_divisi' => $divisiId,
+                    'bulan' => $currentMonth,
+                    'tahun' => $currentYear,
+                    'seri_bulanan' => $seriBulanan,
+                    'seri_tahunan' => $seriTahunan,
+                ]);
+        
+                return [
+                    'seri_bulanan' => $newSeri->seri_bulanan,
+                    'seri_tahunan' => $newSeri->seri_tahunan
+                ];
+            }
             return [
-                'seri_bulanan' => $newSeri->seri_bulanan,
-                'seri_tahunan' => $newSeri->seri_tahunan
+                'seri_bulanan' => $seriBulanan,
+                'seri_tahunan' => $seriTahunan
             ];
         }
         public function divisi()

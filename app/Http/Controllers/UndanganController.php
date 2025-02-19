@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Seri;
 use App\Models\User;
 use App\Models\Divisi;
@@ -16,17 +17,17 @@ class UndanganController extends Controller
         $divisi = Divisi::all();
         $seri = Seri::all();  
         $undangans = Undangan::with('divisi')->orderBy('tgl_dibuat', 'desc')->get();
-        
+
     
-        return view('superadmin.undangan.undangan', compact('undangans','divisi','seri'));
+        return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri'));
     }
     public function create()
     {
         $divisiId = auth()->user()->divisi_id_divisi;
-    $divisiName = auth()->user()->divisi->nm_divisi;
+        $divisiName = auth()->user()->divisi->nm_divisi;
 
     // Ambil nomor seri berikutnya
-    $seri = Seri::getNextSeri($divisiId);
+    $nextSeri = Seri::getNextSeri(false);
 
     // Konversi bulan ke angka Romawi
     $bulanRomawi = $this->convertToRoman(now()->month);
@@ -34,8 +35,8 @@ class UndanganController extends Controller
     // Format nomor dokumen
     $nomorDokumen = sprintf(
         "%d.%d/REKA/GEN/%s/%s/%d",
-        $seri['seri_bulanan'],
-        $seri['seri_tahunan'],
+        $nextSeri['seri_bulanan'],
+        $nextSeri['seri_tahunan'],
         strtoupper($divisiName),
         $bulanRomawi,
         now()->year
@@ -45,8 +46,8 @@ class UndanganController extends Controller
         ->where('position_id_position', '2')
         ->get(['id', 'firstname', 'lastname']);
 
-    return view('superadmin.undangan.add-undangan', [
-        'nomorSeriTahunan' => $seri['seri_tahunan'], // Tambahkan nomor seri tahunan
+    return view(Auth::user()->role->nm_role.'.undangan.add-undangan', [
+        'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
         'nomorDokumen' => $nomorDokumen,
         'managers' => $managers
     ]);  
@@ -62,6 +63,8 @@ class UndanganController extends Controller
             'tujuan' => 'required|string|max:255',
             'nomor_undangan' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
+            'pembuat' => 'required|string|max:255',
+            'catatan'=>'required|string|max:255',
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
@@ -79,6 +82,7 @@ class UndanganController extends Controller
         }
 
         $divisiId = auth()->user()->divisi_id_divisi;
+        $seri = Seri::getNextSeri(true);
         $seri = Seri::where('divisi_id_divisi', $divisiId)
                 ->where('tahun', now()->year)
                 ->latest()
@@ -99,6 +103,8 @@ class UndanganController extends Controller
             'nomor_undangan' => $request->input('nomor_undangan'),
             'tgl_dibuat' => $request->input('tgl_dibuat'),
             'tgl_disahkan' => $request->input('tgl_disahkan'),
+            'pembuat' => $request->input('pembuat'),
+            'catatan' => $request->input('catatan'),
             'seri_surat' => $request->input('seri_surat'),
             'status' => 'pending',
             'nama_bertandatangan' => $request->input('nama_bertandatangan'),
@@ -106,7 +112,7 @@ class UndanganController extends Controller
 
         ]);
     
-        return redirect()->route('undangan.superadmin')->with('success', 'Dokumen berhasil dibuat.');
+        return redirect()->route('undangan.'. Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dibuat.');
     }
     private function convertToRoman($number) {
         $map = [
@@ -154,7 +160,7 @@ class UndanganController extends Controller
          $divisi = Divisi::all();
          $seri = Seri::all();  
          
-         return view('superadmin.undangan.edit-undangan', compact('undangan', 'divisi', 'seri'));
+         return view(Auth::user()->role->nm_rol.'.undangan.edit-undangan', compact('undangan', 'divisi', 'seri'));
      }
      public function update(Request $request, $id)
      {
@@ -207,13 +213,13 @@ class UndanganController extends Controller
 
         $undangan->save();
  
-         return redirect()->route('undangan.superadmin')->with('success', 'Undangan updated successfully');
+         return redirect()->route('undangan.'. Auth::user()->role->nm_role)->with('success', 'Undangan updated successfully');
      }
      public function destroy($id)
      {
          $undangan = Undangan::findOrFail($id);
          $undangan->delete();
  
-         return redirect()->route('undangan.superadmin')->with('success', 'Undangan deleted successfully.');
+         return redirect()->route('undangan.'. Auth::user()->role->nm_role)->with('success', 'Undangan deleted successfully.');
      }
 }

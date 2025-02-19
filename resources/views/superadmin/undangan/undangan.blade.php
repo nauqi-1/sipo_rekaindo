@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.superadmin')
 
 @section('title', 'Undangan Rapat')
       
@@ -91,24 +91,28 @@
             </tr>
         </thead>
         <tbody>
-            @for ($i = 1; $i <= 3; $i++)
-            <tr>
-                <td class="nomor">{{ $i }}</td>
-                <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">Undangan Rapat Kajian</td>
-                <td>21-10-2024</td>
-                <td>1596</td>
-                <td>837.06/REKA/GEN/VII/2024</td>
-                <td>22-10-2024</td>
-                <td>HR & GA</td>
-                <td>
-                    @if ($i % 3 == 0)
-                        <span class="badge bg-danger">Ditolak</span>
-                    @elseif ($i % 2 == 0)
-                        <span class="badge bg-warning">Diproses</span>
-                    @else
-                        <span class="badge bg-success">Diterima</span>
-                    @endif
-                </td>
+                @foreach ($undangans as $index => $undangan)
+                <tr>
+                    <td class="nomor">{{ $index + 1 }}</td>
+                    <td class="nama-dokumen 
+                        {{ $undangan->status == 'Reject' ? 'text-danger' : ($undangan->status == 'Pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $undangan->judul }}
+                    </td>
+                    <td>{{ \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') }}</td>
+                    <td>{{ $undangan->seri_surat }}</td>
+                    <td>{{ $undangan->nomor_undangan }}</td>
+                    <td>{{ $undangan->tgl_disahkan ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $undangan->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                    </td>
+                    <td>
+                        @if ($undangan->status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($undangan->status == 'pending')
+                            <span class="badge bg-warning">Diproses</span>
+                        @else
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
+                    </td>
                 <td>
                     <!-- <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
                         <img src="/img/memo/share.png" alt="share">
@@ -117,7 +121,7 @@
                         <img src="/img/undangan/Delete.png" alt="delete">
                     </button>
                     <!-- Status Approve -->
-                    @if ($i % 3 != 0 && $i % 2 != 0) 
+                    @if ($undangan->status == 'approve') 
                         <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
                             <img src="/img/undangan/arsip.png" alt="arsip">
                         </button>
@@ -128,7 +132,7 @@
                     @endif
                 </td>
             </tr>
-            @endfor
+            @endforeach
         </tbody>
     </table>
 

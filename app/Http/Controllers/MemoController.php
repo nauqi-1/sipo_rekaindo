@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\kategori_barang;
 use App\Models\Memo;
 use App\Models\Seri;
 use App\Models\User;
 use App\Models\Divisi;
+use App\Models\Kirim_Document;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 class MemoController extends Controller
 {
     public function index()
@@ -18,7 +20,7 @@ class MemoController extends Controller
         $memos = Memo::with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(6);
         
     
-        return view('superadmin.memo.memo-superadmin', compact('memos','divisi','seri'));
+        return view( Auth::user()->role->nm_role.'.memo.memo-'. Auth::user()->role->nm_role, compact('memos','divisi','seri'));
     }
     public function create()
     {
@@ -26,7 +28,8 @@ class MemoController extends Controller
     $divisiName = auth()->user()->divisi->nm_divisi;
 
     // Ambil nomor seri berikutnya
-    $seri = Seri::getNextSeri($divisiId);
+    $nextSeri = Seri::getNextSeri(false);
+    
 
     // Konversi bulan ke angka Romawi
     $bulanRomawi = $this->convertToRoman(now()->month);
@@ -34,8 +37,8 @@ class MemoController extends Controller
     // Format nomor dokumen
     $nomorDokumen = sprintf(
         "%d.%d/REKA/GEN/%s/%s/%d",
-        $seri['seri_bulanan'],
-        $seri['seri_tahunan'],
+        $nextSeri['seri_bulanan'],
+        $nextSeri['seri_tahunan'],
         strtoupper($divisiName),
         $bulanRomawi,
         now()->year
@@ -45,15 +48,17 @@ class MemoController extends Controller
         ->where('position_id_position', '2')
         ->get(['id', 'firstname', 'lastname']);
 
-    return view('superadmin.memo.add-memo', [
-        'nomorSeriTahunan' => $seri['seri_tahunan'], // Tambahkan nomor seri tahunan
+       
+
+    return view(Auth::user()->role->nm_role.'.memo.add-memo', [
+        'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
         'nomorDokumen' => $nomorDokumen,
         'managers' => $managers
     ]);  
     }
     public function store(Request $request)
     {
-        // dd($request->all());
+        //  dd($request->all());
 
 
         $request->validate([
@@ -62,6 +67,8 @@ class MemoController extends Controller
             'tujuan' => 'required|string|max:255',
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
+            'pembuat'=>'required|string|max:255',
+            'catatan'=>'required|string|max:255',
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
@@ -77,19 +84,22 @@ class MemoController extends Controller
             $file = $request->file('tanda_identitas');
             $fileContent = file_get_contents($file->getRealPath()); // Membaca file sebagai binary
         }
+        
 
         $divisiId = auth()->user()->divisi_id_divisi;
+        $seri = Seri::getNextSeri(true);
+     
         $seri = Seri::where('divisi_id_divisi', $divisiId)
                 ->where('tahun', now()->year)
                 ->latest()
                 ->first();
-
+        
         if (!$seri) {
             return back()->with('error', 'Nomor seri tidak ditemukan.');
         }
         
-
-
+         
+        
         // Simpan dokumen
         $memo = Memo::create([
             'divisi_id_divisi' => $request->input('divisi_id_divisi'),
@@ -99,13 +109,15 @@ class MemoController extends Controller
             'nomor_memo' => $request->input('nomor_memo'),
             'tgl_dibuat' => $request->input('tgl_dibuat'),
             'tgl_disahkan' => $request->input('tgl_disahkan'),
+            'pembuat' => $request->input('pembuat'),
+            'catatan' => $request->input('catatan'),
             'seri_surat' => $request->input('seri_surat'),
             'status' => 'pending',
             'nama_bertandatangan' => $request->input('nama_bertandatangan'),
             'tanda_identitas' => $fileContent,
 
         ]);
-        if ($request->has('jumlah_kolom')) {
+        if ($request->has('jumlah_kolom')&& !empty($request->nomor)) {
             foreach ($request->nomor as $key => $nomor) {
                 kategori_barang::create([
                     'memo_id_memo' => $memo->id_memo,
@@ -118,7 +130,7 @@ class MemoController extends Controller
             }
         }
     
-        return redirect()->route('memo.superadmin')->with('success', 'Dokumen berhasil dibuat.');
+        return redirect()->route('memo.'. Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dibuat.');
     }
     private function convertToRoman($number) {
         $map = [
@@ -166,7 +178,7 @@ class MemoController extends Controller
          $divisi = Divisi::all();
          $seri = Seri::all();  
          
-         return view('superadmin.memo.edit-memo', compact('memo', 'divisi', 'seri'));
+         return view(Auth::user()->role->nm_role. '.memo.edit-memo', compact('memo', 'divisi', 'seri'));
      }
      public function update(Request $request, $id)
      {
@@ -206,7 +218,7 @@ class MemoController extends Controller
         if ($request->filled('tgl_surat')) {
             $memo->tgl_dibuat = bcrypt($request->tgl_dibuat);
         }
-        if ($request->filled('seri_suart')) {
+        if ($request->filled('seri_surat')) {
             $memo->seri_memo = $request->seri_memo;
         }
         if ($request->filled('tgl_disahkan')) {
@@ -219,14 +231,33 @@ class MemoController extends Controller
 
         $memo->save();
  
-         return redirect()->route('memo.superadmin')->with('success', 'User updated successfully');
+         return redirect()->route('memo.'.Auth::user()->role->nm_role)->with('success', 'User updated successfully');
      }
      public function destroy($id)
      {
          $memo = Memo::findOrFail($id);
          $memo->delete();
  
-         return redirect()->route('memo.superadmin')->with('success', 'Memo deleted successfully.');
+         return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo deleted successfully.');
      }
+     public function showTerkirim($id)
+    {
+        $memo = Kirim_Document::where('jenis_document', 'memo')
+            ->where('id_document', $id)
+            ->with(['memo', 'penerima', 'pengirim'])
+            ->firstOrFail();
+
+        return view('manager.memo.view-memoTerkirim', compact('memo'));
+    }
+
+    public function showDiterima($id)
+    {
+        $memo = Kirim_Document::where('jenis_document', 'memo')
+            ->where('id_document', $id)
+            ->with(['memo', 'pengirim', 'penerima'])
+            ->firstOrFail();
+
+        return view('manager.memo.view-memoDiterima', compact('memo'));
+    }
      
 }

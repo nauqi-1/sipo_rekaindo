@@ -65,6 +65,7 @@
                                     <label><input type="text" name="alamat" class="form-control" disabled></label>
                                 </div>
                             </li>
+                            @if(Auth::user()->role == 'superadmin')
                             <li class="list-group-card">
                                 <div>
                                     <strong class="list-group-text">Logo Perusahaan</strong><br>
@@ -73,6 +74,7 @@
                                     </label>
                                 </div>
                             </li>
+                            @endif
                         </ul>
                     </div>
                     <div class="col-lg-4 d-flex flex-column align-items-center justify-content-center">
@@ -80,7 +82,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                @if(Auth::user()->role == 'superadmin')
                     <button type="button" class="btn btn-primary" id="edit-button">Edit</button>
+                @endif
                     <button type="button" class="btn btn-secondary d-none" id="cancel-button">Batal</button>
                     <button type="submit" class="btn btn-primary d-none" id="save-button">Simpan</button>
                 </div>

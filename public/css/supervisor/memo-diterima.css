@@ -222,6 +222,10 @@ h1 {
     background-color: #f8f9fa;
 }
 
+.bi-arrow-down-up {
+    border: none !important;
+}
+
 .nomor {
     background-image: url('/img/memo-superadmin/Rectangle-path.png');
     background-size: 25px 25px;

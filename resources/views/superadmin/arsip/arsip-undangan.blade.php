@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.superadmin')
 
 @section('title', 'Arsip Undangan Rapat')
       
@@ -19,7 +19,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Filter & Search Bar -->
         <div class="title d-flex justify-content-between align-items-center mb-3">
             <h2><b>Arsip Undangan Rapat</b></h2>
@@ -123,5 +122,4 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
-</html>
 @endsection

@@ -25,6 +25,8 @@ return new class extends Migration
             $table->integer('seri_surat');
             $table->binary('tanda_identitas')->nullable();
             $table->timestamps();
+            $table->string('pembuat');
+            $table->string('catatan', 45)->nullable();
 
             $table->primary(['id_undangan', 'divisi_id_divisi']);
         });
