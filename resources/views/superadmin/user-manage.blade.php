@@ -106,8 +106,10 @@
                                 </button>
                             </form>
                             <button type="button" class="btn btn-delete btn-sm" 
-                                data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                data-user-id="{{ $user->id }}">
+                                data-bs-toggle="modal" 
+                                data-bs-target="#deleteModal" 
+                                data-user-id="{{ $user->id }}"
+                                data-route="{{ route('user-manage.destroy', $user->id) }}">
                                 <img src="/img/user-manage/Trash.png" alt="delete">
                             </button>
                             </td>
@@ -262,13 +264,13 @@
                     <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus user?</h5>
                     <!-- Buttons -->
                     <form id="deleteUserForm" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <div class="d-flex justify-content-center mt-3">
-                        <button type="button" class="btn btn-outline-secondary me-2" 
-                            data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">OK</button>
-                    </div>
+                        @csrf
+                        @method('DELETE')
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="button" class="btn btn-outline-secondary me-2" 
+                                data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">OK</button>
+                        </div>
                     </form>
                 </div>
             </div>

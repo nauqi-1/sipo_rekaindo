@@ -79,9 +79,13 @@ class UserController extends Controller
      }
      public function destroy($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['error' => 'User tidak ditemukan'], 404);
+        }
+
         $user->delete();
 
-        return redirect()->route('user.manage')->with('success', 'User deleted successfully.');
+        return response()->json(['success' => 'User berhasil dihapus'], 200);
     }
 }

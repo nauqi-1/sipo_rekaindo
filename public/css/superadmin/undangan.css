@@ -105,6 +105,8 @@
     height: 35px;
     font-size: 14px;
     width: auto;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .surat .search-filter .btn-add:hover {

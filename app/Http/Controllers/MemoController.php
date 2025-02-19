@@ -58,8 +58,6 @@ class MemoController extends Controller
     public function store(Request $request)
     {
         //  dd($request->all());
-
-
         $request->validate([
             'judul' => 'required|string|max:70',
             'isi_memo' => 'required|string',
@@ -70,16 +68,17 @@ class MemoController extends Controller
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
             'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
-            'tanda_identitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'tanda_identitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // 2MB max
         ],[
             'tanda_identitas.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
             'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
         ]);
 
-        $fileContent = null;
+        $filePath = null;
         if ($request->hasFile('tanda_identitas')) {
             $file = $request->file('tanda_identitas');
-            $fileContent = file_get_contents($file->getRealPath()); // Membaca file sebagai binary
+            $fileData = base64_encode(file_get_contents($file->getRealPath()));
+            $filePath = $fileData;
         }
         
 
@@ -95,7 +94,6 @@ class MemoController extends Controller
             return back()->with('error', 'Nomor seri tidak ditemukan.');
         }
         
-         
         
         // Simpan dokumen
         $memo = Memo::create([
@@ -109,7 +107,7 @@ class MemoController extends Controller
             'seri_surat' => $request->input('seri_surat'),
             'status' => 'pending',
             'nama_bertandatangan' => $request->input('nama_bertandatangan'),
-            'tanda_identitas' => $fileContent,
+            'tanda_identitas' => $filePath,
 
         ]);
         if ($request->has('jumlah_kolom')&& !empty($request->nomor)) {
@@ -222,8 +220,11 @@ class MemoController extends Controller
         if ($request->filled('divisi_id_divisi')) {
             $memo->divisi_id_divisi = $request->divisi_id_divisi;
         }
+        if ($request->hasFile('tanda_identitas')) {
+            $file = $request->file('tanda_identitas');
+            $memo->tanda_identitas = file_get_contents($file->getRealPath());
+        }
         
-
         $memo->save();
  
          return redirect()->route('memo.'.Auth::user()->role->nm_role)->with('success', 'User updated successfully');
@@ -231,9 +232,92 @@ class MemoController extends Controller
      public function destroy($id)
      {
          $memo = Memo::findOrFail($id);
+
+        if ($memo->tanda_identitas && file_exists(public_path($memo->tanda_identitas))) {
+            unlink(public_path($memo->tanda_identitas));
+        }
+
          $memo->delete();
  
          return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo deleted successfully.');
      }
+
+    //  menampilkan file yang disimpan dalam database
+    public function showFile($id)
+    {
+        $memo = Memo::findOrFail($id);
+
+        if (!$memo->tanda_identitas) {
+            return response()->json(['error' => 'File tidak ditemukan.'], 404);
+        }
+
+        $fileContent = base64_decode($memo->tanda_identitas);
+        if (!$fileContent) {
+            return response()->json(['error' => 'File corrupt atau tidak bisa di-decode.'], 500);
+        }
+
+        // Pastikan MIME type valid
+        $finfo = finfo_open();
+        $mimeType = finfo_buffer($finfo, $fileContent, FILEINFO_MIME_TYPE);
+        finfo_close($finfo);
+
+        // Validasi MIME type
+        $validMimeTypes = [
+            'application/pdf' => 'pdf',
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png'
+        ];
+        
+        if (!isset($validMimeTypes[$mimeType])) {
+            return response()->json(['error' => 'Format file tidak didukung.'], 400);
+        }
+
+        return response($fileContent)
+            ->header('Content-Type', $mimeType)
+            ->header('Content-Disposition', 'inline; filename="dokumen.' . $validMimeTypes[$mimeType] . '"');
+    }
+
+    private function validateMimeType($mimeType)
+    {
+        // Valid MIME types for PDF, JPG, PNG, JPEG
+        $validMimeTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+        
+        if (in_array($mimeType, $validMimeTypes)) {
+            return $mimeType;
+        }
+
+        return 'application/octet-stream'; // Default fallback MIME type if not valid
+    }
+
+    // Fungsi tambahan untuk mendapatkan ekstensi dari MIME type
+    private function getExtension($mimeType)
+    {
+        $map = [
+            'application/pdf' => 'pdf',
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'application/msword' => 'doc',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+        ];
+        return $map[$mimeType] ?? 'bin';
+    }
+
+    // Fungsi download file
+    public function downloadFile($id)
+    {
+        $memo = Memo::findOrFail($id);
+
+        if (!$memo->tanda_identitas) {
+            return redirect()->back()->with('error', 'File tidak ditemukan.');
+        }
+
+        $fileData = base64_decode($memo->tanda_identitas);
+        $mimeType = finfo_buffer(finfo_open(), $fileData, FILEINFO_MIME_TYPE);
+        $extension = $this->getExtension($mimeType);
+
+        return response()->streamDownload(function () use ($fileData) {
+            echo $fileData;
+        }, "memo_{$id}.$extension", ['Content-Type' => $mimeType]);
+    }
      
 }

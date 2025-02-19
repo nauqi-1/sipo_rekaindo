@@ -86,6 +86,11 @@ Route::middleware('web')->group(function () {
     Route::post('/reset-password', [ForgotPwController::class, 'resetPassword'])->name('reset-password.update');
     });
 
+// Lampiran memo
+Route::get('/memo/{id}/file', [MemoController::class, 'showFile'])->name('memo.file');
+Route::get('/memo/download/{id}', [MemoController::class, 'downloadFile'])->name('memo.download');
+Route::get('/memo/{id}/preview', [MemoController::class, 'showFile'])->name('memo.preview');
+
 Route::get('/verif-email', function () {
     return view('/components/verif-email');
 })->name('verif-email');
@@ -162,6 +167,10 @@ Route::get('/view-memoDiterima', function() {
     return view('manager.memo.view-memoDiterima'); })->name('view.memo-diterima');
 Route::get('/view-memoTerkirim', function() {
     return view('manager.memo.view-memoTerkirim'); })->name('view.memo-terkirim');
+
+
+    Route::get('/view-memoDiterimaSuper/{id_memo}', function() {
+        return view('superadmin.memo.view-memoDiterima'); })->name('view.memo-diterima-super');
 
 // undangan admin
 
