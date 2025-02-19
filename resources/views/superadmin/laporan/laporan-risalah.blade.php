@@ -1,25 +1,26 @@
 @extends('layouts.superadmin')
 
-@section('title', 'Laporan Risalah')
-
+@section('title', 'Laporan Risalah Rapat')
+      
 @section('content')
-    <div class="container">
-        <div class="header">
-            <!-- Back Button -->
-            <div class="back-button">
-                <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
-            </div>
-            <h1>Laporan Risalah Rapat</h1>
-        </div>        
-        <div class="row">
-            <div class="breadcrumb-wrapper">
-                <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#">Laporan</a>/<a href="#" style="color: #565656">Laporan Risalah Rapat</a>
-                </div>
+<div class="container">
+    <div class="header">
+        <!-- Back Button -->
+        <div class="back-button">
+            <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+        </div>
+        <h1>Laporan Risalah Rapat</h1>
+    </div>        
+    <div class="row">
+        <div class="breadcrumb-wrapper">
+            <div class="breadcrumb" style="gap: 5px;">
+                <a href="#">Beranda</a>/<a href="#">Laporan</a>/<a href="#" style="color: #565656">Laporan Risalah Rapat</a>
             </div>
         </div>
+    </div>
 
-        <!-- form add memo -->
+    <!-- form add memo -->
+    <div class="laporan">
         <div class="card">
             <div class="card-body">
                 <div class="row mb-4">
@@ -41,16 +42,13 @@
                     </div>
                 </div>
             </div>
-            <form action="#" method="GET">
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" id="edit-button">Filter</button>
-                    <button type="button" class="btn btn-secondary" id="cancel-button">Batal</button>
-                </div>
-            </form>
+            <div class="modal-footer">
+                <form action="{{ route('cetak-laporan-risalah.superadmin') }}">
+                    <button type="submit" class="btn btn-primary" id="filter-button">Filter</button>
+                </form>
+                <button type="button" class="btn btn-secondary" id="cancel-button">Batal</button>
+            </div>
         </div>
     </div>
-
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</div>
 @endsection

@@ -16,6 +16,10 @@
       content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard"
     />
     <meta name="author" content="codedthemes" />
+<<<<<<< HEAD
+=======
+    <!-- <meta name="csrf-token" content="{{ csrf_token() }}"> -->
+>>>>>>> 7751c95055a7632c4092b16c8c0a0b15915c46a6
 
     <!-- [Favicon] icon -->
     <link rel="icon" href="../assets/images/favicon.svg" type="image/x-icon" />
@@ -37,6 +41,7 @@
 <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
 <link rel="stylesheet" href="../assets/css/style-preset.css" />
 <link rel="stylesheet" href="../assets/css/style-preset.css" />
+<<<<<<< HEAD
 <link rel="stylesheet" href="../assets/css/dashboard.css" />
 <link rel="stylesheet" href="../assets/css/memo.css" />
 <link rel="stylesheet" href="../assets/css/user-manage.css" />
@@ -47,6 +52,17 @@
 
 
 
+=======
+<link rel="stylesheet" href="../assets/css/style-app.css" />
+<link rel="stylesheet" href="../assets/css/dashboard.css" />
+<link rel="stylesheet" href="../assets/css/user-manage.css" />
+<link rel="stylesheet" href="../assets/css/data-perusahaan.css" />
+<link rel="stylesheet" href="../css/superadmin.edit-profile.css" />
+<link rel="stylesheet" href="../css/superadmin/arsip.css"/>
+<link rel="stylesheet" href="../css/superadmin/undangan.css"/>
+<link rel="stylesheet" href="../css/superadmin/laporan.css"/>
+<link rel="stylesheet" href="../css/superadmin/cetak-laporan.css"/>
+>>>>>>> 7751c95055a7632c4092b16c8c0a0b15915c46a6
 
   </head>
   <!-- [Head] end -->

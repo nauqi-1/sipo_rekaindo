@@ -8,6 +8,7 @@
             <!-- Back Button -->
             <div class="back-button">
                 <a href="{{ route('admin.dashboard')}}"><img src="/img/memo-admin/Vector_back.png" alt=""></a>
+                <a href="{{ route('admin.dashboard')}}"><img src="/img/memo-admin/Vector_back.png" alt=""></a>
             </div>
             <h1>Memo</h1>
         </div>        
@@ -90,7 +91,19 @@
             </thead>
             <tbody>
                 @foreach ($memos as $index => $memo)
+                @foreach ($memos as $index => $memo)
                 <tr>
+                    <td class="nomor">{{ $index + 1 }}</td>
+                    <td class="nama-dokumen 
+                        {{ $memo->status == 'Reject' ? 'text-danger' : ($memo->status == 'Pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $memo->judul }}
+                    </td>
+                    <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
+                    <td>{{ $memo->seri_surat }}</td>
+                    <td>{{ $memo->nomor_memo }}</td>
+                    <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $memo->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                    </td>
                     <td class="nomor">{{ $index + 1 }}</td>
                     <td class="nama-dokumen 
                         {{ $memo->status == 'Reject' ? 'text-danger' : ($memo->status == 'Pending' ? 'text-warning' : 'text-success') }}">
@@ -104,7 +117,9 @@
                     </td>
                     <td>
                         @if ($memo->status == 'reject')
+                        @if ($memo->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($memo->status == 'pending')
                         @elseif ($memo->status == 'pending')
                             <span class="badge bg-warning">Diproses</span>
                         @else
@@ -116,22 +131,27 @@
                             <img src="/img/memo-admin/share.png" alt="share">
                         </a>
                         
+                        
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/memo-admin/Delete.png" alt="delete">
                         </button>
                        
+                       
                         <!-- Status Approve -->
+                        @if ($memo->status == 'approve') 
                         @if ($memo->status == 'approve') 
                             <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
                                 <img src="/img/memo-admin/arsip.png" alt="arsip">
                             </button>
                         @else
                             <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
+                            <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
                                 <img src="/img/memo-admin/edit.png" alt="edit">
                             </a>
                         @endif
                     </td>
                 </tr>
+                @endforeach
                 @endforeach
             </tbody>
         </table>
@@ -174,6 +194,7 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus Memo</b></h5>
                         <!-- Tombol -->
                         <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Kembali</a></button>
+                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Kembali</a></button>
                     </div>
                 </div>
             </div>
@@ -192,6 +213,7 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Arsip Memo?</b></h5>
                         <!-- Tombol -->
                         <div class="d-flex justify-content-center gap-3">
+                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Cancel</a></button>
                             <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Cancel</a></button>
                             <button type="button" class="btn-ok" id="confirmArsip">OK</button>
                         </div>
@@ -213,6 +235,7 @@
                         <h5 class="mb-4" style="color: #545050;"><b>Sukses</b></h5>
                         <h6 class="mb-4" style="font-size: 14px; color: #5B5757;">Berhasil Arsip Memo</h6>
                         <!-- Tombol -->
+                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Kembali</a></button>
                         <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Kembali</a></button>
                     </div>
                 </div>

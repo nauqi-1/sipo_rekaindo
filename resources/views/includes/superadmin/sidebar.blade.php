@@ -1,5 +1,5 @@
- <!-- [ Sidebar Menu ] start -->
- <nav class="pc-sidebar">
+<!-- [ Sidebar Menu ] start -->
+<nav class="pc-sidebar">
   <div class="navbar-wrapper">
     <div class="m-header">
       <a href="{{ route(Auth::user()->role->nm_role . '.dashboard') }}" class="b-brand text-primary">

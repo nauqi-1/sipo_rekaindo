@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', 'Admin')
-
+@section('title', 'Arsip Risalah')
+      
 @section('content')
     <div class="container">
         <div class="header">
@@ -21,7 +21,7 @@
 
         <!-- Filter & Search Bar -->
         <div class="title d-flex justify-content-between align-items-center mb-3">
-            <h5><b>Arsip Risalah Rapat</b></h5>
+            <h2><b>Arsip Risalah Rapat</b></h2>
             <div class="d-flex gap-2">
                 <div class="search">
                     <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
@@ -31,8 +31,8 @@
         </div>
 
         <!-- Table -->
-        <table class="table">
-            <thead class="table-light">
+        <table class="table-light">
+            <thead>
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
@@ -121,5 +121,5 @@
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-</body>
-</html>
+
+@endsection

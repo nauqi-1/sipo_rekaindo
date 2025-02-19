@@ -21,41 +21,39 @@
 
         <!-- Wrapper untuk elemen di luar card -->
         <div class="user-manage">
-        <div class="header-tools">
-            <h2 class="title">Pengguna</h2>
-            <div class="search-filter">
-                <div class="d-flex gap-2">
-                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                        <img src="/img/user-manage/search.png" alt="search" style="width: 20px; height: 20px;">
-                        <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari berdasarkan nama ..." style="outline: none; box-shadow: none;">
+            <div class="header-tools">
+                <h2 class="title">Pengguna</h2>
+                <div class="search-filter">
+                    <div class="d-flex gap-2">
+                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                            <img src="/img/user-manage/search.png" alt="search" style="width: 20px; height: 20px;">
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari berdasarkan nama ..." style="outline: none; box-shadow: none;">
+                        </div>
                     </div>
-                </div>
 
-                <div class="dropdown">
-                    <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="me-2">Filter</span>
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'asc']) }}" style="justify-content: center; text-align: center;">
-                                Urutkan abjad A-Z
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
-                                Urutkan abjad Z-A
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                    <div class="dropdown">
+                        <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="me-2">Filter</span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'asc']) }}" style="justify-content: center; text-align: center;">
+                                    Urutkan abjad A-Z
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
+                                    Urutkan abjad Z-A
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
 
-                
-                <!-- Add User Button to Open Mod    al -->
-                <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah Pengguna</button>
+                    <!-- Add User Button to Open Mod    al -->
+                    <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah Pengguna</button>
+                </div>
             </div>
-        </div>
-        <!-- Card untuk tabel -->
-        <!-- <div class="card"> -->
+            <!-- Card untuk tabel -->
             <div class="card-body">
                 <table class="table">
                     <thead>
@@ -77,7 +75,6 @@
                                 <img src="\img\user-manage\user.png" alt="User Image" class="rounded-circle-light">
                                 <div class="text-info">
                                     <span>{{ $user->firstname }} {{ $user->lastname }}</span>
-                                    <!-- <br><small>{{ $user->email }}</small> -->
                                 </div>
                             </div>
                         </td>
@@ -87,9 +84,13 @@
                             </div>
                         </td>
                         <td>
-                            <span class="badge bg-primary">
-                             {{ $user->role->nm_role ?? 'No Role Assigned' }} <!-- Menampilkan nama role -->
-                            </span>
+                            @if ($user->role->nm_role == 'superadmin')
+                                <span class="badge role-superadmin">superadmin</span>
+                            @elseif ($user->role->nm_role == 'admin')
+                                <span class="badge role-admin">admin</span>
+                            @else
+                                <span class="badge role-manager">manager</span>
+                            @endif
                         </td>
                         <td>
                             {{ $user->divisi->nm_divisi ?? 'No Divisi Assigned' }} <!-- Menampilkan nama divisi -->
@@ -100,26 +101,23 @@
                         <td>{{ $user->phone_number }}</td>
                             <td>
                             <form method="POST" action="{{ route('user-manage.edit', $user->id) }}" style="display: inline;">
-                            @csrf
-                            @method('GET') <!-- Use GET to navigate to the edit page -->
-                            <button type="submit" class="btn btn-edit btn-sm">
-                                <img src="/img/user-manage/Edit.png" alt="edit">
-                            </button>
-                            </form>
-                            <form method="POST" action="{{ route('user-manage.destroy', $user->id) }}" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                                <button type="submit" class="btn btn-delete btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                    <img src="/img/user-manage/Trash.png" alt="delete">
+                                @csrf
+                                @method('GET') 
+                                <button type="submit" class="btn btn-edit btn-sm">
+                                    <img src="/img/user-manage/Edit1.png" alt="edit">
                                 </button>
                             </form>
+                            <button type="button" class="btn btn-delete btn-sm" 
+                                data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                data-user-id="{{ $user->id }}">
+                                <img src="/img/user-manage/Trash1.png" alt="delete">
+                            </button>
                             </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
                 {{ $users->links('pagination::bootstrap-5') }}
-            </div>
             </div>
         </div>
     </div>
@@ -202,7 +200,7 @@
                             @foreach ($roles as $role)
                                 <label for="role_{{ $role->id_role }}">{{ $role->nm_role }}</label>
                                 <input type="radio" name="role_id_role" value="{{ $role->id_role }}" id="role_{{ $role->id_role }}" required autofocus autocomplete="role_id_role">
-                             @endforeach
+                            @endforeach
                             </div>
                         </div>
                     </div>
@@ -265,10 +263,15 @@
                     <!-- Delete Confirmation Text -->
                     <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus user?</h5>
                     <!-- Buttons -->
+                    <form id="deleteUserForm" method="POST">
+                    @csrf
+                    @method('DELETE')
                     <div class="d-flex justify-content-center mt-3">
-                        <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="confirmDelete" data-bs-toggle="modal" data-bs-target="#deleteSuccessModal">OK</button>
+                        <button type="button" class="btn btn-outline-secondary me-2" 
+                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">OK</button>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -280,13 +283,9 @@
             <div class="modal-content text-center p-4">
                 <div class="modal-body">
                     <!-- Close Button -->
-                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <!-- Success Icon -->
                     <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="my-3" style="width: 80px;">
                     <!-- Success Message -->
                     <h5><b>Berhasil Menghapus User</b></h5>
-                    <!-- Back Button -->
-                    <button class="btn btn-primary mt-4 px-4 py-2" data-bs-dismiss="modal">Back</button>
                 </div>
             </div>
         </div>

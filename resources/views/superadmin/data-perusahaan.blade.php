@@ -1,14 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Perusahaan</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/superadmin/data-perusahaan.css') }}">
-</head>
-<body>
+@extends('layouts.superadmin')
+
+@section('title', 'Data Perusahaan')
+
+@section('content')
     <div class="container">
         <div class="header">
             <!-- Back Button -->
@@ -34,59 +28,64 @@
                         <div>
                             <h5 class="heading-company"><b>Data Perusahaan</b></h5>
                         </div>
-                        <ul class="list-group">
-                            <li class="list-group-card">
-                                <div>
-                                    <strong class="list-group-text">Nama Instansi</strong><br>
-                                    <label><input type="text" name="nama-instansi" class="form-control" disabled></label>
-                                </div>
-                            </li>
-                            <li class="list-group-card">
-                                <div>
-                                    <strong class="list-group-text">Alamat Situs Web</strong><br>
-                                    <label><input type="text" name="alamat-web" class="form-control" disabled></label>
-                                </div>
-                            </li>
-                            <li class="list-group-card">
-                                <div>
-                                    <strong class="list-group-text">Telepon</strong><br>
-                                    <label><input type="text" name="telp" class="form-control" disabled></label>
-                                </div>
-                            </li>
-                            <li class="list-group-card">
-                                <div>
-                                    <strong class="list-group-text">Email</strong><br>
-                                    <label><input type="email" name="email" class="form-control" disabled></label>
-                                </div>
-                            </li>
-                            <li class="list-group-card">
-                                <div>
-                                    <strong class="list-group-text">Alamat</strong><br>
-                                    <label><input type="text" name="alamat" class="form-control" disabled></label>
-                                </div>
-                            </li>
-                            @if(Auth::user()->role == 'superadmin')
-                            <li class="list-group-card">
-                                <div>
-                                    <strong class="list-group-text">Logo Perusahaan</strong><br>
-                                    <label for="company-photo">
-                                        <input type="file" id="company-photo" accept="image/*" class="form-control" disabled>
-                                    </label>
-                                </div>
-                            </li>
-                            @endif
-                        </ul>
+                        <form action="{{ route('data-perusahaan') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT') <!-- Menggunakan PUT untuk update -->
+                            <ul class="list-group">
+                                <li class="list-group-card">
+                                    <div>
+                                        <strong class="list-group-text">Nama Instansi</strong><br>
+                                        <input type="text" name="nama_instansi" class="form-control" value="{{ $perusahaan->nama_instansi ?? '' }}" disabled>
+                                    </div>
+                                </li>
+                                <li class="list-group-card">
+                                    <div>
+                                        <strong class="list-group-text">Alamat Situs Web</strong><br>
+                                        <input type="text" name="alamat_web" class="form-control" value="{{ $perusahaan->alamat_web ?? '' }}" disabled>
+                                    </div>
+                                </li>
+                                <li class="list-group-card">
+                                    <div>
+                                        <strong class="list-group-text">Telepon</strong><br>
+                                        <input type="text" name="telepon" class="form-control" value="{{ $perusahaan->telepon ?? '' }}" disabled>
+                                    </div>
+                                </li>
+                                <li class="list-group-card">
+                                    <div>
+                                        <strong class="list-group-text">Email</strong><br>
+                                        <input type="email" name="email" class="form-control" value="{{ $perusahaan->email ?? '' }}" disabled>
+                                    </div>
+                                </li>
+                                <li class="list-group-card">
+                                    <div>
+                                        <strong class="list-group-text">Alamat</strong><br>
+                                        <input type="text" name="alamat" class="form-control" value="{{ $perusahaan->alamat ?? '' }}" disabled>
+                                    </div>
+                                </li>
+                                <li class="list-group-card">
+                                    <div>
+                                        <strong class="list-group-text">Logo Perusahaan</strong><br>
+                                        <input type="file" name="logo" class="form-control" accept="image/*" disabled>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="edit-button">Edit</button>
+                                <button type="button" class="btn btn-secondary d-none" id="cancel-button">Batal</button>
+                                <button type="submit" class="btn btn-primary d-none" id="save-button">Simpan</button>
+                            </div>
+                        </form>
                     </div>
+
+                    <!-- Gambar Logo Perusahaan -->
                     <div class="col-lg-4 d-flex flex-column align-items-center justify-content-center">
-                        <img src="" alt="Logo Perusahaan" class="company-image" id="company-photo-preview">
+                    @php
+                        $logoPath = $perusahaan->logo ? asset('image/' . $perusahaan->logo) : asset('img/setting/question.png');
+                    @endphp
+                    <img src="{{ $logoPath }}" alt="Logo Perusahaan" class="company-image" id="company-photo-preview">
+                    <!-- Debugging -->
+                    <p>Path Gambar: {{ $logoPath }}</p>
                     </div>
-                </div>
-                <div class="modal-footer">
-                @if(Auth::user()->role == 'superadmin')
-                    <button type="button" class="btn btn-primary" id="edit-button">Edit</button>
-                @endif
-                    <button type="button" class="btn btn-secondary d-none" id="cancel-button">Batal</button>
-                    <button type="submit" class="btn btn-primary d-none" id="save-button">Simpan</button>
                 </div>
             </div>
         </div>
@@ -101,12 +100,14 @@
             const cancelButton = document.getElementById("cancel-button");
             const saveButton = document.getElementById("save-button");
             const inputs = document.querySelectorAll('input[type="text"], input[type="email"]');
-            const photoInput = document.getElementById("company-photo");
+            const photoInput = document.querySelector('input[name="logo"]');
             const photoPreview = document.getElementById("company-photo-preview");
 
-            // Set gambar default
+            // Set gambar default jika tidak ada
             const defaultImage = "/img/setting/question.png"; // Path gambar default
-            photoPreview.src = defaultImage; // Set gambar default awal
+            if (!photoPreview.src) {
+                photoPreview.src = defaultImage; // Set gambar default awal
+            }
 
             // Disable all inputs at the start
             inputs.forEach(input => input.disabled = true);
@@ -130,16 +131,6 @@
                 saveButton.classList.add("d-none");
             });
 
-            // Ketika tombol Save Changes ditekan
-            saveButton.addEventListener("click", () => {
-                inputs.forEach(input => input.disabled = true);
-                photoInput.disabled = true;
-                editButton.classList.remove("d-none");
-                cancelButton.classList.add("d-none");
-                saveButton.classList.add("d-none");
-                console.log("Data telah disimpan");
-            });
-
             // Menangani perubahan gambar
             photoInput.addEventListener("change", (event) => {
                 const file = event.target.files[0];
@@ -150,11 +141,9 @@
                     };
                     reader.readAsDataURL(file); // Baca file gambar
                 } else {
-                    // Jika tidak ada file, tampilkan gambar default
-                    photoPreview.src = defaultImage;
+                    photoPreview.src = defaultImage; // Set gambar default jika tidak ada file
                 }
             });
         });
     </script>
-</body>
-</html>
+@endsection

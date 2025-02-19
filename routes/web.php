@@ -143,13 +143,13 @@ Route::get('/laporan-undangan', function() {
 // cetak laporan
 Route::get('/cetak-laporan-memo', function() {
     return view('superadmin.laporan.cetak-laporan-memo');
-})->name('laporan-memo');
+})->name('cetak-laporan-memo.superadmin');
 Route::get('/cetak-laporan-risalah', function() {
     return view('superadmin.laporan.cetak-laporan-risalah');
-})->name('laporan-risalah');
+})->name('cetak-laporan-risalah.superadmin');
 Route::get('/cetak-laporan-undangan', function() {
     return view('superadmin.laporan.cetak-laporan-undangan');
-})->name('laporan-undangan');
+})->name('cetak-laporan-undangan.superadmin');
 
 
 
@@ -161,7 +161,7 @@ Route::get('/memo-diterima', function() {
 Route::get('/view-memoDiterima', function() {
     return view('manager.memo.view-memoDiterima'); })->name('view.memo-diterima');
 Route::get('/view-memoTerkirim', function() {
-    return view('supmanagerervisor.memo.view-memoTerkirim'); })->name('view.memo-terkirim');
+    return view('manager.memo.view-memoTerkirim'); })->name('view.memo-terkirim');
 
 // undangan admin
 
@@ -189,7 +189,7 @@ Route::get('/view-undangan', function() {
     return view('manager.undangan.view-undangan'); })->name('view.undangan');
 
 // risalah supervisor
-Route::get('/risalahSupervisor', function() {
+Route::get('/risalahManager', function() {
     return view('manager.risalah.risalah-manager'); })->name('risalah.manager');
 Route::get('/approve-risalah', function() {
     return view('manager.risalah.approve-risalah'); })->name('approve.risalah');
@@ -253,6 +253,9 @@ Route::get('/format-undangan', function() {
 Route::get('/format-risalah', function() {
     return view('format-surat.format-risalah');
 })->name('format-risalah');
+Route::get('/format-cetakLaporan', function() {
+    return view('format-surat.format-cetakLaporan');
+})->name('format-cetakLaporan');
 
 // data perusahaan 
 Route::get('/data-perusahaan', function() {
@@ -264,5 +267,5 @@ Route::get('/edit-profileSuperadmin', function() {
     return view('superadmin.edit-profileSuperadmin'); })->name('edit-profile.superadmin');
 Route::get('/edit-profileAdmin', function() {
     return view('admin.edit-profileAdmin'); })->name('edit-profile.admin');
-Route::get('/edit-profileSupervisor', function() {
-    return view('manager.edit-profileSupervisor'); })->name('edit-profile.manager');
+Route::get('/edit-profileManager', function() {
+    return view('manager.edit-profileManager'); })->name('edit-profile.manager');
