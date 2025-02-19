@@ -32,6 +32,7 @@ Route::get('/user-manage', [UserManageController::class, 'index'])->name('user.m
 
 Route::get('/dashboard', function () {
     return view('layouts.superadmin');
+    return view('layouts.superadmin');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -41,7 +42,11 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 Route::get('/memo-superadmin',[MemoController::class, 'index'])
+Route::get('/memo-superadmin',[MemoController::class, 'index'])
 ->name('memo.superadmin');
+Route::get('/memo-admin',[MemoController::class, 'index'])
+->name('memo.admin');
+
 Route::get('/memo-admin',[MemoController::class, 'index'])
 ->name('memo.admin');
 
@@ -49,6 +54,7 @@ Route::get('/memo-admin',[MemoController::class, 'index'])
 Route::get('/add-memoSuperadmin', function() {
     return view('superadmin.memo.add-memo');
 })->name('add-memo.superadmin');
+
 
 
 Route::get('/memo/edit/{id_memo}', [MemoController::class, 'edit'])->name('memo.edit');
@@ -65,11 +71,13 @@ Route::get('/kirim-memoSuperadmin', function() {
 
 Route::get('/dashboard.admin', function () {
     return view('admin.dashboard');
+    return view('admin.dashboard');
 })->name('admin.dashboard');
 Route::get('/dashboard.superadmin', function () {
     return view('superadmin.dashboard');
 })->name('superadmin.dashboard');
 Route::get('/dashboard.manager', function () {
+    return view('manager.dashboard');
     return view('manager.dashboard');
 })->name('manager.dashboard');
 
@@ -90,6 +98,7 @@ Route::middleware('web')->group(function () {
 Route::get('/verif-email', function () {
     return view('/components/verif-email');
 })->name('verif-email');
+
 
 
 Route::get('/add-undanganSuperadmin', function() {
@@ -113,6 +122,7 @@ Route::get('/edit-risalahSuperadmin', function() {
 
 
 
+
 Route::get('/add-memoAdmin', function() {
     return view('admin.memo.add-memo');
 })->name('admin.memo.add-memo');
@@ -126,6 +136,7 @@ Route::get('/kirim-memoAdmin/{id}',
 )->name('kirim-memoAdmin.admin');
 
 Route::get('/after-kirim', function() {
+    return view('manager.after-kirim-memo');
     return view('manager.after-kirim-memo');
 })->name('after-kirim');
 
@@ -143,13 +154,13 @@ Route::get('/laporan-undangan', function() {
 // cetak laporan
 Route::get('/cetak-laporan-memo', function() {
     return view('superadmin.laporan.cetak-laporan-memo');
-})->name('laporan-memo');
+})->name('cetak-laporan-memo.superadmin');
 Route::get('/cetak-laporan-risalah', function() {
     return view('superadmin.laporan.cetak-laporan-risalah');
-})->name('laporan-risalah');
+})->name('cetak-laporan-risalah.superadmin');
 Route::get('/cetak-laporan-undangan', function() {
     return view('superadmin.laporan.cetak-laporan-undangan');
-})->name('laporan-undangan');
+})->name('cetak-laporan-undangan.superadmin');
 
 
 
@@ -165,6 +176,7 @@ Route::get('/view-memoDiterima/{id_memo}', [MemoController::class, 'showDiterima
 
 
 // undangan admin
+
 
 Route::get('/add-undanganAdmin', function() {
     return view('admin.undangan.add-undangan'); })->name('add-undangan.admin');
@@ -186,7 +198,9 @@ Route::get('/kirim-risalahAdmin', function() {
 // undangan supervisor
 Route::get('/approve-undangan', function() {
         return view('manager.undangan.approve-undangan'); })->name('approve.undangan');
+        return view('manager.undangan.approve-undangan'); })->name('approve.undangan');
 Route::get('/view-undangan', function() {
+    return view('manager.undangan.view-undangan'); })->name('view.undangan');
     return view('manager.undangan.view-undangan'); })->name('view.undangan');
 
 // risalah supervisor
@@ -194,7 +208,9 @@ Route::get('/risalahSupervisor', function() {
     return view('manager.risalah.risalah-manager'); })->name('risalah.manager');
 Route::get('/approve-risalah', function() {
     return view('manager.risalah.approve-risalah'); })->name('approve.risalah');
+    return view('manager.risalah.approve-risalah'); })->name('approve.risalah');
 Route::get('/view-risalah', function() {
+    return view('manager.risalah.view-risalah'); })->name('view.risalah');   
     return view('manager.risalah.view-risalah'); })->name('view.risalah');   
 
 // Arsip Superadmin
@@ -239,6 +255,8 @@ Route::get('/superadmin/memo', [MemoController::class, 'index'])->name('memo.sup
 Route::get('/superadmin/undangan', [UndanganController::class, 'index'])->name('undangan.superadmin');
 Route::get('/admin/undangan', [UndanganController::class, 'index'])->name('undangan.admin');
 Route::get('/manager/undangan', [UndanganController::class, 'index'])->name('undangan.manager');
+Route::get('/admin/undangan', [UndanganController::class, 'index'])->name('undangan.admin');
+Route::get('/manager/undangan', [UndanganController::class, 'index'])->name('undangan.manager');
 
 Route::get('/info', function() {
     return view('info'); })->name('info');
@@ -254,6 +272,9 @@ Route::get('/format-undangan', function() {
 Route::get('/format-risalah', function() {
     return view('format-surat.format-risalah');
 })->name('format-risalah');
+Route::get('/format-cetakLaporan', function() {
+    return view('format-surat.format-cetakLaporan');
+})->name('format-cetakLaporan');
 
 // data perusahaan 
 Route::get('/data-perusahaan', function() {

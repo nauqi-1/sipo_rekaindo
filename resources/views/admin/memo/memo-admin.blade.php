@@ -3,6 +3,11 @@
 @section('title', 'Admin')
 
 @section('content')
+@extends('layouts.admin')
+
+@section('title', 'Admin')
+
+@section('content')
     <div class="container">
         <div class="header">
             <!-- Back Button -->
@@ -153,7 +158,12 @@
                             <form method="POST" action="{{ route('memo.destroy', $memo->id_memo) }}" style="display: inline;">
                         @csrf
                         @method('DELETE')
+                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Cancel</a></button>
+                            <form method="POST" action="{{ route('memo.destroy', $memo->id_memo) }}" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
                             <button type="button" class="btn-ok" id="confirmDelete">OK</button>
+                            </form>
                             </form>
                         </div>
                     </div>
@@ -249,4 +259,5 @@
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+@endsection
 @endsection

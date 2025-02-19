@@ -177,4 +177,5 @@
             }, { once: true }); // Tambahkan event listener hanya sekali
         });
     </script>
+
 @endsection
