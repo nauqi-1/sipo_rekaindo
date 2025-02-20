@@ -1,0 +1,234 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    /* max-width: 1200px; */
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.header.back-button a {
+    margin-right: auto;
+    display: flex;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.breadcrumb-wrapper {
+    display: inline-block; 
+    margin-right: 20px; 
+}
+
+.breadcrumb {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 30px;
+    padding: 8px 12px;
+    border: 1px solid #E5E5E5CC;
+    display: flex;
+    justify-content: left;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: #A9A9A9;
+}
+
+.card-blue {
+    background-color: #92C5FF99;
+    border: 1px solid #92C5FF99;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    color: #1E4178;
+}
+
+.card-blue img {
+    margin-right: 10px;
+}
+
+.row {
+    display: flex;
+    justify-content: left;
+    gap: 25px;
+}
+
+.row-mb-4 {
+    display: flex;
+    justify-content: left;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.col-md-6 {
+    border: 1px solid #EFF4FA; 
+    padding: 0px; 
+    border-radius: 5px; 
+    flex: 1;
+    width: 100%;
+    color: #1E4178;
+    font-size: 14px;
+}
+
+.card-white {
+    background-color: #fff;
+    border: 1px solid #E5E5E5;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    margin: 20px;
+    color: #1E4178;
+}
+
+.card-white label {
+    flex: 0 0 150px;
+    margin-left: 20px;
+    font-size: 14px;
+    color: #1E4178;
+}
+
+.card-white .separator {
+    flex: 0 0 1px;
+    background-color: #E5E5E5;
+    height: 45px;
+    margin-left: 180px;
+}
+
+.card-white input {
+    flex: 1;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    font-size: 14px;
+    color: #888;
+    background: none;
+    color: #1E4178;
+    margin-bottom: 0px;
+    padding: 8px;
+    margin-left: 20px;
+}
+
+.card-white button {
+    margin-left: 28px;
+    border: 1px solid #1E4178;
+    background-color: #1E4178;
+    border-radius: 8px;
+    color: #fff;
+    width: 8%;
+}
+
+.card-white button:hover {
+    color: #fff;
+    background-color: #92C5FF;
+    border: 1px solid #92C5FF;
+}
+
+.card-white img {
+    margin-left: -5px;
+}
+
+.bg-success {
+    margin-left: 28px;
+    font-size: 14px;
+}
+
+/* button */
+.modal-footer {
+    justify-content: right;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+}
+
+.btn-secondary {
+    margin-right: 10px;
+    color: #8F9BB3;
+    background-color: #fff;
+    border: 1px solid #8F9BB3;
+}
+
+.btn-secondary:hover {
+    margin-right: 10px;
+    color: #fff;
+    background-color: #8F9BB3;
+    border: 1px solid #8F9BB3;
+}
+
+.btn-primary {
+    margin-right: 10px;
+    color: #fff;
+    background-color: #1E4178;
+    border: 1px solid #1E4178;
+}
+
+.btn-primary:hover {
+    margin-right: 10px;
+    color: #fff;
+    background-color: #92C5FF;
+    border: 1px solid #92C5FF;
+}
+
+/* dropdown divisi */
+.dropdown2 {
+    border: none;
+    font-size: 14px;
+    color: #1E4178;
+    margin-left: 26px;
+}
+
+.dropdown2:hover 
+.dropdown2:active
+ {
+    border: none;
+    font-size: 14px;
+}
+
+.dropdown2 option {
+    font-size: 50px;
+}
+
+/* Catatan */
+#catatan {
+    width: 100%;
+    resize: none; /* Nonaktifkan kemampuan resize manual */
+    border: none;
+    box-shadow: none;
+    outline: none;
+    font-size: 14px;
+    color: #1E4178;
+    background: none;
+    padding: 8px;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    height: 38px;
+}
+
+#catatan:focus {
+    outline: none;
+    box-shadow: none;
+}

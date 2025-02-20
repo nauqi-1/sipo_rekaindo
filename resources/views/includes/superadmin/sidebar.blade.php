@@ -1,5 +1,5 @@
-<!-- [ Sidebar Menu ] start -->
-<nav class="pc-sidebar">
+ <!-- [ Sidebar Menu ] start -->
+ <nav class="pc-sidebar">
   <div class="navbar-wrapper">
     <div class="m-header">
       <a href="{{ route(Auth::user()->role->nm_role . '.dashboard') }}" class="b-brand text-primary">
@@ -33,8 +33,8 @@
             ><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
           </a>
           <ul class="pc-submenu">
-            <li class="pc-item"><a class="pc-link" href="{{ route('memo.terkirim') }}">Memo Terkirim</a></li>
-            <li class="pc-item pc-hasmenu"><a href="{{ route('memo.diterima') }}" class="pc-link">Memo Diterima</span></a></li>
+            <li class="pc-item"><a class="pc-link" href="{{ route('memo.terkirim',Auth::user()->id) }}">Memo Terkirim</a></li>
+            <li class="pc-item pc-hasmenu"><a href="{{ route('memo.diterima',Auth::user()->id) }}" class="pc-link">Memo Diterima</span></a></li>
           </ul>
         </li>
         @endif

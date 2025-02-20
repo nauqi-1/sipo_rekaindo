@@ -32,47 +32,23 @@
         <div class="card-body">
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
-                    <div class="card-blue">
-                        <label for="tgl_surat" class="form-label">
-                            <img src="/img/memo-admin/info.png" alt="info surat">Informasi Detail Surat
-                        </label>
+                <div class="card-blue">
+                        <label for="tgl_surat" class="form-label">No Agenda</label>
                     </div>
                     <div class="card-white">
-                        <label for="nomor">No Surat</label>
-                        <div class="separator"></div>
-                        <input type="text" id="nomor">
-                    </div>
-                    <div class="card-white">
-                        <label for="lampiran">Lampiran</label>
+                        <label for="seri">No Seri</label>
                         <div class="separator"></div>
                         <input type="text" id="seri">
                     </div>
                     <div class="card-white">
-                        <label for="perihal">Perihal</label>
+                        <label for="diterima">Diterima</label>
                         <div class="separator"></div>
-                        <input type="text" id="perihal">
-                    </div>
-                    <div class="card-white">
-                        <label for="tgl">Tanggal</label>
-                        <div class="separator"></div>
-                        <input type="text" id="tgl">
-                    </div>
-                    <div class="card-white">
-                        <label for="kepada">Kepada</label>
-                        <div class="separator"></div>
-                        <input type="text" id="kepada">
+                        <input type="text" id="diterima">
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card-blue">
-                        <label for="tgl_surat" class="form-label">
-                            <img src="/img/memo-admin/info.png" alt="info surat" style="margin-right: 5px;">Detail
-                        </label>
-                    </div>
-                    <div class="card-white">
-                        <label for="pembuat">Pembuat</label>
-                        <div class="separator"></div>
-                        <input type="text" id="pembuat">
+                <div class="card-blue">
+                        <label for="tgl_surat" class="form-label">Status Surat</label>
                     </div>
                     <div class="card-white">
                         <label for="status">Status</label>
@@ -80,9 +56,43 @@
                         <button class="status">Diproses</button>
                     </div>
                     <div class="card-white">
-                        <label for="tgl-buat">Dibuat Tanggal</label>
+                        <label for="tanggal">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl-buat">
+                        <input type="text" id="tanggal">
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4" style="gap: 20px;">
+                <div class="col">
+                    <div class="card-blue">
+                        <label for="tgl_surat" class="form-label">
+                            <img src="/img/risalah/info.png" alt="info surat">Informasi Detail Surat
+                        </label>
+                    </div>
+                    <div class="card-white">
+                        <label for="nomor">No Dokumen</label>
+                        <div class="separator"></div>
+                        <input type="text" id="nomor" value="{{ $memo->memo->nomor_memo }}">
+                    </div>
+                    <div class="card-white">
+                        <label for="divisi">Divisi</label>
+                        <div class="separator"></div>
+                        <input type="text" id="seri" value="{{ $memo->memo->divisi->nm_divisi }}">
+                    </div>
+                    <div class="card-white">
+                        <label for="perihal">Perihal</label>
+                        <div class="separator"></div>
+                        <input type="text" id="perihal" value="{{ $memo->memo->judul }}">
+                    </div>
+                    <div class="card-white">
+                        <label for="tgl">Tanggal Surat</label>
+                        <div class="separator"></div>
+                        <input type="text" id="tgl"value="{{ $memo->memo->tgl_dibuat }}">
+                    </div>
+                    <div class="card-white">
+                        <label for="lampiran">Lampiran</label>
+                        <div class="separator"></div>
+                        <input type="text" id="kepada">
                     </div>
                     <div class="card-white">
                         <label for="file">File</label>
@@ -92,10 +102,8 @@
                     </div>
                 </div>
             </div>
+
             <div class="row mb-4" style="gap: 20px;">
-                <div class="card-blue1">
-                    <label for="tindakan">Tindakan Selanjutnya</label>
-                </div>
                 <div class="col">
                     <div class="label1 card-blue1">
                         <!-- <span>Pengesahan</span> -->

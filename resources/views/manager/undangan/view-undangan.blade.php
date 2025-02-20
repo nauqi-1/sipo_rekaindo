@@ -18,14 +18,14 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('undangan.supervisor')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('undangan.manager')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Undangan Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="{{route ('undangan.supervisor')}}" >Undangan Rapat</a>/ <a href="#" style="color: #565656;">Detail Undangan Rapat</a>
+                    <a href="#">Beranda</a>/<a href="{{route ('undangan.manager')}}" >Undangan Rapat</a>/ <a href="#" style="color: #565656;">Detail Undangan Rapat</a>
                 </div>
             </div>
         </div>

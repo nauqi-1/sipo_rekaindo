@@ -49,6 +49,8 @@
                         <label for="seri_surat" class="form-label">Seri Surat</label>
                         <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan }}"  readonly>
                         <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
+                        <input type="hidden" name="pembuat" value="{{ auth()->user()->firstname . auth()->user()->lastname }}">
+                        <input type="hidden" name="catatan" >
                     </div>
                 </div>
                 <div class="row mb-4">

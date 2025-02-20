@@ -1,63 +1,4 @@
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    margin: 0;
-    background-color: #f4f4f4;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.header.back-button a {
-    margin-right: auto;
-    display: flex;
-}
-
-.header h1 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-h1 {
-    margin-bottom: 20px;
-}
-
-.breadcrumb-wrapper {
-    display: inline-block; 
-    margin-right: 20px; 
-}
-
-.breadcrumb {
-    font-size: 14px;
-    color: #888;
-    margin-bottom: 30px;
-    padding: 8px 12px;
-    border: 1px solid #E5E5E5CC;
-    display: flex;
-    justify-content: left;
-    margin-left: 20px;
-}
-
-.breadcrumb a {
-    text-decoration: none;
-    color: #A9A9A9;
-}
-
-.card {
+.data-perusahaan .card {
     border: 1px solid #ddd;
     border-radius: 8px;
     margin-top: 10px;
@@ -65,7 +6,7 @@ h1 {
     box-shadow: 0px 3px 1px 1px rgba(0, 0, 0, 0.2);
 }
 
-.card-header {
+.data-perusahaan .card-header {
     display: flex;
     justify-content: space-between;
     padding: 15px;
@@ -73,17 +14,17 @@ h1 {
     border-bottom: 1px solid #ddd;
 }
 
-.card-body {
+.data-perusahaan .card-body {
     padding: 15px;
 }
 
-.heading-company {
+.data-perusahaan .heading-company {
     font-size: 19px;
     margin: 10px;
     margin-bottom: 18px;
 }
 
-.list-group-card {
+.data-perusahaan .list-group-card {
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 15px;
@@ -91,36 +32,36 @@ h1 {
     background-color: #fff;
 }
 
-.list-group-card input, input:after {
+.data-perusahaan .list-group-card input, input:after {
     border: #ddd;
 }
 
-.list-group-card input, .list-group-card label {
+.data-perusahaan .list-group-card input, .list-group-card label {
     width: 100%;
     margin-bottom: 1px;
     box-sizing: border-box;
 }
 
-.list-group {
+.data-perusahaan .list-group {
     list-style-type: none;
     padding-left: 0;
 }
 
-.list-group-text {
+.data-perusahaan .list-group-text {
     color: #1E4178;
     font-size: 14px;
 }
 
-input:focus {
+.data-perusahaan input:focus {
     outline: none;
     border-color: transparent;
 }
 
-input:disabled {
+.data-perusahaan input:disabled {
     background-color: white !important;
 }
 
-.modal-footer {
+.data-perusahaan .modal-footer {
     justify-content: left;
     margin-top: 15px;
     margin-bottom: 10px;

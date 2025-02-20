@@ -484,42 +484,48 @@ var slideToggle = (target, duration = 0) => {
   }
 };
 
+
 // Event Listener Overlay delete
 document.addEventListener("DOMContentLoaded", function () {
-    let deleteModal = document.getElementById("deleteModal");
-    let deleteForm = document.getElementById("deleteUserForm");
-    let deleteSuccessModal = new bootstrap.Modal(document.getElementById("deleteSuccessModal"));
+  let deleteModal = document.getElementById("deleteModal");
+  let deleteForm = document.getElementById("deleteUserForm");
+  let deleteSuccessModal = new bootstrap.Modal(document.getElementById("deleteSuccessModal"));
 
-    deleteModal.addEventListener("show.bs.modal", function (event) {
-        let button = event.relatedTarget;
-        let userId = button.getAttribute("data-user-id");
-        deleteForm.setAttribute("action", "{{ route('user-manage.destroy', '') }}/" + userId);
-    });
+  deleteModal.addEventListener("show.bs.modal", function (event) {
+      let button = event.relatedTarget;
+      let userId = button.getAttribute("data-user-id");
+      let route = button.getAttribute("data-route");
+      deleteForm.setAttribute("action", route);
+  });
 
-    deleteForm.addEventListener("submit", function (event) {
-        event.preventDefault(); // Mencegah form langsung dikirim
+  deleteForm.addEventListener("submit", function (event) {
+      event.preventDefault(); // Mencegah form langsung dikirim
 
-        let formAction = deleteForm.getAttribute("action");
-        let formData = new FormData(deleteForm);
+      let formAction = deleteForm.getAttribute("action");
+      let formData = new FormData(deleteForm);
 
-        fetch(formAction, {
-            method: "POST",
-            body: formData
-        }).then(response => {
-            if (response.ok) {
-                let modalInstance = bootstrap.Modal.getInstance(deleteModal);
-                modalInstance.hide();
+      fetch(formAction, {
+          method: "DELETE", // HARUS DELETE, BUKAN POST
+          body: formData,
+          headers: {
+              "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+          },
+      }).then(response => {
+          if (response.ok) {
+              let modalInstance = bootstrap.Modal.getInstance(deleteModal);
+              modalInstance.hide();
 
-                setTimeout(() => {
-                    deleteSuccessModal.show();
-                    setTimeout(() => {
-                        location.reload(); // Refresh halaman setelah 2 detik
-                    }, 1500);
-                }, 500);
-            }
-        }).catch(error => console.error("Error:", error));
-    });
+              setTimeout(() => {
+                  deleteSuccessModal.show();
+                  setTimeout(() => {
+                      location.reload(); // Refresh halaman setelah 2 detik
+                  }, 1500);
+              }, 500);
+          }
+      }).catch(error => console.error("Error:", error));
+  });
 });
+
 
 // Script Overlay Delete
     document.addEventListener("DOMContentLoaded", function () {
@@ -556,65 +562,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-// Script File Chosen
-    document.addEventListener("DOMContentLoaded", () => {
-      const editButton = document.getElementById("edit-button");
-      const cancelButton = document.getElementById("cancel-button");
-      const saveButton = document.getElementById("save-button");
-      const inputs = document.querySelectorAll('input[type="text"], input[type="email"]');
-      const photoInput = document.getElementById("company-photo");
-      const photoPreview = document.getElementById("company-photo-preview");
 
-      // Set gambar default
-      const defaultImage = "/img/setting/question.png"; // Path gambar default
-      photoPreview.src = defaultImage; // Set gambar default awal
 
-      // Disable all inputs at the start
-      inputs.forEach(input => input.disabled = true);
-      photoInput.disabled = true;
-
-      // Ketika tombol Edit ditekan
-      editButton.addEventListener("click", () => {
-          inputs.forEach(input => input.disabled = false);
-          photoInput.disabled = false;
-          editButton.classList.add("d-none");
-          cancelButton.classList.remove("d-none");
-          saveButton.classList.remove("d-none");
-      });
-
-      // Ketika tombol Cancel ditekan
-      cancelButton.addEventListener("click", () => {
-          inputs.forEach(input => input.disabled = true);
-          photoInput.disabled = true;
-          editButton.classList.remove("d-none");
-          cancelButton.classList.add("d-none");
-          saveButton.classList.add("d-none");
-      });
-
-      // Ketika tombol Save Changes ditekan
-      saveButton.addEventListener("click", () => {
-          inputs.forEach(input => input.disabled = true);
-          photoInput.disabled = true;
-          editButton.classList.remove("d-none");
-          cancelButton.classList.add("d-none");
-          saveButton.classList.add("d-none");
-          console.log("Data telah disimpan");
-      });
-
-      // Menangani perubahan gambar
-      photoInput.addEventListener("change", (event) => {
-          const file = event.target.files[0];
-          if (file) {
-              const reader = new FileReader();
-              reader.onload = (e) => {
-                  photoPreview.src = e.target.result; // Update dengan gambar baru
-              };
-              reader.readAsDataURL(file); // Baca file gambar
-          } else {
-              // Jika tidak ada file, tampilkan gambar default
-              photoPreview.src = defaultImage;
-          }
-      });
-  });
 // =======================================================
 // =======================================================
