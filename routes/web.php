@@ -8,6 +8,9 @@ use App\Http\Controllers\CetakPDFController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\UndanganController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PerusahaanController;
 
 Route::get('/p', function () {
     return view('welcome');
@@ -27,10 +30,8 @@ Route::get('/', function () {
 
 Route::get('/user-manage', [UserManageController::class, 'index'])->name('user.manage');
 
-
-
 Route::get('/dashboard', function () {
-    return view('layouts.app');
+    return view('layouts.superadmin');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -62,12 +63,10 @@ Route::get('/kirim-memoSuperadmin', function() {
     return view('superadmin.memo.kirim-memoSuperadmin');
 })->name('kirim-memoSuperadmin.superadmin');
 
-Route::get('/dashboard.admin', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
-Route::get('/dashboard.superadmin', function () {
-    return view('superadmin.dashboard');
-})->name('superadmin.dashboard');
+Route::get('/dashboard.admin',  [DashboardController::class, 'index']
+)->name('admin.dashboard');
+Route::get('/dashboard.superadmin',  [DashboardController::class, 'index']
+)->name('superadmin.dashboard');
 Route::get('/dashboard.manager', function () {
     return view('manager.dashboard');
 })->name('manager.dashboard');
@@ -129,10 +128,15 @@ Route::get('/after-kirim', function() {
     return view('manager.after-kirim-memo');
 })->name('after-kirim');
 
+Route::get('/catatan-memo', function() {
+    return view('admin.memo.catatan-memo');
+})->name('catatan-memo.admin');
+
 // laporan
 Route::get('/laporan-memo', function() {
     return view('superadmin.laporan.laporan-memo');
 })->name('laporan-memo.superadmin');
+
 Route::get('/laporan-risalah', function() {
     return view('superadmin.laporan.laporan-risalah');
 })->name('laporan-risalah.superadmin');
@@ -141,15 +145,21 @@ Route::get('/laporan-undangan', function() {
 })->name('laporan-undangan.superadmin');
 
 // cetak laporan
-Route::get('/cetak-laporan-memo', function() {
-    return view('superadmin.laporan.cetak-laporan-memo');
-})->name('cetak-laporan-memo.superadmin');
+Route::get('/cetak-laporan-memo', [LaporanController::class, 'index'])
+    ->name('cetak-laporan-memo.superadmin');
+
+Route::post('/cetak-laporan-memo', [LaporanController::class, 'filterMemosByDate'])
+    ->name('cetak-laporan-memo.filter');
+
+Route::get('/cetak-laporan-undangan', [LaporanController::class, 'index'])
+->name('cetak-laporan-undangan.superadmin');
+
+Route::post('/cetak-laporan-undangan', [LaporanController::class, 'filterUndanganByDate'])
+    ->name('cetak-laporan-undangan.filter');
+
 Route::get('/cetak-laporan-risalah', function() {
     return view('superadmin.laporan.cetak-laporan-risalah');
 })->name('cetak-laporan-risalah.superadmin');
-Route::get('/cetak-laporan-undangan', function() {
-    return view('superadmin.laporan.cetak-laporan-undangan');
-})->name('cetak-laporan-undangan.superadmin');
 
 
 
@@ -257,14 +267,12 @@ Route::get('/format-cetakLaporan', function() {
     return view('format-surat.format-cetakLaporan');
 })->name('format-cetakLaporan');
 
-// data perusahaan 
-Route::get('/data-perusahaan', function() {
-    return view('superadmin.data-perusahaan');
-})->name('data-perusahaan');
+Route::get('/data-perusahaan', [PerusahaanController::class, 'index'])->name('data-perusahaan');
+Route::post('/data-perusahaan/update', [PerusahaanController::class, 'update'])->name('data-perusahaan.update');
 
 // edit profile
-Route::get('/edit-profileSuperadmin', function() {
-    return view('superadmin.edit-profileSuperadmin'); })->name('edit-profile.superadmin');
+Route::get('/edit-profileSuperadmin', [ProfileController::class, 'editProfile'])->name('edit-profile.superadmin');
+Route::post('/update-profileSuperadmin', [ProfileController::class, 'updateProfile'])->name('superadmin.updateProfile');
 Route::get('/edit-profileAdmin', function() {
     return view('admin.edit-profileAdmin'); })->name('edit-profile.admin');
 Route::get('/edit-profileManager', function() {

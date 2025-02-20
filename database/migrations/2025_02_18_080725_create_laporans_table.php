@@ -5,13 +5,13 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
-{ 
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('data_perusahaans', function (Blueprint $table) {
+        Schema::create('laporans', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('data_perusahaans');
+        Schema::dropIfExists('laporans');
     }
 };

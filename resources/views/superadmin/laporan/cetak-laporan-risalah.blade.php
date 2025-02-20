@@ -23,6 +23,11 @@
     <div class="cetak-laporan">
         <div class="title d-flex justify-content-between align-items-center mb-3">
             <h2><b>Laporan Risalah</b></h2>
+            @if(session('filter_dates'))
+                <div class="filter-info">
+                    Menampilkan risalah rapat dari tanggal {{ session('filter_dates')['tgl_awal'] }} hingga {{ session('filter_dates')['tgl_akhir'] }}
+                </div>
+            @endif
             <div class="d-flex gap-2">
                 <div class="search">
                     <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
@@ -54,12 +59,12 @@
                         <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
                     </button>
                 </th>
-                <th>Divisi</th>
+                <!-- <th>Divisi</th> -->
                 <th>Status</th>
                 <th>Aksi</th>
             </tr>
         </thead>
-        <tbody>
+        <!-- <tbody>
             @for ($i = 1; $i <= 3; $i++)
             <tr>
                 <td class="nomor">{{ $i }}</td>
@@ -81,6 +86,37 @@
                 </td>
             </tr>
             @endfor
+        </tbody> -->
+        <tbody>
+        @if ($risalahs->isNotEmpty())
+            @foreach ($risalahs as $index => $laporan)
+            <tr>
+                <td class="nomor">{{ $index + 1 }}</td>
+                <td>{{ $laporan->judul }}</td>
+                <td>{{ $laporan->tgl_dibuat->format('d-m-Y') }}</td>
+                <td>{{ $laporan->seri_surat }}</td>
+                <td>{{ $laporan->nomor_laporan }}</td>
+                <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
+                <!-- <td>{{ $laporan->divisi->nm_divisi }}</td> -->
+                <td>
+                    <span class="badge bg-{{ $laporan->status == 'approve' ? 'success' : 'warning' }}">
+                        {{ $laporan->status == 'approve' ? 'Diterima' : 'Pending' }}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
+                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <img src="/img/arsip/delete.png" alt="delete">
+                    </button>
+                    <button class="btn btn-sm3"><img src="/img/arsip/preview.png" alt="preview"></button>
+                </td>
+            </tr>
+            @endforeach
+        @else
+            <tr>
+                <td colspan="8">Tidak ada risalah rapat pada tanggal yang dipilih.</td>
+            </tr>
+        @endif
         </tbody>
     </table>
 
