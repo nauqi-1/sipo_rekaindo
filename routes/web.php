@@ -172,7 +172,6 @@ Route::get('/cetak-laporan-risalah', function() {
 Route::get('/cetak-laporan-undangan', function() {
     return view('superadmin.laporan.cetak-laporan-undangan');
 })->name('laporan-undangan');
-})->name('cetak-laporan-risalah.superadmin');
 
 
 
