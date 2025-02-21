@@ -1,3 +1,4 @@
+/* Kode untuk Memo, Undangan, dan Risalah Rapat */
 /* letak component atas table */
 .surat .header-tools {
     display: flex; 
@@ -110,6 +111,7 @@
 }
 
 .surat .search-filter .btn-add:hover {
+    border: 1px solid #1E4178;
     background-color: #1E4178;
     color: #ffffff;
 }

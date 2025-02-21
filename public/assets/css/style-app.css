@@ -1,4 +1,4 @@
-/* All View */
+/* Kode untuk Breadcrumb, Tabel, Overlay*/
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -25,14 +25,11 @@
 h1 {
     margin-bottom: 20px;
 }
-.breadcrumb-wrapper {
-    margin-right: 40px; 
-    margin-left: 10px;
-}
 .breadcrumb {
     font-size: 14px;
     color: #888;
     margin-bottom: 30px;
+    margin-right: 2%;
     padding: 8px 12px;
     border: 1px solid #E5E5E5CC;
     display: flex;
@@ -47,6 +44,7 @@ h1 {
     margin-left: 40px;
 }
 
+/* Tabel untuk surat */
 .table-light {
     margin-top: 20px;
     width: calc(100% - 40px);

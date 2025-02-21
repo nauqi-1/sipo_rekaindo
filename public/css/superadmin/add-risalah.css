@@ -317,7 +317,7 @@ select.btn-dropdown:focus {
     font-size: 10px;
 }
 
-.isi-surat-row {
+.isi-risalah-row {
     display: flex;
     justify-content: center;
     /* margin: 10px 12px; */
@@ -326,10 +326,9 @@ select.btn-dropdown:focus {
     padding: 0 23px;
     border-radius: 8px;
 }
-.isi-surat-row .col-md-12 {
+.isi-risalah-row .col-md-12 {
     flex: 1;
     max-width: 100%;
-    border: 1px solid #EFF4FA;
     padding: 10px;
     border-radius: 5px;
     color: #1E4178;
@@ -338,36 +337,12 @@ select.btn-dropdown:focus {
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
 }
 
-.isi-surat-row .col-md-12:hover {
+.isi-risalah-row .col-md-12:hover {
     border-color: #007bff;
 }
 
-.isi-surat-row .form-label {
+.isi-risalah-row .form-label {
     margin-left: 12px;
-}
-
-.editor-container {
-    border: 1px solid #EFF4FA;
-    border-radius: 5px;
-    padding: 0;
-    margin: auto;
-    background: #ffffff;
-}
-
-.editor-container textarea {
-    background-color: #ffffff;
-    border-radius: 5px;
-    border: 1px solid #EFF4FA;
-    display: flex;
-    justify-content: center;
-    text-align: left;
-    margin: auto;
-    min-width: 100%;
-    font-size: 12px;
-}
-
-.editor-container textarea:hover {
-    border-color: #007bff;
 }
 
 /* upload files */
