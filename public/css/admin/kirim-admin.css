@@ -163,6 +163,18 @@ h1 {
     margin: 0 auto;
     
 }
+.col textarea {
+    flex: 1;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    font-size: 14px;
+    color: #000;
+    margin-bottom: 0px;
+    padding: 8px;
+    margin-left: 20px;
+    width: 96.5%;
+}
 
 select.btn-dropdown {
     background-color: #ffffff;

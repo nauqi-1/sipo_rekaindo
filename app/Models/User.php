@@ -28,6 +28,7 @@ class User extends Authenticatable
         'role_id_role',
         'position_id_position',
         'divisi_id_divisi',
+        'image',
     ];
     
 

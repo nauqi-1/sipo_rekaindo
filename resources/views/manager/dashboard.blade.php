@@ -20,23 +20,32 @@
             <div class="overview-cards">
                 <div class="overview-card">
                     <h4>MEMO</h4>
+                    <a href="{{route ('memo.diterima')}}" class="tampil">View All</a>
+                    <hr>
                     <p>
                         <button><img src="/img/dashboard/memo.png" alt="memo"></button>
-                        <a href="#" style="text-decoration: none;"><span>4</span> Memo</a>
+                        <span class="jumlah">{{ $jumlahMemo }}</span>
+                        <span class="text">Memo</span>
                     </p>
                 </div>
                 <div class="overview-card">
                     <h4>RISALAH RAPAT</h4>
+                    <a href="{{ route ('risalah.manager') }}" class="tampil">View All</a>
+                    <hr>
                     <p>
                         <button><img src="/img/dashboard/risalah.png" alt="memo"></button>
-                        <a href="#" style="text-decoration: none;"><span>7</span> Risalah Rapat</a>
+                        <span class="jumlah">{{ $jumlahRisalah }}</span>
+                        <span class="text">Risalah Rapat</span>
                     </p>
                 </div>
                 <div class="overview-card">
                     <h4>UNDANGAN RAPAT</h4>
+                    <a href="{{ route ('undangan.manager') }}" class="tampil">View All</a>
+                    <hr>
                     <p>
                         <button><img src="/img/dashboard/undangan.png" alt="memo"></button>
-                        <a href="#" style="text-decoration: none;"><span>7</span> Undangan Rapat</a>
+                        <span class="jumlah">{{ $jumlahUndangan }}</span>
+                        <span class="text">Undangan Rapat</span>
                     </p>
                 </div>
             </div>

@@ -20,33 +20,33 @@
             <div class="overview-cards">
                 <div class="overview-card">
                     <h4>MEMO</h4>
+                    <a href="{{route ('memo.superadmin')}}" class="tampil">View All</a>
                     <hr>
-                    <form action="">
-                        <p>
-                            <button><img src="/img/dashboard/memo.png" alt="memo"></button>
-                            <span><span>4</span> Memo</span>
-                        </p>
-                    </form>
+                    <p>
+                        <button><img src="/img/dashboard/memo.png" alt="memo"></button>
+                        <span class="jumlah">{{ $jumlahMemo }}</span>
+                        <span class="text">Memo</span>
+                    </p>
                 </div>
                 <div class="overview-card">
                     <h4>RISALAH RAPAT</h4>
+                    <a href="{{ route ('risalah.superadmin') }}" class="tampil">View All</a>
                     <hr>
-                    <form action="">
-                        <p>
-                            <button><img src="/img/dashboard/risalah.png" alt="memo"></button>
-                            <span><span>7</span> Risalah Rapat</span>
-                        </p>
-                    </form>
+                    <p>
+                        <button><img src="/img/dashboard/risalah.png" alt="memo"></button>
+                        <span class="jumlah">{{ $jumlahRisalah }}</span>
+                        <span class="text">Risalah Rapat</span>
+                    </p>
                 </div>
                 <div class="overview-card">
                     <h4>UNDANGAN RAPAT</h4>
+                    <a href="{{ route ('undangan.superadmin') }}" class="tampil">View All</a>
                     <hr>
-                    <form action="">
-                        <p>
-                            <button><img src="/img/dashboard/undangan.png" alt="memo"></button>
-                            <span><span>7</span>  Undangan Rapat</span>
-                        </p>
-                    </form>
+                    <p>
+                        <button><img src="/img/dashboard/undangan.png" alt="memo"></button>
+                        <span class="jumlah">{{ $jumlahUndangan }}</span>
+                        <span class="text">Undangan Rapat</span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -55,24 +55,18 @@
         <div class="things-to-do-container">
             <h3>Aktivitas</h3>
             <div class="things-to-do-list">
-                <form action="">
-                    <div class="things-to-do-item">
-                        <div class="icon">
-                            <button>
-                                <img src="/img/dashboard/tinjau-memo.png" alt="Memo Icon" style="width: 22px; height: 20px;">
-                            </button>
-                        </div>
-                        <div class="content">
-                            <form action="">
-                                <h4>Meninjau Memo</h4>
-                                <p>Tinjau memo untuk kelangkah selanjutnya</p>
-                            </form>
-                        </div>
-                        <div class="date">Hari ini</div>
+                <a href="{{ route('memo.superadmin') }}" class="things-to-do-item">
+                    <div class="icon">
+                        <button>
+                            <img src="/img/dashboard/tinjau-memo.png" alt="Memo Icon" style="width: 22px; height: 20px;">
+                        </button>
                     </div>
-                </form>
-                
-                <form action="">
+                    <div class="content">
+                        <h4>Meninjau Memo</h4>
+                        <p>Tinjau memo untuk kelangkah selanjutnya</p>
+                    </div>
+                </a>
+                <a href="{{ route('user.manage') }}" class="things-to-do-item-link">
                     <div class="things-to-do-item">
                         <div class="icon">
                             <button>
@@ -80,16 +74,12 @@
                             </button>
                         </div>
                         <div class="content">
-                            <form action="">
-                                <h4>Tambah User</h4>
-                                <p>Tambah user baru untuk kelangkah selanjutnya</p>
-                            </form>                        
+                            <h4>Tambah User Baru</h4>
+                            <p>Tinjau untuk kelangkah selanjutnya</p>
                         </div>
-                        <div class="date">Hari ini</div>
                     </div>
-                </form>
-                
-                <form action="">
+                </a>
+                <a href="#" class="things-to-do-item-link">
                     <div class="things-to-do-item">
                         <div class="icon">
                             <button>
@@ -97,15 +87,11 @@
                             </button>
                         </div>
                         <div class="content">
-                            <form action="">
-                                <h4>Meninjau Permintaan Surat</h4>
-                                <p>Tinjau permintaan surat untuk kelangkah selanjutnya</p>
-                            </form>
+                            <h4>Meninjau Permintaan Surat</h4>
+                            <p>Tinjau permintaan surat untuk kelangkah selanjutnya</p>
                         </div>
-                        <div class="date">Hari ini</div>
                     </div>
-                </form>
-                
+                </a>
             </div>
         </div>
     </div>
