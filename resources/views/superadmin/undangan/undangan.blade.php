@@ -47,12 +47,10 @@
             </div>
             <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                 <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                <img src="/img/undangan/kalender.png" alt="Kalender Icon" class="input-icon">
             </div>
             <i class="bi bi-arrow-right"></i>
             <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                 <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                <img src="/img/undangan/kalender.png" alt="Kalender Icon" class="input-icon">
             </div>
             <div class="d-flex gap-2">
                 <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
@@ -114,7 +112,11 @@
                         @endif
                     </td>
                 <td>
-                    
+
+                    <!-- <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
+                        <img src="/img/memo/share.png" alt="share">
+                    </a> -->
+
                     <form method="POST" action="{{ route('undangan.destroy', $undangan->id_undangan) }}" style="display: inline;">
                             @csrf
                             @method('DELETE')
@@ -127,6 +129,7 @@
                     <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
                     @csrf
                     @method('POST')
+
                         <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
                             <img src="/img/undangan/arsip.png" alt="arsip">
                         </button>

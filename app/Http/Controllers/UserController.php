@@ -88,4 +88,5 @@ class UserController extends Controller
  
          return response()->json(['success' => 'User berhasil dihapus'], 200);
      }
+
 }

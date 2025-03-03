@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('arsip', function (Blueprint $table) {
+
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('document_id'); // ID dari memo, undangan, atau risalah
@@ -19,6 +20,7 @@ return new class extends Migration
     
             // Foreign Key
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
         });
     }
 

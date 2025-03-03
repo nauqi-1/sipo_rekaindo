@@ -146,6 +146,7 @@
                 <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
             </div>
         </form>
+  
         <!-- Modal kirim -->
         <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">

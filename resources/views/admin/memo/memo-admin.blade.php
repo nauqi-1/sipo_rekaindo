@@ -105,9 +105,7 @@
                         <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
                             <img src="/img/memo-admin/share.png" alt="share">
                         </a>
-                        @endif
-                        
-                        
+                        @endif             
                         <!-- Status Approve -->
                         @if ($memo->status == 'approve') 
                         <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
@@ -151,7 +149,7 @@
                             <form method="POST" action="{{ route('memo.destroy', $memo->id_memo) }}" style="display: inline;">
                         @csrf
                         @method('DELETE')
-                            <button type="button" class="btn-ok" id="confirmDelete">OK</button>
+                            <button type="submit" class="btn-ok" id="confirmDelete">OK</button>
                             </form>
                         </div>
                     </div>

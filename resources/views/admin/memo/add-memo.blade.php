@@ -82,6 +82,7 @@
                     </div> -->
                     <div class="col-md-6">
                         <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan<span class="text-danger">*</span></label>
+
                         <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
                             <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                             @foreach($managers as $manager)

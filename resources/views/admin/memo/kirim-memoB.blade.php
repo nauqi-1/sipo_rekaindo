@@ -4,187 +4,184 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kirim Memo Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('/css/admin/kirim-memoB.css') }}">  
+    <link rel="stylesheet" href="{{ asset('/css/admin/kirim-memoB.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="#"><img src="/img/memo-admin/Vector_back.png" alt=""></a>
+                <a href="{{route ('memo.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Memo</h1>
+            <h1>Kirim Memo</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
-                <div class="breadcrumb">
-                    <a href="#">Beranda</a>/<a href="#">Memo</a>/<a href="#">Memo Terkirim</a>
+                <div class="breadcrumb" style="gap: 5px;">
+                    <a href="#">Beranda</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Kirim Memo</a>
                 </div>
             </div>
         </div>
-
-        <div class="body-content">
-            <!-- Cards in a row  -->
-            <div class="row">
-                <!-- Card Utama untuk Kolom 1 -->
-                <div class="col-md-6">
-                    <!-- form add memo -->
-                    <div class="card-body">
-                        <div class="row-mb-3">
-                            <div class="col-md-6">
-                                <div class="card-blue">
-                                    <img src="/img/memo-admin/info.png" alt="info surat">
-                                    <span>Informasi Detail Surat</span>
-                                </div>
-                                <div class="card-white">
-                                    <label for="nomor">No Surat</label>
-                                    <div class="separator"></div>
-                                    <input type="text" id="nomor">
-                                </div>
-                                <div class="card-white">
-                                    <label for="lampiran">Lampiran</label>
-                                    <div class="separator"></div>
-                                    <input type="text" id="lampiran">
-                                </div>
-                                <div class="card-white">
-                                    <label for="perihal">Perihal</label>
-                                    <div class="separator"></div>
-                                    <input type="text" id="perihal">
-                                </div>
-                                <div class="card-white">
-                                    <label for="tanggal">Tanggal</label>
-                                    <div class="separator"></div>
-                                    <input type="text" id="tanggal">
-                                </div>
-                                <div class="card-white">
-                                    <label for="kepada">Kepada</label>
-                                    <div class="separator"></div>
-                                    <input type="text" id="kepada">
-                                </div>
-                            </div>
-                        </div>
+        <div class="card-body">
+            <div class="row mb-4" style="gap: 20px;">
+                <div class="col">
+                    <div class="card-blue">
+                        <label for="tgl_surat" class="form-label">
+                            <img src="/img/memo-admin/info.png" alt="info surat">Informasi Detail Surat
+                        </label>
+                    </div>
+                    <div class="card-white">
+                        <label for="nomor">No Surat</label>
+                        <div class="separator"></div>
+                        <input type="text" id="nomor">
+                    </div>
+                    <div class="card-white">
+                        <label for="lampiran">Lampiran</label>
+                        <div class="separator"></div>
+                        <input type="text" id="seri">
+                    </div>
+                    <div class="card-white">
+                        <label for="perihal">Perihal</label>
+                        <div class="separator"></div>
+                        <input type="text" id="perihal">
+                    </div>
+                    <div class="card-white">
+                        <label for="tgl">Tanggal</label>
+                        <div class="separator"></div>
+                        <input type="text" id="tgl">
+                    </div>
+                    <div class="card-white">
+                        <label for="kepada">Kepada</label>
+                        <div class="separator"></div>
+                        <input type="text" id="kepada">
                     </div>
                 </div>
-
-                <!-- Card Utama untuk Kolom 2 -->
-                <div class="col-md-6">
-                    <div class="card-body">
-                        <div class="row-mb-3">
-                            <div class="col-md-6">
-                                <div class="card-blue">
-                                    <img src="/img/memo-admin/detail.png" alt="detail">
-                                    <span>Detail</span>
-                                </div>
-                                <div class="card-white">
-                                    <label for="pembuat">Pembuat</label>
-                                    <div class="separator"></div>
-                                    <input type="text" id="pembuat">
-                                </div>
-                                <div class="card-white">
-                                    <label for="status">Status</label>
-                                    <div class="separator"></div>
-                                    <button id="statusButton" class="btn-status">Diterima</button>
-                                </div>
-                                <div class="card-white">
-                                    <label for="dibuat">Dibuat Tanggal</label>
-                                    <div class="separator"></div>
-                                    <input type="text" id="dibuat">
-                                </div>
-                                <div class="card-white">
-                                    <label for="file">Berkas</label>
-                                    <div class="separator"></div>
-                                    <button><img src="/img/memo-admin/preview.png" alt="preview" style="margin-right: 10px;">Lihat</button>
-                                    <button style="margin-left: 5px;"><img src="/img/memo-admin/download.png" alt="unduh" style="margin-right: 10px;">Unduh</button>
-                                </div>
-                            </div>
-                        </div>
+                <div class="col">
+                    <div class="card-blue">
+                        <label for="tgl_surat" class="form-label">
+                            <img src="/img/memo-admin/info.png" alt="info surat" style="margin-right: 5px;">Detail
+                        </label>
+                    </div>
+                    <div class="card-white">
+                        <label for="pembuat">Pembuat</label>
+                        <div class="separator"></div>
+                        <input type="text" id="pembuat">
+                    </div>
+                    <div class="card-white">
+                        <label for="status">Status</label>
+                        <div class="separator"></div>
+                        <button class="status">Diproses</button>
+                    </div>
+                    <div class="card-white">
+                        <label for="tgl-buat">Dibuat Tanggal</label>
+                        <div class="separator"></div>
+                        <input type="text" id="tgl-buat">
+                    </div>
+                    <div class="card-white">
+                        <label for="file">File</label>
+                        <div class="separator"></div>
+                        <button class="btn-file"><img src="/img/mata.png" alt="view"><a href="#">Lihat</a></button>
+                        <button class="down btn-file"><img src="/img/download.png" alt="down"><a href="#">Unduh</a></button>
                     </div>
                 </div>
             </div>
-
-            <!-- Cards in a row  -->
-            <div class="row">
-                <!-- Card Utama untuk Kolom 1 -->
-                <div class="col-md-6">
-                    <!-- form add memo -->
-                    <div class="card-body">
-                        <div class="row-mb-3">
-                            <div class="col-md-6">
-                                <div class="card-blue1">
-                                    <!-- <span>Pengesahan</span> -->
-                                    <label for="pengesahan" class="label1">Pengesahan</label>
-                                    <div class="form-check1">
-                                        <label class="form-check-label" for="approve">Diterima</label>
-                                        <input type="checkbox" class="form-check-input" id="approve" name="approval" value="approve">
-                                    </div>
-                                    <div class="form-check2">
-                                        <label class="form-check-label" for="reject">Ditolak</label>
-                                        <input type="checkbox" class="form-check-input" id="reject" name="approval" value="reject">
-                                    </div>
-                                </div>
-                                <div class="card-blue1">
-                                    <!-- <span>Pengesahan</span> -->
-                                    <label for="pengesahan" class="label1">Tindakan Selanjutnya</label>
-                                </div>
-                                <div class="card-white">
-                                    <select name="tindakan" id="tindakan" class="form-control" required>
-                                        <option value="" disabled selected style="text-align: left;">--Pilih Tindakan--</option>
-                                        <option value="koreksi">Koreksi Kembali</option>
-                                        <option value="dilajutkan">Akan Dilanjutkan</option>
-                                    </select>
-                                </div>
-                            </div>
+            <div class="row mb-4" style="gap: 20px;">
+                <div class="card-blue1">
+                    <label for="tindakan">Tindakan Selanjutnya</label>
+                </div>
+                <div class="col">
+                    <div class="label1 card-blue1">
+                        <!-- <span>Pengesahan</span> -->
+                        <label for="pengesahan" class="label">Pengesahan</label>
+                        <div class="form-check1">
+                            <label class="form-check-label" for="approve">Diterima</label>
+                            <input type="checkbox" class="form-check-input" id="approve" name="approval" value="approve">
+                        </div>
+                        <div class="form-check2">
+                            <label class="form-check-label" for="reject">Ditolak</label>
+                            <input type="checkbox" class="form-check-input" id="reject" name="approval" value="reject">
                         </div>
                     </div>
+                    <div class="card-blue1">Tindakan Selanjutnya</div>
+                    <div class="card-white">
+                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
+                            <option disabled selected style="text-align: left;">--Pilih Tindakan--</option>
+                            <option value="koreksi">Koreksi kembali</option>
+                            <option value="dilanjutkan">Dilanjutkan</option>
+                        </select>                    
+                    </div>
                 </div>
+                <div class="col">
+                    <div class="card-blue1">Catatan</div>
+                    <textarea type="text" for="catatan" id="catatan" placeholder="Berikan Catatan"></textarea>        
+                </div>             
+            </div>
+        </div>
+        <div class="footer">
+            <button type="button" class="btn back" id="backBtn">Kembali</button>
+            <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+        </div>
 
-                <!-- Card Utama untuk Kolom 2 -->
-                <div class="col-md-6">
-                    <div class="card-body">
-                        <div class="row-mb-3">
-                            <div class="col-md-6">
-                                <div class="card-blue1">
-                                    <span>Catatan</span>
-                                </div>
-                                <div class="card-input">
-                                    <textarea type="text" id="text" placeholder="Berikan Catatan"></textarea>
-                                </div>
-                            </div>
+        <!-- Modal kirim -->
+        <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Tombol Close -->
+                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-body text-center">
+                        <!-- Ikon atau Gambar -->
+                        <img src="/img/memo-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
+                        <!-- Tulisan -->
+                        <h5 class="mb-4" style="color: #545050;"><b>Kirim Memo?</b></h5>
+                        <!-- Tombol -->
+                        <div class="d-flex justify-content-center gap-3">
+                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="#">Batal</a></button>
+                            <button type="button" class="btn ok" id="confirmSubmit" data-bs-toggle="modal" data-bs-target="#successModal">Oke</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <form action="#" method="GET">
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="cancel-button">Batal</button>
-                <button type="submit" class="btn btn-primary" id="edit-button">Simpan</button>
+        <!-- Modal Berhasil -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Tombol Close -->
+                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-body text-center">
+                        <!-- Ikon atau Gambar -->
+                        <img src="/img/memo-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                        <!-- Tulisan -->
+                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirim Memo</b></h5>
+                        <!-- Tombol -->
+                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="#">Kembali</a></button>
+                    </div>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const checkboxes = document.querySelectorAll('input[name="approval"]');
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectElements = document.querySelectorAll("select");
 
-            checkboxes.forEach((checkbox) => {
-                checkbox.addEventListener('change', function () {
-                    if (this.checked) {
-                        checkboxes.forEach((other) => {
-                            if (other !== this) {
-                                other.checked = false;
-                            }
-                        });
+            selectElements.forEach(select => {
+                select.addEventListener("change", function () {
+                    if (this.value === "koreksi" || this.value === "user") {
+                        this.style.textAlign = "left";
+                    } else {
+                        this.style.textAlign = "center";
                     }
                 });
             });
         });
-
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

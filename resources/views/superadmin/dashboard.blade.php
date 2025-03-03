@@ -20,23 +20,32 @@
             <div class="overview-cards">
                 <div class="overview-card">
                     <h4>MEMO</h4>
+                    <a href="{{route ('memo.superadmin')}}" class="tampil">View All</a>
+                    <hr>
                     <p>
                         <button><img src="/img/dashboard/memo.png" alt="memo"></button>
-                        <a href="#"><span>4</span> Memo</a>
+                        <span class="jumlah">{{ $jumlahMemo }}</span>
+                        <span class="text">Memo</span>
                     </p>
                 </div>
                 <div class="overview-card">
                     <h4>RISALAH RAPAT</h4>
+                    <a href="{{ route ('risalah.superadmin') }}" class="tampil">View All</a>
+                    <hr>
                     <p>
                         <button><img src="/img/dashboard/risalah.png" alt="memo"></button>
-                        <a href="#"><span>7</span> Risalah Rapat</a>
+                        <span class="jumlah">{{ $jumlahRisalah }}</span>
+                        <span class="text">Risalah Rapat</span>
                     </p>
                 </div>
                 <div class="overview-card">
                     <h4>UNDANGAN RAPAT</h4>
+                    <a href="{{ route ('undangan.superadmin') }}" class="tampil">View All</a>
+                    <hr>
                     <p>
                         <button><img src="/img/dashboard/undangan.png" alt="memo"></button>
-                        <a href="#"><span>7</span> Undangan Rapat</a>
+                        <span class="jumlah">{{ $jumlahUndangan }}</span>
+                        <span class="text">Undangan Rapat</span>
                     </p>
                 </div>
             </div>
@@ -46,44 +55,43 @@
         <div class="things-to-do-container">
             <h3>Aktivitas</h3>
             <div class="things-to-do-list">
-                <div class="things-to-do-item">
+                <a href="{{ route('memo.superadmin') }}" class="things-to-do-item">
                     <div class="icon">
                         <button>
                             <img src="/img/dashboard/tinjau-memo.png" alt="Memo Icon" style="width: 22px; height: 20px;">
                         </button>
                     </div>
                     <div class="content">
-                        <h4><a href="#">Meninjau Memo</a></h4>
+                        <h4>Meninjau Memo</h4>
                         <p>Tinjau memo untuk kelangkah selanjutnya</p>
                     </div>
-                    <div class="date">Hari ini</div>
-                </div>
-
-                <div class="things-to-do-item">
-                    <div class="icon">
-                        <button>
-                            <img src="/img/dashboard/tambah-user.png" alt="User Icon" style="width: 22px; height: 20px;">
-                        </button>
+                </a>
+                <a href="{{ route('user.manage') }}" class="things-to-do-item-link">
+                    <div class="things-to-do-item">
+                        <div class="icon">
+                            <button>
+                                <img src="/img/dashboard/tambah-user.png" alt="User Icon" style="width: 22px; height: 20px;">
+                            </button>
+                        </div>
+                        <div class="content">
+                            <h4>Tambah User Baru</h4>
+                            <p>Tinjau untuk kelangkah selanjutnya</p>
+                        </div>
                     </div>
-                    <div class="content">
-                        <h4><a href="#">Tambah User Baru</a></h4>
-                        <p>Tinjau untuk kelangkah selanjutnya</p>
+                </a>
+                <a href="#" class="things-to-do-item-link">
+                    <div class="things-to-do-item">
+                        <div class="icon">
+                            <button>
+                                <img src="/img/dashboard/tinjau-permintaan.png" alt="Surat Icon" style="width: 22px; height: 20px;">
+                            </button>
+                        </div>
+                        <div class="content">
+                            <h4>Meninjau Permintaan Surat</h4>
+                            <p>Tinjau permintaan surat untuk kelangkah selanjutnya</p>
+                        </div>
                     </div>
-                    <div class="date">Hari ini</div>
-                </div>
-
-                <div class="things-to-do-item">
-                    <div class="icon">
-                        <button>
-                            <img src="/img/dashboard/tinjau-permintaan.png" alt="Surat Icon" style="width: 22px; height: 20px;">
-                        </button>
-                    </div>
-                    <div class="content">
-                        <h4><a href="#">Meninjau Permintaan Surat</a></h4>
-                        <p>Tinjau permintaan surat untuk kelangkah selanjutnya</p>
-                    </div>
-                    <div class="date">Hari ini</div>
-                </div>
+                </a>
             </div>
         </div>
     </div>

@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\KirimController;
 use App\Http\Controllers\ArsipController;
+
 use App\Http\Controllers\UndanganController;
 use Illuminate\Support\Facades\Route;
 
@@ -59,4 +60,5 @@ Route::middleware('auth')->group(function () {
         Route::get('/arsip/memo', [ArsipController::class, 'indexMemo'])->name('arsip.memo');
         Route::get('/arsip/undangan', [ArsipController::class, 'indexUndangan'])->name('arsip.undangan');
         Route::get('/arsip/risalah', [ArsipController::class, 'indexRisalah'])->name('arsip.risalah');      
+
 });

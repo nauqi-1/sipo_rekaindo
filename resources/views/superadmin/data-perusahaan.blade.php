@@ -1,160 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Perusahaan</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/superadmin/data-perusahaan.css') }}">
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <!-- Back Button -->
-            <div class="back-button">
-                <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
-            </div>
-            <h1>Data Perusahaan</h1>
-        </div>        
-        <div class="row">
-            <div class="breadcrumb-wrapper">
-                <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a> / <a href="#">Pengaturan</a> / <a href="#" style="color: #565656;">Data Perusahaan</a>
-                </div>
+@extends('layouts.superadmin')
+
+@section('content')
+<div class="container mt-4">
+    <div class="header">
+        <!-- Back Button -->
+        <div class="back-button">
+            <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+        </div>
+        <h1>Data Perusahaan</h1>
+    </div>        
+    <div class="row">
+        <div class="breadcrumb-wrapper">
+            <div class="breadcrumb" style="gap: 5px;">
+                <a href="#">Beranda</a> / <a href="#">Pengaturan</a> / <a href="#" style="color: #565656;">Data Perusahaan</a>
             </div>
         </div>
+    </div>
+    <div class="card p-4">
+        <h4 class="fw-bold">Data Perusahaan</h4>
+        <div class="row">
+            <!-- Kolom Form -->
+            <div class="col-md-8">
+                <form id="formPerusahaan" action="{{ route('data-perusahaan.update') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nama Instansi</label>
+                        <input type="text" class="form-control" name="nama_instansi" value="{{ $perusahaan->nama_instansi ?? '' }}" readonly required>
+                    </div>
 
-        <!-- Card untuk tabel -->
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <!-- Bagian input form -->
-                    <div class="col-lg-8">
-                        <div>
-                            <h5 class="heading-company"><b>Data Perusahaan</b></h5>
-                        </div>
-                        <ul class="list-group">
-                            <li class="list-group-card">
-                                <div>
-                                    <strong class="list-group-text">Nama Instansi</strong><br>
-                                    <label><input type="text" name="nama-instansi" class="form-control" disabled></label>
-                                </div>
-                            </li>
-                            <li class="list-group-card">
-                                <div>
-                                    <strong class="list-group-text">Alamat Situs Web</strong><br>
-                                    <label><input type="text" name="alamat-web" class="form-control" disabled></label>
-                                </div>
-                            </li>
-                            <li class="list-group-card">
-                                <div>
-                                    <strong class="list-group-text">Telepon</strong><br>
-                                    <label><input type="text" name="telp" class="form-control" disabled></label>
-                                </div>
-                            </li>
-                            <li class="list-group-card">
-                                <div>
-                                    <strong class="list-group-text">Email</strong><br>
-                                    <label><input type="email" name="email" class="form-control" disabled></label>
-                                </div>
-                            </li>
-                            <li class="list-group-card">
-                                <div>
-                                    <strong class="list-group-text">Alamat</strong><br>
-                                    <label><input type="text" name="alamat" class="form-control" disabled></label>
-                                </div>
-                            </li>
-                            @if(Auth::user()->role == 'superadmin')
-                            <li class="list-group-card">
-                                <div>
-                                    <strong class="list-group-text">Logo Perusahaan</strong><br>
-                                    <label for="company-photo">
-                                        <input type="file" id="company-photo" accept="image/*" class="form-control" disabled>
-                                    </label>
-                                </div>
-                            </li>
-                            @endif
-                        </ul>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Alamat Situs Web</label>
+                        <input type="text" class="form-control" name="alamat_web" value="{{ $perusahaan->alamat_web ?? '' }}" readonly required>
+
                     </div>
-                    <div class="col-lg-4 d-flex flex-column align-items-center justify-content-center">
-                        <img src="" alt="Logo Perusahaan" class="company-image" id="company-photo-preview">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Telepon</label>
+                        <input type="text" class="form-control" name="telepon" value="{{ $perusahaan->telepon ?? '' }}" readonly required>
                     </div>
-                </div>
-                <div class="modal-footer">
-                @if(Auth::user()->role == 'superadmin')
-                    <button type="button" class="btn btn-primary" id="edit-button">Edit</button>
-                @endif
-                    <button type="button" class="btn btn-secondary d-none" id="cancel-button">Batal</button>
-                    <button type="submit" class="btn btn-primary d-none" id="save-button">Simpan</button>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email</label>
+                        <input type="email" class="form-control" name="email" value="{{ $perusahaan->email ?? '' }}" readonly required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Alamat</label>
+                        <textarea class="form-control" name="alamat" readonly required>{{ $perusahaan->alamat ?? '' }}</textarea>
+                    </div>
+                    @if(Auth::user()->role->nm_role == 'superadmin')
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Logo Perusahaan</label>
+                        <input type="file" class="form-control" name="logo" accept="image/*" disabled>
+                    </div>
+                    
+                    <div id="buttonGroup">
+                        <button type="button" class="btn btn-primary" id="editButton">Edit</button>
+                        <button type="button" class="btn btn-secondary d-none" id="cancelButton">Batal</button>
+                        <button type="submit" class="btn btn-success d-none" id="saveButton">Simpan</button>
+                    </div>
+                    @endif
+                </form>
+            </div>
+
+            <!-- Kolom Logo -->
+            <div class="col-md-4 d-flex align-items-center justify-content-center">
+                <div class="border rounded p-3" style="width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
+                    @if ($perusahaan && $perusahaan->logo)
+                        <img src="{{ asset('storage/logos/' . $perusahaan->logo) }}" alt="Logo Perusahaan" class="img-fluid rounded" style="max-width: 100%; max-height: 100%;">
+                    @else
+                        <img src="{{ asset('default-logo.png') }}" alt="No Logo" class="img-fluid" style="opacity: 0.5; width: 80%;">
+                    @endif
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const editButton = document.getElementById("edit-button");
-            const cancelButton = document.getElementById("cancel-button");
-            const saveButton = document.getElementById("save-button");
-            const inputs = document.querySelectorAll('input[type="text"], input[type="email"]');
-            const photoInput = document.getElementById("company-photo");
-            const photoPreview = document.getElementById("company-photo-preview");
+<script>
+    document.getElementById('editButton').addEventListener('click', function() {
+        let inputs = document.querySelectorAll('#formPerusahaan input, #formPerusahaan textarea');
+        inputs.forEach(input => input.removeAttribute('readonly'));
+        document.querySelector('input[name="logo"]').removeAttribute('disabled');
 
-            // Set gambar default
-            const defaultImage = "/img/setting/question.png"; // Path gambar default
-            photoPreview.src = defaultImage; // Set gambar default awal
+        document.getElementById('editButton').classList.add('d-none');
+        document.getElementById('cancelButton').classList.remove('d-none');
+        document.getElementById('saveButton').classList.remove('d-none');
+    });
 
-            // Disable all inputs at the start
-            inputs.forEach(input => input.disabled = true);
-            photoInput.disabled = true;
+    document.getElementById('cancelButton').addEventListener('click', function() {
+        let inputs = document.querySelectorAll('#formPerusahaan input, #formPerusahaan textarea');
+        inputs.forEach(input => input.setAttribute('readonly', true));
+        document.querySelector('input[name="logo"]').setAttribute('disabled', true);
 
-            // Ketika tombol Edit ditekan
-            editButton.addEventListener("click", () => {
-                inputs.forEach(input => input.disabled = false);
-                photoInput.disabled = false;
-                editButton.classList.add("d-none");
-                cancelButton.classList.remove("d-none");
-                saveButton.classList.remove("d-none");
-            });
-
-            // Ketika tombol Cancel ditekan
-            cancelButton.addEventListener("click", () => {
-                inputs.forEach(input => input.disabled = true);
-                photoInput.disabled = true;
-                editButton.classList.remove("d-none");
-                cancelButton.classList.add("d-none");
-                saveButton.classList.add("d-none");
-            });
-
-            // Ketika tombol Save Changes ditekan
-            saveButton.addEventListener("click", () => {
-                inputs.forEach(input => input.disabled = true);
-                photoInput.disabled = true;
-                editButton.classList.remove("d-none");
-                cancelButton.classList.add("d-none");
-                saveButton.classList.add("d-none");
-                console.log("Data telah disimpan");
-            });
-
-            // Menangani perubahan gambar
-            photoInput.addEventListener("change", (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        photoPreview.src = e.target.result; // Update dengan gambar baru
-                    };
-                    reader.readAsDataURL(file); // Baca file gambar
-                } else {
-                    // Jika tidak ada file, tampilkan gambar default
-                    photoPreview.src = defaultImage;
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+        document.getElementById('editButton').classList.remove('d-none');
+        document.getElementById('cancelButton').classList.add('d-none');
+        document.getElementById('saveButton').classList.add('d-none');
+    });
+</script>
+@endsection

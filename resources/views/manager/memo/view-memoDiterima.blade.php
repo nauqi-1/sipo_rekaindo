@@ -43,6 +43,7 @@
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
+
                         <input type="text" id="diterima">
                     </div>
                 </div>
@@ -70,6 +71,8 @@
                     </div>
                 </div>
             </div>
+            
+
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="card-blue">

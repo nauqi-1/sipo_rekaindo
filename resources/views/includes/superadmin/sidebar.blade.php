@@ -83,12 +83,12 @@
         </li>
         <li class="pc-item pc-hasmenu">
           <a href="#!" class="pc-link"
-            ><span class="pc-micon"><img src="/assets/images/ikon7.png" alt="" srcset=""></span><span class="pc-mtext">Settings</span
+            ><span class="pc-micon"><img src="/assets/images/ikon7.png" alt="" srcset=""></span><span class="pc-mtext">Pengaturan</span
             ><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
           </a>
           <ul class="pc-submenu">
           @if(Auth::user()->role->nm_role == 'superadmin')
-            <li class="pc-item"><a class="pc-link" href="{{ route('user.manage') }}">User Management</a></li>
+            <li class="pc-item"><a class="pc-link" href="{{ route('user.manage') }}">Manajemen Pengguna</a></li>
           @endif
             <li class="pc-item pc-hasmenu"><a href="{{ route('data-perusahaan') }}" class="pc-link">Data Perusahaan</span></a></li>
           </ul>

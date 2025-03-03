@@ -29,8 +29,6 @@ Route::get('/', function () {
 
 Route::get('/user-manage', [UserManageController::class, 'index'])->name('user.manage');
 
-
-
 Route::get('/dashboard', function () {
     return view('layouts.superadmin');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -53,6 +51,7 @@ Route::get('/memo-admin',[MemoController::class, 'index'])
 Route::get('/add-memoSuperadmin', function() {
     return view('superadmin.memo.add-memo');
 })->name('add-memo.superadmin');
+
 
 
 Route::get('/memo/edit/{id_memo}', [MemoController::class, 'edit'])->name('memo.edit');
@@ -89,9 +88,15 @@ Route::middleware('web')->group(function () {
     Route::post('/reset-password', [ForgotPwController::class, 'resetPassword'])->name('reset-password.update');
     });
 
+// Lampiran memo
+Route::get('/memo/{id}/file', [MemoController::class, 'showFile'])->name('memo.file');
+Route::get('/memo/download/{id}', [MemoController::class, 'downloadFile'])->name('memo.download');
+Route::get('/memo/{id}/preview', [MemoController::class, 'showFile'])->name('memo.preview');
+
 Route::get('/verif-email', function () {
     return view('/components/verif-email');
 })->name('verif-email');
+
 
 
 Route::get('/add-undanganSuperadmin', function() {
@@ -115,6 +120,7 @@ Route::get('/edit-risalahSuperadmin', function() {
 
 
 
+
 Route::get('/add-memoAdmin', function() {
     return view('admin.memo.add-memo');
 })->name('admin.memo.add-memo');
@@ -135,10 +141,12 @@ Route::get('/catatan-memo', function() {
     return view('admin.memo.catatan-memo');
 })->name('catatan-memo.admin');
 
+
 // laporan
 Route::get('/laporan-memo', function() {
     return view('superadmin.laporan.laporan-memo');
 })->name('laporan-memo.superadmin');
+
 Route::get('/laporan-risalah', function() {
     return view('superadmin.laporan.laporan-risalah');
 })->name('laporan-risalah.superadmin');
@@ -150,6 +158,18 @@ Route::get('/laporan-undangan', function() {
 Route::get('/cetak-laporan-memo', function() {
     return view('superadmin.laporan.cetak-laporan-memo');
 })->name('laporan-memo');
+Route::get('/cetak-laporan-memo', [LaporanController::class, 'index'])
+    ->name('cetak-laporan-memo.superadmin');
+
+Route::post('/cetak-laporan-memo', [LaporanController::class, 'filterMemosByDate'])
+    ->name('cetak-laporan-memo.filter');
+
+Route::get('/cetak-laporan-undangan', [LaporanController::class, 'index'])
+->name('cetak-laporan-undangan.superadmin');
+
+Route::post('/cetak-laporan-undangan', [LaporanController::class, 'filterUndanganByDate'])
+    ->name('cetak-laporan-undangan.filter');
+
 Route::get('/cetak-laporan-risalah', function() {
     return view('superadmin.laporan.cetak-laporan-risalah');
 })->name('laporan-risalah');
@@ -171,6 +191,7 @@ Route::get('/view-memoDiterima/{id_memo}', [MemoController::class, 'showDiterima
 
 
 // undangan admin
+
 
 Route::get('/add-undanganAdmin', function() {
     return view('admin.undangan.add-undangan'); })->name('add-undangan.admin');
@@ -196,7 +217,7 @@ Route::get('/risalahSupervisor', function() {
     return view('manager.risalah.risalah-manager'); })->name('risalah.manager');
 Route::get('/approve-risalah', function() {
     return view('manager.risalah.approve-risalah'); })->name('approve.risalah');
-Route::get('/view-risalah', function() {
+Route::get('/view-risalah', function() { 
     return view('manager.risalah.view-risalah'); })->name('view.risalah');   
 
 // Arsip Superadmin
@@ -231,14 +252,12 @@ Route::get('/format-risalah', function() {
     return view('format-surat.format-risalah');
 })->name('format-risalah');
 
-// data perusahaan 
-Route::get('/data-perusahaan', function() {
-    return view('superadmin.data-perusahaan');
-})->name('data-perusahaan');
+Route::get('/data-perusahaan', [PerusahaanController::class, 'index'])->name('data-perusahaan');
+Route::post('/data-perusahaan/update', [PerusahaanController::class, 'update'])->name('data-perusahaan.update');
 
 // edit profile
-Route::get('/edit-profileSuperadmin', function() {
-    return view('superadmin.edit-profileSuperadmin'); })->name('edit-profile.superadmin');
+Route::get('/edit-profileSuperadmin', [ProfileController::class, 'editProfile'])->name('edit-profile.superadmin');
+Route::post('/update-profileSuperadmin', [ProfileController::class, 'updateProfile'])->name('superadmin.updateProfile');
 Route::get('/edit-profileAdmin', function() {
     return view('admin.edit-profileAdmin'); })->name('edit-profile.admin');
 Route::get('/edit-profileSupervisor', function() {

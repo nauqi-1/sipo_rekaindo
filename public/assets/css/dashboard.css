@@ -1,20 +1,3 @@
-.container {
-    max-width: 1200px;
-    margin: 20px auto;
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Header */
-.header h1 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: bold;
-    color: #000;
-}
-
 /* Welcome Message */
 .welcome-message {
     margin: 20px 0;
@@ -45,7 +28,7 @@
 
 /* Overview Section */
 .overview-container {
-    background: #f8faff;
+    background: #fff;
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 30px;
@@ -69,10 +52,17 @@
     padding: 15px;
     border-radius: 8px;
     text-align: center;
+    transition: box-shadow 0.3s ease;
+}
+
+.overview-card p{
+    margin-bottom: 0px;
 }
 
 .overview-card:hover {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f6f6f6;
 }
 
 .overview-card button {
@@ -84,26 +74,38 @@
     margin-right: 8px;
 }
 
-.overview-card button:hover {
-    border: none;
-    background-color: #8888885a;
-}
-
 .overview-card h4 {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     color: #000;
     margin-bottom: 10px;
+    margin-left: 5px;
+    text-align: left;
+    display: inline-block;
+    float: left;
 }
-
 .overview-card a {
-    font-size: 14px;
-    font-weight: bold;
-    color: #000;
+    font-size: 13px;
+    font-weight: bold !important;
+    display: inline-block;
+    float: right; 
+    margin-right: 5px;
+    font-weight: normal;
+    text-decoration: underline;
 }
 
 .overview-card a:hover {
-    color: #8888885a;
+    color: #1E4178;
+}
+
+.overview-card p {
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    gap: 5px; 
+}
+hr {
+    margin-top: 35px;
 }
 
 /* Things to Do Section */
@@ -111,7 +113,7 @@
     background: #fff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .things-to-do-container h3 {
@@ -127,10 +129,11 @@
 }
 
 .things-to-do-item {
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #f9f9f9;
+    background: #fff;
     padding: 15px;
     border-radius: 8px;
     border: 1px solid #e5e5e5;
@@ -140,6 +143,12 @@
 
 .things-to-do-item:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f6f6f6;
+}
+
+.things-to-do-item .icon {
+    margin-left: 10px;
+    margin-right: 15px;
 }
 
 .things-to-do-item .icon button {
@@ -149,11 +158,6 @@
     border: 1px solid #92C5FF99;
     background-color: #92C5FF99;
     margin-right: 10px;
-}
-
-.things-to-do-item .icon button:hover {
-    border: 1px solid #92C5FF4D;
-    background-color: #92C5FF4D;
 }
 
 .things-to-do-item .icon img {
@@ -190,4 +194,13 @@
 .things-to-do-item .content a:hover {
     text-decoration: none;
     color: #888;
+}
+
+span.jumlah {
+    font-weight: bold;
+    font-size: 25px;
+}
+span.text {
+    font-size: 14px;
+    font-weight: bold;
 }

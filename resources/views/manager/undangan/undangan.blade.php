@@ -7,7 +7,7 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="#"><img src="/img/undangan/Vector_back.png" alt=""></a>
+                <a href="{{route ('manager.dashboard')}}"><img src="/img/undangan/Vector_back.png" alt=""></a>
             </div>
             <h1>Undangan Rapat</h1>
         </div>        
@@ -103,6 +103,7 @@
                         @if ($undangan->undangan->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($undangan->undangan->status == 'pending')
+
                             <span class="badge bg-warning">Diproses</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
@@ -116,11 +117,13 @@
                             <img src="/img/undangan/Delete.png" alt="delete">
                         </button> -->
                         <a class="btn btn-sm3" href="{{route ('view.undangan',['id'=>$undangan->undangan->id_undangan])}}">
+
                             <img src="/img/undangan/viewBlue.png" alt="view">
                         </a>
                     </td>
                 </tr>
                 @endforeach
+
             </tbody>
         </table>
 

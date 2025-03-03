@@ -30,7 +30,7 @@
         </div>
 
         <!-- form add memo -->
-        <form method="POST" action="{{ route('memo/update', $memo->id_memo) }}">
+        <form method="POST" action="{{ route('memo/update', $memo->id_memo) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="card">
@@ -43,7 +43,7 @@
                         <label for="tgl_surat" class="form-label">
                             <img src="/img/memo-superadmin/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat
                         </label>
-                        <input type="date" name="tgl_surat" id="tgl_surat" class="form-control" value="{{ $memo->tgl_dibuat }}" required>
+                        <input type="date" name="tgl_surat" id="tgl_surat" class="form-control" value="{{ $memo->tgl_dibuat->format('Y-m-d') }}" required>
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
@@ -72,8 +72,12 @@
                     <div class="col-md-6 lampiran">
                         <label for="upload_file" class="form-label">Lampiran</label>
                         <div class="upload-wrapper">
-                            <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
-                            <input type="file" id="upload_file" name="upload_file" class="form-control-file" value="{{ $memo->tanda_identitas }}" hidden>
+                        @if($memo->tanda_identitas)
+                            <a href="{{ route('memo.preview', $memo->id_memo) }}" target="_blank" class="btn btn-primary">Lihat File</a>
+                        @endif
+                        @if($memo->tanda_identitas)
+                            <a href="{{ route('memo.download', $memo->id_memo) }}" target="_blank" class="btn btn-primary">Unduh File</a>
+                        @endif
                         </div>
                     </div>
                 </div>

@@ -44,6 +44,8 @@
                         </label>
                         <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" required>
                         <input type="hidden" name="tgl_disahkan" >
+                        <input type="hidden" name="catatan" >
+                        <input type="hidden" name="pembuat" value="{{ auth()->user()->firstname . auth()->user()->lastname }}">
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>

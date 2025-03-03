@@ -62,6 +62,7 @@ class MemoController extends Controller
     }
 
 
+
     public function create()
     {
         $divisiId = auth()->user()->divisi_id_divisi;
@@ -98,7 +99,8 @@ class MemoController extends Controller
     }
     public function store(Request $request)
     {
-        
+        //  dd($request->all());
+
         $request->validate([
             'judul' => 'required|string|max:70',
             'isi_memo' => 'required|string',
@@ -111,7 +113,7 @@ class MemoController extends Controller
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
             'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
-            'tanda_identitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'tanda_identitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // 2MB max
         ],[
             'tanda_identitas.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
             'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
@@ -133,14 +135,12 @@ class MemoController extends Controller
                 ->latest()
                 ->first();
         
-                
-        
         if (!$seri) {
             return back()->with('error', 'Nomor seri tidak ditemukan.');
         }
         
         
-        
+
         // Simpan dokumen
         $memo = Memo::create([
             'divisi_id_divisi' => $request->input('divisi_id_divisi'),
@@ -288,7 +288,6 @@ class MemoController extends Controller
             $memo->tanda_identitas = file_get_contents($file->getRealPath());
         }
         
-
         $memo->save();
  
          return redirect()->route('memo.'.Auth::user()->role->nm_role)->with('success', 'User updated successfully');

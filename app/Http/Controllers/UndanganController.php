@@ -17,6 +17,7 @@ class UndanganController extends Controller
     {
         $divisi = Divisi::all();
         $seri = Seri::all();  
+
         // Ambil ID memo yang sudah diarsipkan oleh user saat ini
         $undanganDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
 
@@ -51,6 +52,7 @@ class UndanganController extends Controller
         $undangans = $query->with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(10);
 
         $undangans = $query->paginate(6);
+
     
         return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri'));
     }
@@ -194,7 +196,9 @@ class UndanganController extends Controller
          $divisi = Divisi::all();
          $seri = Seri::all();  
          
+
          return view(Auth::user()->role->nm_role.'.undangan.edit-undangan', compact('undangan', 'divisi', 'seri'));
+
      }
      public function update(Request $request, $id)
      {

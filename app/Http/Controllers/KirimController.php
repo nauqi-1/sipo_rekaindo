@@ -54,6 +54,7 @@ class KirimController extends Controller
         return view('manager.undangan.persetujuan-undangan', compact('user', 'divisi', 'undangan', 'position'));
     }
 
+
     public function sendDocument(Request $request)
     {
         // dd($request->all());
@@ -106,6 +107,7 @@ class KirimController extends Controller
             ->whereHas('memo', function ($query) {
                 $query->where('status', '!=','pending'); // Cek status dari tabel memo
             })
+
             ->with('memo') // Relasi ke tabel memo
             ->get();
 
@@ -113,7 +115,9 @@ class KirimController extends Controller
     }
     public function memoDiterima()
     {
+
         $userId = auth()->id(); // Ambil ID user yang sedang login (Manager divisi)
+
         $divisiId = auth()->user()->divisi_id_divisi; // Ambil divisi manager
 
         $memoDiterima = Kirim_Document::where('jenis_document', 'memo')
@@ -126,6 +130,7 @@ class KirimController extends Controller
 
         return view('manager.memo.memo-diterima', compact('memoDiterima'));
     }
+
 
     public function undangan()
     {
@@ -145,6 +150,7 @@ class KirimController extends Controller
 
 
 
+
     // Daftar dokumen yang dikirim
     public function sentDocuments()
     {
@@ -153,5 +159,5 @@ class KirimController extends Controller
     }
 
     // Daftar dokumen yang diterima
-    
+
 }
