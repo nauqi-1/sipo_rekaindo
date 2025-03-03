@@ -9,6 +9,8 @@ use App\Http\Controllers\MemoController;
 use App\Http\Controllers\UndanganController;
 use App\Http\Controllers\KirimController;
 use App\Http\Controllers\ArsipController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PerusahaanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/p', function () {
