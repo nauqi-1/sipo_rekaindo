@@ -27,10 +27,14 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="{{route ('undangan.admin')}}">Undangan</a>/<a href="#" style="color: #565656;">Kirim Undangan Rapat</a>
+                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="{{route ('undangan.admin')}}">Undangan</a>/<a href="#" style="color: #565656;">Kirim Undangan Rapat</a>
                 </div>
             </div>
         </div>
+        <form action="{{ route('documents.send') }}" method="POST">
+        @csrf
+        <input type="hidden" name="id_document" value="{{ $undangan->id_undangan }}">
+        <input type="hidden" name="jenis_document" value="undangan">
         <div class="card-body">
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
@@ -42,27 +46,27 @@
                     <div class="card-white">
                         <label for="nomor">No Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="nomor">
+                        <input type="text" id="nomor" value="{{ $undangan->nomor_undangan }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="seri">Seri Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri">
+                        <input type="text" id="seri" value="{{ $undangan->seri_surat }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
                         <div class="separator"></div>
-                        <input type="text" id="perihal">
+                        <input type="text" id="perihal" value="{{ $undangan->judul }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="tgl">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl">
+                        <input type="text" id="tgl" value="{{ $undangan->tgl_dibuat }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="kepada">Kepada</label>
                         <div class="separator"></div>
-                        <input type="text" id="kepada">
+                        <input type="text" id="kepada"  value="{{ $undangan->tujuan }}" readonly>
                     </div>
                 </div>
                 <div class="col">
@@ -74,7 +78,7 @@
                     <div class="card-white">
                         <label for="pembuat">Pembuat</label>
                         <div class="separator"></div>
-                        <input type="text" id="pembuat">
+                        <input type="text" id="pembuat"  value="{{ $undangan->pembuat }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="status">Status</label>
@@ -84,14 +88,14 @@
                     <div class="card-white">
                         <label for="tgl-buat">Dibuat Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl-buat">
+                        <input type="text" id="tgl-buat"  value="{{ $undangan->tgl_dibuat }}" readonly>
                     </div>
-                    <div class="card-white">
+                    <!-- <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
                         <button class="view"> <img src="/img/undangan/view.png" alt="view">Lihat</button>
                         <button class="down"><img src="/img/undangan/down.png" alt="down">Unduh</button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="row mb-4" style="gap: 20px;">
@@ -103,38 +107,33 @@
                         </label>
                     </div>
                     <div class="card-white">
-                        <label for="dropdownMenuButton">Posisi Penerima</label>
+                        <label for="posisi_penerima">Posisi Penerima</label>
                         <div class="separator"></div>
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
+                        <select name="posisi_penerima" id="posisi_penerima" class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
                             <option disabled selected style="text-align: left;">--Pilih--</option>
-                            <option value="hr_ga">Supervisor/Manager</option>
-                            <option value="keuangan">Admin Divisi</option>
+                            @foreach($position as $p)
+                                <option value="{{ $p->id_position }}">{{ $p->nm_position }}</option>
+                            @endforeach
                         </select>                    
                     </div>
                     <div class="card-white">
-                        <label for="dropdownMenuButton">Divisi Penerima</label>
+                        <label for="divisi_penerima">Divisi Penerima</label>
                         <div class="separator"></div>
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
+                        <select name="divisi_penerima" id="divisi_penerima" class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
                             <option disabled selected style="text-align: left;">--Pilih--</option>
-                            <option value="hr_ga">HR & GA</option>
-                            <option value="keuangan">Keuangan</option>
-                            <option value="logistik_gudang">Logistik & Gudang</option>
-                            <option value="pemasaran">Pemasaran</option>
-                            <option value="sekretaris_perusahaan">Sekretaris Perusahaan</option>
-                            <option value="mrh">MRH</option>
-                            <option value="teknologi">Teknologi</option>
-                            <option value="quality_control">Quality Control</option>
-                            <option value="qm_she">QM & SHE (OT dan K3)</option>
-                            <option value="ppc">PPC</option>
+                            @foreach($divisi as $d)
+                            <option value="{{ $d->id_divisi }}">{{ $d->nm_divisi }}</option>
+                            @endforeach
                         </select>                      
                     </div>
                 </div>
             </div>
         </div>
         <div class="footer">
-            <button type="button" class="btn back" id="backBtn">Kembali</button>
-            <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+            <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('undangan.admin') }}'">Kembali</button>
+            <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
         </div>
+        </form>
 
         <!-- Modal kirim -->
         <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">

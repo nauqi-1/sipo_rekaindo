@@ -122,6 +122,6 @@ class ForgotPwController extends Controller
         $user = \App\Models\User::where('email', $request->email)->first();
         $user->update(['password' => Hash::make($request->password)]);
 
-        return redirect()->route('login')->with('status', 'Password successfully reset.');
+        return redirect('/')->with('status', 'Password successfully reset.');
     }
 }

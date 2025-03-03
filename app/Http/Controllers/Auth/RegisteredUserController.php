@@ -33,6 +33,7 @@ class RegisteredUserController extends Controller
         // if (Auth::user()->role !== 'superadmin') {
         //     return redirect()->route('user.manage')->with('error', 'You do not have permission to add users.');
         // }
+        
         $request->validate([
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',

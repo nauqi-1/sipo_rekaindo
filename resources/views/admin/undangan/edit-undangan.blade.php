@@ -30,8 +30,9 @@
         </div>
 
         <!-- form edit undangan -->
-        <form method="POST" action="{{ route('undangan.admin') }}">
-        @csrf 
+        <form method="POST" action="{{ route('undangan/update', $undangan->id_undangan) }}">
+        @csrf
+        @method('PUT')
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title" style="font-size: 18px;"><b>Formulir Edit Undangan Rapat</b></h5>
@@ -42,22 +43,22 @@
                         <label for="tgl_surat" class="form-label">
                             <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat
                         </label>
-                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" required>
+                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ $undangan->tgl_dibuat }}" required>
                         <input type="hidden" name="tgl_disahkan" >
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
-                        <input type="text" name="jenis_document" id="seru-surat" class="form-control" placeholder="Masukkan Seri Surat" required>
+                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $undangan->seri_surat }}" required readonly>
                     </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="nomor_document" class="form-label">Nomor Surat</label>
-                        <input type="text" name="jenis_document" id="nomor-surat" class="form-control" placeholder="Masukkan Nomor Surat" required>
+                        <label for="nomor_undangan" class="form-label">Nomor Surat</label>
+                        <input type="text" name="nomor_undangan" id="nomor_undangan" class="form-control" value="{{ $undangan->nomor_undangan }}" required>
                     </div>
                     <div class="col-md-6" >
                         <label for="judul" class="form-label">Perihal</label>
-                        <input type="text" name="judul" id="judul" class="form-control" placeholder="Masukkan Perihal / Judul Surat" required>
+                        <input type="text" name="judul" id="judul" class="form-control" value="{{ $undangan->judul }}" required>
                     </div>
                 </div>
                 <div class="row mb-4">
@@ -66,22 +67,22 @@
                             <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada
                             <label for="tujuan" class="label-kepada">*Pisahkan dengan titik koma(;) jika penerima lebih dari satu</label>
                         </label>
-                        <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" required>
+                        <input type="text" name="tujuan" id="tujuan" class="form-control" value="{{ $undangan->tujuan }}" required>
                     </div>
                     <div class="col-md-6" style="border: none;"></div>
                 </div>
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
                         <img src="\img\undangan\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                        <label for="isi_document">Isi Surat</label>
+                        <label for="isi_surat">Isi Surat</label>
                     </div>
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
-                            <textarea id="summernote" name="isi_document"></textarea>
+                            <textarea id="summernote" name="isi_surat">{{ $undangan->isi_undangan }}</textarea>
                     </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="nama_pimpinan" class="form-label">Nama yang Bertanda Tangan</label>
+                        <label for="nama_bertandatangann" class="form-label">Nama yang Bertanda Tangan</label>
                         <!-- <select name="nama_pimpinan" id="nama_pimpinan" class="form-control" required>
                             <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                         </select> -->
@@ -101,8 +102,8 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.admin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save"><a href="{{route ('undangan.admin')}}">Simpan</a></button>
+                <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.superadmin')}}">Batal</a></button>
+                <button type="submit" class="btn btn-save"><a href="{{route ('undangan.superadmin')}}">Simpan</a></button>
             </div>
         </div>
         </form>

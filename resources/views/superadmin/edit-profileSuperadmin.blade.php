@@ -20,7 +20,7 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a> / <a href="#" style="color: #565656;">Edit Profil</a>
+                    <a href="{{ route('edit-profile.superadmin') }}">Beranda</a> / <a href="" style="color: #565656;">Edit Profil</a>
                 </div>
             </div>
         </div>

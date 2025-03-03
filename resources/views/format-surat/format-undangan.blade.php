@@ -18,26 +18,24 @@
                     <tr>
                         <td>Nomor</td>
                         <td>:</td>
-                        <td>47.08/REKA/GEN/ITM/VI/2023</td>
+                        <td>{{ $undangan->nomor_undangan }}</td>
                     </tr>
                     <tr>
                         <td>Perihal</td>
                         <td>:</td>
-                        <td><b>Undangan Kick Off Meeting Developing Payroll System</b></td>
+                        <td><b>{{ $undangan->judul }}</b></td>
                     </tr>
                 </table>
             </header>
             <div class="goal">
                 <h4><b>Kepada Yth. :</b></h4>
                 <table>
-                    <tr>
-                        <td>1.</td>
-                        <td>GM Divisi SDM & Umum (Raden Denny Herwindo)</td>
-                    </tr>
-                    <tr>
-                        <td>2.</td>
-                        <td>Staf SDM (Fadila Liwalida Aksari)</td>
-                    </tr>
+                @foreach ($tujuanList as $index => $tujuan)
+                <tr>
+                    <td>{{ $index + 1 }}.</td>
+                    <td>{{ trim($tujuan) }}</td> <!-- Trim untuk menghapus spasi berlebih -->
+                </tr>
+                @endforeach
                 </table>
                 <p class="">Di Tempat</p>
             </div>

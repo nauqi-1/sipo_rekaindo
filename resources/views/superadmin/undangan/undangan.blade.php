@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.superadmin')
 
 @section('title', 'Undangan Rapat')
       
@@ -91,46 +91,57 @@
             </tr>
         </thead>
         <tbody>
-            @for ($i = 1; $i <= 3; $i++)
-            <tr>
-                <td class="nomor">{{ $i }}</td>
-                <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">Undangan Rapat Kajian</td>
-                <td>21-10-2024</td>
-                <td>1596</td>
-                <td>837.06/REKA/GEN/VII/2024</td>
-                <td>22-10-2024</td>
-                <td>HR & GA</td>
+                @foreach ($undangans as $index => $undangan)
+                <tr>
+                    <td class="nomor">{{ $index + 1 }}</td>
+                    <td class="nama-dokumen 
+                        {{ $undangan->status == 'Reject' ? 'text-danger' : ($undangan->status == 'Pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $undangan->judul }}
+                    </td>
+                    <td>{{ \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') }}</td>
+                    <td>{{ $undangan->seri_surat }}</td>
+                    <td>{{ $undangan->nomor_undangan }}</td>
+                    <td>{{ $undangan->tgl_disahkan ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $undangan->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                    </td>
+                    <td>
+                        @if ($undangan->status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($undangan->status == 'pending')
+                            <span class="badge bg-warning">Diproses</span>
+                        @else
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
+                    </td>
                 <td>
-                    @if ($i % 3 == 0)
-                        <span class="badge bg-danger">Ditolak</span>
-                    @elseif ($i % 2 == 0)
-                        <span class="badge bg-warning">Diproses</span>
-                    @else
-                        <span class="badge bg-success">Diterima</span>
-                    @endif
-                </td>
-                <td>
-                    <!-- <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
-                        <img src="/img/memo/share.png" alt="share">
-                    </a> -->
+                    
+                    <form method="POST" action="{{ route('undangan.destroy', $undangan->id_undangan) }}" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
                     <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                         <img src="/img/undangan/Delete.png" alt="delete">
                     </button>
+                    </form>
                     <!-- Status Approve -->
-                    @if ($i % 3 != 0 && $i % 2 != 0) 
+                    @if ($undangan->status == 'approve') 
+                    <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
+                    @csrf
+                    @method('POST')
                         <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
                             <img src="/img/undangan/arsip.png" alt="arsip">
                         </button>
+                    </form>
                     @else
-                        <a href="{{route ('edit-undangan.superadmin')}}" class="btn btn-sm3">
+                        <a href="{{route ('undangan.edit',$undangan->id_undangan)}}" class="btn btn-sm3">
                             <img src="/img/undangan/edit.png" alt="edit">
                         </a>
                     @endif
                 </td>
             </tr>
-            @endfor
+            @endforeach
         </tbody>
     </table>
+    {{ $undangans->links('pagination::bootstrap-5') }}
 
     <!-- Modal Hapus -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -211,4 +222,20 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('confirmArsip').addEventListener('click', function () {
+            // Ambil referensi modal
+            const deleteModalEl = document.getElementById('arsipModal');
+            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
+            
+            // Tutup modal Hapus terlebih dahulu
+            deleteModal.hide();
+            
+            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
+            deleteModalEl.addEventListener('hidden.bs.modal', function () {
+                const successModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
+                successModal.show();
+            }, { once: true }); // Tambahkan event listener hanya sekali
+        });
+</script>
 @endsection

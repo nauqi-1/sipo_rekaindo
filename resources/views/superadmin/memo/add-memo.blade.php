@@ -24,13 +24,13 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Tambah Memo</a>
+                    <a href="">Beranda</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Tambah Memo</a>
                 </div>
             </div>
         </div>
 
         <!-- form add memo -->
-        <form method="POST" action="{{ route('memo-superadmin.store') }}">
+        <form method="POST" action="{{ route('memo-superadmin.store') }}" enctype="multipart/form-data">
         @csrf 
         <div class="card">
             <div class="card-header">
@@ -40,15 +40,17 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="tgl_surat" class="form-label">
-                            <img src="/img/memo-superadmin/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat
+                            <img src="/img/memo-superadmin/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat<span class="text-danger">*</span>
                         </label>
                         <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" required>
                         <input type="hidden" name="tgl_disahkan" >
+                        <input type="hidden" name="catatan" >
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
-                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan }}"  readonly>
+                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan ?? '' }}"  readonly>
                         <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
+                        <input type="hidden" name="pembuat" value="{{ auth()->user()->position->nm_position . auth()->user()->role->nm_role }}">
                     </div>
                 </div>
                 <div class="row mb-4">
@@ -57,7 +59,7 @@
                         <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $nomorDokumen }}" readonly>
                     </div>
                     <div class="col-md-6" >
-                        <label for="judul" class="form-label">Perihal</label>
+                        <label for="judul" class="form-label">Perihal<span class="text-danger">*</span></label>
                         <input type="text" name="judul" id="judul" class="form-control" placeholder="Masukkan Perihal / Judul Surat" required>
                     </div>
 
@@ -65,22 +67,13 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="kepada" class="form-label">
-                            <img src="/img/memo-superadmin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada
+                            <img src="/img/memo-superadmin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada<span class="text-danger">*</span>
                             <label for="tujuan" class="label-kepada">*Pisahkan dengan titik koma(;) jika penerima lebih dari satu</label>
                         </label>
                         <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" required>
                     </div>
-                    <div class="col-md-6 lampiran">
-                        <label for="tanda_identitas" class="form-label">Lampiran</label>
-                        <div class="upload-wrapper">
-                            <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
-                            <input type="file" id="tanda_identitas" name="tanda_identitas" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan</label>
+                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan<span class="text-danger">*</span></label>
                         <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
                             <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                             @foreach($managers as $manager)
@@ -88,13 +81,25 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-6" style="border: none;"></div>
+                    <!-- <div class="col-md-6 lampiran">
+                        <label for="tanda_identitas" class="form-label">Lampiran</label>
+                        <div class="upload-wrapper">
+                            <button type="button" class="btn btn-primary upload-button" id="openUploadModal">Pilih File</button>
+                            <input type="file" id="tanda_identitas" name="tanda_identitas" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                            <div id="filePreview" style="display: none; text-align: center">
+                                <img id="previewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
+                                <span id="fileName"></span>
+                                <button type="button" id="removeFile" class="bi bi-x remove-btn" style="border: none; color:red; background-color: white;"></button>
+                            </div>
+                        </div>
+                    </div> -->
                 </div>
+                
 
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
                         <img src="\img\memo-superadmin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                        <label for="isi_memo">Isi Surat</label>
+                        <label for="isi_memo">Isi Surat<span class="text-danger">*</span></label>
                     </div>
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_memo"></textarea>
@@ -162,9 +167,15 @@
                         <div class="upload-box" id="uploadBox">
                             <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
                             <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
-                            <p class="upload-note">Ukuran file PDF tidak lebih dari 20MB</p>
+                            <p class="upload-note">Ukuran file PDF tidak lebih dari 2MB</p>
                             <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
-                            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                            <div id="fileInfo" style="display: none; text-align: center ">
+                                <div id="fileInfoWrapper" style="display: flex; align-items: center; justify-content: center">
+                                    <img id="modalPreviewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; margin-right: 5px; display: none;">
+                                    <span id="modalFileName"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -177,6 +188,157 @@
     </div>
 
     <script>
+        // Modal Upload File - Menampilkan Modal
+        document.getElementById('openUploadModal').addEventListener('click', function () {
+            var uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
+            uploadModal.show();
+        });
+
+        // Membuka file input ketika tombol "Pilih File" di klik
+        document.getElementById('selectFileBtn').addEventListener('click', function () {
+            document.getElementById('fileInput').click();
+        });
+
+        // Menangani dragover event untuk upload box
+        document.getElementById('uploadBox').addEventListener('dragover', function (e) {
+            e.preventDefault();
+            this.style.border = '2px dashed #007bff';
+        });
+
+        // Menangani dragleave event untuk upload box
+        document.getElementById('uploadBox').addEventListener('dragleave', function () {
+            this.style.border = '2px dashed #ccc';
+        });
+
+        // Menangani drop event untuk upload box
+        document.getElementById('uploadBox').addEventListener('drop', function (e) {
+            e.preventDefault();
+            this.style.border = '2px dashed #ccc';
+            document.getElementById('fileInput').files = e.dataTransfer.files;
+            updateFilePreview();
+        });
+
+        // Menangani pemilihan file melalui file input
+        document.getElementById('fileInput').addEventListener('change', function () {
+            const file = this.files[0];
+            const uploadBtn = document.getElementById('uploadBtn');
+            const fileInfo = document.getElementById('fileInfo');
+            const modalFileName = document.getElementById('modalFileName');
+            const modalPreviewIcon = document.getElementById('modalPreviewIcon');
+            const uploadText = document.querySelector('.upload-text');
+            const uploadNote = document.querySelector('.upload-note');
+            const selectFileBtn = document.getElementById('selectFileBtn');
+
+            if (file) {
+                modalFileName.textContent = file.name;
+                fileInfo.style.display = 'block';
+                uploadBtn.disabled = false;
+                uploadText.style.display = 'none';
+                uploadNote.style.display = 'none';
+                selectFileBtn.style.display = 'none';
+                
+                if (file.type.startsWith('image/')) {
+                    modalPreviewIcon.src = '/img/image.png'; // Ikon gambar
+                } else if (file.type === 'application/pdf') {
+                    modalPreviewIcon.src = '/img/pdf.png'; // Ikon PDF
+                }
+                modalPreviewIcon.style.display = 'block';
+            }
+        });
+
+        // Meng-upload file setelah tombol "Unggah" di klik di modal
+        document.getElementById('uploadBtn').addEventListener('click', function () {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const tandaIdentitas = document.getElementById('tanda_identitas');
+            const fileNameDisplay = document.getElementById('fileName');
+            const filePreview = document.getElementById('filePreview');
+            const previewIcon = document.getElementById('previewIcon');
+            const uploadButton = document.getElementById('openUploadModal');
+
+            // Menampilkan file info di input lampiran setelah file dipilih
+            document.getElementById('fileInfoWrapper').style.display = 'flex';
+            document.getElementById('fileInfoWrapper').style.alignItems = 'center';
+            
+            if (file) {
+                tandaIdentitas.files = fileInput.files;
+                fileNameDisplay.textContent = file.name;
+                filePreview.style.display = 'block';
+                uploadButton.style.display = 'none';
+                
+                if (file.type.startsWith('image/')) {
+                    previewIcon.src = '/img/image.png'; // Ikon gambar
+                } else if (file.type === 'application/pdf') {
+                    previewIcon.src = '/img/pdf.png'; // Ikon PDF
+                }
+                previewIcon.style.display = 'inline-block'; // Menampilkan ikon preview
+            }
+
+            // Menyembunyikan modal setelah file diupload
+            var uploadModal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
+            uploadModal.hide();
+        });
+
+        // Menghapus file yang dipilih dan menyembunyikan preview
+        document.getElementById('removeFile').addEventListener('click', function () {
+            document.getElementById('tanda_identitas').value = ''; // Menghapus file yang dipilih
+            document.getElementById('filePreview').style.display = 'none'; // Menyembunyikan preview
+            document.getElementById('openUploadModal').style.display = 'block'; // Menampilkan tombol upload lagi
+        });
+
+        // Menangani pemilihan file di input lampiran
+        document.getElementById('tanda_identitas').addEventListener('change', function () {
+            const file = this.files[0];
+            const filePreview = document.getElementById('filePreview');
+            const fileName = document.getElementById('fileName');
+            const previewIcon = document.getElementById('previewIcon');
+            const removeFileBtn = document.getElementById('removeFile');
+
+            if (file) {
+                fileName.textContent = file.name;
+                filePreview.style.display = 'block'; // Menampilkan preview
+
+                // Menampilkan ikon preview
+                if (file.type.startsWith('image/')) {
+                    previewIcon.src = '/img/image.png'; // Ikon gambar
+                } else if (file.type === 'application/pdf') {
+                    previewIcon.src = '/img/pdf.png'; // Ikon PDF
+                }
+
+                previewIcon.style.display = 'inline-block'; // Menampilkan ikon
+            }
+        });
+
+        document.getElementById('removeFile').addEventListener('click', function () {
+            // Reset input field dan preview pada kolom input
+            document.getElementById('tanda_identitas').value = '';
+            document.getElementById('filePreview').style.display = 'none';
+            document.getElementById('openUploadModal').style.display = 'block';
+
+            // Reset pada modal overlay
+            const uploadBtn = document.getElementById('uploadBtn');
+            const fileInfo = document.getElementById('fileInfo');
+            const modalFileName = document.getElementById('modalFileName');
+            const modalPreviewIcon = document.getElementById('modalPreviewIcon');
+            const uploadText = document.querySelector('.upload-text');
+            const uploadNote = document.querySelector('.upload-note');
+            const selectFileBtn = document.getElementById('selectFileBtn');
+
+            // Reset file yang tampil di overlay
+            fileInfo.style.display = 'none';
+            modalFileName.textContent = '';
+            modalPreviewIcon.style.display = 'none';
+            uploadBtn.disabled = true;
+            uploadText.style.display = 'block';
+            uploadNote.style.display = 'block';
+            selectFileBtn.style.display = 'block';
+
+            document.getElementById('selectFileBtn').style.display = 'flex';
+            document.getElementById('selectFileBtn').style.justifyContent = 'center';
+            document.getElementById('selectFileBtn').style.alignItems = 'center';
+        });
+    
+        // Raroh iki opo
         $(document).ready(function() {
             $('#dropdownMenuButton').on('change', function() {
                 // Saat opsi dipilih, teks akan ke kiri
@@ -187,21 +349,6 @@
                     $(this).css('text-align', 'center');
                 }
             });
-        });
-
-        // Hubungkan tombol "Select File" dengan input file
-        document.getElementById('selectFileBtn').addEventListener('click', function () {
-            document.getElementById('fileInput').click();
-        });
-
-        // Deteksi perubahan file dan aktifkan tombol Upload
-        document.getElementById('fileInput').addEventListener('change', function () {
-            const uploadBtn = document.getElementById('uploadBtn');
-            if (this.files.length > 0) {
-                uploadBtn.disabled = false;
-            } else {
-                uploadBtn.disabled = true;
-            }
         });
 
         $(document).ready(function() {
