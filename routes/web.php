@@ -9,6 +9,7 @@ use App\Http\Controllers\MemoController;
 use App\Http\Controllers\UndanganController;
 use App\Http\Controllers\KirimController;
 use App\Http\Controllers\ArsipController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PerusahaanController;
 use Illuminate\Support\Facades\Route;
@@ -66,15 +67,9 @@ Route::put('/undangan/update/{id_undangan}', [UndanganController::class, 'update
 
 
 
-Route::get('/dashboard.admin', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
-Route::get('/dashboard.superadmin', function () {
-    return view('superadmin.dashboard');
-})->name('superadmin.dashboard');
-Route::get('/dashboard.manager', function () {
-    return view('manager.dashboard');
-})->name('manager.dashboard');
+Route::get('/dashboard.admin', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::get('/dashboard.superadmin', [DashboardController::class, 'index'])->name('superadmin.dashboard');
+Route::get('/dashboard.manager', [DashboardController::class, 'index'])->name('manager.dashboard');
 
 // routes/web.php
 Route::middleware('web')->group(function () {
@@ -275,7 +270,7 @@ Route::get('/memo/{id}/preview', [MemoController::class, 'showFile'])->name('mem
 
 Route::get('/memo/arsip/{id}', [ArsipController::class, 'view'])->name('view.memo-arsip');
 Route::get('/undangan/arsip/{id}', [ArsipController::class, 'viewUndangan'])->name('view.undangan-arsip');
-Route::get('/risalah/arsip/{id}', [ArsipController::class, 'view'])->name('view.risalah-arsip');
+Route::get('/risalah/arsip', [ArsipController::class, 'view'])->name('view.risalah-arsip');
 
 Route::get('/memo/{id}', [MemoController::class, 'view'])->name('view.memo');
 Route::get('/undangan/manager/{id}', [UndanganController::class, 'view'])->name('view.undangan');

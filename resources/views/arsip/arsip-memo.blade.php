@@ -102,7 +102,7 @@
                     <h5 class="mb-4" style="color: #545050;"><b>Hapus Memo?</b></h5>
                     <!-- Tombol -->
                     <div class="d-flex justify-content-center gap-3">
-                        <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('arsip-memo.superadmin')}}">Batal</a></button>
+                        <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('arsip.memo')}}">Batal</a></button>
                         <button type="button" class="btn ok" id="confirmDelete">Oke</button>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
                     <!-- Tulisan -->
                     <h5 class="mb-4" style="color: #545050; font-size: 20px;"><b>Berhasil Menghapus <br>Memo</b></h5>
                     <!-- Tombol -->
-                    <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('arsip-memo.superadmin')}}">Kembali</a></button>
+                    <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('arsip.memo')}}">Kembali</a></button>
                 </div>
             </div>
         </div>

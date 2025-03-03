@@ -111,9 +111,7 @@
                             <img src="/img/memo-supervisor/Delete.png" alt="delete">
                         </button> -->
 
-                        <!-- <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
-                            <img src="/img/memo-supervisor/share.png" alt="share">
-                        </a> -->
+                      
 
                         <a class="btn btn-sm3" href="{{ route('view.memo-terkirim', $kirim->id_document) }}">
                             <img src="/img/memo-supervisor/viewBlue.png" alt="view">

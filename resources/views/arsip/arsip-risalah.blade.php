@@ -73,7 +73,7 @@
                     <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                         <img src="/img/arsip/delete.png" alt="delete">
                     </button>
-                    <a class="btn btn-sm3" href="{{route('arsip-viewRisalah.superadmin')}}"><img src="/img/arsip/preview.png" alt="preview"></a>
+                    <a class="btn btn-sm3" href="{{route('view.risalah-arsip')}}"><img src="/img/arsip/preview.png" alt="preview"></a>
                 </td>
             </tr>
             @endfor
@@ -93,7 +93,7 @@
                     <h5 class="mb-4" style="color: #545050;"><b>Hapus Risalah Rapat?</b></h5>
                     <!-- Tombol -->
                     <div class="d-flex justify-content-center gap-3">
-                        <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('arsip-risalah.superadmin')}}">Batal</a></button>
+                        <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('arsip.risalah')}}">Batal</a></button>
                         <button type="button" class="btn ok" id="confirmDelete">Oke</button>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                     <!-- Tulisan -->
                     <h5 class="mb-4" style="color: #545050; font-size: 20px;"><b>Berhasil Menghapus <br>Risalah Rapat</b></h5>
                     <!-- Tombol -->
-                    <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('arsip-risalah.superadmin')}}">Kembali</a></button>
+                    <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('arsip.risalah')}}">Kembali</a></button>
                 </div>
             </div>
         </div>

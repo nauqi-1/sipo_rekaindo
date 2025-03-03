@@ -113,9 +113,7 @@
                     </td>
                 <td>
 
-                    <!-- <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
-                        <img src="/img/memo/share.png" alt="share">
-                    </a> -->
+                   
 
                     <form method="POST" action="{{ route('undangan.destroy', $undangan->id_undangan) }}" style="display: inline;">
                             @csrf
