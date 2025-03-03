@@ -20,6 +20,7 @@
         </div>
 
         <!-- Filter & Search Bar -->
+         <div class="surat">
         <div class="header-tools">
             <div class="search-filter">
             <form method="GET" action="{{ route('memo.admin') }}" class="search-filter d-flex gap-2">
@@ -52,6 +53,7 @@
                 <!-- Add User Button to Open Modal -->
                 <a href="{{ route('memo-admin/add')}}" class="btn btn-add">+ Tambah Memo</a>
             </div>
+        </div>
         </div>
 
         <!-- Table -->

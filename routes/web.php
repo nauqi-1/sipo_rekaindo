@@ -274,4 +274,3 @@ Route::get('/risalah/arsip', [ArsipController::class, 'view'])->name('view.risal
 
 Route::get('/memo/{id}', [MemoController::class, 'view'])->name('view.memo');
 Route::get('/undangan/manager/{id}', [UndanganController::class, 'view'])->name('view.undangan');
-

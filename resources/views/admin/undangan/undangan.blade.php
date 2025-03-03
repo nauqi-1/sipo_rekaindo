@@ -20,6 +20,7 @@
         </div>
 
         <!-- Filter & Search Bar -->
+        <div class="surat">
         <div class="header-tools">
             <div class="search-filter">
             <form method="GET" action="{{ route('undangan.admin') }}" class="search-filter d-flex gap-2">
@@ -51,6 +52,7 @@
                 <!-- Add User Button to Open Modal -->
                 <a href="{{route ('undangan-admin/add')}}" class="btn btn-add">+ Tambah Undangan Rapat</a>
             </div>
+        </div>
         </div>
 
         <!-- Table -->

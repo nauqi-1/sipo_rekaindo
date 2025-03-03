@@ -25,10 +25,12 @@
                 <h2 class="title">Pengguna</h2>
                 <div class="search-filter">
                     <div class="d-flex gap-2">
-                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                            <img src="/img/user-manage/search.png" alt="search" style="width: 20px; height: 20px;">
-                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari berdasarkan nama ..." style="outline: none; box-shadow: none;">
-                        </div>
+                        <form action="{{ route('user.manage') }}" method="GET" class="d-flex align-items-center btn btn-search" style="gap: 5px;">
+                            <button type="submit" class="border-0 bg-transparent p-0" style="outline: none; box-shadow: none;">
+                                <img src="/img/user-manage/search.png" alt="search" style="width: 20px; height: 20px; cursor: pointer;">
+                            </button>                            
+                            <input type="text" name="search" value="{{ request('search') }}" class="form-control border-0 bg-transparent" placeholder="Cari berdasarkan nama ..." style="outline: none; box-shadow: none;">
+                        </form>
                     </div>
 
                     <div class="dropdown">

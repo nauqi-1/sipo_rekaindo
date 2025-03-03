@@ -12,19 +12,35 @@ use App\Models\User;
 
 class UserManageController extends Controller
 {
-    public function index($id = null)
+    public function index(Request $request, $id = null)
     {
         // Ambil data dari Divisi, Role, dan Position
         $divisi = Divisi::all();  
         $roles = Role::all();  
-        $positions = Position::all();  
-        $users = User::with(['role', 'divisi', 'position'])->paginate(6);
+        $positions = Position::all();
 
-        if (request('search')) {
-            $users = User::where('firstname', 'like', '%' . request('search') . '%')->orWhere('lastname', 'like', '%' . request('search') . '%')->paginate(6);
+        // Mengambil parameter sorting, default 'asc'
+        $sortOrder = $request->query('sort', 'asc');
+
+        // Query awal dengan relasi yang diperlukan
+        $users = User::with(['role', 'divisi', 'position']);
+
+        // Jika ada pencarian, tambahkan kondisi pencarian
+        if ($request->filled('search')) {
+            $users->where(function ($query) use ($request) {
+                $query->where('firstname', 'like', '%' . $request->search . '%')
+                      ->orWhere('lastname', 'like', '%' . $request->search . '%');
+            });
         }
+
+        // Jika ada parameter sorting, lakukan pengurutan berdasarkan firstname
+        $users->orderBy('firstname', $sortOrder);
+
+        // Paginate hasil query
+        $users = $users->paginate(6);
+
         // Kirim data ke view user-manage
-        return view('superadmin.user-manage', compact('divisi', 'roles', 'positions', 'users'));
+        return view('superadmin.user-manage', compact('divisi', 'roles', 'positions', 'users', 'sortOrder'));
     }
 
 
@@ -68,10 +84,10 @@ class UserManageController extends Controller
             $sortOrder = $request->query('sort', 'asc');
 
             // Melakukan query ke database dengan pengurutan berdasarkan firstname
-            $users = User::orderBy('firstname', $sortOrder)->get();
+            $users = User::orderBy('firstname', $sortOrder)->paginate(6);
 
             // Mengirim data user ke view
-            return view('user.index', compact('users', 'sortOrder'));
+            return view('superadmin.user-manage', compact('users', 'sortOrder'));
         }
 
         
