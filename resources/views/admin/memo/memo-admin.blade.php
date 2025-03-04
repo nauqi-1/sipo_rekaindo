@@ -3,7 +3,6 @@
 @section('title', 'Admin')
 
 @section('content')
-
     <div class="container">
         <div class="header">
             <!-- Back Button -->
@@ -21,54 +20,56 @@
         </div>
 
         <!-- Filter & Search Bar -->
-        <div class="header-tools">
-            <div class="search-filter">
-                <div class="dropdown">
-                    <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="me-2">Status</span>
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#" style="justify-content: center; text-align: center;">
+        <div class="surat">
+            <div class="header-tools">
+                <div class="search-filter">
+                    <div class="dropdown">
+                        <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="me-2">Status</span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ route('memo.admin', ['status' => 'approve']) }}" style="justify-content: center; text-align: center;">
                                 Diterima
                             </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#" style="justify-content: center; text-align: center;">
-                                Proses
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#" style="justify-content: center; text-align: center;">
-                                Ditolak
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                    <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                    <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
-                </div>
-                <i class="bi bi-arrow-right"></i>
-                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                    <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                    <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
-                </div>
-                <div class="d-flex gap-2">
-                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                        <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
-                        <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
-                    </div>
-                </div>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('memo.admin', ['status' => 'pending']) }}" style="justify-content: center; text-align: center;">
+                                    Proses
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('memo.admin', ['status' => 'reject']) }}" style="justify-content: center; text-align: center;">
+                                    Ditolak
+                                </a>
+                            </li>
 
-                <!-- Add User Button to Open Modal -->
-                <a href="{{ route('memo-admin/add')}}" class="btn btn-add">+ Tambah Memo</a>
+                        </ul>
+                    </div>
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                        <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
+                        <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
+                    </div>
+                    <i class="bi bi-arrow-right"></i>
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                        <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
+                        <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                            <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+                        </div>
+                    </div>
+
+                    <!-- Add User Button to Open Modal -->
+                    <a href="{{ route('memo-admin/add')}}" class="btn btn-add">+ Tambah Memo</a>
+                </div>
             </div>
         </div>
-
+        
         <!-- Table -->
-        <table class="table">
-            <thead class="table-light">
+        <table class="table-light">
+            <thead>
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
@@ -117,9 +118,9 @@
                             <img src="/img/memo-admin/share.png" alt="share">
                         </a>
                         
-                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <!-- <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/memo-admin/Delete.png" alt="delete">
-                        </button>
+                        </button> -->
                        
                         <!-- Status Approve -->
                         @if ($memo->status == 'approve') 
@@ -136,6 +137,7 @@
                 @endforeach
             </tbody>
         </table>
+        {{ $memos->links('pagination::bootstrap-5') }}
 
         <!-- Modal Hapus -->
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -244,11 +246,37 @@
         successArsipModal.show();
     });
 
+    // Handle status filter
+    document.querySelectorAll('.dropdown-item[data-status]').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const status = this.getAttribute('data-status');
+            filterMemosByStatus(status);
+        });
+    });
+
+    function filterMemosByStatus(status) {
+        fetch(`/memo-admin/filter?status=${status}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newTableBody = doc.querySelector('tbody');
+            const newPagination = doc.querySelector('.pagination');
+            
+            document.querySelector('tbody').innerHTML = newTableBody.innerHTML;
+            document.querySelector('.pagination').innerHTML = newPagination?.innerHTML || '';
+        })
+        .catch(error => console.error('Error:', error));
+    }
     </script>
 
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-@endsection
 @endsection

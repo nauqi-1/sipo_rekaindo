@@ -14,60 +14,62 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Undangan Rapat</a>
+                    <a href="{{route('admin.dashboard')}}">Beranda</a>/<a href="#" style="color: #565656;">Undangan Rapat</a>
                 </div>
             </div>
         </div>
 
         <!-- Filter & Search Bar -->
-        <div class="header-tools">
-            <div class="search-filter">
-                <div class="dropdown">
-                    <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="me-2">Status</span>
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'asc']) }}" style="justify-content: center; text-align: center;">
-                                Diterima
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
-                                Proses
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
-                                Ditolak
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                    <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                    <img src="/img/undangan/kalender.png" alt="Kalender Icon" class="input-icon">
-                </div>
-                <i class="bi bi-arrow-right"></i>
-                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                    <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                    <img src="/img/undangan/kalender.png" alt="Kalender Icon" class="input-icon">
-                </div>
-                <div class="d-flex gap-2">
-                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                        <img src="/img/undangan/search.png" alt="search" style="width: 20px; height: 20px;">
-                        <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+        <div class="surat">
+            <div class="header-tools">
+                <div class="search-filter">
+                    <div class="dropdown">
+                        <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="me-2">Status</span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'asc']) }}" style="justify-content: center; text-align: center;">
+                                    Diterima
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
+                                    Proses
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
+                                    Ditolak
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                </div>
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                        <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
+                        <img src="/img/undangan/kalender.png" alt="Kalender Icon" class="input-icon">
+                    </div>
+                    <i class="bi bi-arrow-right"></i>
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                        <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
+                        <img src="/img/undangan/kalender.png" alt="Kalender Icon" class="input-icon">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                            <img src="/img/undangan/search.png" alt="search" style="width: 20px; height: 20px;">
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+                        </div>
+                    </div>
 
-                <!-- Add User Button to Open Modal -->
-                <a href="{{route ('add-undangan.admin')}}" class="btn btn-add">+ Tambah Undangan Rapat</a>
+                    <!-- Add User Button to Open Modal -->
+                    <a href="{{route ('add-undangan.admin')}}" class="btn btn-add">+ Tambah Undangan Rapat</a>
+                </div>
             </div>
         </div>
 
         <!-- Table -->
-        <table class="table">
-            <thead class="table-light">
+        <table class="table-light">
+            <thead>
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
@@ -111,7 +113,6 @@
                             <span class="badge bg-success">Diterima</span>
                         @endif
                     </td>
-                <td>
                     <td>
                         <a href="{{route ('kirim-undanganAdmin.admin')}}" class="btn btn-sm1">
                             <img src="/img/undangan/share.png" alt="share">

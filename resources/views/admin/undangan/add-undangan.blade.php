@@ -24,7 +24,7 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Home</a>/<a href="#">Undangan Rapat</a>/<a href="#" style="color: #565656;">Tambah Undangan Rapat</a>
+                    <a href="#">Beranda</a>/<a href="#">Undangan Rapat</a>/<a href="#" style="color: #565656;">Tambah Undangan Rapat</a>
                 </div>
             </div>
         </div>

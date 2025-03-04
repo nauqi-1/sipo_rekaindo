@@ -48,7 +48,7 @@
 <link rel="stylesheet" href="../assets/css/data-perusahaan.css" />
 <link rel="stylesheet" href="../css/superadmin.edit-profile.css" />
 <link rel="stylesheet" href="../css/superadmin/arsip.css"/>
-<link rel="stylesheet" href="../css/superadmin/surat.css"/>
+<link rel="stylesheet" href="../css/surat.css"/>
 <link rel="stylesheet" href="../css/superadmin/laporan.css"/>
 <link rel="stylesheet" href="../css/superadmin/cetak-laporan.css"/>
 <link rel="stylesheet" href="../css/superadmin/add-memo.css"/>

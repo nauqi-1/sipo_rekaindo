@@ -71,7 +71,7 @@
                     <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                         <img src="/img/arsip/delete.png" alt="delete">
                     </button>
-                    <button class="btn btn-sm3"><img src="/img/arsip/preview.png" alt="preview"></button>
+                    <a href="{{route ('arsip-viewMemo.admin')}}" class="btn btn-sm3"><img src="/img/arsip/preview.png" alt="preview"></a>
                 </td>
             </tr>
             @endfor

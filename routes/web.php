@@ -69,9 +69,8 @@ Route::get('/dashboard.admin',  [DashboardController::class, 'index']
 )->name('admin.dashboard');
 Route::get('/dashboard.superadmin',  [DashboardController::class, 'index']
 )->name('superadmin.dashboard');
-Route::get('/dashboard.manager', function () {
-    return view('manager.dashboard');
-})->name('manager.dashboard');
+Route::get('dashboard.manager', [DashboardController::class, 'index']
+)->name('manager.dashboard');
 
 // routes/web.php
 Route::middleware('web')->group(function () {
