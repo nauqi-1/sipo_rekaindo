@@ -50,15 +50,33 @@
         </form>
                 
 
-                <!-- Add User Button to Open Modal -->
-                <a href="{{ route('memo-admin/add')}}" class="btn btn-add">+ Tambah Memo</a>
+                        </ul>
+                    </div>
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                        <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
+                        <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
+                    </div>
+                    <i class="bi bi-arrow-right"></i>
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                        <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
+                        <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                            <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+                        </div>
+                    </div>
+
+                    <!-- Add User Button to Open Modal -->
+                    <a href="{{ route('memo-admin/add')}}" class="btn btn-add">+ Tambah Memo</a>
+                </div>
             </div>
-        </div>
         </div>
 
         <!-- Table -->
-        <table class="table">
-            <thead class="table-light">
+        <table class="table-light">
+            <thead>
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
@@ -106,8 +124,9 @@
                         @if ($memo->status != 'reject') 
                         <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
                             <img src="/img/memo-admin/share.png" alt="share">
-                        </a>
+                        </a>               
                         @endif             
+
                         <!-- Status Approve -->
                         @if ($memo->status == 'approve') 
                         <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
@@ -245,6 +264,33 @@
             }, { once: true }); // Tambahkan event listener hanya sekali
         });
 
+    // Handle status filter
+    document.querySelectorAll('.dropdown-item[data-status]').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const status = this.getAttribute('data-status');
+            filterMemosByStatus(status);
+        });
+    });
+
+    function filterMemosByStatus(status) {
+        fetch(`/memo-admin/filter?status=${status}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newTableBody = doc.querySelector('tbody');
+            const newPagination = doc.querySelector('.pagination');
+            
+            document.querySelector('tbody').innerHTML = newTableBody.innerHTML;
+            document.querySelector('.pagination').innerHTML = newPagination?.innerHTML || '';
+        })
+        .catch(error => console.error('Error:', error));
+    }
     </script>
 
 

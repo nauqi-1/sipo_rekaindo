@@ -66,10 +66,13 @@ Route::delete('/undangan/delete/{id_undangan}', [UndanganController::class, 'des
 Route::put('/undangan/update/{id_undangan}', [UndanganController::class, 'update'])->name('undangan/update');
 
 
+Route::get('/dashboard.admin',  [DashboardController::class, 'index']
+)->name('admin.dashboard');
+Route::get('/dashboard.superadmin',  [DashboardController::class, 'index']
+)->name('superadmin.dashboard');
+Route::get('dashboard.manager', [DashboardController::class, 'index']
+)->name('manager.dashboard');
 
-Route::get('/dashboard.admin', [DashboardController::class, 'index'])->name('admin.dashboard');
-Route::get('/dashboard.superadmin', [DashboardController::class, 'index'])->name('superadmin.dashboard');
-Route::get('/dashboard.manager', [DashboardController::class, 'index'])->name('manager.dashboard');
 
 // routes/web.php
 Route::middleware('web')->group(function () {

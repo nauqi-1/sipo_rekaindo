@@ -80,6 +80,9 @@ h1 {
     margin-right: 5px;
     margin-bottom: 3px;
 }
+.card-blue label {
+    color: #1E4178;
+}
 
 .card-white {
     background-color: #fff;

@@ -14,13 +14,16 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="#" style="color: #565656;">Undangan Rapat</a>
+
+                    <a href="{{route('admin.dashboard')}}">Beranda</a>/<a href="#" style="color: #565656;">Undangan Rapat</a>
+
                 </div>
             </div>
         </div>
 
         <!-- Filter & Search Bar -->
         <div class="surat">
+
         <div class="header-tools">
             <div class="search-filter">
             <form method="GET" action="{{ route('undangan.admin') }}" class="search-filter d-flex gap-2">
@@ -56,8 +59,8 @@
         </div>
 
         <!-- Table -->
-        <table class="table">
-            <thead class="table-light">
+        <table class="table-light">
+            <thead>
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
@@ -101,7 +104,6 @@
                             <span class="badge bg-success">Diterima</span>
                         @endif
                     </td>
-                <td>
                     <td>
                         <a href="{{route ('kirim-undanganAdmin.admin',['id' => $undangan->id_undangan])}}" class="btn btn-sm1">
                             <img src="/img/undangan/share.png" alt="share">
