@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\kategori_barang;
 use App\Models\Memo;
 use App\Models\Seri;
+use App\Models\Arsip;
 use App\Models\User;
 use App\Models\Divisi;
 use App\Models\Kirim_Document;
@@ -13,14 +14,54 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 class MemoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $divisi = Divisi::all();
-        $seri = Seri::all();  
-        $memos = Memo::with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(6);
-        
-        return view( Auth::user()->role->nm_role.'.memo.memo-'. Auth::user()->role->nm_role, compact('memos','divisi','seri'));
+        $seri = Seri::all();
+
+        // Ambil ID memo yang sudah diarsipkan oleh user saat ini
+        $memoDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
+
+        // Query memo dengan filter
+        $query = Memo::with('divisi')
+            ->whereNotIn('id_memo', $memoDiarsipkan) // Filter memo yang belum diarsipkan
+            ->orderBy('tgl_dibuat', 'desc');
+
+        // Filter berdasarkan status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter berdasarkan tanggal dibuat
+        if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
+            $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
+        } elseif ($request->filled('tgl_dibuat_awal')) {
+            $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
+        } elseif ($request->filled('tgl_dibuat_akhir')) {
+            $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
+        }
+
+        // Pencarian berdasarkan nama dokumen atau nomor memo
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('judul', 'like', '%' . $request->search . '%')
+                ->orWhere('nomor_memo', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Pagination
+        $memos = $query->paginate(6);
+
+        return view(Auth::user()->role->nm_role . '.memo.memo-' . Auth::user()->role->nm_role, compact('memos', 'divisi', 'seri'));
     }
+
+    public function show($id)
+    {
+        $memo = Memo::with('divisi')->findOrFail($id);
+        return view('admin.view-memo', compact('memo'));
+    }
+
+
 
     public function create()
     {
@@ -59,6 +100,7 @@ class MemoController extends Controller
     public function store(Request $request)
     {
         //  dd($request->all());
+
         $request->validate([
             'judul' => 'required|string|max:70',
             'isi_memo' => 'required|string',
@@ -66,7 +108,7 @@ class MemoController extends Controller
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
             'pembuat'=>'required|string|max:255',
-            'catatan'=>'required|string|max:255',
+            'catatan'=>'nullable|string|max:255',
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
@@ -76,6 +118,7 @@ class MemoController extends Controller
             'tanda_identitas.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
             'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
         ]);
+        
 
         $filePath = null;
         if ($request->hasFile('tanda_identitas')) {
@@ -87,7 +130,6 @@ class MemoController extends Controller
 
         $divisiId = auth()->user()->divisi_id_divisi;
         $seri = Seri::getNextSeri(true);
-     
         $seri = Seri::where('divisi_id_divisi', $divisiId)
                 ->where('tahun', now()->year)
                 ->latest()
@@ -98,6 +140,7 @@ class MemoController extends Controller
         }
         
         
+
         // Simpan dokumen
         $memo = Memo::create([
             'divisi_id_divisi' => $request->input('divisi_id_divisi'),
@@ -154,22 +197,37 @@ class MemoController extends Controller
             $memo->update(['tanggal_disahkan' => now()]);
         }
     }
-    public function approve(Memo $memo) {
-        $memo->update([
-            'status' => 'approve',
-            'tanggal_disahkan' => now() // Set tanggal disahkan
+    public function updateStatus(Request $request, $id)
+    {
+        $memo = Memo::findOrFail($id);
+
+        // Validasi input
+        $request->validate([
+            'status' => 'required|in:approve,reject,pending',
+            'catatan' => 'nullable|string',
         ]);
-    
-        return redirect()->back()->with('success', 'Dokumen berhasil disetujui.');
+
+        // Update status
+        $memo->status = $request->status;
+        
+        // Jika status 'approve', simpan tanggal pengesahan
+        if ($request->status == 'approve') {
+            $memo->tgl_disahkan = now();
+        } elseif ($request->status == 'reject') {
+            $memo->tgl_disahkan = now();
+        }else{
+            $memo->tgl_disahkan = null;
+        }
+
+        // Simpan catatan jika ada
+        $memo->catatan = $request->catatan;
+
+        // Simpan perubahan
+        $memo->save();
+
+        return redirect()->back()->with('success', 'Status memo berhasil diperbarui.');
     }
-    public function reject(Memo $memo) {
-        $memo->update([
-            'status' => 'reject',
-            'tanggal_disahkan' => now() // Set tanggal disahkan
-        ]);
-    
-        return redirect()->back()->with('error', 'Dokumen ditolak.');
-    }
+
     public function edit($id)
      {
          $memo = Memo::findOrFail($id);
@@ -246,5 +304,110 @@ class MemoController extends Controller
  
          return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo deleted successfully.');
      }
+
+    //  menampilkan file yang disimpan dalam database
+    public function showFile($id)
+    {
+        $memo = Memo::findOrFail($id);
+
+        if (!$memo->tanda_identitas) {
+            return response()->json(['error' => 'File tidak ditemukan.'], 404);
+        }
+
+        $fileContent = base64_decode($memo->tanda_identitas);
+        if (!$fileContent) {
+            return response()->json(['error' => 'File corrupt atau tidak bisa di-decode.'], 500);
+        }
+
+        // Pastikan MIME type valid
+        $finfo = finfo_open();
+        $mimeType = finfo_buffer($finfo, $fileContent, FILEINFO_MIME_TYPE);
+        finfo_close($finfo);
+
+        // Validasi MIME type
+        $validMimeTypes = [
+            'application/pdf' => 'pdf',
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png'
+        ];
+        
+        if (!isset($validMimeTypes[$mimeType])) {
+            return response()->json(['error' => 'Format file tidak didukung.'], 400);
+        }
+
+        return response($fileContent)
+            ->header('Content-Type', $mimeType)
+            ->header('Content-Disposition', 'inline; filename="dokumen.' . $validMimeTypes[$mimeType] . '"');
+    }
+
+    private function validateMimeType($mimeType)
+    {
+        // Valid MIME types for PDF, JPG, PNG, JPEG
+        $validMimeTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+        
+        if (in_array($mimeType, $validMimeTypes)) {
+            return $mimeType;
+        }
+
+        return 'application/octet-stream'; // Default fallback MIME type if not valid
+    }
+
+    // Fungsi tambahan untuk mendapatkan ekstensi dari MIME type
+    private function getExtension($mimeType)
+    {
+        $map = [
+            'application/pdf' => 'pdf',
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'application/msword' => 'doc',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+        ];
+        return $map[$mimeType] ?? 'bin';
+    }
+
+    // Fungsi download file
+    public function downloadFile($id)
+    {
+        $memo = Memo::findOrFail($id);
+
+        if (!$memo->tanda_identitas) {
+            return redirect()->back()->with('error', 'File tidak ditemukan.');
+        }
+
+        $fileData = base64_decode($memo->tanda_identitas);
+        $mimeType = finfo_buffer(finfo_open(), $fileData, FILEINFO_MIME_TYPE);
+        $extension = $this->getExtension($mimeType);
+
+        return response()->streamDownload(function () use ($fileData) {
+            echo $fileData;
+        }, "memo_{$id}.$extension", ['Content-Type' => $mimeType]);
+    }
+    
+     public function showTerkirim($id)
+    {
+        $memo = Kirim_Document::where('jenis_document', 'memo')
+            ->where('id_document', $id)
+            ->with(['memo', 'penerima', 'pengirim'])
+            ->firstOrFail();
+
+        return view('manager.memo.view-memoTerkirim', compact('memo'));
+    }
+
+    public function showDiterima($id)
+    {
+        $memo = Kirim_Document::where('jenis_document', 'memo')
+            ->where('id_document', $id)
+            ->with(['memo', 'pengirim', 'penerima'])
+            ->firstOrFail();
+
+        return view('manager.memo.view-memoDiterima', compact('memo'));
+    }
+    public function view($id)
+    {
+        $memo = Memo::where('id_memo', $id)->firstOrFail();
+
+        return view(Auth::user()->role->nm_role.'.memo.view-memo', compact('memo'));
+    }
+
      
 }

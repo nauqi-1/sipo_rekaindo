@@ -31,4 +31,8 @@ class Risalah extends Model
     {
         return $this->belongsTo(Divisi::class, 'id_divisi');
     }
+    public function arsip()
+    {
+        return $this->morphMany(Arsip::class, 'document');
+    }
 }

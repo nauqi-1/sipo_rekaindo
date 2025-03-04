@@ -19,6 +19,7 @@
         </div>
     </div>
 
+
     <!-- form add memo -->
     <div class="laporan">
         <div class="card">
@@ -53,3 +54,4 @@
     </div>
 </div>
 @endsection
+

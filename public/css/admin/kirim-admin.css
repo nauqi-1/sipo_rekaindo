@@ -163,8 +163,20 @@ h1 {
     padding-left: 20px;
     padding-bottom: 10px;
     border-radius: 5px;
-    margin: 0 auto;
-    
+    margin: 0 auto;   
+}
+
+.col textarea {
+    flex: 1;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    font-size: 14px;
+    color: #000;
+    margin-bottom: 0px;
+    padding: 8px;
+    margin-left: 20px;
+    width: 96.5%;
 }
 .col textarea {
     flex: 1;

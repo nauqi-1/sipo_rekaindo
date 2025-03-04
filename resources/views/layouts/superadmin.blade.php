@@ -24,6 +24,7 @@
  <!-- [Google Font] Family -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" id="main-font-link" />
 <!-- [phosphor Icons] https://phosphoricons.com/ -->
+
 <link rel="stylesheet" href="../assets/fonts/phosphor/duotone/style.css" />
 <!-- Bootstrap Icons-->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
@@ -51,7 +52,6 @@
 <link rel="stylesheet" href="../css/surat.css"/>
 <link rel="stylesheet" href="../css/superadmin/laporan.css"/>
 <link rel="stylesheet" href="../css/superadmin/cetak-laporan.css"/>
-<link rel="stylesheet" href="../css/superadmin/add-memo.css"/>
 <link rel="stylesheet" href="../css/info.css"/>
 
   </head>
@@ -181,6 +181,35 @@
             fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']
         });
     });
+    document.getElementById('confirmDelete').addEventListener('click', function () {
+            // Ambil referensi modal
+            const deleteModalEl = document.getElementById('deleteModal');
+            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
+            
+            // Tutup modal Hapus terlebih dahulu
+            deleteModal.hide();
+            
+            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
+            deleteModalEl.addEventListener('hidden.bs.modal', function () {
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+            }, { once: true }); // Tambahkan event listener hanya sekali
+        });
+
+        document.getElementById('confirmArsip').addEventListener('click', function () {
+            // Ambil referensi modal
+            const deleteModalEl = document.getElementById('arsipModal');
+            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
+            
+            // Tutup modal Hapus terlebih dahulu
+            deleteModal.hide();
+            
+            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
+            deleteModalEl.addEventListener('hidden.bs.modal', function () {
+                const successModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
+                successModal.show();
+            }, { once: true }); // Tambahkan event listener hanya sekali
+        });
     </script>
   </body>
   <!-- [Body] end -->

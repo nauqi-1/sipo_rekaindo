@@ -41,7 +41,7 @@
                     <div class="card-white">
                         <label for="seri">No Seri</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri">
+                        <input type="text" id="seri" value="{{$undangan->seri_surat }}">
                     </div>
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
@@ -61,7 +61,7 @@
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tanggal">
+                        <input type="text" id="tanggal" value="{{$undangan->tgl_dibuat }}">
                     </div>
                 </div>
             </div>
@@ -75,34 +75,35 @@
                     <div class="card-white">
                         <label for="nomor">No Dokumen</label>
                         <div class="separator"></div>
-                        <input type="text" id="nomor">
+                        <input type="text" id="nomor" value="{{$undangan->nomor_undangan }}">
                     </div>
                     <div class="card-white">
                         <label for="divisi">Divisi</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri">
+                        <input type="text" id="divisi" value="{{$undangan->divisi->nm_divisi }}">
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
                         <div class="separator"></div>
-                        <input type="text" id="perihal">
+                        <input type="text" id="perihal" value="{{$undangan->judul }}">
                     </div>
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl">
+                        <input type="text" id="tgl" value="{{$undangan->tgl_dibuat }}">
                     </div>
-                    <div class="card-white">
+                    <!-- <div class="card-white">
                         <label for="lampiran">Lampiran</label>
+
                         <div class="separator"></div>
-                        <input type="text" id="kepada">
+                        <input type="text" id="kepada" value="{{$undangan->tujuan }}">
                     </div>
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
                         <button class="btn-file"><img src="/img/mata.png" alt="view"><a href="#">Lihat</a></button>
                         <button class="down btn-file"><img src="/img/download.png" alt="down"><a href="#">Unduh</a></button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="row mb-4" style="gap: 20px;">
@@ -117,16 +118,7 @@
                         <div class="separator"></div>
                         <button class="status">Diterima</button>
                     </div>
-                    <div class="card-white">
-                        <label for="tindakan">Tindakan Selanjutnya</label>
-                        <div class="separator"></div>
-                        <input type="text" id="tindakan">
-                    </div>
-                    <div class="card-white">
-                        <label for="catatan">Catatan</label>
-                        <div class="separator"></div>
-                        <input type="text" id="catatan">
-                    </div>
+                    
                 </div>
             </div>
         </div>

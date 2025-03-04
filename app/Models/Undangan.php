@@ -30,4 +30,13 @@ class Undangan extends Model
     {
         return $this->belongsTo(Divisi::class, 'divisi_id_divisi','id_divisi');
     }
+    public function arsip()
+    {
+        return $this->morphMany(Arsip::class, 'document');
+    }
+    public function kirimDocument()
+    {
+        return $this->hasMany(Kirim_Document::class, 'id_document');
+
+    }
 }

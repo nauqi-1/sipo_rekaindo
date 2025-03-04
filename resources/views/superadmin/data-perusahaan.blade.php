@@ -28,9 +28,11 @@
                         <input type="text" class="form-control" name="nama_instansi" value="{{ $perusahaan->nama_instansi ?? '' }}" readonly required>
                     </div>
 
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Alamat Situs Web</label>
                         <input type="text" class="form-control" name="alamat_web" value="{{ $perusahaan->alamat_web ?? '' }}" readonly required>
+
                     </div>
 
                     <div class="mb-3">

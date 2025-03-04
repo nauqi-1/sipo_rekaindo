@@ -14,34 +14,41 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Memo</a>
+                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="#" style="color: #565656;">Memo</a>
                 </div>
             </div>
         </div>
 
         <!-- Filter & Search Bar -->
-        <div class="surat">
-            <div class="header-tools">
-                <div class="search-filter">
-                    <div class="dropdown">
-                        <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="me-2">Status</span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('memo.admin', ['status' => 'approve']) }}" style="justify-content: center; text-align: center;">
-                                Diterima
-                            </a>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" href="{{ route('memo.admin', ['status' => 'pending']) }}" style="justify-content: center; text-align: center;">
-                                    Proses
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" href="{{ route('memo.admin', ['status' => 'reject']) }}" style="justify-content: center; text-align: center;">
-                                    Ditolak
-                                </a>
-                            </li>
+         <div class="surat">
+        <div class="header-tools">
+            <div class="search-filter">
+            <form method="GET" action="{{ route('memo.admin') }}" class="search-filter d-flex gap-2">
+                <div class="dropdown">
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">Semua Status</option>
+                        <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                        <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
+                    </select>
+                </div>
+            <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                <input type="date" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" onchange="this.form.submit()" placeholder="Tanggal Awal" style="width: 100%;">
+                <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
+            </div>
+            <i class="bi bi-arrow-right"></i>
+            <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                <input type="date" name="tgl_dibuat_akhir" class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" onchange="this.form.submit()" placeholder="Tanggal Akhir" style="width: 100%;">
+                <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
+            </div>
+            <div class="d-flex gap-2">
+                <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                    <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
+                    <input type="text" name="search" class="form-control" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()">
+                </div>
+            </div>
+        </form>
+                
 
                         </ul>
                     </div>
@@ -66,7 +73,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Table -->
         <table class="table-light">
             <thead>
@@ -114,24 +121,31 @@
                         @endif
                     </td>
                     <td>
+                        @if ($memo->status != 'reject') 
                         <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
                             <img src="/img/memo-admin/share.png" alt="share">
-                        </a>
-                        
-                        <!-- <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            <img src="/img/memo-admin/Delete.png" alt="delete">
-                        </button> -->
-                       
+                        </a>               
+                        @endif             
+
                         <!-- Status Approve -->
                         @if ($memo->status == 'approve') 
-                            <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
-                                <img src="/img/memo-admin/arsip.png" alt="arsip">
+                        <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
+                            <button type="submit" class="btn btn-sm4">
+                                <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                             </button>
+                        </form>
                         @else
                             <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
                                 <img src="/img/memo-admin/edit.png" alt="edit">
                             </a>
                         @endif
+
+                        <a href="{{ route('view.memo',$memo->id_memo) }}" class="btn btn-sm1">
+                            <img src="/img/memo-admin/viewBlue.png" alt="view">
+                        </a>
+
                     </td>
                 </tr>
                 @endforeach
@@ -156,7 +170,7 @@
                             <form method="POST" action="{{ route('memo.destroy', $memo->id_memo) }}" style="display: inline;">
                         @csrf
                         @method('DELETE')
-                            <button type="button" class="btn-ok" id="confirmDelete">OK</button>
+                            <button type="submit" class="btn-ok" id="confirmDelete">OK</button>
                             </form>
                         </div>
                     </div>
@@ -224,27 +238,31 @@
     </div>
 
     <script>
-    // Tambahkan event listener untuk tombol OK pada modal Hapus
-    document.getElementById('confirmDelete').addEventListener('click', function () {
-        // Tutup modal Hapus
-        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        deleteModal.hide();
+        // Tambahkan event listener untuk tombol OK pada modal Hapus
+        document.getElementById('confirmDelete').addEventListener('click', function () {
+            // Tutup modal Hapus
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.hide();
 
-        // Tampilkan modal Berhasil
-        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-        successModal.show();
-    });
+            // Tampilkan modal Berhasil
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        });
 
-    // Tambahkan event listener untuk tombol OK pada modal Arsip
-    document.getElementById('confirmArsip').addEventListener('click', function () {
-        // Tutup modal Arsip
-        const arsipModal = new bootstrap.Modal(document.getElementById('arsipModal'));
-        arsipModal.hide();
-
-        // Tampilkan modal Berhasil
-        const successArsipModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
-        successArsipModal.show();
-    });
+        document.getElementById('confirmArsip').addEventListener('click', function () {
+            // Ambil referensi modal
+            const deleteModalEl = document.getElementById('arsipModal');
+            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
+            
+            // Tutup modal Hapus terlebih dahulu
+            deleteModal.hide();
+            
+            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
+            deleteModalEl.addEventListener('hidden.bs.modal', function () {
+                const successModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
+                successModal.show();
+            }, { once: true }); // Tambahkan event listener hanya sekali
+        });
 
     // Handle status filter
     document.querySelectorAll('.dropdown-item[data-status]').forEach(item => {

@@ -58,9 +58,9 @@
             ><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
           </a>
           <ul class="pc-submenu">
-            <li class="pc-item"><a class="pc-link" href="{{ route('arsip-memo.' . Auth::user()->role->nm_role) }}">Memo</a></li>
-            <li class="pc-item pc-hasmenu"><a href="{{ route('arsip-undangan.' . Auth::user()->role->nm_role) }}" class="pc-link">Undangan Rapat</span></a></li>
-            <li class="pc-item pc-hasmenu"><a href="{{ route('arsip-risalah.' . Auth::user()->role->nm_role) }}" class="pc-link">Risalah Rapat</span></a></li>
+            <li class="pc-item"><a class="pc-link" href="{{ route('arsip.memo' ) }}">Memo</a></li>
+            <li class="pc-item pc-hasmenu"><a href="{{ route('arsip.undangan') }}" class="pc-link">Undangan Rapat</span></a></li>
+            <li class="pc-item pc-hasmenu"><a href="{{ route('arsip.risalah' ) }}" class="pc-link">Risalah Rapat</span></a></li>
           </ul>
         </li>
         @endif

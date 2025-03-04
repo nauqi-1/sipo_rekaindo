@@ -21,48 +21,39 @@
 
         <!-- Filter & Search Bar -->
         <div class="surat">
-            <div class="header-tools">
-                <div class="search-filter">
-                    <div class="dropdown">
-                        <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="me-2">Status</span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'asc']) }}" style="justify-content: center; text-align: center;">
-                                    Diterima
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
-                                    Proses
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
-                                    Ditolak
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                        <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                    </div>
-                    <i class="bi bi-arrow-right"></i>
-                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                        <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                    </div>
-                    <div class="d-flex gap-2">
-                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                            <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
-                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
-                        </div>
-                    </div>
-
-                    <!-- Add User Button to Open Modal -->
-                    <a href="{{ route('memo-superadmin/add') }}" class="btn btn-add">+ Tambah Memo</a>
+        <div class="header-tools">
+            <div class="search-filter">
+            <form method="GET" action="{{ route('memo.superadmin') }}" class="search-filter d-flex gap-2">
+                <div class="dropdown">
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">Semua Status</option>
+                        <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                        <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
+                    </select>
+                </div>
+            <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                <input type="date" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" onchange="this.form.submit()" placeholder="Tanggal Awal" style="width: 100%;">
+                <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
+            </div>
+            <i class="bi bi-arrow-right"></i>
+            <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                <input type="date" name="tgl_dibuat_akhir" class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" onchange="this.form.submit()" placeholder="Tanggal Akhir" style="width: 100%;">
+                <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
+            </div>
+            <div class="d-flex gap-2">
+                <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                    <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
+                    <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                 </div>
             </div>
+        </form>
+                
+
+                <!-- Add User Button to Open Modal -->
+                <a href="{{ route('memo-superadmin/add')}}" class="btn btn-add">+ Tambah Memo</a>
+            </div>
+        </div>
         </div>
 
         <!-- Table -->
@@ -120,10 +111,15 @@
                         </button>
                         </form>
                         
-                        @if ($memo->status == 'Approve')
-                            <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
+                        @if ($memo->status == 'approve')
+                        <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
+                            <button type="submit" class="btn btn-sm4">
                                 <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                             </button>
+                        </form>
+
                         @else
                             <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
                                 <img src="/img/memo-superadmin/edit.png" alt="edit">

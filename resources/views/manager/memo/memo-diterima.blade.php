@@ -106,12 +106,11 @@
                         @endif
                     </td>
                     <td>
-                        <!-- <a href="{{ route('kirim-memoSuperadmin.superadmin') }}" class="btn btn-sm1">
-                            <img src="/img/memo-supervisor/share.png" alt="share">
-                        </a> -->
-                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                       
+                        <!-- <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/memo-supervisor/Delete.png" alt="delete">
-                        </button>
+                        </button> -->
+
                         <a class="btn btn-sm3" href="{{ route('view.memo-diterima',$kirim->id_document) }}">
                             <img src="/img/memo-supervisor/viewBlue.png" alt="view">
                         </a>

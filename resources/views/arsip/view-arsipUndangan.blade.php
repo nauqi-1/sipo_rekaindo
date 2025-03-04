@@ -15,16 +15,16 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('arsip-undangan.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('arsip.undangan')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Detail Arsip Undangan</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                <a href="{{route('superadmin.dashboard')}}">Beranda</a>/
+                <a href="{{route(Auth::user()->role->nm_role.'.dashboard')}}">Beranda</a>/
                 <a href="#">Arsip</a>/
-                <a href="{{route ('arsip-undangan.superadmin')}}">Arsip Undangan</a>/
+                <a href="{{route ('arsip.undangan')}}">Arsip Undangan</a>/
                 <a style="color:#565656" href="#">Detail Arsip Undangan</a>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                     <div class="card-white">
                         <label for="seri">No Seri</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri">
+                        <input type="text" id="seri" value="{{ $undangan->seri_surat }}" >
                     </div>
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
@@ -58,7 +58,7 @@
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tanggal">
+                        <input type="text" id="tanggal" value="{{ $undangan->tgl_disahkan }}" readonly>
                     </div>
                 </div>
             </div>
@@ -72,34 +72,34 @@
                     <div class="card-white">
                         <label for="nomor">No Dokumen</label>
                         <div class="separator"></div>
-                        <input type="text" id="nomor">
+                        <input type="text" id="nomor" value="{{ $undangan->nomor_undangan }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="divisi">Divisi</label>
                         <div class="separator"></div>
-                        <input type="text" id="divisi">
+                        <input type="text" id="divisi" value="{{ $undangan->divisi->nm_divisi }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
                         <div class="separator"></div>
-                        <input type="text" id="perihal">
+                        <input type="text" id="perihal" value="{{ $undangan->judul }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl">
+                        <input type="text" id="tgl" value="{{ $undangan->tgl_dibuat }}" readonly>
                     </div>
-                    <div class="card-white">
+                    <!-- <div class="card-white">
                         <label for="lampiran">Lampiran</label>
                         <div class="separator"></div>
-                        <input type="text" id="kepada">
-                    </div>
+                        <input type="text" id="kepada" >
+                    </div> -->
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
                         <!-- <button class="btn-file"><img src="/img/mata.png" alt="view"><a href="#">Lihat</a></button>
                         <button class="down btn-file"><img src="/img/download.png" alt="down"><a href="#">Unduh</a></button> -->
-                        <a href="#" class="btn btn-file"><img src="/img/mata.png" alt="view"> Lihat</a>
+                        <a href="{{ route('view-undanganPDF', $undangan->id_undangan)  }}" class="btn btn-file"><img src="/img/mata.png" alt="view"> Lihat</a>
                         <a href="#" class="btn btn-file down"><img src="/img/download.png" alt="down"> Unduh</a>
                     </div>
                 </div>

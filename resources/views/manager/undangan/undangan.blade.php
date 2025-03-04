@@ -86,37 +86,44 @@
                 </tr>
             </thead>
             <tbody>
-                @for ($i = 1; $i <= 3; $i++)
+            @foreach ($undangans as $index =>$undangan)
                 <tr>
-                    <td class="nomor">{{ $i }}</td>
-                    <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">Undangan Rapat Kajian</td>
-                    <td>21-10-2024</td>
-                    <td>1596</td>
-                    <td>837.06/REKA/GEN/VII/2024</td>
-                    <td>22-10-2024</td>
-                    <td>HR & GA</td>
+                    <td class="nomor">{{ $index + 1 }}</td>
+                    <td class="nama-dokumen 
+                        {{ $undangan->undangan->status == 'Reject' ? 'text-danger' : ($undangan->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $undangan->undangan->judul }}
+                    </td>
+                    <td>{{ \Carbon\Carbon::parse($undangan->undangan->tgl_dibuat)->format('d-m-Y') }}</td>
+                    <td>{{ $undangan->undangan->seri_surat }}</td>
+                    <td>{{ $undangan->undangan->nomor_undangan }}</td>
+                    <td>{{ $undangan->undangan->tgl_disahkan ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $undangan->undangan->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                    </td>
                     <td>
-                        @if ($i % 3 == 0)
+                        @if ($undangan->undangan->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($i % 2 == 0)
+                        @elseif ($undangan->undangan->status == 'pending')
+
                             <span class="badge bg-warning">Diproses</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
                         @endif
                     </td>
                     <td>
-                        <a href="{{route ('approve.undangan')}}" class="btn btn-sm1">
+                        <a href="{{route ('persetujuan.undangan',['id'=>$undangan->undangan->id_undangan])}}" class="btn btn-sm1">
                             <img src="/img/undangan/share.png" alt="share">
                         </a>
-                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <!-- <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <img src="/img/undangan/Delete.png" alt="delete">
-                        </button>
-                        <a class="btn btn-sm3" href="{{route ('view.undangan')}}">
+                        </button> -->
+                        <a class="btn btn-sm3" href="{{route ('view.undangan',['id'=>$undangan->undangan->id_undangan])}}">
+
                             <img src="/img/undangan/viewBlue.png" alt="view">
                         </a>
                     </td>
                 </tr>
-                @endfor
+                @endforeach
+
             </tbody>
         </table>
 

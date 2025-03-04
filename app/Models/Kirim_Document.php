@@ -27,9 +27,14 @@ class Kirim_Document extends Model
     }
 
     public function memo()
-{
-    return $this->belongsTo(Memo::class, 'id_document'); // Sesuaikan dengan foreign key yang benar
-}
+    {
+        return $this->belongsTo(Memo::class, 'id_document'); // Sesuaikan dengan foreign key yang benar
+    }
+
+    public function undangan()
+    {
+        return $this->belongsTo(Undangan::class, 'id_document'); // Sesuaikan dengan foreign key yang benar
+    }
 
 
     // Relasi ke User (Penerima)

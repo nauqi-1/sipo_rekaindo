@@ -1,6 +1,7 @@
 @extends('layouts.superadmin')
 
 @section('title', 'Tambah Risalah Rapat')
+
     
 @section('content')
 <div class="container">

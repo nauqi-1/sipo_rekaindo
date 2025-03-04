@@ -4,6 +4,8 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\KirimController;
+use App\Http\Controllers\ArsipController;
+
 use App\Http\Controllers\UndanganController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +30,10 @@ use Illuminate\Support\Facades\Route;
         ->name('undangan-superadmin/add');
     Route::post('undangan-superadmin/add/doc', [UndanganController::class, 'store'])
     ->name('undangan-superadmin.store');
+    Route::get('undangan-admin/add', [UndanganController::class, 'create'])
+        ->name('undangan-admin/add');
+    Route::post('undangan-admin/add/doc', [UndanganController::class, 'store'])
+    ->name('undangan-admin.store');
 
 
 
@@ -48,5 +54,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/documents/sent', [KirimController::class, 'sentDocuments'])->name('documents.sent');
         Route::get('/documents/received', [KirimController::class, 'receivedDocuments'])->name('documents.received');
         Route::post('/documents/read/{id}', [KirimController::class, 'markAsRead'])->name('documents.read');
-        
+
+        Route::post('/arsip/{document_id}/{jenis_document}', [ArsipController::class, 'archiveDocument'])->name('arsip.archive');
+        Route::delete('/arsip/{document_id}/{jenis_document}', [ArsipController::class, 'restoreDocument'])->name('arsip.restore');
+        Route::get('/arsip/memo', [ArsipController::class, 'indexMemo'])->name('arsip.memo');
+        Route::get('/arsip/undangan', [ArsipController::class, 'indexUndangan'])->name('arsip.undangan');
+        Route::get('/arsip/risalah', [ArsipController::class, 'indexRisalah'])->name('arsip.risalah');      
+
 });

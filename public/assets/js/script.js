@@ -562,6 +562,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+
     // Modal Overlay Upload File - Menampilkan Modal
     document.getElementById('openUploadModal').addEventListener('click', function () {
       var uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
@@ -854,6 +855,7 @@ document.addEventListener("DOMContentLoaded", function () {
   `;
   document.getElementById('risalahContainer').appendChild(newRow);
   });
+
 
 // =======================================================
 // =======================================================

@@ -1,6 +1,6 @@
 @extends('layouts.superadmin')
 
-@section('title', 'Arsip Memo')
+@section('title', 'Arsip Risalah')
       
 @section('content')
 <div class="container">
@@ -9,20 +9,20 @@
         <div class="back-button">
             <a href="{{route('superadmin.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
         </div>
-        <h1>Memo</h1>
+        <h1>Risalah Rapat</h1>
     </div>        
     <div class="row">
         <div class="breadcrumb-wrapper">
             <div class="breadcrumb" style="gap: 5px;">
-                <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Memo</a>
+                <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Risalah Rapat</a>
             </div>
         </div>
     </div>
 
     <!-- Filter & Search Bar -->
     <div class="arsip">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="title"><b>Arsip Memo</b></h2>
+        <div class="title d-flex justify-content-between align-items-center mb-3">
+            <h2><b>Arsip Risalah Rapat</b></h2>
             <div class="d-flex gap-2">
                 <div class="search">
                     <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
@@ -59,7 +59,7 @@
             @for ($i = 1; $i <= 3; $i++)
             <tr>
                 <td class="nomor">{{ $i }}</td>
-                <td class="nama-dokumen text-success">Memo Monitoring Risiko</td>
+                <td class="nama-dokumen text-success">Risalah Rapat Pengesahan</td>
                 <td>21-10-2024</td>
                 <td>1596</td>
                 <td>837.06/REKA/GEN/VII/2024</td>
@@ -73,15 +73,15 @@
                     <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                         <img src="/img/arsip/delete.png" alt="delete">
                     </button>
-                    <a class="btn btn-sm3" href="{{route('arsip-viewMemo.superadmin')}}"><img src="/img/arsip/preview.png" alt="preview"></a>
+                    <a class="btn btn-sm3" href="{{route('view.risalah-arsip')}}"><img src="/img/arsip/preview.png" alt="preview"></a>
                 </td>
             </tr>
             @endfor
         </tbody>
     </table>
 
-    <!-- Modal Hapus -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <!-- Modal Hapus -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <!-- Tombol Close -->
@@ -90,10 +90,10 @@
                     <!-- Ikon atau Gambar -->
                     <img src="/img/risalah/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
                     <!-- Tulisan -->
-                    <h5 class="mb-4" style="color: #545050;"><b>Hapus Memo?</b></h5>
+                    <h5 class="mb-4" style="color: #545050;"><b>Hapus Risalah Rapat?</b></h5>
                     <!-- Tombol -->
                     <div class="d-flex justify-content-center gap-3">
-                        <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('arsip-memo.superadmin')}}">Batal</a></button>
+                        <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('arsip.risalah')}}">Batal</a></button>
                         <button type="button" class="btn ok" id="confirmDelete">Oke</button>
                     </div>
                 </div>
@@ -111,9 +111,9 @@
                     <!-- Ikon atau Gambar -->
                     <img src="/img/risalah/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                     <!-- Tulisan -->
-                    <h5 class="mb-4" style="color: #545050; font-size: 20px;"><b>Berhasil Menghapus <br>Memo</b></h5>
+                    <h5 class="mb-4" style="color: #545050; font-size: 20px;"><b>Berhasil Menghapus <br>Risalah Rapat</b></h5>
                     <!-- Tombol -->
-                    <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('arsip-memo.superadmin')}}">Kembali</a></button>
+                    <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('arsip.risalah')}}">Kembali</a></button>
                 </div>
             </div>
         </div>

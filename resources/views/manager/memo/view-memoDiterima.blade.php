@@ -38,11 +38,12 @@
                     <div class="card-white">
                         <label for="seri">No Seri</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri">
+                        <input type="text" id="seri" value="{{ $memo->memo->seri_surat }}">
                     </div>
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
+
                         <input type="text" id="diterima">
                     </div>
                 </div>
@@ -53,7 +54,15 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        <button class="status">Diproses</button>
+                        <button class="status">
+                        @if ($memo->memo->status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($memo->memo->status == 'pending')
+                            <span class="badge bg-warning">Diproses</span>
+                        @else
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
+                        </button>
                     </div>
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
@@ -62,6 +71,8 @@
                     </div>
                 </div>
             </div>
+            
+
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="card-blue">
@@ -89,57 +100,67 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl"value="{{ $memo->memo->tgl_dibuat }}">
                     </div>
-                    <div class="card-white">
+                    <!-- <div class="card-white">
                         <label for="lampiran">Lampiran</label>
                         <div class="separator"></div>
                         <input type="text" id="kepada">
-                    </div>
+                    </div> -->
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
-                        <button class="btn-file"><img src="/img/mata.png" alt="view"><a href="#">Lihat</a></button>
-                        <button class="down btn-file"><img src="/img/download.png" alt="down"><a href="#">Unduh</a></button>
+                        <button class="btn-file"  onclick="window.location.href='{{ route('view-memoPDF', $memo->memo->id_memo) }}'"><img src="/img/mata.png" alt="view">Lihat</button>
+
+                        
                     </div>
                 </div>
             </div>
 
+            <form id="approvalForm" method="POST" action="{{ route('memo.updateStatus', $memo->memo->id_memo) }}">
+            @csrf
+            @method('PUT')
+
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="label1 card-blue1">
-                        <!-- <span>Pengesahan</span> -->
                         <label for="pengesahan" class="label">Pengesahan</label>
+                        
                         <div class="form-check1">
                             <label class="form-check-label" for="approve">Diterima</label>
-                            <input type="checkbox" class="form-check-input" id="approve" name="approval" value="approve">
+                            <input type="radio" class="form-check-input approval-checkbox" id="approve" name="status" value="approve">
                         </div>
                         <div class="form-check2">
                             <label class="form-check-label" for="reject">Ditolak</label>
-                            <input type="checkbox" class="form-check-input" id="reject" name="approval" value="reject">
+                            <input type="radio" class="form-check-input approval-checkbox" id="reject" name="status" value="reject">
                         </div>
                         <div class="form-check3">
-                            <label class="form-check-label" for="reject">Dikoreksi</label>
-                            <input type="checkbox" class="form-check-input" id="reject" name="approval" value="reject">
+                            <label class="form-check-label" for="correction">Dikoreksi</label>
+                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="pending">
                         </div>
                     </div>
+
                     <div class="card-blue1">Tindakan Selanjutnya</div>
                     <div class="card-white">
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
+                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="nextAction" name="next_action">
                             <option disabled selected style="text-align: left;">--Pilih Tindakan--</option>
                             <option value="koreksi">Koreksi kembali</option>
                             <option value="dilanjutkan">Dilanjutkan</option>
                         </select>                    
                     </div>
                 </div>
+
                 <div class="col">
                     <div class="card-blue1">Catatan</div>
-                    <textarea type="text" for="catatan" id="catatan" placeholder="Berikan Catatan"></textarea>        
+                    <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>        
                 </div>             
             </div>
-        </div>
-        <div class="footer">
-            <button type="button" class="btn back" id="backBtn">Kembali</button>
-            <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
-        </div>
+
+            <div class="footer">
+                <button type="button" class="btn back" id="backBtn">Kembali</button>
+                <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+            </div>
+        </form>
+
+
 
         <!-- Modal kirim -->
         <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
@@ -163,22 +184,40 @@
         </div>
 
         <!-- Modal Berhasil -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <!-- Tombol Close -->
                     <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/memo-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirim Memo</b></h5>
-                        <!-- Tombol -->
-                        <button type="button" class="btn success" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}">Kembali</a></button>
+                        <img src="/img/memo-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
+                        <h5 class="mb-4" style="color: #545050;"><b>Kirim Memo Diterima?</b></h5>
+                        <div class="d-flex justify-content-center gap-3">
+                            <button type="button" class="btn cancel" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn ok" id="confirmSubmit">Oke</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkboxes = document.querySelectorAll('.approval-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    checkboxes.forEach(cb => {
+                        if (cb !== this) cb.checked = false;
+                    });
+                });
+            });
+
+            // Ketika tombol konfirmasi di modal ditekan, submit form
+            document.getElementById('confirmSubmit').addEventListener('click', function () {
+                document.getElementById('approvalForm').submit();
+            });
+        });
+
+    </script>
 </body>
 </html>

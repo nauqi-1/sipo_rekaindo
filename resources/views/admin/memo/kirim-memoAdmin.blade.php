@@ -14,7 +14,7 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Kirim Memo</a>
+                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="{{ route('memo.admin') }}">Memo</a>/<a href="#" style="color: #565656;">Kirim Memo</a>
                 </div>
             </div>
         </div>
@@ -77,12 +77,12 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl-buat" value="{{ $memo->tgl_dibuat }}" readonly>
                     </div>
-                    <div class="card-white">
+                    <!-- <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
-                        <button class="view"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
-                        <button class="down"><img src="/img/memo-admin/down.png" alt="down">Unduh</button>
-                    </div>
+                        <a class="view" href="{{ route('memo.preview', $memo->id_memo)  }}"> <img src="/img/memo-admin/view.png" alt="view" >Lihat</a>
+                        <a class="down" href="{{ route('memo.download', $memo->id_memo) }}"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
+                    </div> -->
                 </div>
             </div>
             <div class="row mb-4" style="gap: 20px;">
@@ -117,7 +117,7 @@
             </div>
         </div>
         <div class="footer">
-            <button type="button" class="btn back" id="backBtn">Kembali</button>
+            <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('memo.admin') }}'">Kembali</button>
             <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
         </div>
         </form>

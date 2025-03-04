@@ -12,17 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('arsip', function (Blueprint $table) {
-            $table->integer('id_arsip', true);
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('memo_id');
-            $table->timestamps();
 
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('document_id'); // ID dari memo, undangan, atau risalah
+            $table->string('jenis_document'); // Model: Memo, Undangan, atau Risalah
+    
             // Foreign Key
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('memo_id')->references('id')->on('memo')->onDelete('cascade');
 
-            // Supaya tidak ada duplikasi arsip untuk user yang sama
-            $table->unique(['user_id', 'memo_id']);
         });
     }
 

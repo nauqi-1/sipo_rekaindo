@@ -6,21 +6,57 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Seri;
 use App\Models\User;
 use App\Models\Divisi;
+use App\Models\Arsip;
 use App\Models\Undangan;
 
 use Illuminate\Http\Request;
 
 class UndanganController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $divisi = Divisi::all();
         $seri = Seri::all();  
-        $undangans = Undangan::with('divisi')->orderBy('tgl_dibuat', 'desc')->get();
+
+        // Ambil ID memo yang sudah diarsipkan oleh user saat ini
+        $undanganDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
+
+        // Ambil memo yang belum diarsipkan oleh user saat ini
+        $query = Undangan::with('divisi')
+        ->whereNotIn('id_undangan', $undanganDiarsipkan) // Filter memo yang belum diarsipkan
+        ->orderBy('tgl_dibuat', 'desc');
+        
+        // Filter berdasarkan status
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        // Filter berdasarkan tanggal dibuat
+        if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
+            $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
+        } elseif ($request->filled('tgl_dibuat_awal')) {
+            $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
+        } elseif ($request->filled('tgl_dibuat_akhir')) {
+            $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
+        }
+
+        // Pencarian berdasarkan nama dokumen atau nomor undangans
+        if ($request->has('search') && $request->search != '') {
+            $query->where(function ($q) use ($request) {
+                $q->where('judul', 'like', '%' . $request->search . '%')
+                  ->orWhere('nomor_undangan', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Mengambil daftar memo dengan relasi divisi
+        $undangans = $query->with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(10);
+
+        $undangans = $query->paginate(6);
 
     
         return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri'));
     }
+   
     public function create()
     {
         $divisiId = auth()->user()->divisi_id_divisi;
@@ -64,7 +100,7 @@ class UndanganController extends Controller
             'nomor_undangan' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
             'pembuat' => 'required|string|max:255',
-            'catatan'=>'required|string|max:255',
+            'catatan'=>'nullable|string|max:255',
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
@@ -160,11 +196,15 @@ class UndanganController extends Controller
          $divisi = Divisi::all();
          $seri = Seri::all();  
          
-         return view(Auth::user()->role->nm_rol.'.undangan.edit-undangan', compact('undangan', 'divisi', 'seri'));
+
+         return view(Auth::user()->role->nm_role.'.undangan.edit-undangan', compact('undangan', 'divisi', 'seri'));
+
      }
      public function update(Request $request, $id)
      {
+        
         $undangan = Undangan::findOrFail($id);
+        dd($request->all());    
 
         $request->validate([
             'judul' => 'required|string|max:70',
@@ -181,11 +221,12 @@ class UndanganController extends Controller
             'tanda_identitas.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
             'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
         ]);
+        dd($request->all()); 
 
         if ($request->filled('judul')) {
             $undangan->judul = $request->judul;
         }
-        if ($request->filled('isi_memo')) {
+        if ($request->filled('isi_undangan')) {
             $undangan->isi_undangan = $request->isi_undangan;
         }
         if ($request->filled('tujuan')) {
@@ -222,4 +263,40 @@ class UndanganController extends Controller
  
          return redirect()->route('undangan.'. Auth::user()->role->nm_role)->with('success', 'Undangan deleted successfully.');
      }
+     public function view($id)
+    {
+        $undangan = Undangan::where('id_undangan', $id)->firstOrFail();
+
+        return view(Auth::user()->role->nm_role.'.undangan.view-undangan', compact('undangan'));
+    }
+    public function updateStatus(Request $request, $id)
+    {
+        $undangan = Undangan::findOrFail($id);
+
+        // Validasi input
+        $request->validate([
+            'status' => 'required|in:approve,reject,pending',
+            'catatan' => 'nullable|string',
+        ]);
+
+        // Update status
+        $undangan->status = $request->status;
+        
+        // Jika status 'approve', simpan tanggal pengesahan
+        if ($request->status == 'approve') {
+            $undangan->tgl_disahkan = now();
+        } elseif ($request->status == 'reject') {
+            $undangan->tgl_disahkan = now();
+        }else{
+            $undangan->tgl_disahkan = null;
+        }
+
+        // Simpan catatan jika ada
+        $undangan->catatan = $request->catatan;
+
+        // Simpan perubahan
+        $undangan->save();
+
+        return redirect()->back()->with('success', 'Status undangan berhasil diperbarui.');
+    }
 }

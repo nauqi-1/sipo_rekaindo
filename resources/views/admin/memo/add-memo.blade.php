@@ -22,90 +22,95 @@
         <!-- form add memo -->
         <form method="POST" action="{{ route('memo-admin.store') }}">
         @csrf 
-            <div class="add">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title" style="font-size: 18px;"><b>Formulir Tambah Memo</b></h5>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title" style="font-size: 18px;"><b>Formulir Tambah Memo</b></h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="tgl_surat" class="form-label">
+                            <img src="/img/memo-admin/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat<span class="text-danger">*</span>
+                        </label>
+                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" required>
+                        <input type="hidden" name="tgl_disahkan" >
+                        <input type="hidden" name="catatan" >
+                        <input type="hidden" name="pembuat" value="{{ auth()->user()->position->nm_position .' '. auth()->user()->role->nm_role }}">
+                        
                     </div>
-                    <div class="card-body">
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label for="tgl_surat" class="form-label">
-                                    <img src="/img/memo-admin/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat
-                                </label>
-                                <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" required>
-                                <input type="hidden" name="tgl_disahkan" >
-                                <input type="hidden" name="catatan" >
-                                <input type="hidden" name="pembuat" value="{{ auth()->user()->position->nm_position .' '. auth()->user()->role->nm_role }}">  
-                            </div>
-                            <div class="col-md-6">
-                                <label for="seri_surat" class="form-label">Seri Surat</label>
-                                <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan ?? '' }}" readonly>
-                                <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
-                            </div>
+                    <div class="col-md-6">
+                        <label for="seri_surat" class="form-label">Seri Surat</label>
+                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan ?? '' }}" readonly>
+                        <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="nomor_memo" class="form-label">Nomor Surat</label>
+                        <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $nomorDokumen }}"readonly>
+                    </div>
+                    <div class="col-md-6" >
+                        <label for="judul" class="form-label">Perihal<span class="text-danger">*</span></label>
+                        <input type="text" name="judul" id="judul" class="form-control" placeholder="Masukkan Perihal / Judul Surat" required>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="kepada" class="form-label">
+                            <img src="/img/memo-admin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada<span class="text-danger">*</span>
+                            <label for="tujuan" class="label-kepada"></label>
+                        </label>
+                        <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="Silahkan isi Tujuan Memo" required>
+                    </div>
+                    <!-- <div class="col-md-6 lampiran">
+                        <label for="tanda_identitas" class="form-label">Lampiran</label>
+                        <div class="upload-wrapper">
+                            <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
+                            <input type="file" id="tanda_identitas" name="tanda_identitas" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
                         </div>
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label for="nomor_memo" class="form-label">Nomor Surat</label>
-                                <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $nomorDokumen }}"readonly>
-                            </div>
-                            <div class="col-md-6" >
-                                <label for="judul" class="form-label">Perihal</label>
-                                <input type="text" name="judul" id="judul" class="form-control" placeholder="Masukkan Perihal / Judul Surat" required>
-                            </div>
+                    </div> -->
+                    <div class="col-md-6">
+                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan<span class="text-danger">*</span></label>
 
-                        </div>
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label for="kepada" class="form-label">
-                                    <img src="/img/memo-admin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada
-                                    <label for="tujuan" class="label-kepada">*Pisahkan dengan titik koma(;) jika penerima lebih dari satu</label>
-                                </label>
-                                <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan</label>
-                                <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
-                                    <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                                    @foreach($managers as $manager)
-                                        <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname . ' ' . $manager->lastname }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-4 isi-surat-row">
-                            <div class="col-md-12">
-                                <img src="\img\memo-admin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                                <label for="isi_memo">Isi Surat</label>
-                            </div>
-                            <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
-                                    <textarea id="summernote" name="isi_memo"></textarea>
-                            </div>
-                        </div>
+                        <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
+                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
+                            @foreach($managers as $manager)
+                                <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname . ' ' . $manager->lastname }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    <div class="row mb-4 need-row">
-                        <div class="col-md-12">
-                            <label for="need" class="need">Keperluan Lain</label>
-                            <label for="isi" class="fill">*Isi keperluan barang jika dibutuhkan</label>
-                        </div>
+                </div>
+                <div class="row mb-4 isi-surat-row">
+                    <div class="col-md-12">
+                        <img src="\img\memo-admin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
+                        <label for="isi_memo">Isi Surat<span class="text-danger">*</span></label>
                     </div>
-                    <div class="row mb-4 need-row">
-                        <div class="col">
-                            <label for="need" class="need" style="font-size: 14px; color: #1E4178">Tambah Kategori Barang</label>
+                    <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
+                            <textarea id="summernote" name="isi_memo"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4 need-row">
+                <div class="col-md-12">
+                    <label for="need" class="need">Keperluan Lain</label>
+                    <label for="isi" class="fill">*Isi keperluan barang jika dibutuhkan</label>
+                </div>
+            </div>
+            <div class="row mb-4 need-row">
+                <div class="col">
+                    <label for="need" class="need" style="font-size: 14px; color: #1E4178">Tambah Kategori Barang</label>
+                </div>
+                <div class="col">
+                    <div class="cek d-flex" style="font-size: 14px;">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="opsi" id="ya" value="ya" onclick="toggleKategoriBarang()" style="margin-right: 15px;"> Ya
+                            </label>
                         </div>
-                        <div class="col">
-                            <div class="cek d-flex" style="font-size: 14px;">
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="opsi" id="ya" value="ya" onclick="toggleKategoriBarang()" style="margin-right: 15px;"> Ya
-                                    </label>
-                                </div>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="opsi" id="tidak" value="tidak" onclick="toggleKategoriBarang()" style="margin-right: 15px;" checked> Tidak
-                                    </label>
-                                </div>
-                            </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="opsi" id="tidak" value="tidak" onclick="toggleKategoriBarang()" style="margin-right: 15px;" checked> Tidak
+                            </label>
                         </div>
                     </div>
 

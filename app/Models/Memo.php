@@ -29,17 +29,9 @@ class Memo extends Model
      * @var array
      */
     protected $fillable = [
-        'judul',
-        'tujuan', 
-        'isi_memo', 
-        'tgl_dibuat', 
-        'tgl_disahkan', 
-        'status',
-        'nomor_memo',
-        'nama_bertandatangan', 
-        'tanda_identitas', 
-        'divisi_id_divisi', 
-        'seri_surat'
+        'judul', 'tujuan', 'isi_memo', 'tgl_dibuat', 'tgl_disahkan', 'status','pembuat','catatan',
+        'nomor_memo', 'nama_bertandatangan', 'tanda_identitas', 'divisi_id_divisi', 'seri_surat'
+
     ];
 
     /**
@@ -64,9 +56,14 @@ class Memo extends Model
         return $this->hasMany(kategori_barang::class, 'memo_id_memo', 'id_memo');
     }
     public function kirimDocument()
-{
-    return $this->hasMany(Kirim_Document::class, 'id_document');
-}
+    {
+        return $this->hasMany(Kirim_Document::class, 'id_document');
+    }
+    public function arsip()
+    {
+        return $this->morphMany(Arsip::class, 'document');
+    }
+
 
     /**
      * Get the document associated with the memo.
