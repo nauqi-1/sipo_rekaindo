@@ -90,6 +90,16 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl-buat" value="{{ $memo->tgl_dibuat }}" readonly>
                     </div>
+                    
+                    @if($memo->status == 'approve' && $memo->divisi->id_divisi != Auth::user()->divisi->id_divisi)
+                    <div class="col-md-6 lampiran">
+                        <label for="tanda_identitas" class="form-label">Lampiran</label>
+                        <div class="upload-wrapper">
+                            <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
+                            <input type="file" id="tanda_identitas" name="tanda_identitas" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                    </div> 
+                    @endif
                     <!-- <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>

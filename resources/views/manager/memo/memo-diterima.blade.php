@@ -20,6 +20,7 @@
         </div>
 
         <!-- Filter & Search Bar -->
+
         <div class="header-tools">
             <div class="search-filter">
                 <div class="dropdown">
@@ -61,6 +62,7 @@
                 </div>
             </div>
         </div>
+        
 
         <!-- Table -->
         <table class="table">
@@ -158,7 +160,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </di>
 
     <script>
         document.getElementById('confirmDelete').addEventListener('click', function () {

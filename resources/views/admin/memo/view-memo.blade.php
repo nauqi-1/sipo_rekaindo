@@ -90,6 +90,13 @@
                         <a class="down" onclick="window.location.href='{{ route('cetakmemo',['id' => $memo->id_memo]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
                         @endif
                     </div>
+                    @if ($memo->divisi->id_divisi != Auth::user()->divisi->id_divisi)
+                    <div class="card-white">
+                        <label for="lampiran">Lampiran</label>
+                        <div class="separator"></div>
+                        <button class="view" onclick="window.location.href='{{ route('memo.preview', $memo->id_memo) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
+                    </div>
+                    @endif
                 </div>
             </div>
             <div class="row mb-4" style="gap: 20px;">
