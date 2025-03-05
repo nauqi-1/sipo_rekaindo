@@ -23,20 +23,18 @@
     <div class="cetak-laporan">
         <div class="title d-flex justify-content-between align-items-center mb-3">
             <h2><b>Laporan Memo</b></h2>
-            @if(session('filter_dates'))
-                <div class="filter-info">
-                    Menampilkan memo dari tanggal {{ session('filter_dates')['tgl_awal'] }} hingga {{ session('filter_dates')['tgl_akhir'] }}
-                </div>
-            @endif
             <div class="d-flex gap-2">
                 <div class="search">
                     <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
                     <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
                 </div>
                 <!-- Add User Button to Open Mod    al -->
-                <button class="btn btn-primary-print">
+                <!-- <a href="{{route ('format-cetakLaporan-memo')}}" class="btn btn-primary-print">
                     <img src="/img/laporan/print.png" alt="print"> Cetak Data
-                </button>
+                </a> -->
+                <a href="{{ route('format-cetakLaporan-undangan', request()->all()) }}" class="btn btn-primary-print">
+                    <img src="{{ asset('img/laporan/print.png') }}" alt="print"> Cetak Data
+                </a>
             </div>
         </div>
     </div>
@@ -64,37 +62,6 @@
                 <th>Aksi</th>
             </tr>
         </thead>
-        <!-- <tbody>
-        @if ($memos->isNotEmpty())
-            @foreach ($memos as $index => $laporan)
-            <tr>
-                <td class="nomor">{{ $index + 1 }}</td>
-                <td class="nama-dokumen text-success">{{ $laporan->judul }}</td>
-                <td>{{ $laporan->tgl_dibuat->format('d-m-Y') }}</td>
-                <td>{{ $laporan->seri_surat }}</td>
-                <td>{{ $laporan->nomor_laporan }}</td>
-                <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-                <td>{{ $laporan->divisi->nm_divisi }}</td>
-                <td>
-                    <span class="badge bg-{{ $laporan->status == 'approve' ? 'success' : 'warning' }}">
-                        {{ $laporan->status == 'approve' ? 'Diterima' : 'Pending' }}
-                    </span>
-                </td>
-                <td>
-                    <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
-                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        <img src="/img/arsip/delete.png" alt="delete">
-                    </button>
-                    <button class="btn btn-sm3"><img src="/img/arsip/preview.png" alt="preview"></button>
-                </td>
-            </tr>
-            @endforeach
-        @else
-            <tr>
-                <td colspan="9">Tidak ada memo yang tersedia.</td>
-            </tr>
-        @endif
-        </tbody> -->
         <tbody>
         @if ($memos->isNotEmpty())
             @foreach ($memos as $index => $laporan)
@@ -103,7 +70,7 @@
                 <td>{{ $laporan->judul }}</td>
                 <td>{{ $laporan->tgl_dibuat->format('d-m-Y') }}</td>
                 <td>{{ $laporan->seri_surat }}</td>
-                <td>{{ $laporan->nomor_laporan }}</td>
+                <td>{{ $laporan->nomor_memo }}</td> <!-- Updated to use nomor_memo -->
                 <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                 <!-- <td>{{ $laporan->divisi->nm_divisi }}</td> -->
                 <td>

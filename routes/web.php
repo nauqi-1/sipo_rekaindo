@@ -173,11 +173,12 @@ Route::post('/cetak-laporan-undangan', [LaporanController::class, 'filterUndanga
 Route::get('/cetak-laporan-risalah', function() {
     return view('superadmin.laporan.cetak-laporan-risalah');
 })->name('laporan-risalah');
-Route::get('/cetak-laporan-undangan', function() {
-    return view('superadmin.laporan.cetak-laporan-undangan');
-})->name('laporan-undangan');
 
+Route::get('/format-cetakLaporan-memo', [LaporanController::class, 'index'])
+    ->name('format-cetakLaporan-memo');
 
+Route::get('/format-cetakLaporan-undangan', [LaporanController::class, 'undangan']
+)->name('format-cetakLaporan-undangan');    
 
 // memo supervisor
 // Route::get('/memo-terkirim', function() {

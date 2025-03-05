@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="fill">
-                        <h3>Laporan Tgl. 01-01-2024/07-01-2024</h3>
+                        <h3>Laporan Tgl. </h3>
                         <table>
                             <tr>
                                 <th>NO</th>
@@ -28,33 +28,27 @@
                                 <th>NO DOKUMEN</th>
                                 <th>STATUS</th>
                             </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>1596</td>
-                                <td>21-10-2024</td>
-                                <td>21-10-2024</td>
-                                <td>Undangan Pengesahan</td>
-                                <td>837.06/REKA/GEN/VII/2024</td>
-                                <td>Approve</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>1596</td>
-                                <td>21-10-2024</td>
-                                <td>21-10-2024</td>
-                                <td>Undangan Pengesahan</td>
-                                <td>837.06/REKA/GEN/VII/2024</td>
-                                <td>Approve</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>1596</td>
-                                <td>21-10-2024</td>
-                                <td>21-10-2024</td>
-                                <td>Undangan Pengesahan</td>
-                                <td>837.06/REKA/GEN/VII/2024</td>
-                                <td>Approve</td>
-                            </tr>
+                            @foreach ($undangans as $index => $laporan)
+    <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ $laporan->seri_surat }}</td>
+        <td>{{ $laporan->tgl_dibuat ? $laporan->tgl_dibuat->format('d-m-Y') : '-' }}</td>
+
+        <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
+
+        <td>{{ $laporan->judul ?? '-' }}</td>
+
+        <td>{{ $laporan->nomor_undangan ?? '-' }}</td>
+
+
+        <td>
+            <span class="badge bg-{{ $laporan->status == 'approve' ? 'success' : 'warning' }}">
+                {{ $laporan->status == 'approve' ? 'Diterima' : 'Pending' }}
+            </span>
+        </td>
+
+    </tr>
+    @endforeach
                         </table>
                     </div>
                 </div>

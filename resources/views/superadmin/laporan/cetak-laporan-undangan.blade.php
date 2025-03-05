@@ -34,9 +34,9 @@
                     <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
                 </div>
                 <!-- Add User Button to Open Mod    al -->
-                <button class="btn btn-primary-print">
+                <a href="{{route ('format-cetakLaporan-undangan')}}" class="btn btn-primary-print">
                     <img src="/img/laporan/print.png" alt="print"> Cetak Data
-                </button>
+</a>
             </div>
         </div>
     </div>
@@ -64,29 +64,6 @@
                 <th>Aksi</th>
             </tr>
         </thead>
-        <!-- <tbody>
-            @for ($i = 1; $i <= 3; $i++)
-            <tr>
-                <td class="nomor">{{ $i }}</td>
-                <td class="nama-dokumen text-success">Undangan Pengesahan</td>
-                <td>21-10-2024</td>
-                <td>1596</td>
-                <td>837.06/REKA/GEN/VII/2024</td>
-                <td>22-10-2024</td>
-                <td>HR & GA</td>
-                <td>
-                    <span class="badge bg-success">Approve</span>
-                </td>
-                <td>
-                    <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
-                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        <img src="/img/arsip/delete.png" alt="delete">
-                    </button>
-                    <button class="btn btn-sm3"><img src="/img/arsip/preview.png" alt="preview"></button>
-                </td>
-            </tr>
-            @endfor
-        </tbody> -->
         <tbody>
         @if ($undangans->isNotEmpty())
             @foreach ($undangans as $index => $laporan)
@@ -95,7 +72,7 @@
                 <td>{{ $laporan->judul }}</td>
                 <td>{{ $laporan->tgl_dibuat->format('d-m-Y') }}</td>
                 <td>{{ $laporan->seri_surat }}</td>
-                <td>{{ $laporan->nomor_laporan }}</td>
+                <td>{{ $laporan->nomor_undangan }}</td>
                 <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                 <!-- <td>{{ $laporan->divisi->nm_divisi }}</td> -->
                 <td>
