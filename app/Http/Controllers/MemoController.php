@@ -9,6 +9,7 @@ use App\Models\Seri;
 use App\Models\Arsip;
 use App\Models\User;
 use App\Models\Divisi;
+use App\Models\Notifikasi;
 use App\Models\Kirim_Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -206,6 +207,7 @@ class MemoController extends Controller
             'status' => 'required|in:approve,reject,pending',
             'catatan' => 'nullable|string',
         ]);
+        
 
         // Update status
         $memo->status = $request->status;
@@ -218,12 +220,20 @@ class MemoController extends Controller
         }else{
             $memo->tgl_disahkan = null;
         }
+        
 
         // Simpan catatan jika ada
         $memo->catatan = $request->catatan;
 
         // Simpan perubahan
         $memo->save();
+
+        Notifikasi::create([
+            'judul' => "Memo {$request->status}",
+            'jenis_document' => 'memo',
+            'id_divisi' => $memo->divisi_id_divisi,
+            'updated_at' => now()
+        ]);
 
         return redirect()->back()->with('success', 'Status memo berhasil diperbarui.');
     }
@@ -409,5 +419,22 @@ class MemoController extends Controller
         return view(Auth::user()->role->nm_role.'.memo.view-memo', compact('memo'));
     }
 
-     
+
+    public function updateStatusNotif(Request $request, $id)
+    {
+        $memo = Memo::findOrFail($id);
+        $memo->status = $request->status;
+        $memo->save();
+    
+        // Simpan notifikasi
+        Notifikasi::create([
+            'judul' => "Memo {$request->status}",
+            'jenis_document' => 'memo',
+            'id_divisi' => $memo->divisi_id,
+            'updated_at' => now()
+        ]);
+    
+        return redirect()->back()->with('success', 'Status memo berhasil diperbarui.');
+    }
+    
 }
