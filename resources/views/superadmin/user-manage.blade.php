@@ -1,6 +1,6 @@
 @extends('layouts.superadmin')
 
-@section('title', 'User Management')
+@section('title', 'Manajemen Pengguna')
       
 @section('content')
 <div class="container">
@@ -105,25 +105,11 @@
                             <form method="POST" action="{{ route('user-manage.edit', $user->id) }}" style="display: inline;">
                             @csrf
                             @method('GET') <!-- Use GET to navigate to the edit page -->
-                            <button type="submit" class="btn btn-edit btn-sm">
-                                <img src="/img/user-manage/Edit.png" alt="edit">
+                            <button type="submit" class="btn btn-edit">
+                                <img src="/img/user-manage/Edit1.png" alt="edit">
                             </button>
                             </form>
-                            <!-- <form method="POST" action="{{ route('user-manage.destroy', $user->id) }}" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                                <button type="submit" class="btn btn-delete btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                    <img src="/img/user-manage/Trash.png" alt="delete">
-                                @csrf
-                                @method('GET') 
-                                <button type="submit" class="btn btn-edit btn-sm">
-                                    <img src="/img/user-manage/Edit1.png" alt="edit">
-                                </button>
-                            </form> -->
-                           
-
-                            
-                            <button type="button" class="btn btn-delete btn-sm" 
+                            <button type="button" class="btn btn-delete" 
                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
                                 data-user-id="{{ $user->id }}">
                                 <img src="/img/user-manage/Trash1.png" alt="delete">

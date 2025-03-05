@@ -22,7 +22,7 @@
         <!-- Filter & Search Bar -->
         <div class="arsip">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="title"><b>Arsip Memo</b></h2>
+                <h4 class="title"><b>Arsip Memo</b></h4>
                 <div class="d-flex gap-2">
                     <div class="search">
                         <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
@@ -62,10 +62,10 @@
                     <td class="nama-dokumen text-success">
                             {{ $arsip->document ? $arsip->document->judul : 'Memo Tidak Ditemukan' }}
                         </td>
-                        <td>{{ $arsip->document ? $arsip->document->tgl_dibuat : '-' }}</td>
+                        <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
                         <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
                         <td>{{ $arsip->document ? $arsip->document->nomor_memo : '-' }}</td>
-                        <td>{{ $arsip->document ? $arsip->document->tgl_disahkan : '-' }}</td>
+                        <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                         <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
                         <td>
                         <span class="badge bg-success">Diterima</span>

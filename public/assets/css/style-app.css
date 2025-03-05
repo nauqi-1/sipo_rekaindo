@@ -25,21 +25,24 @@
 h1 {
     margin-bottom: 20px;
 }
+.breadcrumb-wrapper {
+    display: inline-block; 
+    margin-right: 20px; 
+}
 .breadcrumb {
     font-size: 14px;
     color: #888;
     margin-bottom: 30px;
-    margin-right: 2%;
     padding: 8px 12px;
     border: 1px solid #E5E5E5CC;
     display: flex;
     justify-content: left;
+    margin-left: 20px;
 }
 .breadcrumb a {
     text-decoration: none;
     color: #A9A9A9;
 }
-
 .title {
     margin-left: 40px;
 }
