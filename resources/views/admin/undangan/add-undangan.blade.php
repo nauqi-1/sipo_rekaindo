@@ -17,7 +17,7 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('undangan.'). Auth::user()->role->nm_role}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('undangan.'. Auth::user()->role->nm_role)}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Tambah Undangan Rapat</h1>
         </div>        

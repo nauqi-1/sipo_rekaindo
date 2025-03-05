@@ -81,13 +81,11 @@
     margin-bottom: 10px;
     margin-left: 5px;
     text-align: left;
-    display: inline-block;
     float: left;
 }
 .overview-card a {
     font-size: 13px;
     font-weight: bold !important;
-    display: inline-block;
     float: right; 
     margin-right: 5px;
     font-weight: normal;

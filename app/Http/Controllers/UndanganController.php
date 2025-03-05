@@ -7,6 +7,7 @@ use App\Models\Seri;
 use App\Models\User;
 use App\Models\Divisi;
 use App\Models\Arsip;
+use App\Models\Notifikasi;
 use App\Models\Undangan;
 
 use Illuminate\Http\Request;
@@ -298,5 +299,22 @@ class UndanganController extends Controller
         $undangan->save();
 
         return redirect()->back()->with('success', 'Status undangan berhasil diperbarui.');
+    }
+
+    public function updateStatusNotif(Request $request, $id)
+    {
+        $undangan = Undangan::findOrFail($id);
+        $undangan->status = $request->status;
+        $undangan->save();
+    
+        // Simpan notifikasi
+        Notifikasi::create([
+            'judul' => "Undangan {$request->status}",
+            'jenis_document' => 'undangan',
+            'id_divisi' => $undangan->divisi_id,
+            'updated_at' => now()
+        ]);
+    
+        return redirect()->back()->with('success', 'Status memo berhasil diperbarui.');
     }
 }

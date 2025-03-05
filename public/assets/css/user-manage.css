@@ -19,7 +19,6 @@
 .user-manage .table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
 }
 .user-manage .table thead {
     background-color: #EFF4FA;
@@ -79,31 +78,33 @@
     color: #ffffff;
     width: 10%;
 }
-.btn-edit {
+.user-manage .btn-edit {
+    font-size: 14px;
+    border-radius: 100%;
+}
+.user-manage .btn-edit:hover {
+    border: none;
+    border-radius: 100%;
+    background-color: #0095FF;
+}
+.user-manage .btn-edit:focus {
+    border: none;
+    border-radius: 100%;
+    background-color: #0095FF;
+}
+.user-manage .btn-delete {
     font-size: 14px;
     border-radius: 50px;
-    width: 36%;
-    margin: 0 auto;
 }
-.btn-delete {
-    font-size: 14px;
-    border-radius: 50px;
-    width: 39%;
-    margin: 0 auto;
+.user-manage .btn-delete:hover {
+    border: none;
+    border-radius: 100%;
+    background-color: #FF0000;
 }
-.btn-edit:hover,
-.btn-edit:active {
-    border: none !important;
-    border-radius: 50px;
-    width: 36%;
-    background-color: #0095FF !important;
-}
-.btn-delete:hover,
-.btn-delete:active {
-    border: none !important;
-    border-radius: 50px;
-    width: 39%;
-    background-color: #FF0000 !important;
+.user-manage .btn-delete:focus {
+    border: none;
+    border-radius: 100%;
+    background-color: #FF0000;
 }
 .user-manage .header-tools {
     display: flex; 
@@ -113,7 +114,6 @@
 }
 
 .user-manage .header-tools .title {
-    font-size: 24px;
     font-weight: bold;
     margin-left: 20px;
 }

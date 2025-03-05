@@ -25,35 +25,34 @@
             <div class="search-filter">
             <form method="GET" action="{{ route('undangan.superadmin') }}" class="search-filter d-flex gap-2">
                 <div class="dropdown">
-                <select name="status" class="form-select" onchange="this.form.submit()">
-                        <option value="">Semua Status</option>
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">Status</option>
                         <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
                         <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                     </select>
                 </div>
                 <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                <input type="date" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" onchange="this.form.submit()" placeholder="Tanggal Awal" style="width: 100%;">
-                    <img src="/img/undangan/kalender.png" alt="Kalender Icon" class="input-icon">
-                </div>
-                <i class="bi bi-arrow-right"></i>
-                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                <input type="date" name="tgl_dibuat_akhir" class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" onchange="this.form.submit()" placeholder="Tanggal Akhir" style="width: 100%;">
-                    <img src="/img/undangan/kalender.png" alt="Kalender Icon" class="input-icon">
-                </div>
-                <div class="d-flex gap-2">
-                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                        <img src="/img/undangan/search.png" alt="search" style="width: 20px; height: 20px;">
-                        <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+                        <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                     </div>
-                </div>
+                    <i class="bi bi-arrow-right"></i>
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                        <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
+                            class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" placeholder="Tanggal Akhir"
+                            onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }" onchange="this.form.submit()">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                            <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
+                            <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
+                        </div>
+                    </div>
                 </form>
-
                 <!-- Add User Button to Open Modal -->
                 <a href="{{route ('undangan-superadmin/add')}}" class="btn btn-add">+ Tambah Undangan Rapat</a>
             </div>
         </div>
-        </div>
+    </div>
 
     <!-- Table -->
     <table class="table-light">
@@ -213,20 +212,4 @@
         </div>
     </div>
 </div>
-<script>
-    document.getElementById('confirmArsip').addEventListener('click', function () {
-            // Ambil referensi modal
-            const deleteModalEl = document.getElementById('arsipModal');
-            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
-            
-            // Tutup modal Hapus terlebih dahulu
-            deleteModal.hide();
-            
-            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
-            deleteModalEl.addEventListener('hidden.bs.modal', function () {
-                const successModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
-                successModal.show();
-            }, { once: true }); // Tambahkan event listener hanya sekali
-        });
-</script>
 @endsection

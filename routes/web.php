@@ -8,6 +8,7 @@ use App\Http\Controllers\CetakPDFController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\UndanganController;
 use App\Http\Controllers\KirimController;
+use App\Http\Controllers\NotifController;
 use App\Http\Controllers\ArsipController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaporanController;
@@ -278,3 +279,8 @@ Route::get('/risalah/arsip', [ArsipController::class, 'view'])->name('view.risal
 
 Route::get('/memo/{id}', [MemoController::class, 'view'])->name('view.memo');
 Route::get('/undangan/manager/{id}', [UndanganController::class, 'view'])->name('view.undangan');
+
+
+Route::get('/notifikasi', [NotifController::class, 'index'])->name('notifications.index');
+Route::get('/notifikasi/jumlah', [NotifController::class, 'getUnreadCount'])->name('notifications.count');
+Route::get('/notifications/tanda-dibaca', [NotifController::class, 'markAllAsRead'])->name('notifications.markAsRead');

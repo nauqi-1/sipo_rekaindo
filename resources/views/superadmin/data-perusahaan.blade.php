@@ -1,7 +1,9 @@
 @extends('layouts.superadmin')
 
+@section('title', 'Data Perusahaan')
+
 @section('content')
-<div class="container mt-4">
+<div class="container">
     <div class="header">
         <!-- Back Button -->
         <div class="back-button">
@@ -16,62 +18,65 @@
             </div>
         </div>
     </div>
-    <div class="card p-4">
-        <h4 class="fw-bold">Data Perusahaan</h4>
-        <div class="row">
-            <!-- Kolom Form -->
-            <div class="col-md-8">
-                <form id="formPerusahaan" action="{{ route('data-perusahaan.update') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Nama Instansi</label>
-                        <input type="text" class="form-control" name="nama_instansi" value="{{ $perusahaan->nama_instansi ?? '' }}" readonly required>
-                    </div>
+    <div class="perusahaan">
+        <div class="card">
+            <h3><b>Data Perusahaan</b></h3>
+            <hr>
+            <div class="row">
+                <!-- Kolom Form -->
+                <div class="col-md-8">
+                    <form id="formPerusahaan" action="{{ route('data-perusahaan.update') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="col-md-6">
+                            <label class="form-label">Nama Instansi</label>
+                            <input type="text" class="form-control" name="nama_instansi" value="{{ $perusahaan->nama_instansi ?? '' }}" readonly required>
+                        </div>
 
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Alamat Situs Web</label>
-                        <input type="text" class="form-control" name="alamat_web" value="{{ $perusahaan->alamat_web ?? '' }}" readonly required>
+                        <div class="col-md-6">
+                            <label class="form-label">Alamat Situs Web</label>
+                            <input type="text" class="form-control" name="alamat_web" value="{{ $perusahaan->alamat_web ?? '' }}" readonly required>
 
-                    </div>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Telepon</label>
-                        <input type="text" class="form-control" name="telepon" value="{{ $perusahaan->telepon ?? '' }}" readonly required>
-                    </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Telepon</label>
+                            <input type="text" class="form-control" name="telepon" value="{{ $perusahaan->telepon ?? '' }}" readonly required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Email</label>
-                        <input type="email" class="form-control" name="email" value="{{ $perusahaan->email ?? '' }}" readonly required>
-                    </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" value="{{ $perusahaan->email ?? '' }}" readonly required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Alamat</label>
-                        <textarea class="form-control" name="alamat" readonly required>{{ $perusahaan->alamat ?? '' }}</textarea>
-                    </div>
-                    @if(Auth::user()->role->nm_role == 'superadmin')
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Logo Perusahaan</label>
-                        <input type="file" class="form-control" name="logo" accept="image/*" disabled>
-                    </div>
-                    
-                    <div id="buttonGroup">
-                        <button type="button" class="btn btn-primary" id="editButton">Edit</button>
-                        <button type="button" class="btn btn-secondary d-none" id="cancelButton">Batal</button>
-                        <button type="submit" class="btn btn-success d-none" id="saveButton">Simpan</button>
-                    </div>
-                    @endif
-                </form>
-            </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Alamat</label>
+                            <textarea class="form-control" name="alamat" readonly required>{{ $perusahaan->alamat ?? '' }}</textarea>
+                        </div>
+                        @if(Auth::user()->role->nm_role == 'superadmin')
+                        <div class="file col-md-6">
+                            <label class="form-label">Logo Perusahaan</label>
+                            <input type="file" class="form-control" name="logo" accept="image/*" disabled>
+                        </div>
+                        
+                        <div id="buttonGroup">
+                            <button type="button" class="btn btn-primary" id="editButton">Edit</button>
+                            <button type="button" class="btn btn-secondary d-none" id="cancelButton">Batal</button>
+                            <button type="submit" class="btn btn-success d-none" id="saveButton">Simpan</button>
+                        </div>
+                        @endif
+                    </form>
+                </div>
 
-            <!-- Kolom Logo -->
-            <div class="col-md-4 d-flex align-items-center justify-content-center">
-                <div class="border rounded p-3" style="width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
-                    @if ($perusahaan && $perusahaan->logo)
-                        <img src="{{ asset('storage/logos/' . $perusahaan->logo) }}" alt="Logo Perusahaan" class="img-fluid rounded" style="max-width: 100%; max-height: 100%;">
-                    @else
-                        <img src="{{ asset('default-logo.png') }}" alt="No Logo" class="img-fluid" style="opacity: 0.5; width: 80%;">
-                    @endif
+                <!-- Kolom Logo -->
+                <div class="col-md-4 d-flex align-items-center justify-content-center">
+                    <div class="border rounded p-3" style="width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
+                        @if ($perusahaan && $perusahaan->logo)
+                            <img src="{{ asset('storage/logos/' . $perusahaan->logo) }}" alt="Logo Perusahaan" class="img-fluid rounded" style="max-width: 100%; max-height: 100%;">
+                        @else
+                            <img src="{{ asset('default-logo.png') }}" alt="No Logo" class="img-fluid" style="opacity: 0.5; width: 80%;">
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
