@@ -249,22 +249,52 @@
     color: #000;
 }
 
-.mb-3 .izin {
+.modal-header {
     display: flex;
-    justify-content: flex-end; /* Geser elemen ke kanan */
+    align-items: center; /* Pusatkan elemen secara vertikal */
+    gap: 10px; /* Atur jarak antara gambar dan teks */
+}
+
+.modal-title {
+    margin: 0; /* Hilangkan margin bawaan agar menempel ke gambar */
+    padding: 0;
+    flex-grow: 1; /* Biarkan teks menggunakan ruang yang tersedia */
+}
+
+.close {
+    margin-left: auto; /* Geser tombol close ke kanan */
+}
+
+.mb-3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Memisahkan label kiri dan radio button kanan */
+}
+
+.mb-3 .form-izin {
+    flex: 1;
+    text-align: left;
+    font-weight: bold;
+}
+
+.mb-3 .izin {
+    flex: 2; 
+    display: flex;
+    justify-content: flex-end;
     gap: 15px;
     color: #222B45;
     font-size: 13px;
     margin-top: 50px;
 }
 
+.mb-3 .izin label {
+    margin-right: 5px;
+}
+
 .mb-3 .izin input {
     margin-right: 15px;
 }
 
-.mb-3 .izin .form-izin {
-    margin-right: 149px;
-}
 
 .badge.role-superadmin {
     background-color: #3e58c0;

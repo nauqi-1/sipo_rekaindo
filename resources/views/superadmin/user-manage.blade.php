@@ -133,54 +133,56 @@
                     <div class="modal-header">
                         <img src="/img/user-manage/addUser.png" alt="addUser" style="margin-right: 10px;">
                         <h5 class="modal-title" id="addUserModalLabel"><b>Tambah Pengguna</b></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body">
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="id" class="form-label">ID Pengguna :</label>
+                                <label for="id" class="form-label">ID Pengguna :<span style="color : red;"> *</span></label>
                                 <input type="text" name="id" id="id" class="form-control"  required autocomplete="id">
                             </div>
                             <div class="col-md-6">
-                                <label for="email" class="form-label">Email :</label>
+                                <label for="email" class="form-label">Email :<span style="color : red;"> *</span></label>
                                 <input type="text" name="email" id="email" class="form-control"  required autocomplete="email">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="firstname" class="form-label">Nama Depan :</label>
+                                <label for="firstname" class="form-label">Nama Depan :<span style="color : red;"> *</span></label>
                                 <input type="text" name="firstname" id="firstname" class="form-control" required autocomplete="firstname">
                             </div>
                             <div class="col-md-6">
-                                <label for="lastname" class="form-label">Nama Akhir :</label>
+                                <label for="lastname" class="form-label">Nama Akhir :<span style="color : red;"> *</span></label>
                                 <input type="text" name="lastname" id="lastname" class="form-control" required autocomplete="lastname">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="username" class="form-label">Nama Pengguna :</label>
+                                <label for="username" class="form-label">Nama Pengguna :<span style="color : red;"> *</span></label>
                                 <input type="text" name="username" id="username" class="form-control" required autocomplete="username">
                             </div>
                             <div class="col-md-6">
-                                <label for="phone_number" class="form-label">No. Telpon :</label>
+                                <label for="phone_number" class="form-label">No. Telpon :<span style="color : red;"> *</span></label>
                                 <input type="text" name="phone_number" id="phone_number" class="form-control" required autocomplete="phone_number">
                                 <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="password"  class="form-label">Kata Sandi :</label>
+                                <label for="password"  class="form-label">Kata Sandi :<span style="color : red;"> *</span></label>
                                 <input type="text" name="password" id="password" class="form-control" required autocomplete="new-password">
                                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
                             </div>
                             <div class="col-md-6">
-                                <label for="password_confirmation" class="form-label">Konfirmasi Kata Sandi :</label>
+                                <label for="password_confirmation" class="form-label">Konfirmasi Kata Sandi :<span style="color : red;"> *</span></label>
                                 <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required autocomplete="new-password">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="divisi_id_divisi" class="form-label">Pilih Divisi</label>
+                                <label for="divisi_id_divisi" class="form-label">Pilih Divisi<span style="color : red;"> *</span></label>
                                 <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-control" required autofocus autocomplete="divisi_id_divisi">
                                 @foreach($divisi as $d)
                                     <option value="{{ $d->id_divisi }}">{{ $d->nm_divisi }}</option>
@@ -188,7 +190,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="position_id_position" class="form-label">Pilih Posisi</label>
+                                <label for="position_id_position" class="form-label">Pilih Posisi<span style="color : red;"> *</span></label>
                                 <select name="position_id_position" id="position_id_position" class="form-control" required autofocus autocomplete="position_id_position">
                                 @foreach($positions as $position)
                                     <option value="{{ $position->id_position }}">{{ $position->nm_position }}</option>
@@ -198,7 +200,7 @@
                         </div>
                         <div class="mb-3">
                             <div class="izin">
-                                <label for="role_id_role" class="form-izin">Izin Akses</label>
+                                <label for="role_id_role" class="form-izin">Izin Akses<span style="color : red;"> *</span></label>
                             @foreach ($roles as $role)
                                 <label for="role_{{ $role->id_role }}">{{ $role->nm_role }}</label>
                                 <input type="radio" name="role_id_role" value="{{ $role->id_role }}" id="role_{{ $role->id_role }}" required autofocus autocomplete="role_id_role">
@@ -208,7 +210,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" >Simpan</button>
+                        <button type="submit" class="btn btn-save">Simpan</button>
                     </div>
                 </form>
             </div>

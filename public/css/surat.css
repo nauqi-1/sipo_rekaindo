@@ -133,7 +133,7 @@
 .surat .dropdown {
     display: flex;
     align-items: center;
-    width: 12%;
+    width: 15%;
     text-align: center;
     padding: auto;
     height: 35px;
@@ -222,3 +222,38 @@
     font-size: 13px;
     text-decoration: none;
 }
+
+@media (max-width: 900px) {
+    .surat .search-filter {
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .surat .dropdown {
+        width: 100%;
+    }
+
+    .surat .search-filter .btn-search {
+        width: 120px;
+        display: flex;
+        align-items: center;
+    }
+
+    .surat .search-filter .btn-add {
+        width: 35px;
+        height: 35px;
+        font-size: 20px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .surat .search-filter .btn-add span {
+        display: none;
+    }
+}
+
+

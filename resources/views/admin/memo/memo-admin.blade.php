@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Admin')
+@section('title', 'Memo Admin')
 
 @section('content')
     <div class="container">
@@ -20,56 +20,36 @@
         </div>
 
         <!-- Filter & Search Bar -->
-         <div class="surat">
-        <div class="header-tools">
-            <div class="search-filter">
-            <form method="GET" action="{{ route('memo.admin') }}" class="search-filter d-flex gap-2">
-                <div class="dropdown">
-                    <select name="status" class="form-select" onchange="this.form.submit()">
-                        <option value="">Semua Status</option>
-                        <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
-                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
-                        <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
-                    </select>
-                </div>
-            <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                <input type="date" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" onchange="this.form.submit()" placeholder="Tanggal Awal" style="width: 100%;">
-                <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
-            </div>
-            <i class="bi bi-arrow-right"></i>
-            <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                <input type="date" name="tgl_dibuat_akhir" class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" onchange="this.form.submit()" placeholder="Tanggal Akhir" style="width: 100%;">
-                <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
-            </div>
-            <div class="d-flex gap-2">
-                <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                    <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
-                    <input type="text" name="search" class="form-control" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()">
-                </div>
-            </div>
-        </form>
-                
-
-                        </ul>
+        <div class="surat">
+            <div class="header-tools">
+                <div class="search-filter">
+                <form method="GET" action="{{ route('memo.admin') }}" class="search-filter d-flex gap-2">
+                    <div class="dropdown">
+                        <select name="status" class="form-select" onchange="this.form.submit()">
+                            <option value="">Status</option>
+                            <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                            <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
+                        </select>
                     </div>
                     <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                        <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                        <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
+                        <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                     </div>
                     <i class="bi bi-arrow-right"></i>
                     <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                        <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                        <img src="/img/memo-admin/kalender.png" alt="Kalender Icon" class="input-icon">
+                        <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
+                            class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" placeholder="Tanggal Akhir"
+                            onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }" onchange="this.form.submit()">
                     </div>
                     <div class="d-flex gap-2">
                         <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
                             <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
-                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+                            <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                         </div>
                     </div>
-
+                    </form>
                     <!-- Add User Button to Open Modal -->
-                    <a href="{{ route('memo-admin/add')}}" class="btn btn-add">+ Tambah Memo</a>
+                    <a href="{{route ('memo-admin/add')}}" class="btn btn-add">+ <span>Tambah Memo</span></a>
                 </div>
             </div>
         </div>
@@ -153,44 +133,6 @@
         </table>
         {{ $memos->links('pagination::bootstrap-5') }}
 
-        <!-- Modal Hapus -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/memo-admin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Hapus Memo?</b></h5>
-                        <!-- Tombol -->
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn-cancel" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Cancel</a></button>
-                       
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Berhasil -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus Memo</b></h5>
-                        <!-- Tombol -->
-                        <button type="button" class="btn-back" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Kembali</a></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Modal Arsip -->
         <div class="modal fade" id="arsipModal" tabindex="-1" aria-labelledby="arsipModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -231,65 +173,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // Tambahkan event listener untuk tombol OK pada modal Hapus
-        document.getElementById('confirmDelete').addEventListener('click', function () {
-            // Tutup modal Hapus
-            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-            deleteModal.hide();
-
-            // Tampilkan modal Berhasil
-            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-            successModal.show();
-        });
-
-        document.getElementById('confirmArsip').addEventListener('click', function () {
-            // Ambil referensi modal
-            const deleteModalEl = document.getElementById('arsipModal');
-            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
-            
-            // Tutup modal Hapus terlebih dahulu
-            deleteModal.hide();
-            
-            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
-            deleteModalEl.addEventListener('hidden.bs.modal', function () {
-                const successModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
-                successModal.show();
-            }, { once: true }); // Tambahkan event listener hanya sekali
-        });
-
-    // Handle status filter
-    document.querySelectorAll('.dropdown-item[data-status]').forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            const status = this.getAttribute('data-status');
-            filterMemosByStatus(status);
-        });
-    });
-
-    function filterMemosByStatus(status) {
-        fetch(`/memo-admin/filter?status=${status}`, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.text())
-        .then(html => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            const newTableBody = doc.querySelector('tbody');
-            const newPagination = doc.querySelector('.pagination');
-            
-            document.querySelector('tbody').innerHTML = newTableBody.innerHTML;
-            document.querySelector('.pagination').innerHTML = newPagination?.innerHTML || '';
-        })
-        .catch(error => console.error('Error:', error));
-    }
-    </script>
-
-
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 @endsection

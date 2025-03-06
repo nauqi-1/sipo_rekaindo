@@ -23,13 +23,12 @@
 
         <!-- Filter & Search Bar -->
         <div class="surat">
-
         <div class="header-tools">
             <div class="search-filter">
             <form method="GET" action="{{ route('undangan.admin') }}" class="search-filter d-flex gap-2">
                 <div class="dropdown">
                 <select name="status" class="form-select" onchange="this.form.submit()">
-                        <option value="">Semua Status</option>
+                        <option value="">Status</option>
                         <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
                         <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
@@ -37,12 +36,10 @@
                 </div>
                 <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                 <input type="date" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" onchange="this.form.submit()" placeholder="Tanggal Awal" style="width: 100%;">
-                    <img src="/img/undangan/kalender.png" alt="Kalender Icon" class="input-icon">
                 </div>
                 <i class="bi bi-arrow-right"></i>
                 <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                 <input type="date" name="tgl_dibuat_akhir" class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" onchange="this.form.submit()" placeholder="Tanggal Akhir" style="width: 100%;">
-                    <img src="/img/undangan/kalender.png" alt="Kalender Icon" class="input-icon">
                 </div>
                 <div class="d-flex gap-2">
                     <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
@@ -53,7 +50,7 @@
                 </form>
 
                 <!-- Add User Button to Open Modal -->
-                <a href="{{route ('undangan-admin/add')}}" class="btn btn-add">+ Tambah Undangan Rapat</a>
+                <a href="{{route ('undangan-admin/add')}}" class="btn btn-add">+ <span>Tambah Undangan Rapat</span></a>
             </div>
         </div>
         </div>
@@ -211,41 +208,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.getElementById('confirmDelete').addEventListener('click', function () {
-            // Ambil referensi modal
-            const deleteModalEl = document.getElementById('deleteModal');
-            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
-            
-            // Tutup modal Hapus terlebih dahulu
-            deleteModal.hide();
-            
-            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
-            deleteModalEl.addEventListener('hidden.bs.modal', function () {
-                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                successModal.show();
-            }, { once: true }); // Tambahkan event listener hanya sekali
-        });
-
-        document.getElementById('confirmArsip').addEventListener('click', function () {
-            // Ambil referensi modal
-            const deleteModalEl = document.getElementById('arsipModal');
-            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
-            
-            // Tutup modal Hapus terlebih dahulu
-            deleteModal.hide();
-            
-            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
-            deleteModalEl.addEventListener('hidden.bs.modal', function () {
-                const successModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
-                successModal.show();
-            }, { once: true }); // Tambahkan event listener hanya sekali
-        });
-    </script>
-
-
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 @endsection

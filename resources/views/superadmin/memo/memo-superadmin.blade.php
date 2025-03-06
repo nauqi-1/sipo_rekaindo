@@ -49,7 +49,7 @@
                     </div>
                     </form>
                     <!-- Add User Button to Open Modal -->
-                    <a href="{{route ('memo-superadmin/add')}}" class="btn btn-add">+ Tambah Memo</a>
+                    <a href="{{route ('memo-superadmin/add')}}" class="btn btn-add">+ <span>Tambah Memo</span></a>
                 </div>
             </div>
         </div>
