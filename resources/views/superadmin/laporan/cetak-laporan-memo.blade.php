@@ -32,7 +32,7 @@
                 <!-- <a href="{{route ('format-cetakLaporan-memo')}}" class="btn btn-primary-print">
                     <img src="/img/laporan/print.png" alt="print"> Cetak Data
                 </a> -->
-                <a href="{{ route('format-cetakLaporan-undangan', request()->all()) }}" class="btn btn-primary-print">
+                <a href="{{ route('format-cetakLaporan-memo', request()->all()) }}" class="btn btn-primary-print">
                     <img src="{{ asset('img/laporan/print.png') }}" alt="print"> Cetak Data
                 </a>
             </div>
