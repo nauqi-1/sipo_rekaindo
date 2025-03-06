@@ -1,4 +1,3 @@
-
 .card {
     border: 1px solid #EFF4FA;
     margin: 7px;
@@ -29,17 +28,30 @@
     font-size: 14px;
 }
 
-.col-md-6:hover {
+.col-md-6:hover,
+.col-md-1:hover,
+.col-md-2:hover,
+.col-md-3:hover {
     border-color: #007bff; /* Mengubah warna border saat hover */
 }
 
-.col-md-6 label{
+.col-md-6 label,
+.col-md-1 label,
+.col-md-2 label,
+.col-md-3 label {
     margin-left: 12px;
     color: #1E4178;
 }
+.label-kepada {
+    color: #FF000080 !important;
+    font-size: 11px;
+}
 
 /* kotak input  */
-.col-md-6 input.form-control {
+.col-md-6 input.form-control,
+.col-md-1 input.form-control,
+.col-md-2 textarea.form-control,
+.col-md-3 textarea.form-control {
     background-color: #ffffff; 
     color: #000000; 
     border: 1px solid #EFF4FA; 
@@ -48,18 +60,28 @@
     font-size: 13px;
 }
 
-.col-md-6 input.form-control:hover {
+.col-md-6 input.form-control:hover,
+.col-md-1 input.form-control:hover,
+.col-md-2 textarea.form-control:hover,
+.col-md-3 textarea.form-control:hover {
     box-shadow: none;
     outline: none;
 }
 
-.col-md-6 input.form-control:focus {
+.col-md-6 input.form-control:focus,
+.col-md-6 input.form-control:focus,
+.col-md-1 input.form-control:focus,
+.col-md-2 textarea.form-control:focus,
+.col-md-3 textarea.form-control:focus {
     background-color: #fff; 
     border-color: #92C5FF99; 
     box-shadow: 4px 4px 4px rgba(146, 197, 255, 0.6); 
 }
 
-.col-md-6 select.form-control {
+.col-md-6 select.form-control,
+.col-md-1 select.form-control,
+.col-md-2 select.form-control,
+.col-md-3 select.form-control {
     background-color: #ffffff; 
     color: #000000; 
     border: 1px solid #EFF4FA; 
@@ -68,15 +90,50 @@
     font-size: 13px;
 }
 
-.col-md-6 select.form-control:hover {
+.col-md-6 select.form-control:hover,
+.col-md-1 select.form-control:hover,
+.col-md-2 select.form-control:hover,
+.col-md-3 select.form-control:hover {
     box-shadow: none;
     outline: none;
 }
 
-.col-md-6 select.form-control:focus {
+.col-md-6 select.form-control:focus,
+.col-md-1 select.form-control:focus,
+.col-md-2 select.form-control:focus,
+.col-md-3 select.form-control:focus {
     background-color: #fff; 
     border-color: #92C5FF99; 
     box-shadow: 4px 4px 4px rgba(146, 197, 255, 0.6); 
+}
+
+/* kolom input table */
+.col-md-1 {
+    max-width: 5%;
+    border: 1px solid #EFF4FA; 
+    padding: 10px; 
+    /* border-radius: 5px;  */
+    flex: 1;
+    color: #1E4178;
+    font-size: 14px;
+}
+.col-md-2 {
+    max-width: 12%;
+    border: 1px solid #EFF4FA; 
+    padding: 10px; 
+    /* border-radius: 5px;  */
+    flex: 1;
+    color: #1E4178;
+    font-size: 14px;
+}
+.col-md-3 {
+    max-width: 30%;
+    border: 1px solid #EFF4FA; 
+    padding: 10px; 
+    /* border-radius: 5px;  */
+    flex: 1;
+    color: #1E4178;
+    font-size: 14px;
 }
 
 select.btn-dropdown {
@@ -231,6 +288,31 @@ select.btn-dropdown:focus {
 }
 
 .isi-surat-row .form-label {
+    margin-left: 12px;
+}
+
+.isi-risalah-row {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 23px;
+    border-radius: 8px;
+}
+.isi-risalah-row .col-md-12 {
+    flex: 1;
+    max-width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    color: #1E4178;
+    font-size: 14px;
+    background-color: #92C5FF99;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+}
+.isi-risalah-row .col-md-12:hover {
+    border-color: #007bff;
+}
+.isi-risalah-row .form-label {
     margin-left: 12px;
 }
 
@@ -457,4 +539,23 @@ select.btn-dropdown:focus {
     background-color: #fff; 
     border-color: #92C5FF99; 
     box-shadow: 4px 4px 4px rgba(146, 197, 255, 0.6); 
+}
+
+.card-tambah {
+    display: flex;
+    justify-content: flex-end !important;
+    align-items: center;
+    gap: 20px;
+    padding: 1rem;
+    background-color: white;
+}.btn-tambah {
+    background-color: #1E4178;
+    color: #ffffff;
+    width: 13%;
+    font-size: 13px;
+}
+.btn-tambah:hover {
+    background-color: #92C5FF99;
+    color: #ffffff;
+    width: 13%;
 }

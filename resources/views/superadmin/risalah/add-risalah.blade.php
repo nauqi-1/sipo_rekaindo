@@ -1,7 +1,6 @@
 @extends('layouts.superadmin')
 
 @section('title', 'Tambah Risalah Rapat')
-
     
 @section('content')
 <div class="container">
@@ -32,7 +31,7 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label for="tgl_dibuat" class="form-label">
-                                <img src="/img/risalah/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat
+                                <img src="/img/risalah/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                             </label>
                             <input type="text" name="tgl_dibuat" id="tgl_dibuat" class="form-control" placeholder="mm/dd/yyyy" required>
                         </div>
@@ -47,26 +46,26 @@
                             <input type="text" name="jenis_document" id="nomor-surat" class="form-control" placeholder="Masukkan Nomor Surat" required>
                         </div>
                         <div class="col-md-6" >
-                            <label for="judul" class="form-label">Perihal</label>
+                            <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
                             <input type="text" name="judul" id="judul" class="form-control" placeholder="Masukkan Perihal / Judul Surat" required>
                         </div>
                     </div>
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label for="kepada" class="form-label">
-                                <img src="/img/risalah/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada
+                                <img src="/img/risalah/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
                                 <label for="tujuan" class="label-kepada">*Pisahkan dengan titik koma(;) jika penerima lebih dari satu</label>
                             </label>
                             <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" required>
                         </div>
                         <div class="col-md-6" >
-                            <label for="judul" class="form-label">Agenda</label>
+                            <label for="judul" class="form-label">Agenda <span class="text-danger">*</span></label>
                             <input type="text" name="agenda" id="agenda" class="form-control" placeholder="Masukkan Agenda Rapat" required>
                         </div>
                     </div>
                     <div class="row mb-4">
                         <div class="col-md-6">
-                            <label for="judul" class="form-label">Tempat</label>
+                            <label for="judul" class="form-label">Tempat <span class="text-danger">*</span></label>
                             <input type="text" name="tempat" id="tempat" class="form-control" placeholder="Masukkan Tempat Rapat" required>
                         </div>
                         <div class="col-md-6" style="border: none;"></div>                        
@@ -133,12 +132,8 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <form action="{{route ('risalah.superadmin')}}">
-                        <button type="button" class="btn btn-cancel">Batal</button>
-                    </form>
-                    <form action="">
-                        <button type="submit" class="btn btn-save">Simpan</button>
-                    </form>                    
+                    <a type="button" class="btn btn-cancel" href="{{route ('risalah.superadmin')}}">Batal</a>
+                    <button type="submit" class="btn btn-save">Simpan</button>
                 </div>
             </div>
         </div>
