@@ -44,7 +44,7 @@
     <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
     <link rel="stylesheet" href="../assets/css/style-preset.css" />
     <link rel="stylesheet" href="../assets/css/style-app.css" />
-    <link rel="stylesheet" href="../assets/css/dashboard.css" />
+    <link rel="stylesheet" href="../css/superadmin/dashboard.css" />
     <link rel="stylesheet" href="../assets/css/user-manage.css" />
     <link rel="stylesheet" href="../assets/css/data-perusahaan.css" />
     <link rel="stylesheet" href="../css/superadmin.edit-profile.css" />
@@ -55,6 +55,7 @@
     <link rel="stylesheet" href="../css/info.css"/>
     <link rel="stylesheet" href="../css/add.css"/>
     <link rel="stylesheet" href="{{ asset('css/add.css') }}" />
+    <link rel="stylesheet" href="..//css/superadmin/edit.css"/>
   </head>
   <body>
     <!-- [ Pre-loader ] start -->
@@ -85,9 +86,6 @@
       <div class="footer-wrapper container-fluid">
         <div class="row">
           <div class="col-sm-6 my-1">
-            <p class="m-0">
-              Sipo-Reka &#9829; by Rekaindo Global Jasa
-            </p>
           </div>
         </div>
       </div>
