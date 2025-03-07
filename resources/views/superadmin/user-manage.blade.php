@@ -52,7 +52,9 @@
                     </div>
 
                     <!-- Add User Button to Open Mod    al -->
-                    <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah Pengguna</button>
+                    <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal" style="margin-left: 15px;">
+                        + Tambah Pengguna
+                    </button>
                 </div>
             </div>
             <!-- Card untuk tabel -->
@@ -184,6 +186,7 @@
                             <div class="col-md-6">
                                 <label for="divisi_id_divisi" class="form-label">Pilih Divisi<span style="color : red;"> *</span></label>
                                 <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-control" required autofocus autocomplete="divisi_id_divisi">
+                                    <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                                 @foreach($divisi as $d)
                                     <option value="{{ $d->id_divisi }}">{{ $d->nm_divisi }}</option>
                                 @endforeach
@@ -192,6 +195,7 @@
                             <div class="col-md-6">
                                 <label for="position_id_position" class="form-label">Pilih Posisi<span style="color : red;"> *</span></label>
                                 <select name="position_id_position" id="position_id_position" class="form-control" required autofocus autocomplete="position_id_position">
+                                    <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                                 @foreach($positions as $position)
                                     <option value="{{ $position->id_position }}">{{ $position->nm_position }}</option>
                                 @endforeach
@@ -210,7 +214,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-save">Simpan</button>
+                        <button type="submit" class="btn btn-save" style="padding-right: 55px;">Simpan</button>
                     </div>
                 </form>
             </div>

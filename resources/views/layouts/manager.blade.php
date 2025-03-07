@@ -42,6 +42,10 @@
 <link rel="stylesheet" href="../assets/css/user-manage.css" />
 <link rel="stylesheet" href="../assets/css/data-perusahaan.css" />
 <link rel="stylesheet" href="../assets/css/profile.css" />
+<link rel="stylesheet" href="../css/supervisor/view-memoTerkirim.css" />
+<link rel="stylesheet" href="../css/supervisor/view-memoDiterima.css" />
+<link rel="stylesheet" href="../css/supervisor/approve-undangan.css"/>
+<link rel="stylesheet" href="../css/supervisor/view-undangan.css"/>
 
 
 
@@ -159,6 +163,24 @@
                 const successModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
                 successModal.show();
             }, { once: true }); // Tambahkan event listener hanya sekali
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkboxes = document.querySelectorAll('.approval-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    checkboxes.forEach(cb => {
+                        if (cb !== this) cb.checked = false;
+                    });
+                });
+            });
+
+            // Ketika tombol konfirmasi di modal ditekan, submit form
+            document.getElementById('confirmSubmit').addEventListener('click', function () {
+                document.getElementById('approvalForm').submit();
+            });
         });
     </script>
   </body>

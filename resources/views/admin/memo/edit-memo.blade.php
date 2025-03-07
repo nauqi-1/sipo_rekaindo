@@ -33,7 +33,7 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="tgl_surat" class="form-label">
-                            <img src="/img/memo-superadmin/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat
+                            <img src="/img/memo-superadmin/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                         </label>
                         <input type="date" name="tgl_surat" id="tgl_surat" class="form-control" value="{{ $memo->tgl_dibuat }}" required>
                     </div>
@@ -48,7 +48,7 @@
                         <input type="text" name="nomor_surat" id="nomor_surat" class="form-control" value="{{ $memo->nomor_memo }}" required>
                     </div>
                     <div class="col-md-6" >
-                        <label for="perihal" class="form-label">Perihal</label>
+                        <label for="perihal" class="form-label">Perihal <span class="text-danger">*</span></label>
                         <input type="text" name="perihal" id="perihal" class="form-control" value="{{ $memo->judul }}" required>
                     </div>
 
@@ -56,13 +56,12 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="kepada" class="form-label">
-                            <img src="/img/memo-superadmin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada
-                            <label for="kepada" class="label-kepada">*Pisahkan dengan titik koma(;) jika penerima lebih dari satu</label>
+                            <img src="/img/memo-superadmin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
                         </label>
                         <input type="text" name="kepada" id="kepada" class="form-control" value="{{ $memo->tujuan }}" required>
                     </div>
                     <div class="col-md-6 lampiran">
-                        <label for="upload_file" class="form-label">Lampiran</label>
+                        <label for="upload_file" class="form-label">Lampiran <span class="text-danger">*</span></label>
                         <div class="upload-wrapper">
                             <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
                             <input type="file" id="upload_file" name="upload_file" class="form-control-file" value="{{ $memo->tanda_identitas }}" hidden>
@@ -73,7 +72,7 @@
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
                         <img src="\img\memo-superadmin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                        <label for="isi-surat">Isi Surat</label>
+                        <label for="isi-surat">Isi Surat <span class="text-danger">*</span></label>
                     </div>
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_surat" >{{ $memo->isi_memo }}</textarea>
@@ -83,6 +82,7 @@
             <div class="row mb-4 need-row">
                 <div class="col-md-12">
                     <label for="need" class="need">Keperluan Barang</label>
+                    <label for="isi" class="fill">*Isi keperluan barang jika dibutuhkan</label>
                 </div>
             </div>
             @foreach ($memo->kategoriBarang as $index => $barang)

@@ -41,21 +41,21 @@
     <!-- [Material Icons] https://fonts.google.com/icons -->
     <link rel="stylesheet" href="../assets/fonts/material.css" />
     <!-- [Template CSS Files] -->
-    <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
-    <link rel="stylesheet" href="../assets/css/style-preset.css" />
-    <link rel="stylesheet" href="../assets/css/style-app.css" />
-    <link rel="stylesheet" href="../css/superadmin/dashboard.css" />
-    <link rel="stylesheet" href="../assets/css/user-manage.css" />
-    <link rel="stylesheet" href="../assets/css/data-perusahaan.css" />
-    <link rel="stylesheet" href="../css/superadmin.edit-profile.css" />
-    <link rel="stylesheet" href="../css/superadmin/arsip.css"/>
-    <link rel="stylesheet" href="../css/surat.css"/>
-    <link rel="stylesheet" href="../css/superadmin/laporan.css"/>
-    <link rel="stylesheet" href="../css/superadmin/cetak-laporan.css"/>
-    <link rel="stylesheet" href="../css/info.css"/>
-    <link rel="stylesheet" href="../css/add.css"/>
-    <link rel="stylesheet" href="{{ asset('css/add.css') }}" />
-    <link rel="stylesheet" href="..//css/superadmin/edit.css"/>
+<link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
+<link rel="stylesheet" href="../assets/css/style-preset.css" />
+<link rel="stylesheet" href="../assets/css/style-app.css" />
+<link rel="stylesheet" href="../css/superadmin/dashboard.css" />
+<link rel="stylesheet" href="../assets/css/user-manage.css" />
+<link rel="stylesheet" href="../assets/css/data-perusahaan.css" />
+<link rel="stylesheet" href="../css/superadmin.edit-profile.css" />
+<link rel="stylesheet" href="../css/superadmin/arsip.css"/>
+<link rel="stylesheet" href="../css/surat.css"/>
+<link rel="stylesheet" href="../css/superadmin/laporan.css"/>
+<link rel="stylesheet" href="../css/superadmin/cetak-laporan.css"/>
+<link rel="stylesheet" href="../css/info.css"/>
+<link rel="stylesheet" href="../css/add.css"/>
+<link rel="stylesheet" href="{{ asset('css/add.css') }}" />
+
   </head>
   <body>
     <!-- [ Pre-loader ] start -->

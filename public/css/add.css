@@ -466,7 +466,7 @@ select.btn-dropdown:focus {
     justify-content: space-between;
     align-items: center;
     margin: 0 auto;
-    width: 97.5%;
+    width: 96%;
     padding: 0 23px;
     border-radius: 8px;
 }

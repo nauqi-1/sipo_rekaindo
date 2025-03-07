@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Admin')
+@section('title', 'Undangan Rapat')
 
 @section('content')
     <div class="container">
@@ -113,7 +113,7 @@
                         <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
                         @csrf
                         @method('POST') 
-                            <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
+                            <button class="btn btn-sm3" data-bs-toggle="modal" data-bs-target="#arsipModal">
                                 <img src="/img/undangan/arsip.png" alt="arsip">
                             </button>
                         </form>

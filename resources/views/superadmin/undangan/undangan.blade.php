@@ -117,7 +117,7 @@
                     @csrf
                     @method('POST')
 
-                        <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
+                        <button class="btn btn-sm3" data-bs-toggle="modal" data-bs-target="#arsipModal">
                             <img src="/img/undangan/arsip.png" alt="arsip">
                         </button>
                     </form>
