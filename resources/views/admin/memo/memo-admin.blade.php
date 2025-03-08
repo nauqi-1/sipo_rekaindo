@@ -101,7 +101,7 @@
                         @endif
                     </td>
                     <td>
-                        @if ($memo->status != 'reject') 
+                    @if ($memo->status != 'reject' && ($memo->status != 'approve' || Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)) 
                         <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
                             <img src="/img/memo-admin/share.png" alt="share">
                         </a>               

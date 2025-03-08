@@ -48,6 +48,7 @@
 <link rel="stylesheet" href="../css/superadmin/dashboard.css" />
 <link rel="stylesheet" href="../css/superadmin.edit-profile.css" />
 <link rel="stylesheet" href="../css/superadmin/arsip.css"/>
+<link rel="stylesheet" href="../css/superadmin/arsip.css"/>
 <link rel="stylesheet" href="../css//surat.css"/>
 <link rel="stylesheet" href="../css/superadmin/laporan.css"/>
 <link rel="stylesheet" href="../css/superadmin/cetak-laporan.css"/>

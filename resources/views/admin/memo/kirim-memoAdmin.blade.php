@@ -46,9 +46,9 @@
                         <input type="text" id="perihal" value="{{ $memo->judul }}" readonly>
                     </div>
                     <div class="card-white">
-                        <label for="tgl">Tanggal</label>
+                        <label for="tgl">Tanggal Disahkan</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{ $memo->tgl_dibuat }}" readonly>
+                        <input type="text" id="tgl" value="{{ $memo->tgl_disahkan->translatedFormat('d F Y') }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="kepada">Kepada</label>
@@ -75,17 +75,24 @@
                     <div class="card-white">
                         <label for="tgl-buat">Dibuat Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl-buat" value="{{ $memo->tgl_dibuat }}" readonly>
+                        <input type="text" id="tgl-buat" value="{{ $memo->tgl_dibuat->translatedFormat('d F Y') }}" readonly>
                     </div>
                     
-                    @if($memo->status == 'approve' && $memo->divisi->id_divisi != Auth::user()->divisi->id_divisi)
-                    <div class="col-md-6 lampiran">
-                        <label for="tanda_identitas" class="form-label">Lampiran</label>
+                   
+                    @if($memo->status == 'approve'&& $memo->divisi->id_divisi == Auth::user()->divisi->id_divisi)
+                    <div class="card-white">
+                    <label for="tanda_identitas" class="form-label">Lampiran</label>
+                    <div class="separator"></div>
                         <div class="upload-wrapper">
-                            <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
-                            <input type="file" id="tanda_identitas" name="tanda_identitas" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                            <button type="button" class="btn btn-primary upload-button" id="openUploadModal" style="margin-left: 30px;">Pilih File</button>
+                            <input type="file" id="tanda_identitas" name="tanda_identitas" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                            <div id="filePreview" style="display: none; text-align: center">
+                                <img id="previewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
+                                <span id="fileName"></span>
+                                <button type="button" id="removeFile" class="bi bi-x remove-btn" style="border: none; color:red; background-color: white;"></button>
+                            </div>
                         </div>
-                    </div> 
+                    </div>
                     @endif
                     <!-- <div class="card-white">
                         <label for="file">File</label>
@@ -127,7 +134,7 @@
             </div>
         </div>
         <div class="footer">
-            <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('memo.admin') }}'">Kembali</button>
+            <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('memo.admin') }}'">Kembali</button>   
             <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
         </div>
         </form>
@@ -167,6 +174,42 @@
                         <!-- Tombol -->
                         <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Kembali</a></button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Upload File -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">
+                        <img src="/img/memo-superadmin/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
+                        Unggah file
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-subtitle">Pilih dan unggah file pilihan Anda</p>
+                    <div class="upload-container">
+                        <div class="upload-box" id="uploadBox">
+                            <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
+                            <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
+                            <p class="upload-note">Ukuran file PDF tidak lebih dari 2MB</p>
+                            <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
+                            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                            <div id="fileInfo" style="display: none; text-align: center ">
+                                <div id="fileInfoWrapper" style="display: flex; align-items: center; justify-content: center">
+                                    <img id="modalPreviewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; margin-right: 5px; display: none;">
+                                    <span id="modalFileName"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="uploadBtn" >Unggah</button>
                 </div>
             </div>
         </div>

@@ -67,9 +67,9 @@
                     <div class="col-md-6">
                         <label for="kepada" class="form-label">
                             <img src="/img/memo-superadmin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada<span class="text-danger">*</span>
-                            <label for="tujuan" class="label-kepada">*Pisahkan dengan titik koma(;) jika penerima lebih dari satu</label>
+                            <label for="tujuan" class="label-kepada"></label>
                         </label>
-                        <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" required>
+                        <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="Kepada yang terhormat" required>
                     </div>
                     <div class="col-md-6">
                         <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan<span class="text-danger">*</span></label>
@@ -407,7 +407,7 @@
                     row.innerHTML = `
                         <div class="col-md-6">
                             <label for="nomor_${i}">Nomor</label>
-                            <input type="text" id="nomor_${i}" name="nomor[]" class="form-control" placeholder="Masukkan nomor">
+                            <input type="text" id="nomor_${i}" name="nomor[]" class="form-control" value="${i + 1}" readonly>
                             <input type="hidden" name="memo_divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
                         </div>
                         <div class="col-md-6">

@@ -10,6 +10,11 @@ use App\Http\Controllers\UndanganController;
 use Illuminate\Support\Facades\Route;
 
 
+// Route::get('register', [RegisteredUserController::class, 'create'])
+// ->name('register');
+
+// Route::post('registerd', [RegisteredUserController::class, 'store'])
+// ->name('register');;
 
     Route::get('user-manage/add', [RegisteredUserController::class, 'create'])
         ->name('user-manage/add');
@@ -55,7 +60,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/documents/received', [KirimController::class, 'receivedDocuments'])->name('documents.received');
         Route::post('/documents/read/{id}', [KirimController::class, 'markAsRead'])->name('documents.read');
 
-        Route::post('/arsip/{document_id}/{jenis_document}', [ArsipController::class, 'archiveDocument'])->name('arsip.archive');
+        Route::post('/arsip/{document_id}/{jenis_document}/simpan', [ArsipController::class, 'archiveDocument'])->name('arsip.archive');
         Route::delete('/arsip/{document_id}/{jenis_document}', [ArsipController::class, 'restoreDocument'])->name('arsip.restore');
         Route::get('/arsip/memo', [ArsipController::class, 'indexMemo'])->name('arsip.memo');
         Route::get('/arsip/undangan', [ArsipController::class, 'indexUndangan'])->name('arsip.undangan');

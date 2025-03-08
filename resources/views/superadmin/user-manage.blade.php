@@ -111,7 +111,7 @@
                             </form>
                             <button type="button" class="btn btn-delete" 
                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                data-user-id="{{ $user->id }}">
+                                data-user-id="{{ $user->id }}" data-route="{{ route('user-manage.destroy', $user->id) }}">
                                 <img src="/img/user-manage/Trash1.png" alt="delete">
                             </button>
                             </td>
