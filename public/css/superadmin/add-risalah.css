@@ -320,7 +320,6 @@ select.btn-dropdown:focus {
 .isi-risalah-row {
     display: flex;
     justify-content: center;
-    /* margin: 10px 12px; */
     margin: 0 auto;
     width: 100%;
     padding: 0 23px;

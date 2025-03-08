@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Admin')
+@section('title', 'Risalah Rapat')
 
 @section('content')
     <div class="container">
@@ -116,7 +116,7 @@
                         </button>
                         <!-- Status Approve -->
                         @if ($i % 3 != 0 && $i % 2 != 0) 
-                            <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
+                            <button class="btn btn-sm3" data-bs-toggle="modal" data-bs-target="#arsipModal">
                                 <img src="/img/risalah/arsip.png" alt="arsip">
                             </button>
                         @else
