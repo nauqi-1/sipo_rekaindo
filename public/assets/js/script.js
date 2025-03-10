@@ -727,27 +727,7 @@ var slideToggle = (target, duration = 0) => {
       }
   }
 
-  document.getElementById('tgl_dibuat').addEventListener('focus', function() {
-    this.type = 'date'; 
-  });
-
-  document.getElementById('tgl_dibuat').addEventListener('blur', function() {
-      if (this.value) { 
-          const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-          let inputTanggal = new Date(this.value);
-          
-          let namaHari = hari[inputTanggal.getDay()];
-          let tanggal = inputTanggal.getDate().toString().padStart(2, '0');
-          let bulan = (inputTanggal.getMonth() + 1).toString().padStart(2, '0');
-          let tahun = inputTanggal.getFullYear();
-          
-          this.type = 'text'; 
-          this.value = `${namaHari}, ${tanggal}-${bulan}-${tahun}`; 
-      } else {
-          this.type = 'text';
-          this.placeholder = "mm/dd/yyyy"; 
-      }
-  });  
+ 
 
   document.getElementById('tambahIsiRisalahBtn').addEventListener('click', function() {
   var newRow = document.createElement('div');

@@ -1,19 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Memo Diterima</title>
-    <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('/css/supervisor/view-memoDiterima.css') }}">
-</head>
-<body>
+@extends('layouts.manager')
+
+@section('title', 'Detail Memo Diterima')
+
+@section('content')
     <div class="container">
         <div class="header">
             <!-- Back Button -->
@@ -44,7 +33,7 @@
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
 
-                        <input type="text" id="diterima">
+                        <input type="text" id="diterima" value="{{ $memo->memo->tujuan }}">
                     </div>
                 </div>
                 <div class="col">
@@ -67,7 +56,7 @@
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tanggal">
+                        <input type="text" id="tanggal" value="{{ $memo->tgl_disahkan ? : '-' }}">
                     </div>
                 </div>
             </div>
@@ -98,7 +87,7 @@
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl"value="{{ $memo->memo->tgl_dibuat }}">
+                        <input type="text" id="tgl"value="{{  \Carbon\Carbon::parse($memo->memo->tgl_dibuat)->format('d-m-Y')  }}">
                     </div>
                     <!-- <div class="card-white">
                         <label for="lampiran">Lampiran</label>
@@ -200,24 +189,4 @@
             </div>
         </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const checkboxes = document.querySelectorAll('.approval-checkbox');
-            
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
-                    checkboxes.forEach(cb => {
-                        if (cb !== this) cb.checked = false;
-                    });
-                });
-            });
-
-            // Ketika tombol konfirmasi di modal ditekan, submit form
-            document.getElementById('confirmSubmit').addEventListener('click', function () {
-                document.getElementById('approvalForm').submit();
-            });
-        });
-
-    </script>
-</body>
-</html>
+@endsection

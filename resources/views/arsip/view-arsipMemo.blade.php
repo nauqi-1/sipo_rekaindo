@@ -43,7 +43,7 @@
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
-                        <input type="text" id="diterima">
+                        <input type="text" id="diterima" value="{{ $memo->tujuan }}">
                     </div>
                 </div>
                 <div class="col">
@@ -53,12 +53,12 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        <button class="status">Diterima</button>
+                        <button class="status" >Diterima</button>
                     </div>
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tanggal" value="{{ $memo->tgl_disahkan }}" readonly>
+                        <input type="text" id="tanggal" value="{{ $memo->tgl_disahkan->translatedFormat('d F Y') }}" readonly>
                     </div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{ $memo->tgl_dibuat }}" readonly>
+                        <input type="text" id="tgl" value="{{ $memo->tgl_dibuat->translatedFormat('d F Y') }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="lampiran">Lampiran</label>

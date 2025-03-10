@@ -32,7 +32,7 @@ class NotifController extends Controller
         }
 
         $count = Notifikasi::where('id_divisi', $user->divisi_id_divisi)
-            ->where('is_read', 0)
+            ->where('dibaca', 0)
             ->count();
 
         return response()->json(['count' => $count]);
@@ -44,8 +44,8 @@ class NotifController extends Controller
         $user = Auth::user();
         if ($user) {
             Notifikasi::where('id_divisi', $user->divisi_id_divisi)
-                ->where('is_read', 0)
-                ->update(['is_read' => 1]);
+                ->where('dibaca', 0)
+                ->update(['dibaca' => 1]);
         }
         return response()->json(['success' => true]);
     }

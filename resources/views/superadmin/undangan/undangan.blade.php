@@ -82,7 +82,7 @@
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
                     <td class="nama-dokumen 
-                        {{ $undangan->status == 'Reject' ? 'text-danger' : ($undangan->status == 'Pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $undangan->judul }}
                     </td>
                     <td>{{ \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') }}</td>
@@ -117,7 +117,7 @@
                     @csrf
                     @method('POST')
 
-                        <button class="btn btn-sm4" data-bs-toggle="modal" data-bs-target="#arsipModal">
+                        <button class="btn btn-sm3" data-bs-toggle="modal" data-bs-target="#arsipModal">
                             <img src="/img/undangan/arsip.png" alt="arsip">
                         </button>
                     </form>

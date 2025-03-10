@@ -82,7 +82,7 @@
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
                     <td class="nama-dokumen 
-                        {{ $memo->status == 'Reject' ? 'text-danger' : ($memo->status == 'Pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $memo->judul }}
                     </td>
                     <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
@@ -101,7 +101,7 @@
                         @endif
                     </td>
                     <td>
-                        @if ($memo->status != 'reject') 
+                    @if ($memo->status != 'reject' && ($memo->status != 'approve' || Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)) 
                         <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
                             <img src="/img/memo-admin/share.png" alt="share">
                         </a>               
@@ -112,7 +112,7 @@
                         <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
-                            <button type="submit" class="btn btn-sm2">
+                            <button type="submit" class="btn btn-sm3">
                                 <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                             </button>
                         </form>

@@ -99,7 +99,8 @@
 
     <div class="container">
         <!-- Gunakan Base64 jika tersedia, jika tidak pakai asset() -->
-        <img class="background" src="{{ $base64Image ?? asset('img/border-surat.png') }}" alt="Background">
+        <img class="background" src="{{ asset('img/border-surat.png') }}" alt="Background">
+
 
         <div class="title">
             <h2>Memo</h2>

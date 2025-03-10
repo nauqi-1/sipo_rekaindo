@@ -31,7 +31,7 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="tgl_surat" class="form-label">
-                            <img src="/img/memo-superadmin/date.png" alt="date" style="margin-right: 5px;">Tgl. Surat
+                            <img src="/img/memo-superadmin/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                         </label>
                         <input type="date" name="tgl_surat" id="tgl_surat" class="form-control" value="{{ $memo->tgl_dibuat->format('Y-m-d') }}" required>
                     </div>
@@ -46,7 +46,7 @@
                         <input type="text" name="nomor_surat" id="nomor_surat" class="form-control" value="{{ $memo->nomor_memo }}" required>
                     </div>
                     <div class="col-md-6" >
-                        <label for="perihal" class="form-label">Perihal</label>
+                        <label for="perihal" class="form-label">Perihal <span class="text-danger">*</span></label>
                         <input type="text" name="perihal" id="perihal" class="form-control" value="{{ $memo->judul }}" required>
                     </div>
 
@@ -54,21 +54,12 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="kepada" class="form-label">
-                            <img src="/img/memo-superadmin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada
-                            <label for="kepada" class="label-kepada">*Pisahkan dengan titik koma(;) jika penerima lebih dari satu</label>
+                            <img src="/img/memo-superadmin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
                         </label>
                         <input type="text" name="kepada" id="kepada" class="form-control" value="{{ $memo->tujuan }}" required>
                     </div>
-                    <div class="col-md-6 lampiran">
-                        <label for="upload_file" class="form-label">Lampiran</label>
-                        <div class="upload-wrapper">
-                        @if($memo->tanda_identitas)
-                            <a href="{{ route('memo.preview', $memo->id_memo) }}" target="_blank" class="btn btn-primary">Lihat File</a>
-                        @endif
-                        @if($memo->tanda_identitas)
-                            <a href="{{ route('memo.download', $memo->id_memo) }}" target="_blank" class="btn btn-primary">Unduh File</a>
-                        @endif
-                        </div>
+                    <div class="col-md-6">
+                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
                     </div>
                 </div>
 
@@ -114,4 +105,4 @@
         </div>
         </form>
     </div>
-    @endsection
+@endsection
