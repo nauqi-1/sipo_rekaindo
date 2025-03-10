@@ -75,12 +75,7 @@ class RegisteredUserController extends Controller
             'divisi_id_divisi.exists' => 'Divisi yang dipilih tidak valid.',
         ]);
     
-        // Jika validasi gagal
-        if ($request->fails()) {
-            return redirect()->back()
-                ->withErrors($request)
-                ->withInput();
-        }
+        
         
 
         $user = User::create([

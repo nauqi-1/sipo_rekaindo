@@ -19,14 +19,30 @@ class MemoController extends Controller
     {
         $divisi = Divisi::all();
         $seri = Seri::all();
+        $userDivisiId = Auth::user()->divisi_id_divisi;
+        $userId = Auth::id();
 
         // Ambil ID memo yang sudah diarsipkan oleh user saat ini
         $memoDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
 
         // Query memo dengan filter
         $query = Memo::with('divisi')
-            ->whereNotIn('id_memo', $memoDiarsipkan) // Filter memo yang belum diarsipkan
-            ->orderBy('tgl_dibuat', 'desc');
+        ->whereNotIn('id_memo', $memoDiarsipkan) // Filter memo yang belum diarsipkan
+        ->where(function ($q) use ($userDivisiId, $userId) {
+            // Memo yang dibuat oleh divisi user sendiri
+            $q->where('divisi_id_divisi', $userDivisiId)
+            
+            // Memo yang dikirim ke user dari divisi lain melalui tabel kirim_document
+            ->orWhereHas('kirimDocument', function ($query) use ($userId, $userDivisiId) {
+                $query->where('jenis_document', 'memo')
+                      ->where('id_penerima', $userId)
+                      ->whereHas('penerima', function ($subQuery) use ($userDivisiId) {
+                          $subQuery->where('divisi_id_divisi', $userDivisiId);
+                      });
+            });
+        })
+        ->orderBy('tgl_dibuat', 'desc');
+    
 
         // Filter berdasarkan status
         if ($request->filled('status')) {

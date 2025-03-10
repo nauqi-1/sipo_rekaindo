@@ -60,6 +60,7 @@
                     </div>
                     <div class="col-md-6">
                         <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
+                        <input type="text" name="nama_bertandatangan" id="kepada" class="form-control" value="{{ $memo->nama_bertandatangan }}" required>
                     </div>
                 </div>
 

@@ -225,7 +225,7 @@
           });
       });
     </script>
-    <script>
+    <!-- <script>
         document.getElementById("tgl_dibuat").addEventListener("change", function() {
             let inputTanggal = this.value; // Ambil nilai dari input date
             if (!inputTanggal) return;
@@ -244,7 +244,7 @@
             this.type = "text";
             this.value = formattedTanggal;
         });
-    </script>
+    </script> -->
     <!-- <script>
       document.getElementById('tambahIsiRisalahBtn').addEventListener('click', function() {
         var newRow = document.createElement('div');
