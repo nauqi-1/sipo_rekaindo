@@ -54,8 +54,6 @@
     <link rel="stylesheet" href="../css/superadmin/cetak-laporan.css"/>
     <link rel="stylesheet" href="../css/info.css"/>
     <link rel="stylesheet" href="../css/add.css"/>
-    <link rel="stylesheet" href="{{ asset('css/add.css') }}" />
-    <link rel="stylesheet" href="..//css/superadmin/edit.css"/>
   </head>
   <body>
     <!-- [ Pre-loader ] start -->

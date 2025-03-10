@@ -32,11 +32,9 @@
                             <input type="text" class="form-control" name="nama_instansi" value="{{ $perusahaan->nama_instansi ?? '' }}" readonly required>
                         </div>
 
-
                         <div class="col-md-6">
                             <label class="form-label">Alamat Situs Web</label>
                             <input type="text" class="form-control" name="alamat_web" value="{{ $perusahaan->alamat_web ?? '' }}" readonly required>
-
                         </div>
 
                         <div class="col-md-6">
@@ -69,7 +67,7 @@
                 </div>
 
                 <!-- Kolom Logo -->
-                <div class="col-md-4 d-flex align-items-center justify-content-center">
+                <div class="col-md-3 d-flex align-items-center justify-content-center">
                     <div class="border rounded p-3" style="width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
                         @if ($perusahaan && $perusahaan->logo)
                             <img src="{{ asset('storage/logos/' . $perusahaan->logo) }}" alt="Logo Perusahaan" class="img-fluid rounded" style="max-width: 100%; max-height: 100%;">

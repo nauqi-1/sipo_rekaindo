@@ -52,7 +52,6 @@
 <link rel="stylesheet" href="../css/superadmin/laporan.css"/>
 <link rel="stylesheet" href="../css/superadmin/cetak-laporan.css"/>
 <link rel="stylesheet" href="../css/admin/add-memo.css"/>
-<link rel="stylesheet" href="../css/admin/memoAdmin.css"/>
 <link rel="stylesheet" href="../css/admin/kirim-admin.css"/>
 <link rel="stylesheet" href="../css/info.css"/>
 

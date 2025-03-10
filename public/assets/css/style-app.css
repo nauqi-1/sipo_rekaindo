@@ -120,89 +120,27 @@ h1 {
 }
 
 /* Overlay Delete Success Confirm  */
-.modal-content .modal-header {
-    font-size: 17px;
-    color: #222B45;
-}
-
-.modal-content input.form-control {
-    background-color: #ffffff; 
-    color: #000000; 
-    border: 1px solid #EFF4FA; 
-    border-radius: 8px; 
-    padding: 10px; 
-}
-
-.modal-content input.form-control:hover {
-    box-shadow: none;
-    outline: none;
-}
-
-.modal-content input.form-control:focus {
-    background-color: #fff; 
-    border-color: #92C5FF99; 
-    box-shadow: 4px 4px 4px rgba(146, 197, 255, 0.6); 
-}
-
-.modal-content select.form-control {
-    background-color: #ffffff;
+/* #deleteModal .btn-close {
     color: #000000;
-    border: 1px solid #EFF4FA;
-    border-radius: 8px;
-    padding: 10px;
-}
-
-.modal-content select.form-control:hover {
-    outline: none;
-    box-shadow: none;
-}
-
-.modal-content select.form-control option {
-    background-color: #ffffff;
-    color: #222B45;
-    border: 1px solid #EFF4FA;
-    border-radius: 8px;
-    padding: 10px;
-    font-size: 13px;
-}
-
-.modal-content select.form-control:focus {
-    background-color: #fff; 
-    border-color: #92C5FF99; 
-    box-shadow: 4px 4px 4px rgba(146, 197, 255, 0.6); 
-    font-size: 13px;
-}
-
-.modal-content label.form-label {
-    background-color: #ffffff; 
-    color: #222B45; 
-    font-size: 13px;
-}
-
-select.form-control {
-    font-size: 13px; 
-}
-
-input.form-control {
-    font-size: 13px; 
 }
 
 #deleteModal .btn-outline-secondary {
     padding: 8px 20px;
     font-size: 14px;
     border-radius: 5px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #8A8383;
     background-color: #ffffff;
     color: #8A8383;
 }
 
 #deleteModal .btn-outline-secondary:hover{
-    background-color: #6d6d6d;
+    border-color: #8A8383;
+    background-color: #8A8383;
     color: #ffffff;
 }
 
 #deleteModal .btn-primary {
-    padding: 8px 33px;
+    padding: 8px 30px;
     font-size: 14px;
     border-radius: 5px;
     background-color: #2592F7;
@@ -214,16 +152,17 @@ input.form-control {
 }
 
 #deleteModal img {
-    margin-bottom: 20px;
+    display: block;
+    margin: 0 auto 20px;
 }
 
 #deleteModal h5 {
     font-size: 18px;
     font-weight: bold;
-}
+} */
 
 /* Modal Delete Success Confirmation */
-#deleteSuccessModal .modal-content {
+/* #deleteSuccessModal .modal-content {
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -249,7 +188,7 @@ input.form-control {
 #deleteSuccessModal .btn-primary:hover {
     background-color: #004085;
     color: #ffffff;
-}
+} */
 
 /* Modal Edit Success Confirmation */
 #editSuccessModal .modal-content {
