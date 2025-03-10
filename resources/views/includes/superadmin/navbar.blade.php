@@ -142,7 +142,7 @@
                     } else {
                         data.notifications.forEach(notif => {
                             let notifItem = document.createElement("div");
-                            notifItem.className = "notif-item" + (!notif.is_read ? " bg-light" : ""); // Tambahkan highlight jika belum dibaca
+                            notifItem.className = "notif-item" + (!notif.dibaca ? " bg-light" : ""); // Tambahkan highlight jika belum dibaca
                             notifItem.innerHTML = `
                                 <h6>${notif.judul}</h6>
                                 <p><strong>Jenis:</strong> ${notif.jenis_document}</p>

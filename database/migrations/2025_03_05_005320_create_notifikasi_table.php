@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('jenis_document', 60);
             $table->integer('id_divisi')->index('notif-1_idx');
             $table->timestamp('updated_at')->nullable();
+            $table->boolean('dibaca')->default(0);
         });
     }
 
@@ -25,6 +26,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notifikasi');
+        Schema::table('notifikasi', function (Blueprint $table) {
+            $table->dropColumn('dibaca');
+        });
     }
 };

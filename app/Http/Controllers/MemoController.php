@@ -431,6 +431,7 @@ class MemoController extends Controller
             'judul' => "Memo {$request->status}",
             'jenis_document' => 'memo',
             'id_divisi' => $memo->divisi_id,
+            'dibaca'         => false,
             'updated_at' => now()
         ]);
     
