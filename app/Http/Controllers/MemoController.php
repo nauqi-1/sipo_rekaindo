@@ -120,6 +120,7 @@ class MemoController extends Controller
             'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
         ]);
         
+        
 
         $filePath = null;
         if ($request->hasFile('tanda_identitas')) {

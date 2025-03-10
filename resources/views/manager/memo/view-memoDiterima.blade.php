@@ -33,7 +33,7 @@
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
 
-                        <input type="text" id="diterima">
+                        <input type="text" id="diterima" value="{{ $memo->memo->tujuan }}">
                     </div>
                 </div>
                 <div class="col">
@@ -47,8 +47,7 @@
                         @if ($memo->memo->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($memo->memo->status == 'pending')
-                            <!-- <span class="badge bg-warning">Diproses</span> -->
-                            <span>Diproses</span>
+                            <span class="badge bg-warning">Diproses</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
                         @endif
@@ -57,7 +56,7 @@
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tanggal">
+                        <input type="text" id="tanggal" value="{{ $memo->tgl_disahkan ? : '-' }}">
                     </div>
                 </div>
             </div>
@@ -88,7 +87,7 @@
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl"value="{{ $memo->memo->tgl_dibuat }}">
+                        <input type="text" id="tgl"value="{{  \Carbon\Carbon::parse($memo->memo->tgl_dibuat)->format('d-m-Y')  }}">
                     </div>
                     <!-- <div class="card-white">
                         <label for="lampiran">Lampiran</label>

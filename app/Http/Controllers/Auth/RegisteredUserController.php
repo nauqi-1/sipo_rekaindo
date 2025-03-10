@@ -4,12 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
@@ -44,7 +41,46 @@ class RegisteredUserController extends Controller
             'role_id_role' => 'required|exists:role,id_role',
             'position_id_position' => 'required|exists:position,id_position',
             'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
+        ],[
+            'firstname.required' => 'Nama depan wajib diisi.',
+            'firstname.max' => 'Nama depan tidak boleh lebih dari 50 karakter.',
+            
+            'lastname.required' => 'Nama belakang wajib diisi.',
+            'lastname.max' => 'Nama belakang tidak boleh lebih dari 50 karakter.',
+            
+            'username.required' => 'Username wajib diisi.',
+            'username.max' => 'Username tidak boleh lebih dari 25 karakter.',
+            'username.unique' => 'Username sudah digunakan, silakan pilih yang lain.',
+    
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.max' => 'Email tidak boleh lebih dari 70 karakter.',
+            'email.unique' => 'Email sudah digunakan, silakan gunakan email lain.',
+    
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password harus minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak sesuai.',
+    
+            'phone_number.required' => 'Nomor telepon wajib diisi.',
+            'phone_number.numeric' => 'Nomor telepon harus berupa angka.',
+            'phone_number.digits_between' => 'Nomor telepon harus antara 10 hingga 15 digit.',
+    
+            'role_id_role.required' => 'Role wajib dipilih.',
+            'role_id_role.exists' => 'Role yang dipilih tidak valid.',
+    
+            'position_id_position.required' => 'Posisi wajib dipilih.',
+            'position_id_position.exists' => 'Posisi yang dipilih tidak valid.',
+    
+            'divisi_id_divisi.required' => 'Divisi wajib dipilih.',
+            'divisi_id_divisi.exists' => 'Divisi yang dipilih tidak valid.',
         ]);
+    
+        // Jika validasi gagal
+        if ($request->fails()) {
+            return redirect()->back()
+                ->withErrors($request)
+                ->withInput();
+        }
         
 
         $user = User::create([

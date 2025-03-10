@@ -209,24 +209,7 @@
         });
     </script>
         <script>
-        document.getElementById("tgl_dibuat").addEventListener("change", function() {
-            let inputTanggal = this.value; // Ambil nilai dari input date
-            if (!inputTanggal) return;
 
-            let tanggalObj = new Date(inputTanggal);
-
-            // let hari = tanggalObj.toLocaleDateString('id-ID', { weekday: 'long' });
-            let tanggal = String(tanggalObj.getDate()).padStart(2, '0'); // Tambahkan 0 di depan jika <10
-            let bulan = tanggalObj.toLocaleDateString('id-ID', { month: 'long' });
-            let tahun = tanggalObj.getFullYear();
-
-            // let formattedTanggal = ${hari}, ${tanggal} ${bulan} ${tahun};
-            let formattedTanggal = `${tanggal} ${bulan} ${tahun}`;
-
-            // Mengubah input date menjadi text dan menampilkan format tanggal yang dipilih
-            this.type = "text";
-            this.value = formattedTanggal;
-        });
     </script>
     <script>
       document.getElementById('tambahIsiRisalahBtn').addEventListener('click', function() {

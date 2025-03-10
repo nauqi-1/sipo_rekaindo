@@ -48,7 +48,7 @@
                     <div class="card-white">
                         <label for="tgl">Tanggal Disahkan</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{ $memo->tgl_disahkan->translatedFormat('d F Y') }}" readonly>
+                        <input type="text" id="tgl" value="{{ $memo->tgl_disahkan ? : '-' }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="kepada">Kepada</label>

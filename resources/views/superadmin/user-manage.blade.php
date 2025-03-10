@@ -130,6 +130,15 @@
     <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <form method="POST" action="{{ route('user-manage/add') }}">
                     @csrf
                     <div class="modal-header">
@@ -147,7 +156,10 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="email" class="form-label">Email :<span style="color : red;"> *</span></label>
-                                <input type="text" name="email" id="email" class="form-control"  required autocomplete="email">
+                                <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}">
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <div class="row mb-3">
