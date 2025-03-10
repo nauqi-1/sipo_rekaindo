@@ -67,12 +67,14 @@
             @foreach ($memos as $index => $laporan)
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
-                <td>{{ $laporan->judul }}</td>
+                <td class="nama-dokumen 
+                    {{ $laporan->status == 'reject' ? 'text-danger' : ($laporan->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                    {{ $laporan->judul }}
+                </td>
                 <td>{{ $laporan->tgl_dibuat->format('d-m-Y') }}</td>
                 <td>{{ $laporan->seri_surat }}</td>
-                <td>{{ $laporan->nomor_memo }}</td> <!-- Updated to use nomor_memo -->
+                <td>{{ $laporan->nomor_memo }}</td> 
                 <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-                <!-- <td>{{ $laporan->divisi->nm_divisi }}</td> -->
                 <td>
                     <span class="badge bg-{{ $laporan->status == 'approve' ? 'success' : 'warning' }}">
                         {{ $laporan->status == 'approve' ? 'Diterima' : 'Pending' }}
