@@ -32,11 +32,9 @@
                             <input type="text" class="form-control" name="nama_instansi" value="{{ $perusahaan->nama_instansi ?? '' }}" readonly required>
                         </div>
 
-
                         <div class="col-md-6">
                             <label class="form-label">Alamat Situs Web</label>
                             <input type="text" class="form-control" name="alamat_web" value="{{ $perusahaan->alamat_web ?? '' }}" readonly required>
-
                         </div>
 
                         <div class="col-md-6">

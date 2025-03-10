@@ -87,21 +87,11 @@
     border-radius: 100%;
     background-color: #0095FF;
 }
-.user-manage .btn-edit:focus {
-    border: none;
-    border-radius: 100%;
-    background-color: #0095FF;
-}
 .user-manage .btn-delete {
     font-size: 14px;
     border-radius: 50px;
 }
 .user-manage .btn-delete:hover {
-    border: none;
-    border-radius: 100%;
-    background-color: #FF0000;
-}
-.user-manage .btn-delete:focus {
     border: none;
     border-radius: 100%;
     background-color: #FF0000;
@@ -251,24 +241,20 @@
 
 .modal-header {
     display: flex;
-    align-items: center; /* Pusatkan elemen secara vertikal */
-    gap: 10px; /* Atur jarak antara gambar dan teks */
+    align-items: center;
+    gap: 10px;
 }
 
 .modal-title {
-    margin: 0; /* Hilangkan margin bawaan agar menempel ke gambar */
+    margin: 0;
     padding: 0;
-    flex-grow: 1; /* Biarkan teks menggunakan ruang yang tersedia */
-}
-
-.close {
-    margin-left: auto; /* Geser tombol close ke kanan */
+    flex-grow: 1;
 }
 
 .mb-3 {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Memisahkan label kiri dan radio button kanan */
+    justify-content: space-between;
 }
 
 .mb-3 .form-izin {
@@ -288,13 +274,13 @@
 }
 
 .mb-3 .izin label {
+    margin-left: 2%;
     margin-right: 5px;
 }
 
 .mb-3 .izin input {
     margin-right: 15px;
 }
-
 
 .badge.role-superadmin {
     background-color: #3e58c0;
@@ -307,4 +293,80 @@
 .badge.role-manager {
     background-color: #5D5FEF;
     color: white;
+}
+
+#successAddModal img {
+    display: block;
+    margin: 0 auto 20px;
+}
+
+/* Overlay Delete Success Confirm  */
+#deleteUserModal .btn-close {
+    color: #000000;
+}
+
+#deleteUserModal .btn-outline-secondary {
+    padding: 8px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #8A8383;
+    background-color: #ffffff;
+    color: #8A8383;
+}
+
+#deleteUserModal .btn-outline-secondary:hover{
+    border-color: #8A8383;
+    background-color: #8A8383;
+    color: #ffffff;
+}
+
+#deleteUserModal .btn-primary {
+    padding: 8px 30px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #2592F7;
+}
+
+#deleteUserModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}
+
+#deleteUserModal img {
+    display: block;
+    margin: 0 auto 20px;
+}
+
+#deleteUserModal h5 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Delete User Success Modal */
+#deleteUserSuccessModal .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#deleteUserSuccessModal .modal-body img {
+    width: 80px;
+    height: auto;
+}
+
+#deleteUserSuccessModal .modal-body h5 {
+    font-size: 18px;
+    color: #333;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+#deleteUserSuccessModal .btn-primary {
+    background-color: #2592F7;
+    color: white;
+    border-radius: 5px;
+}
+
+#deleteUserSuccessModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
 }

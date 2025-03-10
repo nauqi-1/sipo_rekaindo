@@ -101,18 +101,15 @@
                         @endif
                     </td>
                     <td>
-                    <form method="POST" action="{{ route('memo.destroy', $memo->id_memo) }}" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                        data-memo-id="{{ $memo->id_memo }}"  data-route="{{ route('memo.destroy', $memo->id_memo) }}">
                             <img src="/img/memo-superadmin/Delete.png" alt="delete">
                         </button>
-                        </form>
                         
                         @if ($memo->status == 'approve')
                         <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                             @csrf
-                            @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
+                            @method('POST')
                             <button type="submit" class="btn btn-sm3">
                                 <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                             </button>
@@ -131,41 +128,38 @@
         {{ $memos->links('pagination::bootstrap-5') }}
 
         <!-- Modal Hapus -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal fade" id="deleteMemoModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/memo-superadmin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
+                    <!-- Close Button -->
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
                         <!-- Tulisan -->
                         <h5 class="mb-4" style="color: #545050;"><b>Hapus Memo?</b></h5>
-                        <!-- Tombol -->
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Batal</a></button>
-                            
-                            <button type="button" class="btn ok" id="confirmDelete">Oke</button>
-                            
-                        </div>
+                        <form id="deleteMemoForm" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <!-- Tombol -->
+                            <div class="d-flex justify-content-center mt-3">
+                                <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Batal</a></button>
+                                
+                                <button type="submit" class="btn btn-primary">Oke</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Modal Berhasil -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal fade" id="deleteMemoSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
+                <div class="modal-body">
                     <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
                         <img src="/img/memo-superadmin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                         <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Menghapus Memo</b></h5>
-                        <!-- Tombol -->
-                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('memo.superadmin')}}">Kembali</a></button>
+                        <h5><b>Berhasil Menghapus Memo</b></h5>
                     </div>
                 </div>
             </div>
@@ -211,4 +205,48 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Event Listener Overlay delete
+        document.addEventListener("DOMContentLoaded", function () {
+            let deleteModal = document.getElementById("deleteModal");
+            let deleteForm = document.getElementById("deleteMemoForm");
+            let deleteSuccessModal = new bootstrap.Modal(document.getElementById("deleteSuccessModal"));
+
+            deleteModal.addEventListener("show.bs.modal", function (event) {
+                let button = event.relatedTarget;
+                let memoId = button.getAttribute("data-memo-id");
+                let route = button.getAttribute("data-route");
+                deleteForm.setAttribute("action", route);
+            });
+
+            deleteForm.addEventListener("submit", function (event) {
+                event.preventDefault(); // Mencegah form langsung dikirim
+
+                let formAction = deleteForm.getAttribute("action");
+                let formData = new FormData(deleteForm);
+
+                fetch(formAction, {
+                    method: "DELETE", // HARUS DELETE, BUKAN POST
+                    body: formData,
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                    },
+                }).then(response => {
+                    console.log("Response status:", response.status);
+                    if (response.ok) {
+                        let modalInstance = bootstrap.Modal.getInstance(deleteModal);
+                        modalInstance.hide();
+
+                        setTimeout(() => {
+                            deleteSuccessModal.show();
+                            setTimeout(() => {
+                                location.reload(); // Refresh halaman setelah 2 detik
+                            }, 1500);
+                        }, 500);
+                    }
+                }).catch(error => console.error("Error:", error));
+            });
+        });
+    </script>
 @endsection
