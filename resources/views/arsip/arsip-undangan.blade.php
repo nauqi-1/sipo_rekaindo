@@ -38,14 +38,14 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
-                    <th>Data Masuk
+                    <th>Tanggal Undangan
                         <button class="data-md">
                             <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
                         </button>
                     </th>
                     <th>Seri</th>
                     <th>Dokumen</th>
-                    <th>Data Disahkan
+                    <th>Tanggal Disahkan
                         <button class="data-md">
                             <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
                         </button>

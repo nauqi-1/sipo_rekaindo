@@ -1,8 +1,17 @@
-@extends('layouts.superadmin')
-
-@section('title', 'Tambah Risalah Rapat')
-    
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Risalah Rapat Superadmin</title>
+    <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin/add-risalah.css') }}">
+</head>
+<body>
 <div class="container">
     <div class="header">
         <!-- Back Button -->
@@ -14,7 +23,7 @@
     <div class="row">
         <div class="breadcrumb-wrapper">
             <div class="breadcrumb" style="gap: 5px;">
-                <a href="#">Beranda</a>/<a href="{{route ('risalah.superadmin')}}">Risalah Rapat</a>/<a href="#" style="color: #565656;">Tambah Risalah Rapat</a>
+                <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="{{route ('risalah.superadmin')}}">Risalah Rapat</a>/<a href="#" style="color: #565656;">Tambah Risalah Rapat</a>
             </div>
         </div>
     </div>
@@ -172,4 +181,5 @@
         </div>
     </div>
 </div>
-@endsection
+</body>
+</html>
