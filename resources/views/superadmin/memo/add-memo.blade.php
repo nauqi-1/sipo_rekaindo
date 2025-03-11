@@ -14,7 +14,7 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="">Beranda</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Tambah Memo</a>
+                    <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="{{route ('memo.superadmin')}}">Memo</a>/<a href="#" style="color: #565656;">Tambah Memo</a>
                 </div>
             </div>
         </div>
