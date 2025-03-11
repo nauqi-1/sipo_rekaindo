@@ -47,7 +47,7 @@
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tanggal" value="{{ $undangan->tgl_dibuat }}" readonly>
+                        <input type="text" id="tanggal" value="{{ $undangan->tgl_disahkan ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-'  }}" readonly>
                     </div>
                 </div>
             </div>
@@ -76,7 +76,7 @@
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{ $undangan->tgl_dibuat }}" readonly>
+                        <input type="text" id="tgl" value="{{ $undangan->tgl_dibuat->translatedFormat('d F Y')  }}" readonly>
                     </div>
                     <!-- <div class="card-white">
                         <label for="lampiran">Lampiran</label>
