@@ -17,7 +17,9 @@ class UndanganController extends Controller
     public function index(Request $request)
     {
         $divisi = Divisi::all();
-        $seri = Seri::all();  
+        $seri = Seri::all(); 
+        $userDivisiId = Auth::user()->divisi_id_divisi;
+        $userId = Auth::id(); 
 
         // Ambil ID memo yang sudah diarsipkan oleh user saat ini
         $undanganDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
@@ -25,6 +27,19 @@ class UndanganController extends Controller
         // Ambil memo yang belum diarsipkan oleh user saat ini
         $query = Undangan::with('divisi')
         ->whereNotIn('id_undangan', $undanganDiarsipkan) // Filter memo yang belum diarsipkan
+        ->where(function ($q) use ($userDivisiId, $userId) {
+            // Memo yang dibuat oleh divisi user sendiri
+            $q->where('divisi_id_divisi', $userDivisiId)
+            
+            // Memo yang dikirim ke user dari divisi lain melalui tabel kirim_document
+            ->orWhereHas('kirimDocument', function ($query) use ($userId, $userDivisiId) {
+                $query->where('jenis_document', 'undangan')
+                      ->where('id_penerima', $userId)
+                      ->whereHas('penerima', function ($subQuery) use ($userDivisiId) {
+                          $subQuery->where('divisi_id_divisi', $userDivisiId);
+                      });
+            });
+        })
         ->orderBy('tgl_dibuat', 'desc');
         
         // Filter berdasarkan status
@@ -315,6 +330,6 @@ class UndanganController extends Controller
             'updated_at' => now()
         ]);
     
-        return redirect()->back()->with('success', 'Status memo berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Status undangan berhasil diperbarui.');
     }
 }
