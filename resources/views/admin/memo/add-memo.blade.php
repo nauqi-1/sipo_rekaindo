@@ -164,7 +164,7 @@
         </div>
     </div>
 </div>
-<script>
+    <script>
         // Modal Upload File - Menampilkan Modal
         document.getElementById('openUploadModal').addEventListener('click', function () {
             var uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
@@ -370,7 +370,7 @@
                     row.innerHTML = `
                         <div class="col-md-6">
                             <label for="nomor_${i}">Nomor</label>
-                            <input type="text" id="nomor_${i}" name="nomor[]" class="form-control" placeholder="Masukkan nomor">
+                            <input type="text" id="nomor_${i}" name="nomor[]" class="form-control" value="${i + 1}" readonly>
                             <input type="hidden" name="memo_divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
                         </div>
                         <div class="col-md-6">
