@@ -105,18 +105,16 @@
                         <a href="{{route ('kirim-undanganAdmin.admin',['id' => $undangan->id_undangan])}}" class="btn btn-sm1">
                             <img src="/img/undangan/share.png" alt="share">
                         </a>
-                        <!-- <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            <img src="/img/undangan/Delete.png" alt="delete">
-                        </button> -->
-                        <!-- Status Approve -->
+
                         @if ($undangan->status == 'approve')
                         <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
-                        @csrf
-                        @method('POST') 
-                            <button class="btn btn-sm3" data-bs-toggle="modal" data-bs-target="#arsipModal">
+                            @csrf
+                            @method('POST') 
+                            <button type="submit" class="btn btn-sm3 submitArsipUndangan">
                                 <img src="/img/undangan/arsip.png" alt="arsip">
                             </button>
                         </form>
+
                         @else
                             <a href="{{route ('undangan.edit',$undangan->id_undangan)}}" class="btn btn-sm3">
                                 <img src="/img/undangan/edit.png" alt="edit">
@@ -128,84 +126,103 @@
             </tbody>
         </table>
         {{ $undangans->links('pagination::bootstrap-5') }}
+    </div>
 
-        <!-- Modal Hapus -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Hapus Undangan Rapat?</b></h5>
-                        <!-- Tombol -->
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('undangan.admin')}}">Batal</a></button>
-                            <button type="button" class="btn ok" id="confirmDelete">Oke</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Berhasil -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050; font-size: 20px;"><b>Berhasil Menghapus <br>Undangan Rapat</b></h5>
-                        <!-- Tombol -->
-                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('undangan.admin')}}">Kembali</a></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Arsip -->
-        <div class="modal fade" id="arsipModal" tabindex="-1" aria-labelledby="arsipModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Arsip Undangan Rapat?</b></h5>
-                        <!-- Tombol -->
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="#">Batal</a></button>
-                            <button type="button" class="btn ok" id="confirmArsip">Oke</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Arsip Berhasil -->
-        <div class="modal fade" id="successArsipModal" tabindex="-1" aria-labelledby="successArsipModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Sukses</b></h5>
-                        <h6 class="mb-4" style="font-size: 14px; color: #5B5757;">Berhasil Arsip Undangan Rapat</h6>
-                        <!-- Tombol -->
-                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="#">Kembali</a></button>
-                    </div>
-                </div>
+<!-- Overlay Add Memo Success -->
+<div class="modal fade" id="successAddUndanganModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <!-- Success Icon -->
+                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
+                <!-- Success Message -->
+                <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
+                <p class="mt-2">Berhasil Menambahkan Undangan</p>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Modal Arsip -->
+<div class="modal fade" id="arsipUndanganModal" tabindex="-1" aria-labelledby="arsipUndanganModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <!-- Close Button -->
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
+            <h5 class="modal-title mb-4"><b>Arsip Undangann?</b></h5>
+            <!-- Tombol -->
+            <div class="d-flex justify-content-center mt-3">
+                <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="confirmArsipUndangan">Oke</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Arsip Berhasil -->
+<div class="modal fade" id="successArsipUndanganModal" tabindex="-1" aria-labelledby="successArsipUndanganModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title"><b>Sukses</b></h5>
+                <p class="mt-2">Berhasil Arsip Undangan</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Event listener untuk modal sukses tambah undangan
+    document.addEventListener("DOMContentLoaded", function () {
+        @if(session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller undangan store
+            var successModal = new bootstrap.Modal(document.getElementById("successAddUndanganModal"));
+            successModal.show();
+            setTimeout(function () {
+                successModal.hide();
+            }, 2000);
+        @endif
+    });
+
+    // Event Listener Arsip undangan
+    document.addEventListener("DOMContentLoaded", function () {
+        const arsipButtons = document.querySelectorAll(".submitArsipUndangan");
+        const confirmArsipButton = document.getElementById("confirmArsipUndangan");
+        const cancelArsipButton = document.querySelector("#arsipUndanganModal .btn-outline-secondary");
+        const arsipUndanganModal = new bootstrap.Modal(document.getElementById("arsipUndanganModal"));
+        const successArsipUndanganModal = new bootstrap.Modal(document.getElementById("successArsipUndanganModal"));
+
+        let currentForm = null;
+
+        // Saat tombol arsip ditekan, simpan form yang akan dikirim
+        arsipButtons.forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault(); // Mencegah submit langsung
+                currentForm = this.closest("form"); 
+                arsipUndanganModal.show(); // Tampilkan modal konfirmasi
+            });
+        });
+
+        // Saat tombol "Batal" ditekan, tutup modal konfirmasi
+        cancelArsipButton.addEventListener("click", function () {
+            arsipUndanganModal.hide();
+        });
+
+        // Saat tombol "OK" ditekan, submit form dan tampilkan modal sukses
+        confirmArsipButton.addEventListener("click", function () {
+            if (currentForm) {
+                arsipUndanganModal.hide(); // Tutup modal konfirmasi
+                setTimeout(() => {
+                    successArsipUndanganModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
+                }, 300); 
+
+                setTimeout(() => {
+                    successArsipUndanganModal.hide();
+                    currentForm.submit(); // Submit form setelah modal sukses ditutup
+                }, 1500);
+            }
+        });
+    });
+</script>
 @endsection
