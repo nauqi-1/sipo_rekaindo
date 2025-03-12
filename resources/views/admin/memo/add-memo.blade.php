@@ -69,7 +69,7 @@
                         <img src="/img/memo-admin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
                         <label for="tujuan" class="label-kepada"></label>
                     </label>
-                    <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="Silahkan isi Tujuan Memo" required>
+                    <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="Silahkan Isi Tujuan Memo" required>
                 </div>
                 <div class="col-md-6">
                     <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>

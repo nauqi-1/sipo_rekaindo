@@ -50,8 +50,9 @@ h1 {
 /* Tabel untuk surat */
 .table-light {
     margin-top: 20px;
-    width: calc(100% - 40px);
-    margin-left: 20px;
+    /* width: calc(100% - 40px); */
+    width: 100%;
+    /* margin-left: 20px; */
 }
 .table-light thead  {
     vertical-align: middle;
