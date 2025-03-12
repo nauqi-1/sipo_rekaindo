@@ -82,7 +82,7 @@
                     <div class="row mb-4 isi-risalah-row">
                         <div class="col-md-12">
                             <img src="\img\risalah\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                            <label for="isi_document">Isi Risalah Rapat</label>
+                            <label for="isi_document">Isi Risalah Rapat <span class="text-danger">*</span></label>
                         </div>
                     </div>
                     <div id="risalahContainer">
@@ -119,7 +119,7 @@
                     </div>
                     <div class="row mb-4">
                         <div class="col-md-6">
-                            <label for="nama_pimpinan" class="form-label">Nama yang Bertanda Tangan</label>
+                            <label for="nama_pimpinan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
                             <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
                                 <option disabled selected style="text-align: left;">--Pilih--</option>
                                 <option value="pimpinan1">Jokowi</option>
@@ -181,5 +181,34 @@
         </div>
     </div>
 </div>
+<script>
+      document.getElementById('tambahIsiRisalahBtn').addEventListener('click', function() {
+        var newRow = document.createElement('div');
+        newRow.classList.add('isi-surat-row', 'row');  
+        newRow.style.gap = '0';  
+
+        newRow.innerHTML = `
+            <div class="col-md-1">
+                <input type="text" class="form-control" name="no[]">
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="topik[]" placeholder="Topik Pembahasan" rows="2"></textarea>
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="pembahasan[]" placeholder="Pembahasan" rows="2"></textarea>
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="tindak_lanjut[]" placeholder="Tindak Lanjut" rows="2"></textarea>
+            </div>
+            <div class="col-md-2">
+                <textarea class="form-control" name="target[]" placeholder="Target" rows="2"></textarea>
+            </div>
+            <div class="col-md-2">
+                <textarea class="form-control" name="pic[]" placeholder="PIC" rows="2"></textarea>
+            </div>
+        `;
+        document.getElementById('risalahContainer').appendChild(newRow);
+      });
+    </script>
 </body>
 </html>

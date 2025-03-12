@@ -70,12 +70,16 @@
                         </label>
                         <input type="text" name="kepada" id="kepada" class="form-control" value="{{ $memo->tujuan }}" required>
                     </div>
-                    <div class="col-md-6 lampiran">
+                    <!-- <div class="col-md-6 lampiran">
                         <label for="upload_file" class="form-label">Lampiran <span class="text-danger">*</span></label>
                         <div class="upload-wrapper">
                             <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
                             <input type="file" id="upload_file" name="upload_file" class="form-control-file" value="{{ $memo->tanda_identitas }}" hidden>
                         </div>
+                    </div> -->
+                    <div class="col-md-6">
+                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
+                        <input type="text" name="nama_bertandatangan" id="kepada" class="form-control" value="{{ $memo->nama_bertandatangan }}" required>
                     </div>
                 </div>
 
