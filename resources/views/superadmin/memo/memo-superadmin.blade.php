@@ -54,67 +54,66 @@
         </div>
     </div>
 
-    <!-- Table -->
-    <table class="table-light">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama Dokumen</th>
-                <th>Tanggal Memo
-                    <button class="data-md">
-                        <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
-                    </button>
-                </th>
-                <th>Seri</th>
-                <th>Dokumen</th>
-                <th>Tanggal Disahkan
-                    <button class="data-md">
-                        <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
-                    </button>
-                </th>
-                <th>Divisi</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($memos as $index => $memo)
-            <tr>
-                <td class="nomor">{{ $index + 1 }}</td>
-                <td class="nama-dokumen 
-                    {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
-                    {{ $memo->judul }}
-                </td>
-                <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
-                <td>{{ $memo->seri_surat }}</td>
-                <td>{{ $memo->nomor_memo }}</td>
-                <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                <td>{{ $memo->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
-                </td>
-                <td>
-                    @if ($memo->status == 'reject')
-                        <span class="badge bg-danger">Ditolak</span>
-                    @elseif ($memo->status == 'pending')
-                        <span class="badge bg-warning">Diproses</span>
-                    @else
-                        <span class="badge bg-success">Diterima</span>
-                    @endif
-                </td>
-                <td>
-                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteMemoModal"
-                    data-memo-id="{{ $memo->id_memo }}"  data-route="{{ route('memo.destroy', $memo->id_memo) }}">
-                        <img src="/img/memo-superadmin/Delete.png" alt="delete">
-                    </button>
-                    
-                    <!-- status approve -->
-                    @if ($memo->status == 'approve')
-                    <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
-                        @csrf
-                        @method('POST')
-                        <button type="submit" class="btn btn-sm3 submitArsip">
-                            <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+        <!-- Table -->
+        <table class="table-light">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Dokumen</th>
+                    <th>Tanggal Memo
+                        <button class="data-md">
+                            <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
                         </button>
-                    </form>
+                    </th>
+                    <th>Seri</th>
+                    <th>Dokumen</th>
+                    <th>Tanggal Disahkan
+                        <button class="data-md">
+                            <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        </button>
+                    </th>
+                    <th>Divisi</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($memos as $index => $memo)
+                <tr>
+                    <td class="nomor">{{ $index + 1 }}</td>
+                    <td class="nama-dokumen 
+                        {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $memo->judul }}
+                    </td>
+                    <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
+                    <td>{{ $memo->seri_surat }}</td>
+                    <td>{{ $memo->nomor_memo }}</td>
+                    <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $memo->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                    </td>
+                    <td>
+                        @if ($memo->status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($memo->status == 'pending')
+                            <span class="badge bg-warning">Diproses</span>
+                        @else
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
+                    </td>
+                    <td>
+                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                        data-memo-id="{{ $memo->id_memo }}"  data-route="{{ route('memo.destroy', $memo->id_memo) }}">
+                            <img src="/img/memo-superadmin/Delete.png" alt="delete">
+                        </button>
+                        
+                        @if ($memo->status == 'approve')
+                        <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('POST')
+                            <button type="submit" class="btn btn-sm3">
+                                <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                            </button>
+                        </form>
 
                     @else
                         <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">

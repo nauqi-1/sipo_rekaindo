@@ -32,45 +32,45 @@
         </div>
     </div>
 
-    <!-- Table -->
-    <table class="table-light">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama Dokumen</th>
-                <th>Data Masuk
-                    <button class="data-md">
-                        <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
-                    </button>
-                </th>
-                <th>Seri</th>
-                <th>Dokumen</th>
-                <th>Data Disahkan
-                    <button class="data-md">
-                        <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
-                    </button>
-                </th>
-                <th>Divisi</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach($arsipUndangan as  $arsip)
-            <tr>
-                <td class="nomor">{{ $loop->iteration }}</td>
-                <td class="nama-dokumen text-success">
-                        {{ $arsip->document ? $arsip->document->judul : 'Memo Tidak Ditemukan' }}
+        <!-- Table -->
+        <table class="table-light">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Dokumen</th>
+                    <th>Tanggal Undangan
+                        <button class="data-md">
+                            <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        </button>
+                    </th>
+                    <th>Seri</th>
+                    <th>Dokumen</th>
+                    <th>Tanggal Disahkan
+                        <button class="data-md">
+                            <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        </button>
+                    </th>
+                    <th>Divisi</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach($arsipUndangan as  $arsip)
+                <tr>
+                    <td class="nomor">{{ $loop->iteration }}</td>
+                    <td class="nama-dokumen text-success">
+                            {{ $arsip->document ? $arsip->document->judul : 'Memo Tidak Ditemukan' }}
+                        </td>
+                        <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
+                        <td>{{ $arsip->document ? $arsip->document->nomor_undangan : '-' }}</td>
+                        <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
+                        <td>
+                        <span class="badge bg-success">Diterima</span>
                     </td>
-                    <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->nomor_undangan : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
                     <td>
-                    <span class="badge bg-success">Diterima</span>
-                </td>
-                <td>
                     <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
 
                     <!-- Tombol Delete (Hanya Memicu Modal) -->

@@ -56,14 +56,14 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
-                    <th>Data Masuk
+                    <th>Tanggal Undangan
                         <button class="data-md">
                             <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
                         </button>
                     </th>
                     <th>Seri</th>
                     <th>Dokumen</th>
-                    <th>Data Disahkan
+                    <th>Tanggal Disahkan
                         <button class="data-md">
                             <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
                         </button>
@@ -78,7 +78,7 @@
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
                     <td class="nama-dokumen 
-                        {{ $undangan->undangan->status == 'Reject' ? 'text-danger' : ($undangan->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $undangan->undangan->status == 'reject' ? 'text-danger' : ($undangan->undangan->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $undangan->undangan->judul }}
                     </td>
                     <td>{{ \Carbon\Carbon::parse($undangan->undangan->tgl_dibuat)->format('d-m-Y') }}</td>

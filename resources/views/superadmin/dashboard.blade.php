@@ -62,8 +62,8 @@
                         </button>
                     </div>
                     <div class="content">
-                        <h4>Meninjau Memo</h4>
-                        <p>Tinjau memo untuk kelangkah selanjutnya</p>
+                        <h4>Histori Memo</h4>
+                        <p>Riwayat memo untuk kelangkah selanjutnya</p>
                     </div>
                 </a>
                 <a href="{{ route('user.manage') }}" class="things-to-do-item-link">
@@ -87,8 +87,8 @@
                             </button>
                         </div>
                         <div class="content">
-                            <h4>Meninjau Permintaan Surat</h4>
-                            <p>Tinjau permintaan surat untuk kelangkah selanjutnya</p>
+                            <h4>Histori Permintaan Surat</h4>
+                            <p>Riwayat permintaan surat untuk kelangkah selanjutnya</p>
                         </div>
                     </div>
                 </a>

@@ -41,12 +41,12 @@
                     <div class="card-white">
                         <label for="seri">No Seri</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri" value="{{$undangan->seri_surat }}">
+                        <input type="text" id="seri" value="{{$undangan->seri_surat }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
-                        <input type="text" id="diterima">
+                        <input type="text" id="diterima" value="{{ $undangan->tujuan }}" readonly>
                     </div>
                 </div>
                 <div class="col">
@@ -56,12 +56,12 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        <button class="status">Diterima</button>
+                        <button class="status">{{ $undangan->status }}</button>
                     </div>
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tanggal" value="{{$undangan->tgl_dibuat }}">
+                        <input type="text" id="tanggal" value="{{$undangan->tgl_disahkan ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-'  }}" readonly>
                     </div>
                 </div>
             </div>
@@ -75,22 +75,22 @@
                     <div class="card-white">
                         <label for="nomor">No Dokumen</label>
                         <div class="separator"></div>
-                        <input type="text" id="nomor" value="{{$undangan->nomor_undangan }}">
+                        <input type="text" id="nomor" value="{{$undangan->nomor_undangan }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="divisi">Divisi</label>
                         <div class="separator"></div>
-                        <input type="text" id="divisi" value="{{$undangan->divisi->nm_divisi }}">
+                        <input type="text" id="divisi" value="{{$undangan->divisi->nm_divisi }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
                         <div class="separator"></div>
-                        <input type="text" id="perihal" value="{{$undangan->judul }}">
+                        <input type="text" id="perihal" value="{{$undangan->judul }}" readonly> 
                     </div>
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{$undangan->tgl_dibuat }}">
+                        <input type="text" id="tgl" value="{{$undangan->tgl_dibuat->translatedFormat('d F Y')}}" readonly>
                     </div>
                     <!-- <div class="card-white">
                         <label for="lampiran">Lampiran</label>
@@ -116,7 +116,7 @@
                     <div class="card-white">
                         <label for="status">Pengesahan</label>
                         <div class="separator"></div>
-                        <button class="status">Diterima</button>
+                        <button class="status">{{ $undangan->status }}</button>
                     </div>
                     
                 </div>

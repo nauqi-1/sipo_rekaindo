@@ -32,59 +32,62 @@
         </div>
     </div>
 
-    <!-- Table -->
-    <table class="table-light">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama Dokumen</th>
-                <th>Data Masuk
-                    <button class="data-md">
-                        <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
-                    </button>
-                </th>
-                <th>Seri</th>
-                <th>Dokumen</th>
-                <th>Data Disahkan
-                    <button class="data-md">
-                        <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
-                    </button>
-                </th>
-                <th>Divisi</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($arsipMemo as  $arsip)
-            <tr>
-                <td class="nomor">{{ $loop->iteration }}</td>
-                <td class="nama-dokumen text-success">
-                        {{ $arsip->document ? $arsip->document->judul : 'Memo Tidak Ditemukan' }}
+        <!-- Table -->
+        <table class="table-light">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Dokumen</th>
+                    <th>Tanggal Masuk
+                        <button class="data-md">
+                            <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        </button>
+                    </th>
+                    <th>Seri</th>
+                    <th>Dokumen</th>
+                    <th>Tanggal Disahkan
+                        <button class="data-md">
+                            <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        </button>
+                    </th>
+                    <th>Divisi</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($arsipMemo as  $arsip)
+                <tr>
+                    <td class="nomor">{{ $loop->iteration }}</td>
+                    <td class="nama-dokumen text-success">
+                            {{ $arsip->document ? $arsip->document->judul : 'Memo Tidak Ditemukan' }}
+                        </td>
+                        <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
+                        <td>{{ $arsip->document ? $arsip->document->nomor_memo : '-' }}</td>
+                        <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
+                        <td>
+                        <span class="badge bg-success">Diterima</span>
                     </td>
-                    <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->nomor_memo : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
                     <td>
-                    <span class="badge bg-success">Diterima</span>
-                </td>
-                <td>
-                    <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
+                        <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
+                        <form action="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <img src="/img/arsip/delete.png" alt="delete">
+                        </button>
+                        </form>
+                        <button class="btn btn-sm3" onclick="window.location.href='{{route('view.memo-arsip',$arsip->document->id_memo)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 
-                    <!-- Tombol Delete (Hanya Memicu Modal) -->
-                    <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipMemoModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}">
-                        <img src="/img/arsip/delete.png" alt="delete">
-                    </button>
-
-                    <button class="btn btn-sm3" onclick="window.location.href='{{route('view.memo-arsip',$arsip->document->id_memo)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
+    
 
 <!-- Modal Hapus -->
 <div class="modal fade" id="deleteArsipMemoModal" tabindex="-1" aria-labelledby="deleteArsipMemoModalLabel" aria-hidden="true">

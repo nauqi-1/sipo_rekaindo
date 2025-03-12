@@ -20,7 +20,7 @@
         </div>
 
         <!-- Filter & Search Bar -->
-        <div class="header-tools">
+        <!-- <div class="header-tools">
             <div class="search-filter">
                 <div class="dropdown">
                     <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -59,9 +59,41 @@
                         <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
                     </div>
                 </div>
-
-                <!-- Add User Button to Open Modal -->
                 <a href="{{route ('add-risalah.admin')}}" class="btn btn-add">+ Tambah Risalah Rapat</a>
+            </div>
+        </div> -->
+        <!-- Filter & Search Bar -->
+        <div class="surat">
+            <div class="header-tools">
+                <div class="search-filter">
+                <form method="GET" action="{{ route('risalah.admin') }}" class="search-filter d-flex gap-2">
+                    <div class="dropdown">
+                        <select name="status" class="form-select" onchange="this.form.submit()">
+                            <option value="">Status</option>
+                            <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                            <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
+                        </select>
+                    </div>
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                        <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
+                    </div>
+                    <i class="bi bi-arrow-right"></i>
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                        <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
+                            class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" placeholder="Tanggal Akhir"
+                            onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }" onchange="this.form.submit()">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                            <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
+                            <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
+                        </div>
+                    </div>
+                    </form>
+                    <!-- Add User Button to Open Modal -->
+                    <a href="{{route ('add-risalah.admin')}}" class="btn btn-add">+ <span>Tambah Risalah Rapat</span></a>
+                </div>
             </div>
         </div>
 
@@ -71,14 +103,14 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
-                    <th>Data Masuk
+                    <th>Tanggal Risalah
                         <button class="data-md">
                             <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
                         </button>
                     </th>
                     <th>Seri</th>
                     <th>Dokumen</th>
-                    <th>Data Disahkan
+                    <th>Tanggal Disahkan
                         <button class="data-md">
                             <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
                         </button>
