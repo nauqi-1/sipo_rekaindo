@@ -5,29 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memo</title>
     
-    <style>
-        .container {
-            font-family: arial;
-            width: 21cm;
-            height: 29.7cm;
-            margin: 0 auto;
-            border: 1px solid #ddd;
-            position: relative;
+    <style>        
+        @page {
+            margin-top: 20px;
+            margin-bottom: 0;
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
             font-size: 12px;
+            padding: 0;
         }
 
-        /* Agar gambar background berada di belakang */
-        .background {
-            position: absolute;
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             width: 100%;
-            height: 100%;
-            z-index: -1;
         }
 
-        .title {
-            margin-top: 15%;
-            font-size: 20px;
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+        }
+
+        main {
+            margin-top: 5px; /* Jarak dari header */
+            margin-bottom: 10px;
             text-align: center;
+        }
+
+        .content {
+            width: 100%;
+            margin: auto;
+            text-align: center;
+        }
+
+        .memo-title {
+            text-align: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: black; 
+            margin-top: 3cm; 
         }
 
         .letter {
@@ -47,34 +73,52 @@
             margin-top: 15px;
             border-collapse: collapse;
             width: 100%;
+            table-layout: fixed; 
         }
 
         .header2 th {
+            width: 50%;
             border-top: 3px solid black;
             border-bottom: 3px solid black;
-            text-align: center;
+            text-align: left;
             font-weight: normal;
             padding: 10px;
+            word-wrap: break-word;
+            overflow: hidden;
         }
 
-        /* Menambahkan garis tengah pemisah antar <th> */
         .header2 th + th {
             border-left: 3px solid black;
         }
 
         .fill {
-            margin-top: 20px;
+            margin-top: 5px;
+            width: 95%;
+            margin: 0 auto;
         }
-
+        .fill p {
+            text-align: left;
+        }
         .fill table {
             border-collapse: collapse;
             width: 100%;
         }
-
         .fill table th, .fill table td {
             border: 1px solid black;
             text-align: center;
             padding: 5px;
+        }
+        .fill table th:first-child,
+        .fill table td:first-child {
+            width: 5%;
+            min-width: 40px;
+        }
+        .fill table th:nth-child(3),
+        .fill table td:nth-child(3),
+        .fill table th:nth-child(4),
+        .fill table td:nth-child(4) {
+            width: 10%; /* Atur lebar kolom Qty dan Satuan */
+            min-width: 100px; /* Pastikan tidak terlalu kecil */
         }
 
         .contents {
@@ -87,6 +131,7 @@
             text-align: left !important;
             width: fit-content;
             margin-left: auto;
+            margin-right: 3%;
         }
 
         .signature p {
@@ -96,78 +141,89 @@
     </style>
 </head>
 <body>
-
-    <div class="container">
+    <!-- <div class="container {{isset($isPdf) && $isPdf ? 'pdf-mode' : 'view-mode'}}"> -->
         <!-- Gunakan Base64 jika tersedia, jika tidak pakai asset() -->
-        <img class="background" src="{{ asset('img/border-surat.png') }}" alt="Background">
+        <!-- <img class="background" src="{{ asset('img/border-surat.png') }}" alt="Background"> -->
+        <header>
+            @if(isset($headerImage))
+                <img src="{{ $headerImage }}" width="100%">
+            @endif
+        </header>
 
+        <footer>
+            @if(isset($footerImage))
+                <img src="{{ $footerImage }}" width="100%">
+            @endif
+        </footer>
 
-        <div class="title">
-            <h2>Memo</h2>
-        </div>
-        <div class="letter">
-            <header>
-                <table class="header1">
-                    @if ($memo->tgl_disahkan!= null)
-                    <tr>
-                        <td>Tanggal</td>
-                        <td>:</td>
-                        <td>{{ $memo->tgl_disahkan->translatedFormat('d F Y') }}</td>
-                        <!-- <td>{{ $memo->tgl_disahkan? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d F Y') : '-' }}</td> -->
-                    </tr>
-                    @endif
-                    <tr>
-                        <td>No</td>
-                        <td>:</td>
-                        <td>{{ $memo->nomor_memo }}</td>
-                    </tr>
-                    <tr>
-                        <td>Perihal</td>
-                        <td>:</td>
-                        <td><b>{{ $memo->judul }}</b></td>
-                    </tr>
-                </table>
-                <div class="header2">
-                    <table>
+        <main>
+            <div class="content">
+                <h3 class="memo-title">Memo</h3>
+                <div class="letter">
+                    <table class="header1">
+                        <!-- <h3>Memo</h3> -->
+                        @if ($memo->tgl_disahkan!= null)
                         <tr>
-                            <th>Dari : Unit {{ $memo->divisi->nm_divisi }}</th>
-                            <th>Kepada Yth : {{ $memo->tujuan }}</th>
+                            <td>Tanggal</td>
+                            <td>:</td>
+                            <td>{{ $memo->tgl_disahkan->translatedFormat('d F Y') }}</td>
+                            <!-- <td>{{ $memo->tgl_disahkan? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d F Y') : '-' }}</td> -->
                         </tr>
-                    </table>                 
+                        @endif
+                        <tr>
+                            <td>Nomor</td>
+                            <td>:</td>
+                            <td>{{ $memo->nomor_memo }}</td>
+                        </tr>
+                        <tr>
+                            <td>Perihal</td>
+                            <td>:</td>
+                            <td><b>{{ $memo->judul }}</b></td>
+                        </tr>
+                    </table>
+                    <div class="header2">
+                        <table>
+                            <tr>
+                                <th>Dari : Unit {{ $memo->divisi->nm_divisi }}</th>
+                                <th>Kepada Yth : {{ $memo->tujuan }}</th>
+                            </tr>
+                        </table>                 
+                    </div>
+                    <div class="fill">
+                        <p>{!! $memo->isi_memo !!}</p>
+                        @if($memo->kategoriBarang) 
+                        <table>
+                            <tr>
+                                <th>No</th>
+                                <th>Barang</th>
+                                <th>Qty</th>
+                                <th>Satuan</th>
+                            </tr>
+                            @foreach ($memo->kategoriBarang as $index => $barang)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $barang->barang }}</td>
+                                    <td>{{ $barang->qty }}</td>
+                                    <td>{{ $barang->satuan }}</td>
+                                </tr>
+                            @endforeach
+                        </table>
+                        @endif
+                        <p style="text-align: justify;">Demikian kami sampaikan. Atas segala perhatian dan kerjasamanya, kami ucapkan terima kasih.</p>
+                    </div>
+                    <table class="signature">
+                        <tr>
+                            <td>
+                                <!-- Hormat Kami,<br>  -->
+                                <p><b>Hormat kami,</b></p>
+                                <b>Manajer {{ $memo->divisi->nm_divisi }}</b> <br><br><br>
+                                <p><b><u>{{ $memo->nama_bertandatangan }}</u></b></p>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
-            </header>
-            <div class="fill">
-                {!! $memo->isi_memo !!}
-                
-                @if($memo->kategoriBarang) <!-- Perbaikan Nama Variabel -->
-                <table>
-                    <tr>
-                        <th>No</th>
-                        <th>Barang</th>
-                        <th>Qty</th>
-                        <th>Satuan</th>
-                    </tr>
-                    @foreach ($memo->kategoriBarang as $index => $barang)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $barang->barang }}</td>
-                            <td>{{ $barang->qty }}</td>
-                            <td>{{ $barang->satuan }}</td>
-                        </tr>
-                    @endforeach
-                </table>
-                @endif
             </div>
-            <footer>
-                <p style="text-align: justify;">Demikian kami sampaikan. Atas segala perhatian dan kerjasamanya, kami ucapkan terima kasih.</p>
-            </footer>
-            <div class="signature">
-                <p>Hormat kami,<br>Manajer {{ $memo->divisi->nm_divisi }}</p>
-                <br><br><br>
-                <p>{{ $memo->nama_bertandatangan }}</p>
-            </div>
-        </div>
-    </div>
-
+        </main>
+    <!-- </div> -->
 </body>
 </html>

@@ -296,3 +296,28 @@ select.btn-dropdown:hover {
 .btn.backPage a:hover {
     color: #1E4178 !important;
 }
+
+.view {
+    background-color: #1E4178;
+    box-shadow: 2px 2px 6px rgba(70, 118, 251, 0.41);
+    border: none;
+    color: #ffffff;
+    font-size: 13px;
+    border-radius: 7px;
+    padding: 4px 15px;
+    margin-left: 30px;
+}
+.down{
+    background-color: #1E4178;
+    box-shadow: 2px 2px 6px rgba(70, 118, 251, 0.41);
+    border: none;
+    color: #ffffff;
+    font-size: 13px;
+    border-radius: 7px;
+    padding: 4px 15px;
+    margin-left: 10px;
+}
+.view img, .down img {
+    margin-right: 10px;
+    margin-bottom: 3px;
+}
