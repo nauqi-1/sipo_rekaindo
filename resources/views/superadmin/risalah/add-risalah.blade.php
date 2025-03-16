@@ -1,8 +1,17 @@
-@extends('layouts.superadmin')
-
-@section('title', 'Tambah Risalah Rapat')
-    
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Risalah Rapat Superadmin</title>
+    <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin/add-risalah.css') }}">
+</head>
+<body>
 <div class="container">
     <div class="header">
         <!-- Back Button -->
@@ -14,7 +23,7 @@
     <div class="row">
         <div class="breadcrumb-wrapper">
             <div class="breadcrumb" style="gap: 5px;">
-                <a href="#">Beranda</a>/<a href="{{route ('risalah.superadmin')}}">Risalah Rapat</a>/<a href="#" style="color: #565656;">Tambah Risalah Rapat</a>
+                <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="{{route ('risalah.superadmin')}}">Risalah Rapat</a>/<a href="#" style="color: #565656;">Tambah Risalah Rapat</a>
             </div>
         </div>
     </div>
@@ -73,7 +82,7 @@
                     <div class="row mb-4 isi-risalah-row">
                         <div class="col-md-12">
                             <img src="\img\risalah\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                            <label for="isi_document">Isi Risalah Rapat</label>
+                            <label for="isi_document">Isi Risalah Rapat <span class="text-danger">*</span></label>
                         </div>
                     </div>
                     <div id="risalahContainer">
@@ -110,7 +119,7 @@
                     </div>
                     <div class="row mb-4">
                         <div class="col-md-6">
-                            <label for="nama_pimpinan" class="form-label">Nama yang Bertanda Tangan</label>
+                            <label for="nama_pimpinan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
                             <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
                                 <option disabled selected style="text-align: left;">--Pilih--</option>
                                 <option value="pimpinan1">Jokowi</option>
@@ -172,4 +181,34 @@
         </div>
     </div>
 </div>
-@endsection
+<script>
+      document.getElementById('tambahIsiRisalahBtn').addEventListener('click', function() {
+        var newRow = document.createElement('div');
+        newRow.classList.add('isi-surat-row', 'row');  
+        newRow.style.gap = '0';  
+
+        newRow.innerHTML = `
+            <div class="col-md-1">
+                <input type="text" class="form-control" name="no[]">
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="topik[]" placeholder="Topik Pembahasan" rows="2"></textarea>
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="pembahasan[]" placeholder="Pembahasan" rows="2"></textarea>
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="tindak_lanjut[]" placeholder="Tindak Lanjut" rows="2"></textarea>
+            </div>
+            <div class="col-md-2">
+                <textarea class="form-control" name="target[]" placeholder="Target" rows="2"></textarea>
+            </div>
+            <div class="col-md-2">
+                <textarea class="form-control" name="pic[]" placeholder="PIC" rows="2"></textarea>
+            </div>
+        `;
+        document.getElementById('risalahContainer').appendChild(newRow);
+      });
+    </script>
+</body>
+</html>

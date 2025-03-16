@@ -66,4 +66,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/arsip/undangan', [ArsipController::class, 'indexUndangan'])->name('arsip.undangan');
         Route::get('/arsip/risalah', [ArsipController::class, 'indexRisalah'])->name('arsip.risalah');      
 
+        Route::get('/kirim-memoAdmin/{id}',  
+            [KirimController::class, 'index']
+        )->name('kirim-memoAdmin.admin');
+
 });

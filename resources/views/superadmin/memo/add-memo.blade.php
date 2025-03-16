@@ -1,8 +1,17 @@
-@extends('layouts.superadmin')
-
-@section('title', 'Tambah Memo')
-
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Memo Superadmin</title>
+    <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin/edit-memo.css') }}">
+</head>
+<body>
 <div class="container">
         <div class="header">
             <!-- Back Button -->
@@ -14,7 +23,7 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="">Beranda</a>/<a href="#">Memo</a>/<a href="#" style="color: #565656;">Tambah Memo</a>
+                    <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="{{route ('memo.superadmin')}}">Memo</a>/<a href="#" style="color: #565656;">Tambah Memo</a>
                 </div>
             </div>
         </div>
@@ -58,7 +67,7 @@
                     <div class="col-md-6">
                         <label for="kepada" class="form-label">
                             <img src="/img/memo-superadmin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada<span class="text-danger">*</span>
-                            <label for="tujuan" class="label-kepada"></label>
+
                         </label>
                         <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="Silahkan Isi Tujuan Memo" required>
                     </div>
@@ -84,7 +93,7 @@
             </div>
             <div class="row mb-4 need-row">
                 <div class="col-md-12">
-                    <label for="need" class="need">Keperluan Lain</label>
+                    <label for="need" class="need">Keperluan Barang</label>
                     <label for="isi" class="fill">*Isi keperluan barang jika dibutuhkan</label>
                 </div>
             </div>
@@ -328,21 +337,6 @@
             });
         });
 
-        $(document).ready(function() {
-            $('#summernote').summernote({
-                height: 300,
-                toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'fontsize', 'color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
-                ],
-                fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
-                fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']
-            });
-        });
-
         function toggleFields(show) {
             const fields = document.getElementById('additionalFields');
             if (show) {
@@ -385,7 +379,7 @@
                     row.innerHTML = `
                         <div class="col-md-6">
                             <label for="nomor_${i}">Nomor</label>
-                            <input type="text" id="nomor_${i}" name="nomor[]" class="form-control" placeholder="Masukkan nomor">
+                            <input type="text" id="nomor_${i}" name="nomor[]" class="form-control" value="${i + 1}" readonly>
                             <input type="hidden" name="memo_divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
                         </div>
                         <div class="col-md-6">
@@ -407,10 +401,26 @@
                 }
             }
         }
-
+    </script>
+    <script>
+                $(document).ready(function() {
+            $('#summernote').summernote({
+                height: 300,
+                toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'fontsize', 'color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']],
+                ],
+                fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
+                fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']
+            });
+        });
     </script>
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-@endsection
+</body>
+</html>

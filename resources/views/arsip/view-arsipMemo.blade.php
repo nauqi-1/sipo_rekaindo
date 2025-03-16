@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="{{ asset('/css/superadmin/viewArsip.css') }}">
+    <link rel="stylesheet" href="{{ asset('/css/admin/viewArsip.css') }}">
 </head>
 <body>
     <div class="container">
@@ -97,10 +97,12 @@
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
-                        <!-- <button class="btn-file"><img src="/img/mata.png" alt="view"><a href="#">Lihat</a></button>
-                        <button class="down btn-file"><img src="/img/download.png" alt="down"><a href="#">Unduh</a></button> -->
-                        <a href="#" class="btn btn-file"><img src="/img/mata.png" alt="view"> Lihat</a>
-                        <a class="btn btn-file down" onclick="window.location.href='{{ route('cetakmemo',['id' => $memo->id_memo]) }}'"><img src="/img/download.png" alt="down">Unduh</a>
+                        <!-- <a href="#" class="btn btn-file"><img src="/img/mata.png" alt="view"> Lihat</a>
+                        <a href="#" class="btn btn-file down"><img src="/img/download.png" alt="down"> Unduh</a> -->
+                        <button class="view" onclick="window.location.href='{{ route('view-memoPDF', $memo->id_memo) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
+                        @if ($memo->status=='approve')
+                        <a class="down" onclick="window.location.href='{{ route('cetakmemo',['id' => $memo->id_memo]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
+                        @endif
                     </div>
                 </div>
             </div>

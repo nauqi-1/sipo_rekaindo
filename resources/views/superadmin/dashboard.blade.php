@@ -62,7 +62,7 @@
                         </button>
                     </div>
                     <div class="content">
-                        <h4>History Memo</h4>
+                        <h4>Histori Memo</h4>
                         <p>Riwayat memo untuk kelangkah selanjutnya</p>
                     </div>
                 </a>
@@ -87,7 +87,7 @@
                             </button>
                         </div>
                         <div class="content">
-                            <h4>History Permintaan Surat</h4>
+                            <h4>Histori Permintaan Surat</h4>
                             <p>Riwayat permintaan surat untuk kelangkah selanjutnya</p>
                         </div>
                     </div>

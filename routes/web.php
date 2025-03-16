@@ -223,7 +223,7 @@ Route::get('/view-risalah', function() {
     return view('manager.risalah.view-risalah'); })->name('view.risalah');   
 
 // Arsip Superadmin
-
+Route::delete('/arsip/restore/{document_id}/{jenis_document}', [ArsipController::class, 'restoreDocument'])->name('arsip.restore');
 
 // Arsip Admin
 

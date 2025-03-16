@@ -50,8 +50,9 @@ h1 {
 /* Tabel untuk surat */
 .table-light {
     margin-top: 20px;
-    width: calc(100% - 40px);
-    margin-left: 20px;
+    /* width: calc(100% - 40px); */
+    width: 100%;
+    /* margin-left: 20px; */
 }
 .table-light thead  {
     vertical-align: middle;
@@ -118,77 +119,6 @@ h1 {
     padding: 5px 10px;
     border-radius: 50px;
 }
-
-/* Overlay Delete Success Confirm  */
-/* #deleteModal .btn-close {
-    color: #000000;
-}
-
-#deleteModal .btn-outline-secondary {
-    padding: 8px 20px;
-    font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #8A8383;
-    background-color: #ffffff;
-    color: #8A8383;
-}
-
-#deleteModal .btn-outline-secondary:hover{
-    border-color: #8A8383;
-    background-color: #8A8383;
-    color: #ffffff;
-}
-
-#deleteModal .btn-primary {
-    padding: 8px 30px;
-    font-size: 14px;
-    border-radius: 5px;
-    background-color: #2592F7;
-}
-
-#deleteModal .btn-primary:hover {
-    background-color: #004085;
-    color: #ffffff;
-}
-
-#deleteModal img {
-    display: block;
-    margin: 0 auto 20px;
-}
-
-#deleteModal h5 {
-    font-size: 18px;
-    font-weight: bold;
-} */
-
-/* Modal Delete Success Confirmation */
-/* #deleteSuccessModal .modal-content {
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-#deleteSuccessModal .modal-body img {
-    width: 80px;
-    height: auto;
-}
-
-#deleteSuccessModal .modal-body h5 {
-    font-size: 18px;
-    color: #333;
-    margin-top: 2px;
-    margin-bottom: 2px;
-}
-
-#deleteSuccessModal .btn-primary {
-    background-color: #2592F7;
-    color: white;
-    border-radius: 5px;
-}
-
-#deleteSuccessModal .btn-primary:hover {
-    background-color: #004085;
-    color: #ffffff;
-} */
 
 /* Modal Edit Success Confirmation */
 #editSuccessModal .modal-content {

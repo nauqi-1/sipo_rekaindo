@@ -1,8 +1,18 @@
-@extends('layouts.admin')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Risalah Rapat Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
 
-@section('title', 'Edit Risalah Rapat')
-
-@section('content')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin/add-risalah.css') }}">
+</head>
+<body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
@@ -76,10 +86,11 @@
                     </div>
                 </div>
                 <div id="risalahContainer">
-                    <div class="isi-surat-row">
+                    <div class="isi-risalah-row">
                         <div class="col-md-1">
                             <label for="no">No</label>
                             <input type="text" class="form-control" name="no[]">
+                            <input type="hidden" name="pembuat" value="{{ auth()->user()->firstname . auth()->user()->lastname }}">
                         </div>
                         <div class="col-md-3">
                             <label for="topik">Topik</label>
@@ -162,4 +173,34 @@
             </div>
         </div>
     </div>
-@endsection
+    <script>
+      document.getElementById('tambahIsiRisalahBtn').addEventListener('click', function() {
+        var newRow = document.createElement('div');
+        newRow.classList.add('isi-surat-row', 'row');  
+        newRow.style.gap = '0';  
+
+        newRow.innerHTML = `
+            <div class="col-md-1">
+                <input type="text" class="form-control" name="no[]">
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="topik[]" placeholder="Topik Pembahasan" rows="2"></textarea>
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="pembahasan[]" placeholder="Pembahasan" rows="2"></textarea>
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="tindak_lanjut[]" placeholder="Tindak Lanjut" rows="2"></textarea>
+            </div>
+            <div class="col-md-2">
+                <textarea class="form-control" name="target[]" placeholder="Target" rows="2"></textarea>
+            </div>
+            <div class="col-md-2">
+                <textarea class="form-control" name="pic[]" placeholder="PIC" rows="2"></textarea>
+            </div>
+        `;
+        document.getElementById('risalahContainer').appendChild(newRow);
+      });
+    </script>
+</body>
+</html>

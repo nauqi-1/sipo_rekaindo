@@ -225,20 +225,19 @@
                 <!-- Success Icon -->
                 <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
                 <!-- Success Message -->
-                <h5 class="modal-title" id="successModalLabel"><b>Success</b></h5>
+                <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
                 <p class="mt-2">Berhasil Menambahkan User</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Overlay Delete Confirmation -->
+<!-- Overlay Delete User -->
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center p-4">
             <!-- Close Button -->
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-            <!-- Question Mark Icon -->
             <img src="/img/user-manage/question_Vector.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
             <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus user?</h5>
             <form id="deleteUserForm" method="POST">
@@ -331,10 +330,10 @@
     // Event listener untuk modal sukses tambah user
     document.addEventListener("DOMContentLoaded", function () {
         @if(session('success'))
-            let successModal = new bootstrap.Modal(document.getElementById("successAddModal"));
-            successModal.show();
+            let successAddModal = new bootstrap.Modal(document.getElementById("successAddModal"));
+            successAddModal.show();
             setTimeout(() => {
-                successModal.hide();
+                successAddModal.hide();
             }, 2000);
         @endif
     });

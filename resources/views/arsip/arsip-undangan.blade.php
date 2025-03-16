@@ -3,21 +3,21 @@
 @section('title', 'Arsip Undangan Rapat')
       
 @section('content')
-    <div class="container">
-        <div class="header">
-            <!-- Back Button -->
-            <div class="back-button">
-                <a href="{{route(Auth::user()->role->nm_role.'.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
-            </div>
-            <h1>Undangan Rapat</h1>
-        </div>        
-        <div class="row">
-            <div class="breadcrumb-wrapper">
-                <div class="breadcrumb" style="gap: 5px;">
-                    <a href="{{route(Auth::user()->role->nm_role.'.dashboard')}}">Beranda</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Undangan Rapat</a>
-                </div>
+<div class="container">
+    <div class="header">
+        <!-- Back Button -->
+        <div class="back-button">
+            <a href="{{route(Auth::user()->role->nm_role.'.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+        </div>
+        <h1>Undangan Rapat</h1>
+    </div>        
+    <div class="row">
+        <div class="breadcrumb-wrapper">
+            <div class="breadcrumb" style="gap: 5px;">
+                <a href="{{route(Auth::user()->role->nm_role.'.dashboard')}}">Beranda</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Undangan Rapat</a>
             </div>
         </div>
+    </div>
 
     <!-- Filter & Search Bar -->
     <div class="arsip">
@@ -44,7 +44,7 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
-                    <th>Data Masuk
+                    <th>Tanggal Undangan
                         <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
                             style="color:rgb(135, 135, 148); text-decoration: none;">
                             <span class="bi-arrow-down-up"></span>
@@ -52,7 +52,7 @@
                     </th>
                     <th>Seri</th>
                     <th>Dokumen</th>
-                    <th>Data Disahkan
+                    <th>Tanggal Disahkan
                         <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
                             style="color:rgb(135, 135, 148); text-decoration: none;">
                             <span class="bi-arrow-down-up"></span>
@@ -97,42 +97,81 @@
     </div>
 
 
-    <!-- Modal Hapus -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <!-- Tombol Close -->
-                <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="modal-body text-center">
-                    <!-- Ikon atau Gambar -->
-                    <img src="/img/risalah/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
-                    <!-- Tulisan -->
-                    <h5 class="mb-4" style="color: #545050;"><b>Hapus Undangan Rapat?</b></h5>
-                    <!-- Tombol -->
-                    <div class="d-flex justify-content-center gap-3">
-                        <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('arsip.undangan')}}">Batal</a></button>
-                        <button type="button" class="btn ok" id="confirmDelete">Oke</button>
-                    </div>
+<!-- Modal Hapus -->
+<div class="modal fade" id="deleteArsipUndanganModal" tabindex="-1" aria-labelledby="deleteArsipUndanganModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <!-- Close Button -->
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            <img src="/img/risalah/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
+            <h5 class="modal-title mb-4"><b>Hapus Undangan Rapat dari Arsip?</b></h5>
+            <form id="deleteArsipUndanganForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <!-- Tombol -->
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="confirmDeleteArsipUndangan">Oke</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <!-- Modal Berhasil -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <!-- Tombol Close -->
-                <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="modal-body text-center">
-                    <!-- Ikon atau Gambar -->
-                    <img src="/img/risalah/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                    <!-- Tulisan -->
-                    <h5 class="mb-4" style="color: #545050; font-size: 20px;"><b>Berhasil Menghapus <br>Undangan Rapat</b></h5>
-                    <!-- Tombol -->
-                    <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('arsip.undangan')}}">Kembali</a></button>
-                </div>
+<!-- Modal Berhasil -->
+<div class="modal fade" id="deleteSuccessArsipUndanganModal" tabindex="-1" aria-labelledby="deleteSuccessArsipUndanganModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <img src="/img/risalah/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title"><b>Sukses</b></h5>
+                <p class="mt-2">Berhasil Hapus Undangan Rapat</p>
             </div>
         </div>
     </div>
+</div>
+
+<script>
+    // Event Listener Overlay delete
+    document.addEventListener("DOMContentLoaded", function () {
+        let deleteArsipUndanganModal = document.getElementById("deleteArsipUndanganModal");
+        let deleteArsipUndanganForm = document.getElementById("deleteArsipUndanganForm");
+        let deleteArsipUndanganSuccessModal = new bootstrap.Modal(document.getElementById("deleteSuccessArsipUndanganModal"));
+        let confirmDeleteBtn = document.getElementById("confirmDeleteArsipUndangan");
+
+        let deleteRoute = ""; // Menyimpan URL DELETE
+
+        // Event Listener untuk Menampilkan Modal Delete
+        deleteArsipUndanganModal.addEventListener("show.bs.modal", function (event) {
+            let button = event.relatedTarget;
+            deleteRoute = button.getAttribute("data-route");
+        });
+
+        // Event Listener untuk Tombol "OK" di Modal
+        confirmDeleteBtn.addEventListener("click", function (event) {
+            event.preventDefault(); // Mencegah submit default
+
+            fetch(deleteRoute, {
+                method: "POST", // Laravel menangani DELETE dengan _method
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ _method: "DELETE" })
+            }).then(response => {
+                if (response.ok) {
+                    let modalInstance = bootstrap.Modal.getInstance(deleteArsipUndanganModal);
+                    modalInstance.hide();
+
+                    setTimeout(() => {
+                        deleteArsipUndanganSuccessModal.show();
+                        setTimeout(() => {
+                            location.reload(); // Refresh halaman setelah 2 detik
+                        }, 1500);
+                    }, 500);
+                }
+            }).catch(error => console.error("Error:", error));
+        });
+    });
+</script>
 @endsection

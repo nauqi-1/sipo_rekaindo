@@ -24,3 +24,129 @@
     outline: none !important;
     box-shadow: none !important;
 }
+
+/* Overlay Arsip Memo Delete Success Confirm */
+#deleteArsipMemoModal img {
+    display: block;
+    margin: 0 auto 20px;
+}
+#deleteArsipMemoModal .btn-close {
+    color: #000000;
+}
+#deleteArsipMemoModal .btn-outline-secondary {
+    padding: 8px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #8A8383;
+    background-color: #ffffff;
+    color: #8A8383;
+}
+#deleteArsipMemoModal .btn-outline-secondary:hover{
+    border-color: #8A8383;
+    background-color: #8A8383;
+    color: #ffffff;
+}
+#deleteArsipMemoModal .btn-primary {
+    padding: 8px 30px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #2592F7;
+}
+#deleteArsipMemoModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}
+#deleteArsipMemoModal img {
+    display: block;
+    margin: 0 auto 20px;
+}
+#deleteArsipMemoModal h5 {
+    font-size: 18px;
+    font-weight: bold;
+}
+#deleteSuccessArsipMemoModal .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+#deleteSuccessArsipMemoModal .modal-body img {
+    display: block;
+    margin: 0 auto 20px;
+}
+#deleteSuccessArsipMemoModal .modal-body h5 {
+    font-size: 18px;
+    color: #333;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+#deleteSuccessArsipMemoModal .btn-primary {
+    background-color: #2592F7;
+    color: white;
+    border-radius: 5px;
+}
+#deleteSuccessArsipMemoModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}
+
+/* Overlay Arsip Undangan Delete Success Confirm */
+#deleteArsipUndanganModal img {
+    display: block;
+    margin: 0 auto 20px;
+}
+#deleteArsipUndanganModal .btn-close {
+    color: #000000;
+}
+#deleteArsipUndanganModal .btn-outline-secondary {
+    padding: 8px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #8A8383;
+    background-color: #ffffff;
+    color: #8A8383;
+}
+#deleteArsipUndanganModal .btn-outline-secondary:hover{
+    border-color: #8A8383;
+    background-color: #8A8383;
+    color: #ffffff;
+}
+#deleteArsipUndanganModal .btn-primary {
+    padding: 8px 30px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #2592F7;
+}
+#deleteArsipUndanganModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}
+#deleteArsipUndanganModal img {
+    display: block;
+    margin: 0 auto 20px;
+}
+#deleteArsipUndanganModal h5 {
+    font-size: 18px;
+    font-weight: bold;
+}
+#deleteSuccessArsipUndanganModal .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+#deleteSuccessArsipUndanganModal .modal-body img {
+    display: block;
+    margin: 0 auto 20px;
+}
+#deleteSuccessArsipUndanganModal .modal-body h5 {
+    font-size: 18px;
+    color: #333;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+#deleteSuccessArsipUndanganModal .btn-primary {
+    background-color: #2592F7;
+    color: white;
+    border-radius: 5px;
+}
+#deleteSuccessArsipUndanganModal .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}

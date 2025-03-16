@@ -287,7 +287,8 @@ select.btn-dropdown:focus {
 }
 
 .isi-surat-row .col-md-12:hover {
-    border-color: #007bff;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+    outline: none;
 }
 
 .isi-surat-row .form-label {
