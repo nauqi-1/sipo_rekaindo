@@ -9,6 +9,7 @@ use App\Models\Divisi;
 use App\Models\Arsip;
 use App\Models\Notifikasi;
 use App\Models\Undangan;
+use App\Models\Kirim_document;
 
 use Illuminate\Http\Request;
 
@@ -72,6 +73,15 @@ class UndanganController extends Controller
         
 
         $undangans = $query->paginate(6);
+
+        // **Tambahkan status penerima untuk setiap memo**
+        foreach ($undangans as $undangan) {
+            $undangan->status_penerima = Kirim_document::where('id_document', $undangan->id_undangan)
+                ->where('jenis_document', 'undangan')
+                ->where('id_penerima', $userDivisiId)
+                ->value('status') ?? $undangan->status;
+            }
+            $status = $undangan ? $undangan->status_penerima : 'pending';
 
     
         return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri','sortDirection'));

@@ -126,26 +126,52 @@
                     </td>
 
                     <td>
-                    @if ($status!= 'reject' && ($status != 'approve' || Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)) 
-                        <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
-                            <img src="/img/memo-admin/share.png" alt="share">
-                        </a>               
-                        @endif             
+                        @if (Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)
+                            @if($memo->status == 'pending' || $memo->status == 'approve' )
+                            <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
+                                <img src="/img/memo-admin/share.png" alt="share">
+                            </a>
+                            @endif
+                        @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
+                            @if($status == 'pending' )
+                            <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
+                                <img src="/img/memo-admin/share.png" alt="share">
+                            </a>
+                            @endif               
+                        @endif
+            
 
                         <!-- Status Approve -->
-                        @if ($status== 'approve') 
-                        <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
-                            <button type="submit" class="btn btn-sm3">
-                                <img src="/img/memo-superadmin/arsip.png" alt="arsip">
-                            </button>
-                        </form>
-                        @else
-                            <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
-                                <img src="/img/memo-admin/edit.png" alt="edit">
-                            </a>
+                        @if (Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)
+                            @if ($memo->status == 'approve')
+                                <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
+                                    <button type="submit" class="btn btn-sm3">
+                                        <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
+                                    <img src="/img/memo-admin/edit.png" alt="edit">
+                                </a>
+                            @endif
+                        @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
+                            @if ($status == 'approve')
+                                <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
+                                    <button type="submit" class="btn btn-sm3">
+                                        <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
+                                    <img src="/img/memo-admin/edit.png" alt="edit">
+                                </a>
+                            @endif
                         @endif
+                        
 
                         <a href="{{ route('view.memo',$memo->id_memo) }}" class="btn btn-sm1">
                             <img src="/img/memo-admin/viewBlue.png" alt="view">
