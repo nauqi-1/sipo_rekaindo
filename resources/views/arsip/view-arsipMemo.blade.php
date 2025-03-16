@@ -100,7 +100,7 @@
                         <!-- <button class="btn-file"><img src="/img/mata.png" alt="view"><a href="#">Lihat</a></button>
                         <button class="down btn-file"><img src="/img/download.png" alt="down"><a href="#">Unduh</a></button> -->
                         <a href="#" class="btn btn-file"><img src="/img/mata.png" alt="view"> Lihat</a>
-                        <a href="#" class="btn btn-file down"><img src="/img/download.png" alt="down"> Unduh</a>
+                        <a class="btn btn-file down" onclick="window.location.href='{{ route('cetakmemo',['id' => $memo->id_memo]) }}'"><img src="/img/download.png" alt="down">Unduh</a>
                     </div>
                 </div>
             </div>

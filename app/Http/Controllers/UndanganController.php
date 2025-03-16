@@ -39,8 +39,8 @@ class UndanganController extends Controller
                           $subQuery->where('divisi_id_divisi', $userDivisiId);
                       });
             });
-        })
-        ->orderBy('tgl_dibuat', 'desc');
+        });
+        
         
         // Filter berdasarkan status
         if ($request->has('status') && $request->status != '') {
@@ -64,13 +64,17 @@ class UndanganController extends Controller
             });
         }
 
-        // Mengambil daftar memo dengan relasi divisi
-        $undangans = $query->with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(10);
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+
+        // Sorting default menggunakan tgl_dibuat
+        $query->orderBy('created_at', $sortDirection);
+
+        
 
         $undangans = $query->paginate(6);
 
     
-        return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri'));
+        return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri','sortDirection'));
     }
    
     public function create()
@@ -325,7 +329,7 @@ class UndanganController extends Controller
         // Simpan notifikasi
         Notifikasi::create([
             'judul' => "Undangan {$request->status}",
-            'jenis_document' => 'undangan',
+            'judul_document' => $undangan->judul,
             'id_divisi' => $undangan->divisi_id,
             'updated_at' => now()
         ]);

@@ -44,7 +44,7 @@
                 <div class="d-flex gap-2">
                     <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
                         <img src="/img/undangan/search.png" alt="search" style="width: 20px; height: 20px;">
-                        <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+                        <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                     </div>
                 </div>
                 </form>
@@ -63,14 +63,21 @@
                     <th>Nama Dokumen</th>
                     <th>Data Masuk
                         <button class="data-md">
-                            <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                            <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                                style="color:rgb(135, 135, 148); text-decoration: none;">
+                                <span class="bi-arrow-down-up"></span>
+                            </a>
                         </button>
+
                     </th>
                     <th>Seri</th>
                     <th>Dokumen</th>
                     <th>Data Disahkan
                         <button class="data-md">
-                            <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                            <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                                style="color:rgb(135, 135, 148); text-decoration: none;">
+                                <span class="bi-arrow-down-up"></span>
+                            </a>
                         </button>
                     </th>
                     <th>Divisi</th>

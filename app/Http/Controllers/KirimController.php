@@ -57,6 +57,7 @@ class KirimController extends Controller
 
     public function sendDocument(Request $request)
     {
+
         // dd($request->all());
         $request->validate([
             'id_document' => 'required',
@@ -77,6 +78,15 @@ class KirimController extends Controller
         if ($penerimaUsers->isEmpty()) {
             return redirect()->back()->with('error', 'Tidak ada user yang sesuai dengan kriteria penerima.');
         }
+
+        $filePath = null;
+        if ($request->hasFile('tanda_identitas')) {
+            $file = $request->file('tanda_identitas');
+            $fileData = base64_encode(file_get_contents($file->getRealPath()));
+            $filePath = $fileData;
+        }
+
+      
     
         // Simpan pengiriman memo ke setiap penerima
         foreach ($penerimaUsers as $user) {
@@ -85,7 +95,7 @@ class KirimController extends Controller
                 'jenis_document' => $request->jenis_document,
                 'id_pengirim' => Auth::id(),
                 'id_penerima' => $user->id,
-                'status' => 'sent'
+                'status' => 'pending',
             ]);
         }
 
@@ -104,6 +114,7 @@ class KirimController extends Controller
             ->whereHas('penerima', function ($query) use ($divisiId) {
                 $query->where('divisi_id_divisi', $divisiId); // Mencari memo yang ditujukan ke divisi ini
             })
+            
             ->whereHas('memo', function ($query) {
                 $query->where('status', '!=','pending'); // Cek status dari tabel memo
             })
@@ -118,15 +129,19 @@ class KirimController extends Controller
 
         $userId = auth()->id(); // Ambil ID user yang sedang login (Manager divisi)
 
-        $divisiId = auth()->user()->divisi_id_divisi; // Ambil divisi manager
+        
 
         $memoDiterima = Kirim_Document::where('jenis_document', 'memo')
             ->where('id_penerima', $userId)
-            ->whereHas('memo', function ($query) {
-                $query->where('status', 'pending'); // Cek status dari tabel memo
+            ->where(function ($query) {
+            // Hanya ambil memo dengan status 'pending' baik di tabel memo maupun kirim_document
+            $query->whereHas('memo', function ($subQuery) {
+                $subQuery->where('status', 'pending'); // Status di tabel memo
             })
-            ->with('memo') // Pastikan ada relasi 'memo' di model Kirim_Document
-            ->get();
+            ->orWhere('status', '==','pending'); // Status di tabel kirim_document
+        })
+        ->with('memo') // Pastikan ada relasi 'memo' di model Kirim_Document
+        ->get();
 
         return view('manager.memo.memo-diterima', compact('memoDiterima'));
     }

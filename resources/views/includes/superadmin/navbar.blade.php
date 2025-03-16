@@ -144,8 +144,8 @@
                             let notifItem = document.createElement("div");
                             notifItem.className = "notif-item" + (!notif.dibaca ? " bg-light" : ""); // Tambahkan highlight jika belum dibaca
                             notifItem.innerHTML = `
-                                <h6>${notif.judul}</h6>
-                                <p><strong>Jenis:</strong> ${notif.jenis_document}</p>
+                                <h4><strong>${notif.judul}</strong></h4>
+                                <p><strong>Perihal:</strong> ${notif.judul_document}</p>
                                 <p><strong>Tanggal:</strong> ${formatDate(notif.updated_at)}</p>
                             `;
                             notifBody.appendChild(notifItem);
