@@ -72,13 +72,12 @@
                     </td>
                     <td>
                         <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
-                        <form action="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+
+                        <!-- Tombol Delete (Hanya Memicu Modal) -->
+                        <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipMemoModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}">
                             <img src="/img/arsip/delete.png" alt="delete">
                         </button>
-                        </form>
+                        
                         <button class="btn btn-sm3" onclick="window.location.href='{{route('view.memo-arsip',$arsip->document->id_memo)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
                     </td>
                 </tr>
