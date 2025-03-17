@@ -184,7 +184,7 @@
 <script>
     // Event listener untuk modal sukses tambah undangan
     document.addEventListener("DOMContentLoaded", function () {
-        @if(session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller undangan store
+        @if(session('success') === 'Dokumen berhasil dibuat.')
             var successModal = new bootstrap.Modal(document.getElementById("successAddUndanganModal"));
             successModal.show();
             setTimeout(function () {

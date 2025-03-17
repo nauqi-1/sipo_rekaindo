@@ -71,7 +71,10 @@
                         <span class="badge bg-success">Diterima</span>
                     </td>
                     <td>
-                        <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
+                        <!-- <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button> -->
+                        <a href="{{ route('cetakmemo', ['id' => $arsip->document->id_memo]) }}" class="btn btn-sm1" target="_blank">
+                            <img src="/img/arsip/unduh.png" alt="unduh">
+                        </a>
                         <form action="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                         @csrf
                         @method('DELETE')

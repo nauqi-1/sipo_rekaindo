@@ -71,8 +71,10 @@
                         <span class="badge bg-success">Diterima</span>
                     </td>
                     <td>
-                    <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
-
+                    <!-- <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button> -->
+                    <a href="{{ route('cetakundangan', ['id' => $arsip->document->id_undangan]) }}" class="btn btn-sm1" target="_blank">
+                        <img src="/img/arsip/unduh.png" alt="unduh">
+                    </a>
                     <!-- Tombol Delete (Hanya Memicu Modal) -->
                     <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipUndanganModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_undangan, 'jenis_document' => 'Undangan']) }}">
                         <img src="/img/arsip/delete.png" alt="delete">

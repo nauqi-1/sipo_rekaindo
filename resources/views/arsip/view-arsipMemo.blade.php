@@ -97,11 +97,9 @@
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
-                        <!-- <a href="#" class="btn btn-file"><img src="/img/mata.png" alt="view"> Lihat</a>
-                        <a href="#" class="btn btn-file down"><img src="/img/download.png" alt="down"> Unduh</a> -->
-                        <button class="view" onclick="window.location.href='{{ route('view-memoPDF', $memo->id_memo) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
+                        <!-- <button class="view" onclick="window.location.href='{{ route('view-memoPDF', $memo->id_memo) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button> -->
                         @if ($memo->status=='approve')
-                        <a class="down" onclick="window.location.href='{{ route('cetakmemo',['id' => $memo->id_memo]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
+                        <a style="text-decoration: none;" class="view" onclick="window.location.href='{{ route('cetakmemo',['id' => $memo->id_memo]) }}'"><img src="/img/memo-admin/view.png" alt="view">Lihat</a>
                         @endif
                     </div>
                 </div>
