@@ -9,6 +9,7 @@ use App\Models\Divisi;
 use App\Models\Arsip;
 use App\Models\Notifikasi;
 use App\Models\Undangan;
+use App\Models\Kirim_document;
 
 use Illuminate\Http\Request;
 
@@ -16,22 +17,23 @@ class UndanganController extends Controller
 {
     public function index(Request $request)
     {
+        $undangan = null;
         $divisi = Divisi::all();
         $seri = Seri::all(); 
         $userDivisiId = Auth::user()->divisi_id_divisi;
         $userId = Auth::id(); 
 
-        // Ambil ID memo yang sudah diarsipkan oleh user saat ini
+        // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
         $undanganDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
 
-        // Ambil memo yang belum diarsipkan oleh user saat ini
+        // Ambil undangan yang belum diarsipkan oleh user saat ini
         $query = Undangan::with('divisi')
-        ->whereNotIn('id_undangan', $undanganDiarsipkan) // Filter memo yang belum diarsipkan
+        ->whereNotIn('id_undangan', $undanganDiarsipkan) // Filter undangan yang belum diarsipkan
         ->where(function ($q) use ($userDivisiId, $userId) {
-            // Memo yang dibuat oleh divisi user sendiri
+            // undangan yang dibuat oleh divisi user sendiri
             $q->where('divisi_id_divisi', $userDivisiId)
             
-            // Memo yang dikirim ke user dari divisi lain melalui tabel kirim_document
+            // undangan yang dikirim ke user dari divisi lain melalui tabel kirim_document
             ->orWhereHas('kirimDocument', function ($query) use ($userId, $userDivisiId) {
                 $query->where('jenis_document', 'undangan')
                       ->where('id_penerima', $userId)
@@ -39,8 +41,8 @@ class UndanganController extends Controller
                           $subQuery->where('divisi_id_divisi', $userDivisiId);
                       });
             });
-        })
-        ->orderBy('tgl_dibuat', 'desc');
+        });
+        
         
         // Filter berdasarkan status
         if ($request->has('status') && $request->status != '') {
@@ -64,13 +66,26 @@ class UndanganController extends Controller
             });
         }
 
-        // Mengambil daftar memo dengan relasi divisi
-        $undangans = $query->with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(10);
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+
+        // Sorting default menggunakan tgl_dibuat
+        $query->orderBy('created_at', $sortDirection);
+
+        
 
         $undangans = $query->paginate(6);
 
+        // **Tambahkan status penerima untuk setiap undangan**
+        foreach ($undangans as $undangan) {
+            $undangan->status_penerima = Kirim_document::where('id_document', $undangan->id_undangan)
+                ->where('jenis_document', 'undangan')
+                ->where('id_penerima', $userDivisiId)
+                ->value('status') ?? $undangan->status;
+            }
+            $status = $undangan ? $undangan->status_penerima : 'pending';
+
     
-        return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri'));
+        return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri','sortDirection'));
     }
    
     public function create()
@@ -211,19 +226,24 @@ class UndanganController extends Controller
          $undangan = Undangan::findOrFail($id);
          $divisi = Divisi::all();
          $seri = Seri::all();  
+         $divisiId = auth()->user()->divisi_id_divisi;
+         $managers = User::where('divisi_id_divisi', $divisiId)
+        ->where('position_id_position', '2')
+        ->get(['id', 'firstname', 'lastname']);
+
          
 
-         return view(Auth::user()->role->nm_role.'.undangan.edit-undangan', compact('undangan', 'divisi', 'seri'));
+         return view(Auth::user()->role->nm_role.'.undangan.edit-undangan', compact('undangan', 'divisi', 'seri','managers'));
 
      }
      public function update(Request $request, $id)
      {
         
         $undangan = Undangan::findOrFail($id);
-        dd($request->all());    
+        // dd($request->all());    
 
         $request->validate([
-            'judul' => 'required|string|max:70',
+            'judul' => 'required|string|max:255',
             'isi_undangan' => 'required|string',
             'tujuan' => 'required|string|max:255',
             'nomor_undangan' => 'required|string|max:255',
@@ -232,12 +252,9 @@ class UndanganController extends Controller
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
             'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
-            'tanda_identitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-        ],[
-            'tanda_identitas.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
-            'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
+            
         ]);
-        dd($request->all()); 
+        // dd($request->all()); 
 
         if ($request->filled('judul')) {
             $undangan->judul = $request->judul;
@@ -254,11 +271,11 @@ class UndanganController extends Controller
         if ($request->filled('nama_bertandatangan')) {
             $undangan->nama_bertandatangan = $request->nama_bertandatangan;
         }
-        if ($request->filled('tgl_surat')) {
-            $undangan->tgl_dibuat = bcrypt($request->tgl_dibuat);
+        if ($request->filled('tgl_dibuat')) {
+            $undangan->tgl_dibuat = $request->tgl_dibuat;
         }
         if ($request->filled('seri_surat')) {
-            $undangan->seri_undangan = $request->seri_undangan;
+            $undangan->seri_surat = $request->seri_surat;
         }
         if ($request->filled('tgl_disahkan')) {
             $undangan->tgl_disahkan = $request->tgl_disahkan;
@@ -325,7 +342,7 @@ class UndanganController extends Controller
         // Simpan notifikasi
         Notifikasi::create([
             'judul' => "Undangan {$request->status}",
-            'jenis_document' => 'undangan',
+            'judul_document' => $undangan->judul,
             'id_divisi' => $undangan->divisi_id,
             'updated_at' => now()
         ]);

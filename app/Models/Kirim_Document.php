@@ -17,6 +17,7 @@ class Kirim_Document extends Model
         'id_pengirim',
         'id_penerima',
         'status',
+        'updated_at',
     ];
     public $timestamps = false;
 

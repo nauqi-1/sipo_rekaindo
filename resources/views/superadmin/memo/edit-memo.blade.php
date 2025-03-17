@@ -39,10 +39,12 @@
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="tgl_surat" class="form-label">
+                        <label for="tgl_dibuat" class="form-label">
                             <img src="/img/memo-superadmin/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                         </label>
-                        <input type="date" name="tgl_surat" id="tgl_surat" class="form-control" value="{{ $memo->tgl_dibuat->format('Y-m-d') }}" required>
+                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ $memo->tgl_dibuat->format('Y-m-d') }}" required>
+                        <input type="hidden" name="tgl_disahkan" >
+                        <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
@@ -51,21 +53,21 @@
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="nomor_surat" class="form-label">Nomor Surat</label>
-                        <input type="text" name="nomor_surat" id="nomor_surat" class="form-control" value="{{ $memo->nomor_memo }}" required>
+                        <label for="nomor_memo" class="form-label">Nomor Surat</label>
+                        <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $memo->nomor_memo }}" required>
                     </div>
                     <div class="col-md-6" >
-                        <label for="perihal" class="form-label">Perihal <span class="text-danger">*</span></label>
-                        <input type="text" name="perihal" id="perihal" class="form-control" value="{{ $memo->judul }}" required>
+                        <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
+                        <input type="text" name="judul" id="judul" class="form-control" value="{{ $memo->judul }}" required>
                     </div>
 
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="kepada" class="form-label">
-                            <img src="/img/memo-superadmin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
+                        <label for="tujuan" class="form-label">
+                            <img src="/img/memo-superadmin/kepada.png" alt="tujuan" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
                         </label>
-                        <input type="text" name="kepada" id="kepada" class="form-control" value="{{ $memo->tujuan }}" required>
+                        <input type="text" name="tujuan" id="tujuan" class="form-control" value="{{ $memo->tujuan }}" required>
                     </div>
                     <div class="col-md-6">
                         <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>

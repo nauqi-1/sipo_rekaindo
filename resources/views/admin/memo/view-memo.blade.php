@@ -18,7 +18,7 @@
             <div class="back-button">
                 <a href="{{route ('memo.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Lihat Memo</h1>
+            <h1>Detail Memo</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
@@ -82,7 +82,7 @@
                         <label for="file">File</label>
                         <div class="separator"></div>
                         <button class="view" onclick="window.location.href='{{ route('view-memoPDF', $memo->id_memo) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
-                        @if ($memo->status=='approve')
+                        @if ($memo->status=='approve' && $memo->divisi->id_divisi == Auth::user()->divisi->id_divisi)
                         <a class="down" onclick="window.location.href='{{ route('cetakmemo',['id' => $memo->id_memo]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
                         @endif
                     </div>
