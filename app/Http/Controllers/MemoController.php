@@ -17,6 +17,7 @@ class MemoController extends Controller
 {
     public function index(Request $request)
     {
+        $memo = null;
         $divisi = Divisi::all();
         $seri = Seri::all();
         $userDivisiId = Auth::user()->divisi_id_divisi;
@@ -40,8 +41,8 @@ class MemoController extends Controller
                           $subQuery->where('divisi_id_divisi', $userDivisiId);
                       });
             });
-        })
-        ->orderBy('tgl_dibuat', 'desc');
+        });
+       
     
 
         // Filter berdasarkan status
@@ -58,6 +59,14 @@ class MemoController extends Controller
             $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
         }
 
+         // Ambil semua arsip memo berdasarkan user login
+        $arsipMemoQuery = Arsip::where('user_id', $userId)
+        ->where('jenis_document', 'memo')
+        ->with('document');
+
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $query->orderBy('created_at', $sortDirection);
+
         // Pencarian berdasarkan nama dokumen atau nomor memo
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -68,8 +77,16 @@ class MemoController extends Controller
 
         // Pagination
         $memos = $query->paginate(6);
+        // **Tambahkan status penerima untuk setiap memo**
+        foreach ($memos as $memo) {
+            $memo->status_penerima = Kirim_document::where('id_document', $memo->id_memo)
+                ->where('jenis_document', 'memo')
+                ->where('id_penerima', $userDivisiId)
+                ->value('status') ?? $memo->status;
+            }
+            $status = $memo ? $memo->status_penerima : 'pending';
 
-        return view(Auth::user()->role->nm_role . '.memo.memo-' . Auth::user()->role->nm_role, compact('memos', 'divisi', 'seri'));
+        return view(Auth::user()->role->nm_role . '.memo.memo-' . Auth::user()->role->nm_role, compact('memos', 'divisi', 'seri','status','sortDirection'));
     }
 
     public function show($id)
@@ -218,6 +235,8 @@ class MemoController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $memo = Memo::findOrFail($id);
+        $userDivisiId = Auth::user()->divisi_id_divisi;
+        $userId = Auth::id();
 
         // Validasi input
         $request->validate([
@@ -225,29 +244,39 @@ class MemoController extends Controller
             'catatan' => 'nullable|string',
         ]);
         
-
+        if ($userDivisiId == $memo->divisi_id_divisi) {
         // Update status
-        $memo->status = $request->status;
-        
-        // Jika status 'approve', simpan tanggal pengesahan
-        if ($request->status == 'approve') {
-            $memo->tgl_disahkan = now();
-        } elseif ($request->status == 'reject') {
-            $memo->tgl_disahkan = now();
-        }else{
-            $memo->tgl_disahkan = null;
+            $memo->status = $request->status;
+            
+            // Jika status 'approve', simpan tanggal pengesahan
+            if ($request->status == 'approve') {
+                $memo->tgl_disahkan = now();
+            } elseif ($request->status == 'reject') {
+                $memo->tgl_disahkan = now();
+            }else{
+                $memo->tgl_disahkan = null;
+            }
+            
+
+            // Simpan catatan jika ada
+            $memo->catatan = $request->catatan;
+
+            // Simpan perubahan
+            $memo->save();
+        } else {
+            // Jika user dari divisi lain, update status di tabel kirim_document
+            Kirim_document::where('id_document', $id)
+                ->where('jenis_document', 'memo')
+                ->where('id_penerima', $userId)
+                ->update([
+                    'status' => $request->status,
+                    'updated_at' => now()
+                ]);
         }
-        
-
-        // Simpan catatan jika ada
-        $memo->catatan = $request->catatan;
-
-        // Simpan perubahan
-        $memo->save();
 
         Notifikasi::create([
             'judul' => "Memo {$request->status}",
-            'jenis_document' => 'memo',
+            'judul_document' => $memo->judul,
             'id_divisi' => $memo->divisi_id_divisi,
             'updated_at' => now()
         ]);

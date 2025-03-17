@@ -17,7 +17,7 @@ class NotifController extends Controller
 
         $notifications = Notifikasi::where('id_divisi', $user->divisi_id_divisi)
             ->orderBy('updated_at', 'desc')
-            ->limit(5)
+            ->limit(10)
             ->get();
 
         return response()->json(['notifications' => $notifications]);
