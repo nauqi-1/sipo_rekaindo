@@ -19,18 +19,24 @@
         </div>
     </div>
 
-    <!-- Filter & Search Bar -->
-    <div class="arsip">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="title"><b>Arsip Memo</b></h4>
-            <div class="d-flex gap-2">
-                <div class="search">
-                    <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
-                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+        <!-- Filter & Search Bar -->
+        <div class="arsip">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="title"><b>Arsip Memo</b></h4>
+                <div class="d-flex gap-2">
+                    <div class="search">
+                    <form method="GET" action="{{ route('arsip.memo') }}" class="search-filter d-flex gap-2">
+                    <div class="d-flex gap-2">
+                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                            <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
+                            <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
+                        </div>
+                    </div>
+                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
         <!-- Table -->
         <table class="table-light">
@@ -39,16 +45,22 @@
                     <th>No</th>
                     <th>Nama Dokumen</th>
                     <th>Tanggal Masuk
-                        <button class="data-md">
-                            <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
-                        </button>
+                    <button class="data-md">
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_dibuat', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}" 
+                        style="color:rgb(135, 135, 148); text-decoration: none;">
+                            <span class="bi-arrow-down-up"></span>
+                        </a>
+                    </button>
                     </th>
                     <th>Seri</th>
                     <th>Dokumen</th>
                     <th>Tanggal Disahkan
-                        <button class="data-md">
-                            <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
-                        </button>
+                    <button class="data-md">
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}" 
+                        style="color: rgb(135, 135, 148); text-decoration: none;">
+                            <span class="bi-arrow-down-up"></span>
+                        </a>
+                    </button>
                     </th>
                     <th>Divisi</th>
                     <th>Status</th>
@@ -71,18 +83,18 @@
                         <span class="badge bg-success">Diterima</span>
                     </td>
                     <td>
-                        <!-- <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button> -->
-                        <a href="{{ route('cetakmemo', ['id' => $arsip->document->id_memo]) }}" class="btn btn-sm1" target="_blank">
-                            <img src="/img/arsip/unduh.png" alt="unduh">
-                        </a>
-                        <form action="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            <img src="/img/arsip/delete.png" alt="delete">
-                        </button>
-                        </form>
+                        <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakmemo',['id' => $arsip->document->id_memo]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
+                        @if ($arsip->document) 
+                            <form action="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                    <img src="/img/arsip/delete.png" alt="delete">
+                                </button>
+                            </form>
+
                         <button class="btn btn-sm3" onclick="window.location.href='{{route('view.memo-arsip',$arsip->document->id_memo)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
+                        @endif
                     </td>
                 </tr>
                 @endforeach
