@@ -78,10 +78,10 @@
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
                         <img src="\img\memo-superadmin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                        <label for="isi-surat">Isi Surat <span class="text-danger">*</span></label></label>
+                        <label for="isi-memo">Isi Surat <span class="text-danger">*</span></label></label>
                     </div>
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
-                            <textarea id="summernote" name="isi_surat" >{{ $memo->isi_memo }}</textarea>
+                            <textarea id="summernote" name="isi_memo" >{{ $memo->isi_memo }}</textarea>
                     </div>
                 </div>
             </div>
