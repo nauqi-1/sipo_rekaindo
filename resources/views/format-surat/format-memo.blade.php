@@ -138,9 +138,73 @@
             text-align: center;
             margin: 0;
         }
+
+        .view-mode header img,
+.view-mode footer img,
+.view-mode .content {
+    width: 50%;
+    margin: auto; /* Supaya tetap di tengah */
+}
+.view-mode header, 
+.view-mode footer {
+    display: flex;
+    justify-content: center; /* Pusatkan gambar */
+    align-items: center;
+    width: 100%;
+    position: fixed;
+    left: 0;
+    width: 100%;
+    z-index: 100; /* Supaya tidak tertutup elemen lain */
+}
+.view-mode {
+    overflow: hidden; /* Mencegah scroll di body */
+}
+
+.view-mode header img {
+    display: block;
+    margin: 0 auto;
+    width: 50%; /* Sesuaikan ukuran */
+}
+
+.view-mode .header1,
+.view-mode .header2 {
+    position: fixed; /* Buat header tetap di atas */
+    top: 150px; /* Sesuaikan agar tepat di bawah gambar header */
+    left: 50%;
+    transform: translateX(-50%); /* Agar tetap di tengah */
+    width: 40%;
+    background-color: white;
+    padding: 10px;
+    text-align: left;
+    z-index: 1000; /* Pastikan tetap di atas */
+}
+
+.view-mode .header2 {
+    top: 6.5cm; /* Pastikan tepat di bawah header1 */
+    width: 38.5%;
+}
+
+.view-mode .fill {
+    position: relative;
+    margin-top: 5.2cm; /* Supaya tidak tertutup oleh header1 & header2 */
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: justify;
+    overflow-y: auto; /* Biar bisa di-scroll */
+    max-height: calc(100vh - 250px); /* Sesuaikan supaya tidak melewati layar */
+}
+
+/* Supaya cetak PDF tetap menggunakan full width */
+.pdf-mode header img,
+.pdf-mode footer img,
+.pdf-mode .content {
+    width: 100%;
+}
+
     </style>
 </head>
-<body>
+<body class="{{ isset($isPdf) && $isPdf ? 'pdf-mode' : 'view-mode' }}">
     <!-- <div class="container {{isset($isPdf) && $isPdf ? 'pdf-mode' : 'view-mode'}}"> -->
         <!-- Gunakan Base64 jika tersedia, jika tidak pakai asset() -->
         <!-- <img class="background" src="{{ asset('img/border-surat.png') }}" alt="Background"> -->
