@@ -295,9 +295,11 @@ class MemoController extends Controller
      public function update(Request $request, $id)
      {
         $memo = Memo::findOrFail($id);
+         // dd($request->all());    
+
 
         $request->validate([
-            'judul' => 'required|string|max:70',
+            'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
             'tujuan' => 'required|string|max:255',
             'nomor_memo' => 'required|string|max:255',
@@ -306,10 +308,6 @@ class MemoController extends Controller
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
             'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
-            'tanda_identitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-        ],[
-            'tanda_identitas.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
-            'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
         ]);
 
         if ($request->filled('judul')) {
@@ -327,11 +325,11 @@ class MemoController extends Controller
         if ($request->filled('nama_bertandatangan')) {
             $memo->nama_bertandatangan = $request->nama_bertandatangan;
         }
-        if ($request->filled('tgl_surat')) {
-            $memo->tgl_dibuat = bcrypt($request->tgl_dibuat);
+        if ($request->filled('tgl_dibuat')) {
+            $memo->tgl_dibuat = $request->tgl_dibuat;
         }
         if ($request->filled('seri_surat')) {
-            $memo->seri_memo = $request->seri_memo;
+            $memo->seri_surat = $request->seri_surat;
         }
         if ($request->filled('tgl_disahkan')) {
             $memo->tgl_disahkan = $request->tgl_disahkan;

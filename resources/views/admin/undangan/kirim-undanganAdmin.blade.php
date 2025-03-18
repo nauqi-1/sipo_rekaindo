@@ -27,7 +27,7 @@
                 </div>
             </div>
         </div>
-        <form action="{{ route('documents.send') }}" method="POST">
+        <form id="undanganSend" action="{{ route('documents.send') }}" method="POST">
         @csrf
         <input type="hidden" name="id_document" value="{{ $undangan->id_undangan }}">
         <input type="hidden" name="jenis_document" value="undangan">
@@ -86,12 +86,6 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl-buat"  value="{{ $undangan->tgl_dibuat }}" readonly>
                     </div>
-                    <!-- <div class="card-white">
-                        <label for="file">File</label>
-                        <div class="separator"></div>
-                        <button class="view"> <img src="/img/undangan/view.png" alt="view">Lihat</button>
-                        <button class="down"><img src="/img/undangan/down.png" alt="down">Unduh</button>
-                    </div> -->
                 </div>
             </div>
             <div class="row mb-4" style="gap: 20px;">
@@ -127,44 +121,38 @@
         </div>
         <div class="footer">
             <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('undangan.admin') }}'">Kembali</button>
-            <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+            <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
         </div>
         </form>
 
         <!-- Modal kirim -->
         <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Kirim Undangan Rapat?</b></h5>
-                        <!-- Tombol -->
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="#">Batal</a></button>
-                            <button type="button" class="btn ok" id="confirmDelete">Oke</button>
-                        </div>
+                <div class="modal-content text-center p-4">
+                    <div class="modal-body">
+                        <!-- Close Button -->
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
+                        <h5 class="modal-title mb-4"><b>Kirim Undangan Rapat?</b></h5>
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-primary" id="confirmSubmit" data-bs-toggle="modal">Oke</button>
+                        </div>    
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Modal Berhasil -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirimkan <br>Undangan Rapat</b></h5>
-                        <!-- Tombol -->
-                        <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('undangan.admin')}}">Kembali</a></button>
+                <div class="modal-content text-center p-4">
+                    <div class="modal-body">
+                        <img src="/img/undangan/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
+                        <!-- Success Message -->
+                        <h5 class="modal-title"><b>Sukses</b></h5>
+                        <p class="mt-2">Berhasil Mengirimkan Undangan</p>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('undangan.admin')}}" style="color: white; text-decoration: none">Kembali ke Halaman Undangan</a></button>
                     </div>
                 </div>
             </div>
@@ -172,6 +160,27 @@
     </div>
     
     <script src="../assets/js/script.js"></script>
+    <script>
+    // Overlay kirim
+    document.addEventListener('DOMContentLoaded', function () {
+        const undanganSend = document.getElementById('undanganSend');
+        const confirmSubmitButton = document.getElementById('confirmSubmit');
+
+        confirmSubmitButton.addEventListener('click', function (event) {
+            event.preventDefault(); // Mencegah submit default
+            
+            // Kirim form secara normal
+            undanganSend.submit();
+        });
+
+        // Jika ada notifikasi sukses dari server, tampilkan modal sukses
+        const successMessage = "{{ session('success') }}";
+        if (successMessage) {
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        }
+    });
+    </script>
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>

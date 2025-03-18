@@ -45,6 +45,8 @@
                         </label>
                         <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ $undangan->tgl_dibuat }}" required>
                         <input type="hidden" name="tgl_disahkan" >
+                        <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
+
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
@@ -69,37 +71,26 @@
                         </label>
                         <input type="text" name="tujuan" id="tujuan" class="form-control" value="{{ $undangan->tujuan }}" required>
                     </div>
-                    <div class="col-md-6" style="border: none;"></div>
+                    <div class="col-md-6">
+                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
+                        <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
+                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
+                            @foreach($managers as $manager)
+                                <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname . ' ' . $manager->lastname }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
                         <img src="\img\undangan\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                        <label for="isi_surat">Isi Surat <span class="text-danger">*</span></label>
+                        <label for="isi_undangan">Isi Surat <span class="text-danger">*</span></label>
                     </div>
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
-                            <textarea id="summernote" name="isi_surat">{{ $undangan->isi_undangan }}</textarea>
+                            <textarea id="summernote" name="isi_undangan">{{ $undangan->isi_undangan }}</textarea>
                     </div>
-                </div>
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="nama_bertandatangann" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                        <!-- <select name="nama_pimpinan" id="nama_pimpinan" class="form-control" required>
-                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                        </select> -->
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
-                            <option disabled selected style="text-align: left;">--Pilih--</option>
-                            <option value="pimpinan1">Jokowi</option>
-                            <option value="pimpinan2">Prabowo</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6 lampiran">
-                        <label for="tanda_identitas" class="form-label">Lampiran </label>
-                        <div class="upload-wrapper">
-                            <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
-                            <input type="file" id="tanda_identitas" name="tanda_identitas" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                        </div>
-                    </div>
-                </div>
+                </div>    
+                
             </div>
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.admin')}}">Batal</a></button>
