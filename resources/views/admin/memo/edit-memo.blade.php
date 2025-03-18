@@ -109,7 +109,7 @@
                 </div>
                 <div class="col-md-6">
                     <label for="kategori_barang_{{ $index }}_nama_barang">Barang</label>
-                    <input type="text" id="kategori_barang_{{ $index }}_nama_barang" name="kategori_barang[{{ $index }}][nama_barang]" class="form-control" value="{{ $barang->nama_barang }}">
+                    <input type="text" id="kategori_barang_{{ $index }}_nama_barang" name="kategori_barang[{{ $index }}][barang]" class="form-control" value="{{ $barang->barang }}">
                 </div>
                 <div class="col-md-6">
                     <label for="kategori_barang_{{ $index }}_qty">Qty</label>

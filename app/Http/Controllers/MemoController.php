@@ -78,15 +78,64 @@ class MemoController extends Controller
         // Pagination
         $memos = $query->paginate(6);
         // **Tambahkan status penerima untuk setiap memo**
-        foreach ($memos as $memo) {
-            $memo->status_penerima = Kirim_document::where('id_document', $memo->id_memo)
-                ->where('jenis_document', 'memo')
-                ->where('id_penerima', $userDivisiId)
-                ->value('status') ?? $memo->status;
+        $memos->getCollection()->transform(function ($memo) use ($userId) {
+            if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $memo->final_status = $memo->status; // Memo dari divisi sendiri
+            } else {
+                $statusKirim= Kirim_Document::where('id_document', $memo->id_memo)
+                    ->where('jenis_document', 'memo')
+                    ->where('id_penerima', $userId)
+                    ->first();
+                $memo->final_status = $statusKirim ? $statusKirim->status : '-';
+                // Cari status kiriman untuk user login
             }
-            $status = $memo ? $memo->status_penerima : 'pending';
+            return $memo;
+        });
+        return view(Auth::user()->role->nm_role . '.memo.memo-' . Auth::user()->role->nm_role, compact('memos', 'divisi', 'seri','sortDirection'));
+    }
 
-        return view(Auth::user()->role->nm_role . '.memo.memo-' . Auth::user()->role->nm_role, compact('memos', 'divisi', 'seri','status','sortDirection'));
+    public function superadmin(Request $request){
+        $divisi = Divisi::all();
+        $seri = Seri::all();
+        $userId = Auth::id();
+        $query = Memo::query(); 
+
+        $memoDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $query->orderBy('created_at', $sortDirection);
+
+        // Filter berdasarkan status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter berdasarkan tanggal dibuat
+        if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
+            $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
+        } elseif ($request->filled('tgl_dibuat_awal')) {
+            $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
+        } elseif ($request->filled('tgl_dibuat_akhir')) {
+            $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
+        }
+
+         // Ambil semua arsip memo berdasarkan user login
+        $arsipMemoQuery = Arsip::where('user_id', $userId)
+        ->where('jenis_document', 'memo')
+        ->with('document');
+
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $query->orderBy('created_at', $sortDirection);
+
+        // Pencarian berdasarkan nama dokumen atau nomor memo
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('judul', 'like', '%' . $request->search . '%')
+                ->orWhere('nomor_memo', 'like', '%' . $request->search . '%');
+            });
+        }
+        $memos = $query->paginate(6);
+
+        return view( 'superadmin.memo.memo-superadmin', compact('memos', 'divisi', 'seri','sortDirection'));
     }
 
     public function show($id)
@@ -147,20 +196,24 @@ class MemoController extends Controller
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
             'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
-            'tanda_identitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // 2MB max
+            'lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // 2MB max
         ],[
-            'tanda_identitas.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
-            'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
+            'lampiran.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
+            'lampiran.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
         ]);
         
         
 
         $filePath = null;
-        if ($request->hasFile('tanda_identitas')) {
-            $file = $request->file('tanda_identitas');
+        if ($request->hasFile('lampiran')) {
+            $file = $request->file('lampiran');
             $fileData = base64_encode(file_get_contents($file->getRealPath()));
             $filePath = $fileData;
         }
+        
+        
+
+        
         
 
         $divisiId = auth()->user()->divisi_id_divisi;
@@ -190,7 +243,7 @@ class MemoController extends Controller
             'seri_surat' => $request->input('seri_surat'),
             'status' => 'pending',
             'nama_bertandatangan' => $request->input('nama_bertandatangan'),
-            'tanda_identitas' => $filePath,
+            'lampiran' => $filePath,
 
         ]);
         if ($request->has('jumlah_kolom')&& !empty($request->nomor)) {
@@ -264,14 +317,27 @@ class MemoController extends Controller
             // Simpan perubahan
             $memo->save();
         } else {
-            // Jika user dari divisi lain, update status di tabel kirim_document
-            Kirim_document::where('id_document', $id)
+                // Jika user dari divisi lain, update status di tabel kirim_document
+                $currentKirim = Kirim_document::where('id_document', $id)
                 ->where('jenis_document', 'memo')
                 ->where('id_penerima', $userId)
-                ->update([
-                    'status' => $request->status,
-                    'updated_at' => now()
-                ]);
+                ->first();
+
+            if ($currentKirim) {
+                $currentKirim->status = $request->status;
+                $currentKirim->updated_at = now();
+                $currentKirim->save();
+
+                // Update juga status record kiriman sebelumnya (pengirim sebelumnya)
+                Kirim_document::where('id_document', $id)
+                    ->where('jenis_document', 'memo')
+                    ->where('id_penerima', $currentKirim->id_pengirim)
+                    ->where('status', 'pending')
+                    ->update([
+                        'status' => $request->status,
+                        'updated_at' => now()
+                    ]);
+            }
         }
 
         Notifikasi::create([
@@ -295,7 +361,7 @@ class MemoController extends Controller
      public function update(Request $request, $id)
      {
         $memo = Memo::findOrFail($id);
-         // dd($request->all());    
+        //  dd($request->all());    
 
 
         $request->validate([
@@ -337,21 +403,41 @@ class MemoController extends Controller
         if ($request->filled('divisi_id_divisi')) {
             $memo->divisi_id_divisi = $request->divisi_id_divisi;
         }
-        if ($request->hasFile('tanda_identitas')) {
-            $file = $request->file('tanda_identitas');
-            $memo->tanda_identitas = file_get_contents($file->getRealPath());
+        if ($request->hasFile('lampiran')) {
+            $file = $request->file('lampiran');
+            $memo->lampiran = file_get_contents($file->getRealPath());
         }
         
         $memo->save();
- 
+
+        if ($request->has('kategori_barang')) {
+            foreach ($request->kategori_barang as $dataBarang) {
+                if (isset($dataBarang['id_kategori_barang']) && $dataBarang['id_kategori_barang'] != null) {
+                    // Cek apakah barang sudah ada di database
+                    $barang = $memo->kategoriBarang()->find($dataBarang['id']);
+                    if ($barang) {
+                        $barang->update([
+                            'memo_id_memo' => $memo->id_memo,
+                            'memo_divisi_id_divisi' => $memo->divisi_id_divisi,
+                            'nomor' => $dataBarang['nomor'],
+                            'barang' => $dataBarang['barang'],
+                            'qty' => $dataBarang['qty'],
+                            'satuan' => $dataBarang['satuan'],
+                        ]);
+                    }
+                } 
+            }
+        }
+
+        
          return redirect()->route('memo.'.Auth::user()->role->nm_role)->with('success', 'User updated successfully');
      }
      public function destroy($id)
      {
          $memo = Memo::findOrFail($id);
 
-        if ($memo->tanda_identitas && file_exists(public_path($memo->tanda_identitas))) {
-            unlink(public_path($memo->tanda_identitas));
+        if ($memo->lampiran && file_exists(public_path($memo->lampiran))) {
+            unlink(public_path($memo->lampiran));
         }
 
          $memo->delete();
@@ -364,11 +450,11 @@ class MemoController extends Controller
     {
         $memo = Memo::findOrFail($id);
 
-        if (!$memo->tanda_identitas) {
+        if (!$memo->lampiran) {
             return response()->json(['error' => 'File tidak ditemukan.'], 404);
         }
 
-        $fileContent = base64_decode($memo->tanda_identitas);
+        $fileContent = base64_decode($memo->lampiran);
         if (!$fileContent) {
             return response()->json(['error' => 'File corrupt atau tidak bisa di-decode.'], 500);
         }
@@ -424,11 +510,11 @@ class MemoController extends Controller
     {
         $memo = Memo::findOrFail($id);
 
-        if (!$memo->tanda_identitas) {
+        if (!$memo->lampiran) {
             return redirect()->back()->with('error', 'File tidak ditemukan.');
         }
 
-        $fileData = base64_decode($memo->tanda_identitas);
+        $fileData = base64_decode($memo->lampiran);
         $mimeType = finfo_buffer(finfo_open(), $fileData, FILEINFO_MIME_TYPE);
         $extension = $this->getExtension($mimeType);
 

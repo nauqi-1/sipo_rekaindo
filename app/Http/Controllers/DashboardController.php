@@ -20,8 +20,12 @@ class DashboardController extends Controller
         $jumlahRisalah = Risalah::where('divisi_id_divisi', $userDivisiId)->count();
         $jumlahUndangan = Undangan::where('divisi_id_divisi', $userDivisiId)->count();
 
+        $Memo = Memo::all()->count();
+        $Undangan = Undangan::all()->count();
+        $Risalah = Risalah::all()->count();
+
         // Kirim data ke view
-        return view(Auth::user()->role->nm_role.'.dashboard', compact('jumlahMemo','jumlahRisalah','jumlahUndangan'));
+        return view(Auth::user()->role->nm_role.'.dashboard', compact('jumlahMemo','jumlahRisalah','jumlahUndangan','Memo','Undangan','Risalah'));  
         
     }
 }   

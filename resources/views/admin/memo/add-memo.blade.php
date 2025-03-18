@@ -81,6 +81,14 @@
                     </select>
                 </div>
             </div>
+            <div class="col-md-6 lampiran">
+                <label for="lampiran" class="form-label">Lampiran</label>
+                <div class="upload-wrapper">
+                    <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
+                    <input type="file" id="lampiran" name="lampiran" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+            </div>
+            
             <div class="row mb-4 isi-surat-row">
                 <div class="col-md-12">
                     <img src="\img\memo-admin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
@@ -227,7 +235,7 @@
         document.getElementById('uploadBtn').addEventListener('click', function () {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
-            const tandaIdentitas = document.getElementById('tanda_identitas');
+            const tandaIdentitas = document.getElementById('lampiran');
             const fileNameDisplay = document.getElementById('fileName');
             const filePreview = document.getElementById('filePreview');
             const previewIcon = document.getElementById('previewIcon');
@@ -258,13 +266,13 @@
 
         // Menghapus file yang dipilih dan menyembunyikan preview
         document.getElementById('removeFile').addEventListener('click', function () {
-            document.getElementById('tanda_identitas').value = ''; // Menghapus file yang dipilih
+            document.getElementById('lampiran').value = ''; // Menghapus file yang dipilih
             document.getElementById('filePreview').style.display = 'none'; // Menyembunyikan preview
             document.getElementById('openUploadModal').style.display = 'block'; // Menampilkan tombol upload lagi
         });
 
         // Menangani pemilihan file di input lampiran
-        document.getElementById('tanda_identitas').addEventListener('change', function () {
+        document.getElementById('lampiran').addEventListener('change', function () {
             const file = this.files[0];
             const filePreview = document.getElementById('filePreview');
             const fileName = document.getElementById('fileName');
@@ -288,7 +296,7 @@
 
         document.getElementById('removeFile').addEventListener('click', function () {
             // Reset input field dan preview pada kolom input
-            document.getElementById('tanda_identitas').value = '';
+            document.getElementById('lampiran').value = '';
             document.getElementById('filePreview').style.display = 'none';
             document.getElementById('openUploadModal').style.display = 'block';
 

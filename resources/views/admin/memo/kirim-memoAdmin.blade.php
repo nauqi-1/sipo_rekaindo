@@ -27,7 +27,7 @@
                 </div>
             </div>
         </div>
-        <form action="{{ route('documents.send') }}" method="POST">
+        <form action="{{ route('documents.send') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="id_document" value="{{ $memo->id_memo }}">
         <input type="hidden" name="jenis_document" value="memo">
@@ -90,11 +90,11 @@
                    
                     @if($memo->status == 'approve'&& $memo->divisi->id_divisi == Auth::user()->divisi->id_divisi)
                     <div class="card-white">
-                    <label for="tanda_identitas" class="form-label">Lampiran</label>
+                    <label for="lampiran" class="form-label">Lampiran</label>
                     <div class="separator"></div>
                         <div class="upload-wrapper">
                             <button type="button" class="btn btn-primary upload-button" id="openUploadModal" style="margin-left: 30px;">Pilih File</button>
-                            <input type="file" id="tanda_identitas" name="tanda_identitas" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                            <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
                             <div id="filePreview" style="display: none; text-align: center">
                                 <img id="previewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
                                 <span id="fileName"></span>

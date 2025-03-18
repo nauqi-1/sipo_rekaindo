@@ -87,6 +87,52 @@ class UndanganController extends Controller
     
         return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri','sortDirection'));
     }
+
+    public function superadmin(Request $request){
+        $undangan = null;
+        $divisi = Divisi::all();
+        $seri = Seri::all(); 
+        $userDivisiId = Auth::user()->divisi_id_divisi;
+        $userId = Auth::id(); 
+        $query = Undangan::query();
+
+        // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
+        $undanganDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
+        // Filter berdasarkan status
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        // Filter berdasarkan tanggal dibuat
+        if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
+            $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
+        } elseif ($request->filled('tgl_dibuat_awal')) {
+            $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
+        } elseif ($request->filled('tgl_dibuat_akhir')) {
+            $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
+        }
+
+        // Pencarian berdasarkan nama dokumen atau nomor undangans
+        if ($request->has('search') && $request->search != '') {
+            $query->where(function ($q) use ($request) {
+                $q->where('judul', 'like', '%' . $request->search . '%')
+                  ->orWhere('nomor_undangan', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+
+        // Sorting default menggunakan tgl_dibuat
+        $query->orderBy('created_at', $sortDirection);
+
+        
+
+        $undangans = $query->paginate(6);
+
+        return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri','sortDirection'));
+
+    }
+    
    
     public function create()
     {
@@ -136,17 +182,10 @@ class UndanganController extends Controller
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
             'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
-            'tanda_identitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-        ],[
-            'tanda_identitas.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
-            'tanda_identitas.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
+            
         ]);
 
-        $fileContent = null;
-        if ($request->hasFile('tanda_identitas')) {
-            $file = $request->file('tanda_identitas');
-            $fileContent = file_get_contents($file->getRealPath()); // Membaca file sebagai binary
-        }
+       
 
         $divisiId = auth()->user()->divisi_id_divisi;
         $seri = Seri::getNextSeri(true);
@@ -175,8 +214,6 @@ class UndanganController extends Controller
             'seri_surat' => $request->input('seri_surat'),
             'status' => 'pending',
             'nama_bertandatangan' => $request->input('nama_bertandatangan'),
-            'tanda_identitas' => $fileContent,
-
         ]);
     
         return redirect()->route('undangan.'. Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dibuat.');

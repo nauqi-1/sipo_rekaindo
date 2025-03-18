@@ -92,9 +92,9 @@
                         {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $memo->judul }}
                     </td>
-                    @else
+                    @elseif(Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
                     <td class="nama-dokumen 
-                        {{ $status == 'reject' ? 'text-danger' : ($status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $memo->final_status == 'reject' ? 'text-danger' : ($memo->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $memo->judul }}
                     </td>
                     @endif
@@ -114,10 +114,10 @@
                             @else
                                 <span class="badge bg-success">Diterima</span>
                             @endif
-                        @else
-                            @if ($status == 'reject')
+                        @elseif(Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
+                            @if ($memo->final_status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($status == 'pending')
+                            @elseif ($memo->final_status == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
@@ -133,7 +133,7 @@
                             </a>
                             @endif
                         @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
-                            @if($status == 'pending' )
+                            @if($memo->final_status == 'pending' )
                             <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
                                 <img src="/img/memo-admin/share.png" alt="share">
                             </a>
@@ -157,7 +157,7 @@
                                 </a>
                             @endif
                         @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
-                            @if ($status == 'approve')
+                            @if ($memo->final_status == 'approve')
                                 <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('POST') <!-- Pastikan metode ini sesuai dengan route -->

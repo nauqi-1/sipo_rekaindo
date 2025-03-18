@@ -546,7 +546,7 @@ var slideToggle = (target, duration = 0) => {
   document.getElementById('uploadBtn').addEventListener('click', function () {
       const fileInput = document.getElementById('fileInput');
       const file = fileInput.files[0];
-      const tandaIdentitas = document.getElementById('tanda_identitas');
+      const tandaIdentitas = document.getElementById('lampiran');
       const fileNameDisplay = document.getElementById('fileName');
       const filePreview = document.getElementById('filePreview');
       const previewIcon = document.getElementById('previewIcon');
@@ -577,13 +577,13 @@ var slideToggle = (target, duration = 0) => {
 
   // Menghapus file yang dipilih dan menyembunyikan preview
   document.getElementById('removeFile').addEventListener('click', function () {
-      document.getElementById('tanda_identitas').value = ''; // Menghapus file yang dipilih
+      document.getElementById('lampiran').value = ''; // Menghapus file yang dipilih
       document.getElementById('filePreview').style.display = 'none'; // Menyembunyikan preview
       document.getElementById('openUploadModal').style.display = 'block'; // Menampilkan tombol upload lagi
   });
 
   // Menangani pemilihan file di input lampiran
-  document.getElementById('tanda_identitas').addEventListener('change', function () {
+  document.getElementById('lampiran').addEventListener('change', function () {
       const file = this.files[0];
       const filePreview = document.getElementById('filePreview');
       const fileName = document.getElementById('fileName');
@@ -607,7 +607,7 @@ var slideToggle = (target, duration = 0) => {
 
   document.getElementById('removeFile').addEventListener('click', function () {
       // Reset input field dan preview pada kolom input
-      document.getElementById('tanda_identitas').value = '';
+      document.getElementById('lampiran').value = '';
       document.getElementById('filePreview').style.display = 'none';
       document.getElementById('openUploadModal').style.display = 'block';
 
