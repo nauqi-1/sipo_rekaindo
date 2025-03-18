@@ -70,16 +70,22 @@ class LaporanController extends Controller
         return redirect()->route('cetak-laporan-undangan.superadmin')->with('undangans', $undangans);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $divisi = Divisi::all();
         $seri = Seri::all();  
         $memos = Memo::where(function($query) {
             $query->where('status', 'diterima')
                   ->orWhere('status', 'approve');
-        })->orderBy('tgl_dibuat', 'desc')->get();
+        });
+        
+        $memos = $memos->orderBy('tgl_dibuat', 'desc')->get();
         $laporans = Laporan::with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(6);
         
+        if ($request->has('divisi_id_divisi')) {
+            $memos->where('divisi_id_divisi', $request->divisi_id_divisi);
+        } 
+
         $user = Auth::user();
         if (!$user) {
             return redirect('/login');
@@ -107,7 +113,8 @@ class LaporanController extends Controller
             $memos = $memos ?? collect(); // Ensure $memos is always defined
             return view('superadmin.laporan.cetak-laporan-memo', [
                 'memos' => $memos,
-                'laporans' => $memos
+                'laporans' => $memos,
+                'divisi' => $divisi
             ]);
         }
 

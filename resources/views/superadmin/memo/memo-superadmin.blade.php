@@ -128,7 +128,7 @@
     {{ $memos->links('pagination::bootstrap-5') }}
 </div>
 
-<!-- Overlay Add User Success -->
+<!-- Overlay Add Memo Success -->
 <div class="modal fade" id="successAddMemoModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center p-4">

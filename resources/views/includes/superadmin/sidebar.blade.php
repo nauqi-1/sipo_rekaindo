@@ -4,7 +4,7 @@
     <div class="m-header">
       <a href="{{ route(Auth::user()->role->nm_role . '.dashboard') }}" class="b-brand text-primary">
         <!-- ========   Change your logo from here   ============ -->
-        <img src="/assets/images/LOGO.png"/>
+        <img style="margin-top: 5px; width: 190px; height: 75px" src="\img\loggo.png"/>
       </a>
     </div>
     <div class="navbar-content">

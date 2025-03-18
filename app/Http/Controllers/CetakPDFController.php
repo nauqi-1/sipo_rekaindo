@@ -103,13 +103,24 @@ class CetakPDFController extends Controller
 
     }
 
-    public function viewundanganPDF($id)
+    public function viewundanganPDF($id_undangan)
     {
         // Ambil data dari database
-        $undangan = Undangan::findOrFail($id); // Sesuaikan dengan model yang benar
-        $tujuanList = explode(';', $undangan->tujuan);
+        $undangan = Undangan::findOrFail($id_undangan); // Sesuaikan dengan model yang benar
+        // $tujuanList = explode(';', $undangan->tujuan);
+
+        $headerPath = public_path('img/bheader.png');
+        $footerPath = public_path('img/bfooter.png');
+
+        $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
+        $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
 
         // Tampilkan langsung dalam browser
-        return view('format-surat.format-undangan', compact('undangan','tujuanList'));
+        // return view('format-surat.format-undangan', compact('undangan','tujuanList'));
+        return view('format-surat.format-undangan', [
+            'undangan' => $undangan,
+            'headerImage' => $headerBase64,
+            'footerImage' => $footerBase64
+        ]);
     }
 }

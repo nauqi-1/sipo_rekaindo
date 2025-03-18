@@ -27,6 +27,36 @@
     box-shadow: none !important;
 }
 
+/* Dropdown divisi */
+.cetak-laporan .dropdown {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    padding: auto;
+    margin-right: 12px;
+}
+
+.cetak-laporan .form-select {
+    font-size: 14px;
+    height: 45px; 
+    width: 150px;
+    padding: 5px 12px; 
+    color: #333; /* Warna teks */
+    border: 1px solid #E5E5E5;
+    border-radius: 10px;
+    background-color: #ffffff;
+}
+
+.cetak-laporan .form-select:focus {
+    border: 1px solid #E5E5E5;
+    box-shadow: none;
+    outline: none;
+}
+
+.cetak-laporan .form-select .status {
+    font-weight: bold;
+}
+
 /* Fitur print */
 .btn-primary-print {
     background-color: #1E4178;

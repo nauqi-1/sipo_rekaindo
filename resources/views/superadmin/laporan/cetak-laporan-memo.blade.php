@@ -24,14 +24,19 @@
         <div class="title d-flex justify-content-between align-items-center mb-3">
             <h2><b>Laporan Memo</b></h2>
             <div class="d-flex gap-2">
+                <form method="GET" action="{{ route('cetak-laporan-memo.superadmin') }}">
+                    <div for="divisi_id_divisi" class="dropdown">
+                        <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" required autofocus autocomplete="divisi_id_divisi" onchange="this.form.submit()">
+                        @foreach($divisi as $d)
+                            <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}</option>
+                        @endforeach
+                        </select>
+                    </div>
+                </form>
                 <div class="search">
                     <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
                     <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
                 </div>
-                <!-- Add User Button to Open Mod    al -->
-                <!-- <a href="{{route ('format-cetakLaporan-memo')}}" class="btn btn-primary-print">
-                    <img src="/img/laporan/print.png" alt="print"> Cetak Data
-                </a> -->
                 <a href="{{ route('format-cetakLaporan-memo', request()->all()) }}" class="btn btn-primary-print">
                     <img src="{{ asset('img/laporan/print.png') }}" alt="print"> Cetak Data
                 </a>
@@ -52,6 +57,7 @@
                 </th>
                 <th>Seri</th>
                 <th>Dokumen</th>
+                <th>Divisi</th>
                 <th>Tanggal Disahkan
                     <button class="data-md">
                         <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
@@ -74,6 +80,7 @@
                 <td>{{ $laporan->tgl_dibuat->format('d-m-Y') }}</td>
                 <td>{{ $laporan->seri_surat }}</td>
                 <td>{{ $laporan->nomor_memo }}</td> 
+                <td>{{ $laporan->divisi ? $laporan->divisi->nm_divisi : '-' }}</td>
                 <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                 <td>
                     <span class="badge bg-{{ $laporan->status == 'approve' ? 'success' : 'warning' }}">

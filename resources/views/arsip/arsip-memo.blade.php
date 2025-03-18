@@ -83,16 +83,20 @@
                         <span class="badge bg-success">Diterima</span>
                     </td>
                     <td>
+                        <!-- Button Unduh -->
                         <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakmemo',['id' => $arsip->document->id_memo]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
-                        @if ($arsip->document) 
-                            <form action="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                    <img src="/img/arsip/delete.png" alt="delete">
-                                </button>
-                            </form>
 
+                        <!-- Button Arsip -->
+                        @if ($arsip->document)
+                        <form action="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteArsipMemoModal">
+                                <img src="/img/arsip/delete.png" alt="delete">
+                            </button>
+                        </form>
+
+                        <!-- Button View -->
                         <button class="btn btn-sm3" onclick="window.location.href='{{route('view.memo-arsip',$arsip->document->id_memo)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
                         @endif
                     </td>

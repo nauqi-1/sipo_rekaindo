@@ -27,7 +27,7 @@
                 </div>
             </div>
         </div>
-        <form action="{{ route('documents.send') }}" method="POST" enctype="multipart/form-data">
+        <form id="memoSend" action="{{ route('documents.send') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="id_document" value="{{ $memo->id_memo }}">
         <input type="hidden" name="jenis_document" value="memo">
@@ -86,7 +86,6 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl-buat" value="{{ $memo->tgl_dibuat->translatedFormat('d F Y') }}" readonly>
                     </div>
-                    
                    
                     @if($memo->status == 'approve'&& $memo->divisi->id_divisi == Auth::user()->divisi->id_divisi)
                     <div class="card-white">
@@ -103,12 +102,6 @@
                         </div>
                     </div>
                     @endif
-                    <!-- <div class="card-white">
-                        <label for="file">File</label>
-                        <div class="separator"></div>
-                        <a class="view" href="{{ route('memo.preview', $memo->id_memo)  }}"> <img src="/img/memo-admin/view.png" alt="view" >Lihat</a>
-                        <a class="down" href="{{ route('memo.download', $memo->id_memo) }}"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
-                    </div> -->
                 </div>
             </div>
             <div class="row mb-4" style="gap: 20px;">
@@ -144,87 +137,103 @@
         </div>
         <div class="footer">
             <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('memo.admin') }}'">Kembali</button>   
-            <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+            <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
         </div>
         </form>
 
         <!-- Modal kirim -->
         <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/memo-admin/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Kirim Memo?</b></h5>
-                        <!-- Tombol -->
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="#">Batal</a></button>
-                            <button type="button" class="btn ok" id="confirmDelete">Oke</button>
-                        </div>
+                <div class="modal-content text-center p-4">
+                    <div class="modal-body">
+                        <!-- Close Button -->
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <img src="/img/memo-admin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
+                        <h5 class="modal-title mb-4"><b>Kirim Memo?</b></h5>
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-primary" id="confirmSubmit" data-bs-toggle="modal">Oke</button>
+                        </div>    
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Modal Berhasil -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirimkan Memo</b></h5>
-                        <!-- Tombol -->
-                        <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}">Kembali</a></button>
+                <div class="modal-content text-center p-4">
+                    <div class="modal-body">
+                        <img src="/img/memo-admin/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
+                        <!-- Success Message -->
+                        <h5 class="modal-title"><b>Sukses</b></h5>
+                        <p class="mt-2">Berhasil Mengirimkan Memo</p>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}" style="color: white; text-decoration: none">Kembali ke Halaman Memo</a></button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Modal Upload File -->
-    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="uploadModalLabel">
-                        <img src="/img/memo-superadmin/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
-                        Unggah file
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="modal-subtitle">Pilih dan unggah file pilihan Anda</p>
-                    <div class="upload-container">
-                        <div class="upload-box" id="uploadBox">
-                            <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
-                            <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
-                            <p class="upload-note">Ukuran file PDF tidak lebih dari 2MB</p>
-                            <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
-                            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
-                            <div id="fileInfo" style="display: none; text-align: center ">
-                                <div id="fileInfoWrapper" style="display: flex; align-items: center; justify-content: center">
-                                    <img id="modalPreviewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; margin-right: 5px; display: none;">
-                                    <span id="modalFileName"></span>
+
+        <!-- Modal Upload File -->
+        <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadModalLabel">
+                            <img src="/img/memo-superadmin/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
+                            Unggah file
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="modal-subtitle">Pilih dan unggah file pilihan Anda</p>
+                        <div class="upload-container">
+                            <div class="upload-box" id="uploadBox">
+                                <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
+                                <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
+                                <p class="upload-note">Ukuran file PDF tidak lebih dari 2MB</p>
+                                <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
+                                <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                                <div id="fileInfo" style="display: none; text-align: center ">
+                                    <div id="fileInfoWrapper" style="display: flex; align-items: center; justify-content: center">
+                                        <img id="modalPreviewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; margin-right: 5px; display: none;">
+                                        <span id="modalFileName"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="uploadBtn" >Unggah</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-primary" id="uploadBtn" >Unggah</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="../assets/js/script.js"></script>
+    <script>
+    // Overlay kirim
+    document.addEventListener('DOMContentLoaded', function () {
+        const memoSend = document.getElementById('memoSend');
+        const confirmSubmitButton = document.getElementById('confirmSubmit');
+
+        confirmSubmitButton.addEventListener('click', function (event) {
+            event.preventDefault(); // Mencegah submit default
+            
+            // Kirim form secara normal
+            memoSend.submit();
+        });
+
+        // Jika ada notifikasi sukses dari server, tampilkan modal sukses
+        const successMessage = "{{ session('success') }}";
+        if (successMessage) {
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        }
+    });
+    </script>
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
