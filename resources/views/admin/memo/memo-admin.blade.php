@@ -147,7 +147,7 @@
                                 <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
-                                    <button type="submit" class="btn btn-sm3">
+                                    <button type="submit" class="btn btn-sm3 submitArsipMemo">
                                         <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                                     </button>
                                 </form>
@@ -166,23 +166,24 @@
                                     </button>
                                 </form>
                             @else
-                                <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
+                                <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3 submitArsipMemo">
                                     <img src="/img/memo-admin/edit.png" alt="edit">
                                 </a>
                             @endif
                         @endif
                         
 
-                        <a href="{{ route('view.memo',$memo->id_memo) }}" class="btn btn-sm1">
-                            <img src="/img/memo-admin/viewBlue.png" alt="view">
-                        </a>
+                    <a href="{{ route('view.memo',$memo->id_memo) }}" class="btn btn-sm1">
+                        <img src="/img/memo-admin/viewBlue.png" alt="view">
+                    </a>
 
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-        {{ $memos->links('pagination::bootstrap-5') }}
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    {{ $memos->links('pagination::bootstrap-5') }}
+</div>
 
 <!-- Overlay Add Memo Success -->
 <div class="modal fade" id="successAddMemoModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
@@ -194,6 +195,21 @@
                 <!-- Success Message -->
                 <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
                 <p class="mt-2">Berhasil Menambahkan Memo</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay Edit Memo Success -->
+<div class="modal fade" id="successEditMemoModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <!-- Success Icon -->
+                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
+                <!-- Success Message -->
+                <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
+                <p class="mt-2">Berhasil Mengubah Memo</p>
             </div>
         </div>
     </div>
@@ -237,7 +253,18 @@
             successModal.show();
             setTimeout(function () {
                 successModal.hide();
-            }, 2000);
+            }, 1500);
+        @endif
+    });
+
+    // Event listener untuk modal sukses edit memo
+    document.addEventListener("DOMContentLoaded", function () {
+        @if(session('success') === 'User updated successfully') // merujuk ke parameter controller memo update
+            var successModal = new bootstrap.Modal(document.getElementById("successEditMemoModal"));
+            successModal.show();
+            setTimeout(function () {
+                successModal.hide();
+            }, 1500);
         @endif
     });
 

@@ -146,45 +146,45 @@
                         @endif               
                     @endif
 
-                    @if (Auth::user()->divisi->id_divisi == $undangan->divisi->id_divisi)
-                        @if ($undangan->status == 'approve' || $undangan->status == 'reject')
-                            <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('POST') 
-                                <button type="submit" class="btn btn-sm3 submitArsipUndangan">
-                                    <img src="/img/undangan/arsip.png" alt="arsip">
-                                </button>
-                            </form>
-                        @else
-                            <a href="{{ route('undangan.edit', $undangan->id_undangan) }}" class="btn btn-sm3">
-                                <img src="/img/undangan/edit.png" alt="edit">
-                            </a>
+                        @if (Auth::user()->divisi->id_divisi == $undangan->divisi->id_divisi)
+                            @if ($undangan->status == 'approve' || $undangan->status == 'reject')
+                                <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'undangan']) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
+                                    <button type="submit" class="btn btn-sm3 submitArsipUndangan">
+                                        <img src="/img/undangan/arsip.png" alt="arsip">
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('undangan.edit', $undangan->id_undangan) }}" class="btn btn-sm3">
+                                    <img src="/img/undangan/edit.png" alt="edit">
+                                </a>
+                            @endif
+                        @elseif (Auth::user()->divisi->id_divisi != $undangan->divisi->id_divisi)
+                            @if ($status == 'approve')
+                                <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'undangan']) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
+                                    <button type="submit" class="btn btn-sm3">
+                                        <img src="/img/undangan/arsip.png" alt="arsip">
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('undangan.edit', $undangan->id_undangan) }}" class="btn btn-sm3">
+                                    <img src="/img/undangan/edit.png" alt="edit">
+                                </a>
+                            @endif
                         @endif
-                    @elseif (Auth::user()->divisi->id_divisi != $undangan->divisi->id_divisi)
-                        @if ($status == 'approve')
-                            <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('POST') 
-                                <button type="submit" class="btn btn-sm3 submitArsipUndangan">
-                                    <img src="/img/undangan/arsip.png" alt="arsip">
-                                </button>
-                            </form>
-                        @else
-                            <a href="{{ route('undangan.edit', $undangan->id_undangan) }}" class="btn btn-sm3">
-                                <img src="/img/undangan/edit.png" alt="edit">
-                            </a>
-                        @endif
-                    @endif
-                    <a href="{{ route('view.undangan',$undangan->id_undangan) }}" class="btn btn-sm1">
-                        <img src="/img/memo-admin/viewBlue.png" alt="view">
-                    </a>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-    {{ $undangans->links('pagination::bootstrap-5') }}
-</div>
+                        <a href="{{ route('view.undangan',$undangan->id_undangan) }}" class="btn btn-sm1">
+                            <img src="/img/memo-admin/viewBlue.png" alt="view">
+                        </a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        {{ $undangans->links('pagination::bootstrap-5') }}
+    </div>
 
 <!-- Overlay Add Undangan Success -->
 <div class="modal fade" id="successAddUndanganModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">

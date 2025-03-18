@@ -218,7 +218,7 @@
 </div>
 
 <!-- Overlay Add User Success -->
-<div class="modal fade" id="successAddModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+<div class="modal fade" id="successAddUserModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center p-4">
             <div class="modal-body">
@@ -226,7 +226,22 @@
                 <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
                 <!-- Success Message -->
                 <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
-                <p class="mt-2">Berhasil Menambahkan User</p>
+                <p class="mt-2">Berhasil Menambahkan Pengguna</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay Add User Success -->
+<div class="modal fade" id="successEditUserModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <!-- Success Icon -->
+                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
+                <!-- Success Message -->
+                <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
+                <p class="mt-2">Berhasil Mengubah Pengguna</p>
             </div>
         </div>
     </div>
@@ -330,11 +345,22 @@
     // Event listener untuk modal sukses tambah user
     document.addEventListener("DOMContentLoaded", function () {
         @if(session('success'))
-            let successAddModal = new bootstrap.Modal(document.getElementById("successAddModal"));
-            successAddModal.show();
+            let successAddUserModal = new bootstrap.Modal(document.getElementById("successAddUserModal"));
+            successAddUserModal.show();
             setTimeout(() => {
-                successAddModal.hide();
-            }, 2000);
+                successAddUserModal.hide();
+            }, 1500);
+        @endif
+    });
+
+    // Event listener untuk modal sukses tambah user
+    document.addEventListener("DOMContentLoaded", function () {
+        @if(session('success'))
+            let successEditUserModal = new bootstrap.Modal(document.getElementById("successEditUserModal"));
+            successEditUserModal.show();
+            setTimeout(() => {
+                successEditUserModal.hide();
+            }, 1500);
         @endif
     });
 </script>

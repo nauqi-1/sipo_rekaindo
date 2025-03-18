@@ -19,94 +19,89 @@
         </div>
     </div>
 
-        <!-- Filter & Search Bar -->
-        <div class="arsip">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="title"><b>Arsip Memo</b></h4>
+    <!-- Filter & Search Bar -->
+    <div class="arsip">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="title"><b>Arsip Memo</b></h4>
+            <div class="d-flex gap-2">
+                <div class="search">
+                <form method="GET" action="{{ route('arsip.memo') }}" class="search-filter d-flex gap-2">
                 <div class="d-flex gap-2">
-                    <div class="search">
-                    <form method="GET" action="{{ route('arsip.memo') }}" class="search-filter d-flex gap-2">
-                    <div class="d-flex gap-2">
-                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                            <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
-                            <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
-                        </div>
+                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                        <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
+                        <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                     </div>
-                    </form>
-                    </div>
+                </div>
+                </form>
                 </div>
             </div>
         </div>
-
-        <!-- Table -->
-        <table class="table-light">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Dokumen</th>
-                    <th>Tanggal Masuk
-                    <button class="data-md">
-                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_dibuat', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}" 
-                        style="color:rgb(135, 135, 148); text-decoration: none;">
-                            <span class="bi-arrow-down-up"></span>
-                        </a>
-                    </button>
-                    </th>
-                    <th>Seri</th>
-                    <th>Dokumen</th>
-                    <th>Tanggal Disahkan
-                    <button class="data-md">
-                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}" 
-                        style="color: rgb(135, 135, 148); text-decoration: none;">
-                            <span class="bi-arrow-down-up"></span>
-                        </a>
-                    </button>
-                    </th>
-                    <th>Divisi</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($arsipMemo as  $arsip)
-                <tr>
-                    <td class="nomor">{{ $loop->iteration }}</td>
-                    <td class="nama-dokumen text-success">
-                            {{ $arsip->document ? $arsip->document->judul : 'Memo Tidak Ditemukan' }}
-                        </td>
-                        <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
-                        <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
-                        <td>{{ $arsip->document ? $arsip->document->nomor_memo : '-' }}</td>
-                        <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-                        <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
-                        <td>
-                        <span class="badge bg-success">Diterima</span>
-                    </td>
-                    <td>
-                        <!-- Button Unduh -->
-                        <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakmemo',['id' => $arsip->document->id_memo]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
-
-                        <!-- Button Arsip -->
-                        @if ($arsip->document)
-                        <form action="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteArsipMemoModal">
-                                <img src="/img/arsip/delete.png" alt="delete">
-                            </button>
-                        </form>
-
-                        <!-- Button View -->
-                        <button class="btn btn-sm3" onclick="window.location.href='{{route('view.memo-arsip',$arsip->document->id_memo)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
-                        @endif
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
     </div>
 
-    
+    <!-- Table -->
+    <table class="table-light">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Dokumen</th>
+                <th>Tanggal Masuk
+                <button class="data-md">
+                    <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_dibuat', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}" 
+                    style="color:rgb(135, 135, 148); text-decoration: none;">
+                        <span class="bi-arrow-down-up"></span>
+                    </a>
+                </button>
+                </th>
+                <th>Seri</th>
+                <th>Dokumen</th>
+                <th>Tanggal Disahkan
+                <button class="data-md">
+                    <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}" 
+                    style="color: rgb(135, 135, 148); text-decoration: none;">
+                        <span class="bi-arrow-down-up"></span>
+                    </a>
+                </button>
+                </th>
+                <th>Divisi</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($arsipMemo as  $arsip)
+            <tr>
+                <td class="nomor">{{ $loop->iteration }}</td>
+                <td class="nama-dokumen text-success">
+                        {{ $arsip->document ? $arsip->document->judul : 'Memo Tidak Ditemukan' }}
+                    </td>
+                    <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
+                    <td>{{ $arsip->document ? $arsip->document->nomor_memo : '-' }}</td>
+                    <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
+                    <td>
+                    <span class="badge bg-success">Diterima</span>
+                </td>
+                <td>
+                    <!-- Button Unduh -->
+                    <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakmemo',['id' => $arsip->document->id_memo]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
+
+                    <!-- Button Arsip -->
+                    @if ($arsip->document)
+                    <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipMemoModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}">
+                        <img src="/img/arsip/delete.png" alt="delete">
+                    </button>
+
+                    <!-- Button View -->
+                    <button class="btn btn-sm3" onclick="window.location.href='{{route('view.memo-arsip',$arsip->document->id_memo)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
+                    @endif
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    {{ $memos->links('pagination::bootstrap-5') }}
+</div>
 
 <!-- Modal Hapus -->
 <div class="modal fade" id="deleteArsipMemoModal" tabindex="-1" aria-labelledby="deleteArsipMemoModalLabel" aria-hidden="true">

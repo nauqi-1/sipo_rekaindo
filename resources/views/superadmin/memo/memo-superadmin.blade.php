@@ -101,7 +101,7 @@
                         @endif
                     </td>
                     <td>
-                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteMemoModal"
                         data-memo-id="{{ $memo->id_memo }}"  data-route="{{ route('memo.destroy', $memo->id_memo) }}">
                             <img src="/img/memo-superadmin/Delete.png" alt="delete">
                         </button>
@@ -110,7 +110,7 @@
                         <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('POST')
-                            <button type="submit" class="btn btn-sm3">
+                            <button type="submit" class="btn btn-sm3 submitArsip">
                                 <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                             </button>
                         </form>
@@ -190,7 +190,7 @@
             <!-- Tombol -->
             <div class="d-flex justify-content-center mt-3">
                 <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary" id="confirmArsip">OK</button>
+                <button type="button" class="btn btn-primary" id="confirmArsip">Oke</button>
             </div>
         </div>
     </div>
