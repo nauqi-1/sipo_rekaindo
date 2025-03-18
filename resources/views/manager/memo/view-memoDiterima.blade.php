@@ -124,10 +124,17 @@
                             <label class="form-check-label" for="reject">Ditolak</label>
                             <input type="radio" class="form-check-input approval-checkbox" id="reject" name="status" value="reject">
                         </div>
+                        @if (Auth::user()->divisi->id_divisi == $memo->memo->divisi_id_divisi)
                         <div class="form-check3">
                             <label class="form-check-label" for="correction">Dikoreksi</label>
                             <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="pending">
                         </div>
+                        @else
+                        <div class="form-check3">
+                            <label class="form-check-label" for="correction">Tidak Ditindak Lanjuti</label>
+                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="reject">
+                        </div>
+                        @endif
                     </div>
 
                     <div class="card-blue1">Tindakan Selanjutnya</div>

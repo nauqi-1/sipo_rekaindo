@@ -21,7 +21,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'approve', 'reject'])->default('pending');
             $table->string('nomor_memo');
             $table->string('nama_bertandatangan');
-            $table->binary('tanda_identitas')->nullable();
+            $table->binary('lampiran')->nullable();
             $table->timestamps();
             $table->integer('divisi_id_divisi')->index('fk_memo_divisi1_idx');
             $table->integer('seri_surat');

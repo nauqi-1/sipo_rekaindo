@@ -24,7 +24,7 @@
                     <hr>
                     <p>
                         <button><img src="/img/dashboard/memo.png" alt="memo"></button>
-                        <span class="jumlah">{{ $jumlahMemo }}</span>
+                        <span class="jumlah">{{ $Memo }}</span>
                         <span class="text">Memo</span>
                     </p>
                 </div>
@@ -34,7 +34,7 @@
                     <hr>
                     <p>
                         <button><img src="/img/dashboard/risalah.png" alt="memo"></button>
-                        <span class="jumlah">{{ $jumlahRisalah }}</span>
+                        <span class="jumlah">{{ $Risalah }}</span>
                         <span class="text">Risalah Rapat</span>
                     </p>
                 </div>
@@ -44,7 +44,7 @@
                     <hr>
                     <p>
                         <button><img src="/img/dashboard/undangan.png" alt="memo"></button>
-                        <span class="jumlah">{{ $jumlahUndangan }}</span>
+                        <span class="jumlah">{{ $Undangan }}</span>
                         <span class="text">Undangan Rapat</span>
                     </p>
                 </div>

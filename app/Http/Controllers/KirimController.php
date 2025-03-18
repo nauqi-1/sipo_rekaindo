@@ -80,10 +80,23 @@ class KirimController extends Controller
         }
 
         $filePath = null;
-        if ($request->hasFile('tanda_identitas')) {
-            $file = $request->file('tanda_identitas');
+        if ($request->hasFile('lampiran')) {
+            $file = $request->file('lampiran');
             $fileData = base64_encode(file_get_contents($file->getRealPath()));
-            $filePath = $fileData;
+            // Simpan file base64 ke tabel sesuai jenis dokumen
+            if ($request->jenis_document == 'memo') {
+                $memo = Memo::findOrFail($documentid);
+                $memo->lampiran = $fileData;
+                $memo->save();
+            } elseif ($request->jenis_document == 'undangan') {
+                $undangan = Undangan::findOrFail($documentid);
+                $undangan->lampiran = $fileData;
+                $undangan->save();
+            } elseif ($request->jenis_document == 'risalah') {
+                $risalah = Risalah::findOrFail($documentid);
+                $risalah->lampiran = $fileData;
+                $risalah->save();
+            }
         }
 
       
@@ -126,25 +139,23 @@ class KirimController extends Controller
     }
     public function memoDiterima()
     {
-
         $userId = auth()->id(); // Ambil ID user yang sedang login (Manager divisi)
-
-        
 
         $memoDiterima = Kirim_Document::where('jenis_document', 'memo')
             ->where('id_penerima', $userId)
             ->where(function ($query) {
-            // Hanya ambil memo dengan status 'pending' baik di tabel memo maupun kirim_document
-            $query->whereHas('memo', function ($subQuery) {
-                $subQuery->where('status', 'pending'); // Status di tabel memo
+                // Hanya ambil memo dengan status 'pending' baik di tabel memo maupun kirim_document
+                $query->whereHas('memo', function ($subQuery) {
+                    $subQuery->where('status', 'pending'); // Status di tabel memo
+                })
+                ->orWhere('status', 'pending'); // Status di tabel kirim_document
             })
-            ->orWhere('status', '==','pending'); // Status di tabel kirim_document
-        })
-        ->with('memo') // Pastikan ada relasi 'memo' di model Kirim_Document
-        ->get();
+            ->with('memo') // Pastikan ada relasi 'memo' di model Kirim_Document
+            ->get();
 
         return view('manager.memo.memo-diterima', compact('memoDiterima'));
     }
+
 
 
     public function undangan()

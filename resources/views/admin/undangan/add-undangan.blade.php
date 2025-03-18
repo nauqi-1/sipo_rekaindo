@@ -82,13 +82,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <!-- <div class="col-md-6 lampiran">
-                        <label for="tanda_identitas" class="form-label">Lampiran</label>
-                        <div class="upload-wrapper">
-                            <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
-                            <input type="file" id="tanda_identitas" name="tanda_identitas" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                        </div>
-                    </div> -->
+                    
                 </div>
                 
 

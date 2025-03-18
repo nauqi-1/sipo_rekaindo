@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/memo-superadmin',[MemoController::class, 'index'])
+Route::get('/memo-superadmin',[MemoController::class, 'superadmin'])
 ->name('memo.superadmin');
 Route::get('/memo-admin',[MemoController::class, 'index'])
 ->name('memo.admin');
@@ -234,8 +234,8 @@ Route::delete('/arsip/restore/{document_id}/{jenis_document}', [ArsipController:
 // View Arsip Admin
    
 
-Route::get('/superadmin/memo', [MemoController::class, 'index'])->name('memo.superadmin');
-Route::get('/superadmin/undangan', [UndanganController::class, 'index'])->name('undangan.superadmin');
+Route::get('/superadmin/memo', [MemoController::class, 'superadmin'])->name('memo.superadmin');
+Route::get('/superadmin/undangan', [UndanganController::class, 'superadmin'])->name('undangan.superadmin');
 Route::get('/admin/undangan', [UndanganController::class, 'index'])->name('undangan.admin');
 Route::get('/manager/undangan', [KirimController::class, 'undangan'])->name('undangan.manager');
 
