@@ -27,9 +27,7 @@
                 <form method="GET" action="{{ route('cetak-laporan-memo.superadmin') }}">
                     <div for="divisi_id_divisi" class="dropdown">
                         <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" required autofocus autocomplete="divisi_id_divisi" onchange="this.form.submit()">
-                        @foreach($divisi as $d)
-                            <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}</option>
-                        @endforeach
+                            <option>YAAAA</option>
                         </select>
                     </div>
                 </form>

@@ -194,3 +194,62 @@ h1 {
     border-color: #92C5FF99; 
     box-shadow: 4px 4px 4px rgba(146, 197, 255, 0.6); 
 }
+
+/* Overlay Confirm */
+.modal.fade .btn-close {
+    color: #000000;
+}
+.modal.fade .btn-outline-secondary {
+    padding: 8px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #8A8383;
+    background-color: #ffffff;
+    color: #8A8383;
+}
+.modal.fade .btn-outline-secondary:hover{
+    border-color: #8A8383;
+    background-color: #8A8383;
+    color: #ffffff;
+}
+.modal.fade .btn-primary {
+    padding: 8px 30px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #2592F7;
+}
+.modal.fade .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}
+.modal.fade img {
+    display: block;
+    margin: 0 auto 20px;
+}
+.modal.fade h5 {
+    font-size: 18px;
+    font-weight: bold;
+}
+.modal.fade .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.modal.fade .modal-body img {
+    display: block;
+    margin: 0 auto 20px;
+}
+.modal.fade .modal-body h5 {
+    font-size: 18px;
+    color: #333;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.modal.fade .btn-primary {
+    background-color: #2592F7;
+    color: white;
+    border-radius: 5px;
+}
+.modal.fade .btn-primary:hover {
+    background-color: #004085;
+    color: #ffffff;
+}

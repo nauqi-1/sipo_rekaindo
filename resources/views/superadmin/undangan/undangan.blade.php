@@ -109,7 +109,7 @@
                     <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
                     @csrf
                     @method('POST')
-                        <button class="btn btn-sm3" data-bs-toggle="modal" data-bs-target="#arsipModal">
+                        <button class="btn btn-sm3 submitArsip">
                             <img src="/img/undangan/arsip.png" alt="arsip">
                         </button>
                     </form>
@@ -256,7 +256,7 @@
         const arsipButtons = document.querySelectorAll(".submitArsip");
         const confirmArsipButton = document.getElementById("confirmArsip");
         const cancelArsipButton = document.querySelector("#arsipUndanganModal .btn-outline-secondary");
-        const arsipUndanganModal = new bootstrap.Modal(document.getElementById("arsipUndanganoModal"));
+        const arsipUndanganModal = new bootstrap.Modal(document.getElementById("arsipUndanganModal"));
         const successArsipUndanganModal = new bootstrap.Modal(document.getElementById("successArsipUndanganModal"));
 
         let currentForm = null;
@@ -286,7 +286,7 @@
                 setTimeout(() => {
                     successArsipUndanganModal.hide();
                     currentForm.submit(); // Submit form setelah modal sukses ditutup
-                }, 3000);
+                }, 1500);
             }
         });
     });
@@ -298,7 +298,7 @@
         successModal.show();
         setTimeout(function () {
             successModal.hide();
-        }, 2000);
+        }, 1500);
     @endif
     });
 </script>
