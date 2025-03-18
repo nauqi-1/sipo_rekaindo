@@ -150,7 +150,7 @@
                             @if ($undangan->status == 'approve' || $undangan->status == 'reject')
                                 <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'undangan']) }}" method="POST" style="display: inline;">
                                     @csrf
-                                    @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
+                                    @method('POST')
                                     <button type="submit" class="btn btn-sm3 submitArsipUndangan">
                                         <img src="/img/undangan/arsip.png" alt="arsip">
                                     </button>

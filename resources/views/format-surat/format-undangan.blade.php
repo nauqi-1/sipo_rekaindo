@@ -188,14 +188,11 @@
 
         .view-mode .fill {
             position: relative;
-            /* margin-top: 5.2cm;  */
             width: 100%;
             margin-left: auto;
             margin-right: auto;
             text-align: justify;
             padding: 0;
-            /* overflow-y: auto;  */
-            /* max-height: calc(100vh - 250px);  */
         }
 
         .view-mode .collab {
@@ -257,12 +254,12 @@
         }
 
         .header1 tr td {
-            line-height: 1.2; /* Sesuaikan sesuai kebutuhan */
+            line-height: 1.2; 
         }
         .header2 h4, 
         .header2 p, 
         .header2 table td {
-            line-height: 1.5; /* Bisa diubah sesuai kebutuhan */
+            line-height: 1.5; 
         }
 
     </style>

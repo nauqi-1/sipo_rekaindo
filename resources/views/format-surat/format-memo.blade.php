@@ -186,7 +186,6 @@
 
         .view-mode .fill {
             position: relative;
-            /* margin-top: 5.2cm;  */
             width: 95%;
             margin-left: auto;
             margin-right: auto;
