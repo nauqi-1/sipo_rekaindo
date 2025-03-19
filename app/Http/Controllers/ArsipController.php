@@ -93,8 +93,8 @@ class ArsipController extends Controller
     $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
     $query->orderBy('tgl_dibuat', $sortDirection);
 
-    // Ambil memo yang sudah difilter
-    $memos = $query->get();
+    // Pagination
+    $memos = $query->paginate(6);
 
     $arsipMemo = $arsipMemo->filter(function ($arsip) use ($memos) {
         return $memos->contains('id_memo', $arsip->document_id);
@@ -106,7 +106,7 @@ class ArsipController extends Controller
         $arsip->document = $memos->where('id_memo', $arsip->document_id)->first();
     }
 
-    return view('arsip.arsip-memo', compact('arsipMemo'));
+    return view('arsip.arsip-memo', compact('arsipMemo','memos','sortDirection'));
 }
 
         
@@ -134,7 +134,7 @@ class ArsipController extends Controller
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
         $query->orderBy('tgl_dibuat', $sortDirection);
 
-        $undangans = $query->get();
+        $undangans = $query->paginate(6);
         $arsipUndangan = $arsipUndangan->filter(function ($arsip) use ($undangans) {
             return $undangans->contains('id_undangan', $arsip->document_id);
         });

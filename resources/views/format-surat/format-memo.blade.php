@@ -186,13 +186,24 @@
 
         .view-mode .fill {
             position: relative;
+            width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: justify;
+            /* overflow-y: auto;  */
+            /* max-height: calc(100vh - 250px);  */
+        }
+
+        .view-mode .collab {
+            position: relative;
             margin-top: 5.2cm; 
             width: 95%;
             margin-left: auto;
             margin-right: auto;
             text-align: justify;
             overflow-y: auto; 
-            max-height: calc(100vh - 250px); 
+            max-height: calc(100vh - 13cm); 
+
         }
 
         .pdf-mode header img,
@@ -220,13 +231,11 @@
             <h3 class="memo-title">Memo</h3>
             <div class="letter">
                 <table class="header1">
-                    <!-- <h3>Memo</h3> -->
                     @if ($memo->tgl_disahkan!= null)
                     <tr>
                         <td>Tanggal</td>
                         <td>:</td>
                         <td>{{ $memo->tgl_disahkan->translatedFormat('d F Y') }}</td>
-                        <!-- <td>{{ $memo->tgl_disahkan? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d F Y') : '-' }}</td> -->
                     </tr>
                     @endif
                     <tr>
@@ -248,6 +257,7 @@
                         </tr>
                     </table>                 
                 </div>
+            <div class="collab">
                 <div class="fill">
                     <p>{!! $memo->isi_memo !!}</p>
                     @if($memo->kategoriBarang != null) 
@@ -260,26 +270,33 @@
                         </tr>
                         @foreach ($memo->kategoriBarang as $index => $barang)
                             <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $barang->barang }}</td>
-                                <td>{{ $barang->qty }}</td>
-                                <td>{{ $barang->satuan }}</td>
+                                <th>No</th>
+                                <th>Barang</th>
+                                <th>Qty</th>
+                                <th>Satuan</th>
                             </tr>
-                        @endforeach
+                            @foreach ($memo->kategoriBarang as $index => $barang)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $barang->barang }}</td>
+                                    <td>{{ $barang->qty }}</td>
+                                    <td>{{ $barang->satuan }}</td>
+                                </tr>
+                            @endforeach
+                        </table>
+                        @endif
+                        <p style="text-align: justify;">Demikian kami sampaikan. Atas segala perhatian dan kerjasamanya, kami ucapkan terima kasih.</p>
+                    </div>
+                    <table class="signature">
+                        <tr>
+                            <td>
+                                <p><b>Hormat kami,</b></p>
+                                <b>Manajer {{ $memo->divisi->nm_divisi }}</b> <br><br><br>
+                                <p><b><u>{{ $memo->nama_bertandatangan }}</u></b></p>
+                            </td>
+                        </tr>
                     </table>
-                    @endif
-                    <p style="text-align: justify;">Demikian kami sampaikan. Atas segala perhatian dan kerjasamanya, kami ucapkan terima kasih.</p>
                 </div>
-                <table class="signature">
-                    <tr>
-                        <td>
-                            <!-- Hormat Kami,<br>  -->
-                            <p><b>Hormat kami,</b></p>
-                            <b>Manajer {{ $memo->divisi->nm_divisi }}</b> <br><br><br>
-                            <p><b><u>{{ $memo->nama_bertandatangan }}</u></b></p>
-                        </td>
-                    </tr>
-                </table>
             </div>
         </div>
     </main>

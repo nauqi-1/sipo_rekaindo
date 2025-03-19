@@ -38,63 +38,64 @@
         </div>
     </div>
 
-        <!-- Table -->
-        <table class="table-light">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Dokumen</th>
-                    <th>Tanggal Undangan
-                        <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
-                            style="color:rgb(135, 135, 148); text-decoration: none;">
-                            <span class="bi-arrow-down-up"></span>
-                        </a>
-                    </th>
-                    <th>Seri</th>
-                    <th>Dokumen</th>
-                    <th>Tanggal Disahkan
-                        <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
-                            style="color:rgb(135, 135, 148); text-decoration: none;">
-                            <span class="bi-arrow-down-up"></span>
-                        </a>
-                    </th>
-                    <th>Divisi</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach($arsipUndangan as  $arsip)
-                <tr>
-                    <td class="nomor">{{ $loop->iteration }}</td>
-                    <td class="nama-dokumen text-success">
-                            {{ $arsip->document ? $arsip->document->judul : 'Memo Tidak Ditemukan' }}
-                        </td>
-                        <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
-                        <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
-                        <td>{{ $arsip->document ? $arsip->document->nomor_undangan : '-' }}</td>
-                        <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-                        <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
-                        <td>
-                        <span class="badge bg-success">Diterima</span>
+    <!-- Table -->
+    <table class="table-light">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Dokumen</th>
+                <th>Tanggal Undangan
+                    <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                        style="color:rgb(135, 135, 148); text-decoration: none;">
+                        <span class="bi-arrow-down-up"></span>
+                    </a>
+                </th>
+                <th>Seri</th>
+                <th>Dokumen</th>
+                <th>Tanggal Disahkan
+                    <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                        style="color:rgb(135, 135, 148); text-decoration: none;">
+                        <span class="bi-arrow-down-up"></span>
+                    </a>
+                </th>
+                <th>Divisi</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach($arsipUndangan as  $arsip)
+            <tr>
+                <td class="nomor">{{ $loop->iteration }}</td>
+                <td class="nama-dokumen text-success">
+                        {{ $arsip->document ? $arsip->document->judul : 'Memo Tidak Ditemukan' }}
                     </td>
+                    <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
+                    <td>{{ $arsip->document ? $arsip->document->nomor_undangan : '-' }}</td>
+                    <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
                     <td>
-                        
+                    <span class="badge bg-success">Diterima</span>
+                </td>
+                <td>
                     <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakmemo',['id' => $arsip->document->id_undangan]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
-                   
-                        <form action="{{ route('arsip.restore', ['document_id' => $arsip->document->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            <img src="/img/arsip/delete.png" alt="delete">
-                        </button>
-                        </form>
-                        <button class="btn btn-sm3" onclick="window.location.href='{{route('view.undangan-arsip',$arsip->document->id_undangan)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>    </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+                
+                    <!-- Button Arsip -->
+                    @if ($arsip->document)
+                    <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipUndanganModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_undangan, 'jenis_document' => 'Undangan']) }}">
+                        <img src="/img/arsip/delete.png" alt="delete">
+                    </button>
+
+                    <button class="btn btn-sm3" onclick="window.location.href='{{route('view.undangan-arsip',$arsip->document->id_undangan)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
+                    @endif
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    {{ $undangans->links('pagination::bootstrap-5') }}
+</div>
 
 
 <!-- Modal Hapus -->
