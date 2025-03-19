@@ -9,6 +9,7 @@ use App\Models\Divisi;
 use App\Models\Arsip;
 use App\Models\Notifikasi;
 use App\Models\Undangan;
+use App\Models\Backup_Document;
 use App\Models\Kirim_document;
 
 use Illuminate\Http\Request;
@@ -94,11 +95,19 @@ class UndanganController extends Controller
         $seri = Seri::all(); 
         $userDivisiId = Auth::user()->divisi_id_divisi;
         $userId = Auth::id(); 
-        $query = Undangan::query();
+        
 
         // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
         $undanganDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+
+        // Sorting default menggunakan tgl_dibuat
+        
         // Filter berdasarkan status
+        $query = Undangan::query()
+        ->whereNotIn('id_undangan', $undanganDiarsipkan)
+        ->orderBy('created_at', $sortDirection);
+
         if ($request->has('status') && $request->status != '') {
             $query->where('status', $request->status);
         }
@@ -120,10 +129,7 @@ class UndanganController extends Controller
             });
         }
 
-        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-
-        // Sorting default menggunakan tgl_dibuat
-        $query->orderBy('created_at', $sortDirection);
+       
 
         
 
@@ -329,6 +335,28 @@ class UndanganController extends Controller
      public function destroy($id)
      {
          $undangan = Undangan::findOrFail($id);
+
+         // Pindahkan data ke tabel backup
+        Backup_Document::create([
+            'id_document' => $undangan->id_undangan,
+            'jenis_document' => 'undangan',
+            'tujuan'=> $undangan->tujuan,
+            'judul' => $undangan->judul,
+            'nomor_document' => $undangan->nomor_undangan,
+            'tgl_dibuat' => $undangan->tgl_dibuat,
+            'tgl_disahkan' => $undangan->tgl_disahkan,
+            'status' => $undangan->status,
+            'catatan' => $undangan->catatan,
+            'isi_document' => $undangan->isi_undangan,
+            'nama_bertandatangan'=> $undangan->nama_bertandatangan,
+            'lampiran' => $undangan->lampiran,
+            'seri_document' => $undangan->seri_surat,
+            'divisi_id_divisi' => $undangan->divisi_id,
+            'created_at' => $undangan->created_at,
+            'updated_at' => $undangan->updated_at,
+            // tambahkan kolom lain jika ada
+        ]);
+
          $undangan->delete();
  
          return redirect()->route('undangan.'. Auth::user()->role->nm_role)->with('success', 'Undangan deleted successfully.');

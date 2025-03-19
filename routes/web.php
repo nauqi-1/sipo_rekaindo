@@ -186,8 +186,7 @@ Route::get('/format-cetakLaporan-undangan', [LaporanController::class, 'undangan
 //     return view('manager.memo.memo-terkirim'); })->name('memo.terkirim');
 // Route::get('/memo-diterima', function() {
 //     return view('manager.memo.memo-diterima'); })->name('memo.diterima');
-Route::get('/memo-terkirim', [KirimController::class, 'memoTerkirim'])->name('memo.terkirim');
-Route::get('/memo-diterima', [KirimController::class, 'memoDiterima'])->name('memo.diterima');
+
 Route::get('/view-memoTerkirim/{id_memo}', [MemoController::class, 'showTerkirim'])->name('view.memo-terkirim');
 Route::get('/view-memoDiterima/{id_memo}', [MemoController::class, 'showDiterima'])->name('view.memo-diterima');
 

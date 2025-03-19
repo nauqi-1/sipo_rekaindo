@@ -250,7 +250,7 @@
                 </div>
                 <div class="fill">
                     <p>{!! $memo->isi_memo !!}</p>
-                    @if($memo->kategoriBarang) 
+                    @if($memo->kategoriBarang != null) 
                     <table>
                         <tr>
                             <th>No</th>

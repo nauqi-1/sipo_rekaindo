@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Clegginabox\PDFMerger\PDFMerger;
 use App\Models\Memo;
 use App\Models\Undangan;
 
@@ -11,30 +12,56 @@ use App\Models\Undangan;
 class CetakPDFController extends Controller
 {
     public function cetakmemoPDF($id)
-    {
-        // Ambil data memo berdasarkan ID
-        $memo = Memo::findOrFail($id);
-        // $path = storage_path('app/public/img/border-surat.png');
-        $headerPath = public_path('img/bheader.png');
-        $footerPath = public_path('img/bfooter.png');
-    
-        // $path = public_path('img/border-surat.png'); // Ambil path gambar langsung dari folder public
-    
-        // Konversi gambar ke base64
-        $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
-        $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
-    
-        // Load view yang akan digunakan sebagai template PDF
-        $pdf = PDF::loadView('format-surat.format-memo', [
-            'memo' => $memo,
-            'headerImage' => $headerBase64,
-            'footerImage' => $footerBase64,
-            'isPdf' => true
-        ])->setPaper('A4', 'portrait');    
+{
+    // Ambil data memo berdasarkan ID
+    $memo = Memo::findOrFail($id);
+    $headerPath = public_path('img/bheader.png');
+    $footerPath = public_path('img/bfooter.png');
 
-        // Return PDF untuk ditampilkan di browser
-        return $pdf->stream('laporan-memo.pdf');
+    // Konversi gambar ke base64
+    $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
+    $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
+
+    // Generate PDF halaman pertama (format memo)
+    $formatMemoPdf = PDF::loadView('format-surat.format-memo', [
+        'memo' => $memo,
+        'headerImage' => $headerBase64,
+        'footerImage' => $footerBase64,
+        'isPdf' => true
+    ])->setPaper('A4', 'portrait');
+
+    // Simpan PDF memo sementara
+    $formatMemoPath = storage_path('app/temp_format_memo_' . $memo->id . '.pdf');
+    $formatMemoPdf->save($formatMemoPath);
+
+    // Cek apakah lampiran tidak kosong
+    if (!empty($memo->lampiran)) {
+        // Decode base64 lampiran dan simpan sementara
+        $lampiranTempPath = storage_path('app/temp_lampiran_' . $memo->id . '.pdf');
+        file_put_contents($lampiranTempPath, base64_decode($memo->lampiran));
+
+        // Gabungkan format memo + lampiran
+        $pdfMerger = new PDFMerger;
+        $pdfMerger->addPDF($formatMemoPath, 'all');
+        $pdfMerger->addPDF($lampiranTempPath, 'all');
+
+        $outputPath = storage_path('app/cetak_memo_' . $memo->id . '.pdf');
+        $pdfMerger->merge('file', $outputPath);
+
+        // Download lalu hapus semua file sementara
+        if (file_exists($formatMemoPath)) unlink($formatMemoPath);
+        if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
+        return response()->download($outputPath)->deleteFileAfterSend(true);
+
+
+    } else {
+        // Jika tidak ada lampiran, langsung download PDF memo saja
+        return response()->streamDownload(function () use ($formatMemoPdf, $formatMemoPath) {
+            echo $formatMemoPdf->output();
+            if (file_exists($formatMemoPath)) unlink($formatMemoPath);
+        }, 'cetak_memo_' . $memo->id . '.pdf');
     }
+}
     
 
 

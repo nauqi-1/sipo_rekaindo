@@ -53,7 +53,7 @@
                     <div class="card-white">
                         <label for="tgl">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{$memo->tgl_dibuat}}" readonly>
+                        <input type="text" id="tgl" value="{{$memo->tgl_dibuat->translatedFormat('d F Y')}}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="kepada">Kepada</label>
@@ -75,7 +75,14 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        <button class="status">Diproses</button>
+                        @if ($memo->status == 'reject')
+                                <span class="badge bg-danger">Ditolak</span>
+                            @elseif ($memo->status  == 'pending')
+                                <span class="badge bg-warning">Diproses</span>
+                            @else
+                                <span class="badge bg-success">Diterima</span>
+                            @endif
+                        
                     </div>
                     
                     <div class="card-white">
