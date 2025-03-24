@@ -18,6 +18,7 @@ class LaporanController extends Controller
 
     public function filterMemosByDate(Request $request)
     {
+        $divisi = Divisi::all(); // Menambahkan variabel divisi
         $request->validate([
             'tgl_awal' => 'required|date',
             'tgl_akhir' => 'required|date|after_or_equal:tgl_awal'
@@ -40,11 +41,13 @@ class LaporanController extends Controller
 
         return view('superadmin.laporan.cetak-laporan-memo', [
             'memos' => $memos,
+            'divisi' => $divisi
         ]);
     }
 
     public function filterUndanganByDate(Request $request)
     {
+        $divisi = Divisi::all(); // Menambahkan variabel divisi
         $request->validate([
             'tgl_awal' => 'required|date',
             'tgl_akhir' => 'required|date|after_or_equal:tgl_awal'
@@ -56,179 +59,110 @@ class LaporanController extends Controller
             'tgl_akhir' => $request->tgl_akhir
         ]);
 
-        // Get filtered undangans
-        $dates = session('filter_dates');
-        $undangans = Undangan::whereDate('tgl_dibuat', '>=', $dates['tgl_awal'])
-            ->whereDate('tgl_dibuat', '<=', $dates['tgl_akhir'])
-            ->where(function($query) {
-                $query->where('status', 'diterima')
-                      ->orWhere('status', 'approve');
-            })
-            ->orderBy('tgl_dibuat', 'desc')
-            ->get();
+        // Get filtered memos
+        $undangans = Undangan::where(function($query) {
+            $query->where('status', 'diterima')
+                  ->orWhere('status', 'approve');
+        })->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
+          ->whereDate('tgl_dibuat', '<=', $request->tgl_akhir)
+          ->orderBy('tgl_dibuat', 'desc')
+          ->get();
 
-        return redirect()->route('cetak-laporan-undangan.superadmin')->with('undangans', $undangans);
+        return view('superadmin.laporan.cetak-laporan-undangan', [
+            'undangans' => $undangans,
+            'divisi' => $divisi
+        ]);
     }
 
     public function index(Request $request)
     {
         $divisi = Divisi::all();
         $seri = Seri::all();  
-        $memos = Memo::where(function($query) {
-            $query->where('status', 'diterima')
-                  ->orWhere('status', 'approve');
-        });
-        
-        $memos = $memos->orderBy('tgl_dibuat', 'desc')->get();
-        $laporans = Laporan::with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(6);
-        
-        if ($request->has('divisi_id_divisi')) {
-            $memos->where('divisi_id_divisi', $request->divisi_id_divisi);
-        } 
-
         $user = Auth::user();
         if (!$user) {
-            return redirect('/login');
+            return redirect('/');
         }
 
-        // For cetak-laporan-memo view
-        if (request()->route()->getName() === 'cetak-laporan-memo.superadmin' || request()->is('cetak-laporan-memo')) {
-            $memos = Memo::where(function($query) {
+        $memos = Memo::query()
+            ->where(function($query) {
                 $query->where('status', 'diterima')
-                      ->orWhere('status', 'approve');
-            })->orderBy('tgl_dibuat', 'desc')->get();
-            
-            // Check if filter dates exist in session
-            if (session()->has('filter_dates')) {
-                $dates = session('filter_dates');
-                $memos = Memo::whereDate('tgl_dibuat', '>=', $dates['tgl_awal'])
-                    ->whereDate('tgl_dibuat', '<=', $dates['tgl_akhir'])
-                    ->orderBy('tgl_dibuat', 'desc')
-                    ->get();
-                
-                // Clear filter dates from session
-                session()->forget('filter_dates');
-            }
-            
-            $memos = $memos ?? collect(); // Ensure $memos is always defined
+                    ->orWhere('status', 'approve');
+            });
+
+        // Filter berdasarkan tanggal dari session
+        if (session()->has('filter_dates')) {
+            $dates = session('filter_dates');
+            $memos->whereDate('tgl_dibuat', '>=', $dates['tgl_awal'])
+                ->whereDate('tgl_dibuat', '<=', $dates['tgl_akhir']);
+        }
+
+        // Filter divisi jika ada
+        if ($request->filled('divisi_id_divisi')) {
+            $memos->where('divisi_id_divisi', $request->divisi_id_divisi);
+        }
+
+        // Filter search jika ada
+        if ($request->filled('search')) {
+            $memos->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        $memos = $memos->orderBy('tgl_dibuat', 'desc')->get();
+
+        // Jika masuk route cetak, arahkan ke cetak view
+        if (request()->route()->getName() === 'cetak-laporan-memo.superadmin' || request()->is('cetak-laporan-memo')) {
             return view('superadmin.laporan.cetak-laporan-memo', [
                 'memos' => $memos,
-                'laporans' => $memos,
                 'divisi' => $divisi
             ]);
         }
 
-        // For cetak-laporan-undangan view
-        if (request()->route()->getName() === 'cetak-laporan-undangan.superadmin' || request()->is('cetak-laporan-undangan')) {
-            $undangans = Undangan::where(function($query) {
-                $query->where('status', 'diterima')
-                      ->orWhere('status', 'approve');
-            })->orderBy('tgl_dibuat', 'desc')->get();
-            
-            // Check if filter dates exist in session
-            if (session()->has('filter_dates')) {
-                $dates = session('filter_dates');
-                $undangans = Undangan::whereDate('tgl_dibuat', '>=', $dates['tgl_awal'])
-                    ->whereDate('tgl_dibuat', '<=', $dates['tgl_akhir'])
-                    ->where(function($query) {
-                        $query->where('status', 'diterima')
-                              ->orWhere('status', 'approve');
-                    })
-                    ->orderBy('tgl_dibuat', 'desc')
-                    ->get();
-                
-                // Clear filter dates from session
-                session()->forget('filter_dates');
-            }
-            
-            $undangans = $undangans ?? collect(); // Ensure $undangans is always defined
-            return view('superadmin.laporan.cetak-laporan-undangan', [
-                'undangans' => $undangans,
-                'laporans' => $undangans
-            ])
-            ->with('tgl_awal', session('filter_dates.tgl_awal'))
-            ->with('tgl_akhir', session('filter_dates.tgl_akhir'));
-        }
-
-        return view('format-surat.format-cetakLaporan-memo', compact('laporans','divisi','seri','memos'))
-            ->with('tgl_awal', session('filter_dates.tgl_awal'))
-            ->with('tgl_akhir', session('filter_dates.tgl_akhir'));
     }
-    public function undangan()
+
+
+    public function undangan(Request $request)
     {
         $divisi = Divisi::all();
         $seri = Seri::all();  
-        $undangans = Undangan::where(function($query) {
-            $query->where('status', 'diterima')
-                  ->orWhere('status', 'approve');
-        })->orderBy('tgl_dibuat', 'desc')->get();
-        $laporans = Laporan::with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(6);
-        
         $user = Auth::user();
         if (!$user) {
-            return redirect('/login');
+            return redirect('/');
         }
 
-        // For cetak-laporan-undangan view
-        if (request()->route()->getName() === 'cetak-laporan-undangan.superadmin' || request()->is('cetak-laporan-undangan')) {
-            $undangans = Undangan::where(function($query) {
+        $undangans = Undangan::query()
+            ->where(function($query) {
                 $query->where('status', 'diterima')
-                      ->orWhere('status', 'approve');
-            })->orderBy('tgl_dibuat', 'desc')->get();
-            
-            // Check if filter dates exist in session
-            if (session()->has('filter_dates')) {
-                $dates = session('filter_dates');
-                $undangans = Undangan::whereDate('tgl_dibuat', '>=', $dates['tgl_awal'])
-                    ->whereDate('tgl_dibuat', '<=', $dates['tgl_akhir'])
-                    ->orderBy('tgl_dibuat', 'desc')
-                    ->get();
-                
-                // Clear filter dates from session
-                session()->forget('filter_dates');
-            }
-            
-            $undangans = $undangans ?? collect(); // Ensure $undangans is always defined
+                    ->orWhere('status', 'approve');
+            });
+
+        // Filter tanggal dari session
+        if (session()->has('filter_dates')) {
+            $dates = session('filter_dates');
+            $undangans->whereDate('tgl_dibuat', '>=', $dates['tgl_awal'])
+                    ->whereDate('tgl_dibuat', '<=', $dates['tgl_akhir']);
+        }
+
+        // Filter divisi jika ada
+        if ($request->filled('divisi_id_divisi')) {
+            $undangans->where('divisi_id_divisi', $request->divisi_id_divisi);
+        }
+
+        // Filter search jika ada
+        if ($request->filled('search')) {
+            $undangans->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        $undangans = $undangans->orderBy('tgl_dibuat', 'desc')->get();
+
+        // Jika masuk route cetak, tampilkan cetak-laporan-undangan
+        if (request()->route()->getName() === 'cetak-laporan-undangan.superadmin' || request()->is('cetak-laporan-undangan')) {
             return view('superadmin.laporan.cetak-laporan-undangan', [
                 'undangans' => $undangans,
-                'laporans' => $undangans
+                'divisi' => $divisi
             ]);
         }
 
-        // For cetak-laporan-undangan view
-        if (request()->route()->getName() === 'cetak-laporan-undangan.superadmin' || request()->is('cetak-laporan-undangan')) {
-            $undangans = Undangan::where(function($query) {
-                $query->where('status', 'diterima')
-                      ->orWhere('status', 'approve');
-            })->orderBy('tgl_dibuat', 'desc')->get();
-            
-            // Check if filter dates exist in session
-            if (session()->has('filter_dates')) {
-                $dates = session('filter_dates');
-                $undangans = Undangan::whereDate('tgl_dibuat', '>=', $dates['tgl_awal'])
-                    ->whereDate('tgl_dibuat', '<=', $dates['tgl_akhir'])
-                    ->where(function($query) {
-                        $query->where('status', 'diterima')
-                              ->orWhere('status', 'approve');
-                    })
-                    ->orderBy('tgl_dibuat', 'desc')
-                    ->get();
-                
-                // Clear filter dates from session
-                session()->forget('filter_dates');
-            }
-            
-            $undangans = $undangans ?? collect(); // Ensure $undangans is always defined
-            return view('superadmin.laporan.cetak-laporan-undangan', [
-                'undangans' => $undangans,
-                'laporans' => $undangans
-            ])
-            ->with('tgl_awal', session('filter_dates.tgl_awal'))
-            ->with('tgl_akhir', session('filter_dates.tgl_akhir'));
-        }
-
-        return view('format-surat.format-cetakLaporan-undangan', compact('laporans','divisi','seri','undangans'))
-            ->with('tgl_awal', session('filter_dates.tgl_awal'))
-            ->with('tgl_akhir', session('filter_dates.tgl_akhir'));
+        
     }
+
+
 }

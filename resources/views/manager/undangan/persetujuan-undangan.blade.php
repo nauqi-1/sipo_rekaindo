@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Persetujuan Undangan Rapat Manager</title>
+    <title>hhh</title>
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
@@ -141,12 +141,12 @@
 
             <div class="footer">
                 <button type="button" class="btn back" id="backBtn">Kembali</button>
-                <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+                <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submitModal">Kirim</button>
             </div>
         </form>
   
         <!-- Modal kirim -->
-        <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
+        <div class="modal fade" id="submitModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <!-- Tombol Close -->
@@ -185,22 +185,22 @@
         </div>
     </div>
     <script>
-                document.addEventListener('DOMContentLoaded', function () {
-            const checkboxes = document.querySelectorAll('.approval-checkbox');
-            
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
-                    checkboxes.forEach(cb => {
-                        if (cb !== this) cb.checked = false;
-                    });
-                });
-            });
+    document.addEventListener('DOMContentLoaded', function () {
+const checkboxes = document.querySelectorAll('.approval-checkbox');
 
-            // Ketika tombol konfirmasi di modal ditekan, submit form
-            document.getElementById('confirmSubmit').addEventListener('click', function () {
-                document.getElementById('approvalForm').submit();
-            });
+checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function () {
+        checkboxes.forEach(cb => {
+            if (cb !== this) cb.checked = false;
         });
+    });
+});
+
+// Ketika tombol konfirmasi di modal ditekan, submit form
+document.getElementById('confirmSubmit').addEventListener('click', function () {
+    document.getElementById('approvalForm').submit();
+});
+});
     </script>
 </body>
 </html>

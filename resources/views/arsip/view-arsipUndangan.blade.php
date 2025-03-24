@@ -38,12 +38,12 @@
                     <div class="card-white">
                         <label for="seri">No Seri</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri" value="{{ $undangan->seri_surat }}" >
+                        <input type="text" id="seri" value="{{ $undangan->seri_surat }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
-                        <input type="text" id="diterima">
+                        <input type="text" id="diterima" value="{{ $undangan->tujuan }}" readonly>
                     </div>
                 </div>
                 <div class="col">
@@ -58,7 +58,7 @@
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tanggal" value="{{ $undangan->tgl_disahkan }}" readonly>
+                        <input type="text" id="tanggal" value="{{ $undangan->tgl_disahkan->translatedFormat('d F Y') }}" readonly>
                     </div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{ $undangan->tgl_dibuat }}" readonly>
+                        <input type="text" id="tgl" value="{{ $undangan->tgl_dibuat->translatedFormat('d F Y') }}" readonly>
                     </div>
                     <!-- <div class="card-white">
                         <label for="lampiran">Lampiran</label>

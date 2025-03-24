@@ -150,4 +150,87 @@ class CetakPDFController extends Controller
             'footerImage' => $footerBase64
         ]);
     }
+
+    public function laporanmemoPDF(Request $request)
+    {
+        $memos = Memo::query();
+
+        // Filter berdasarkan divisi jika ada
+        if ($request->filled('divisi_id_divisi')) {
+            $memos->where('divisi_id_divisi', $request->divisi_id_divisi);
+        }
+
+        // Filter berdasarkan pencarian judul jika ada
+        if ($request->filled('search')) {
+            $memos->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        $memos->where('status', 'approve');
+
+        // Ambil semua data yang sudah difilter
+        $memos = $memos->orderBy('tgl_dibuat', 'desc')->get();
+
+        // Ambil path gambar header dan footer
+        $headerPath = public_path('img/bheader.png');
+        $footerPath = public_path('img/bfooter.png');    
+
+        $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
+        $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
+        
+        // Generate PDF dari view
+        $pdf = PDF::loadView('format-surat.format-cetakLaporan-memo', [
+            'memos' => $memos,
+            'tgl_awal' => $request->tgl_awal,
+            'tgl_akhir' => $request->tgl_akhir,
+            'headerImage' => $headerBase64,
+            'footerImage' => $footerBase64,
+            'isPdf' => true
+        ])->setPaper('A4', 'portrait');
+
+        // Tampilkan PDF langsung di browser
+        return $pdf->stream('laporan-undangan.pdf');
+    }
+
+
+    public function laporanundanganPDF(Request $request)
+    {
+        // Ambil data divisi
+        $undangans = Undangan::query();
+
+        // Filter berdasarkan divisi jika ada
+        if ($request->filled('divisi_id_divisi')) {
+            $undangans->where('divisi_id_divisi', $request->divisi_id_divisi);
+        }
+
+        // Filter berdasarkan pencarian judul jika ada
+        if ($request->filled('search')) {
+            $undangans->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        $undangans->where('status', 'approve');
+
+        // Ambil semua data yang sudah difilter
+        $undangans = $undangans->orderBy('tgl_dibuat', 'desc')->get();
+
+        // Ambil path gambar header dan footer
+        $headerPath = public_path('img/bheader.png');
+        $footerPath = public_path('img/bfooter.png');    
+
+        $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
+        $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
+        
+        // Generate PDF dari view
+        $pdf = PDF::loadView('format-surat.format-cetakLaporan-undangan', [
+            'undangans' => $undangans,
+            'tgl_awal' => $request->tgl_awal,
+            'tgl_akhir' => $request->tgl_akhir,
+            'headerImage' => $headerBase64,
+            'footerImage' => $footerBase64,
+            'isPdf' => true
+        ])->setPaper('A4', 'portrait');
+
+        // Tampilkan PDF langsung di browser
+        return $pdf->stream('laporan-undangan.pdf');
+    }
+
 }

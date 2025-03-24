@@ -18,7 +18,7 @@ class UndanganController extends Controller
 {
     public function index(Request $request)
     {
-        $undangan = null;
+        
         $divisi = Divisi::all();
         $seri = Seri::all(); 
         $userDivisiId = Auth::user()->divisi_id_divisi;
@@ -67,23 +67,33 @@ class UndanganController extends Controller
             });
         }
 
+        
+    
+
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
 
         // Sorting default menggunakan tgl_dibuat
         $query->orderBy('created_at', $sortDirection);
 
         
+        
 
         $undangans = $query->paginate(6);
 
         // **Tambahkan status penerima untuk setiap undangan**
-        foreach ($undangans as $undangan) {
-            $undangan->status_penerima = Kirim_document::where('id_document', $undangan->id_undangan)
-                ->where('jenis_document', 'undangan')
-                ->where('id_penerima', $userDivisiId)
-                ->value('status') ?? $undangan->status;
+        $undangans->getCollection()->transform(function ($undangan) use ($userId) {
+            if ($undangan->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $undangan->final_status = $undangan->status; // Memo dari divisi sendiri
+            } else {
+                $statusKirim= Kirim_Document::where('id_document', $undangan->id_undangan)
+                    ->where('jenis_document', 'undangan')
+                    ->where('id_penerima', $userId)
+                    ->first();
+                $undangan->final_status = $statusKirim ? $statusKirim->status : '-';
+                // Cari status kiriman untuk user login
             }
-            $status = $undangan ? $undangan->status_penerima : 'pending';
+            return $undangan;
+        });
 
     
         return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri','sortDirection'));
@@ -120,6 +130,11 @@ class UndanganController extends Controller
         } elseif ($request->filled('tgl_dibuat_akhir')) {
             $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
         }
+
+        if ($request->filled('divisi_id_divisi') && $request->divisi_id_divisi != 'pilih' ) {
+            $query->where('divisi_id_divisi', $request->divisi_id_divisi);
+        }
+
 
         // Pencarian berdasarkan nama dokumen atau nomor undangans
         if ($request->has('search') && $request->search != '') {
@@ -188,8 +203,18 @@ class UndanganController extends Controller
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
             'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
-            
-        ]);
+            'lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // 2MB max
+            ],[
+                'lampiran.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
+                'lampiran.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
+            ]);
+        
+            $filePath = null;
+            if ($request->hasFile('lampiran')) {
+                $file = $request->file('lampiran');
+                $fileData = base64_encode(file_get_contents($file->getRealPath()));
+                $filePath = $fileData;
+            }
 
        
 
@@ -220,6 +245,7 @@ class UndanganController extends Controller
             'seri_surat' => $request->input('seri_surat'),
             'status' => 'pending',
             'nama_bertandatangan' => $request->input('nama_bertandatangan'),
+            'lampiran' => $filePath,
         ]);
     
         return redirect()->route('undangan.'. Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dibuat.');
@@ -231,16 +257,69 @@ class UndanganController extends Controller
         ];
         return $map[$number];
     }
-    public function updateDocumentStatus(Undangan $undangan) {
-        $recipients = $undangan->recipients;
-    
-        if ($recipients->every(fn($recipient) => $recipient->status === 'approve')) {
-            $undangan->update(['status' => 'approve']);
-        } elseif ($recipients->contains(fn($recipient) => $recipient->status === 'reject')) {
-            $undangan->update(['status' => 'reject']);
+    public function updateDocumentStatus(Request $request, $id) {
+        $undangan = Undangan::findOrFail($id);
+        $userDivisiId = Auth::user()->divisi_id_divisi;
+        $userId = Auth::id();
+
+        // Validasi input
+        $request->validate([
+            'status' => 'required|in:approve,reject,pending',
+            'catatan' => 'nullable|string',
+        ]);
+        
+        if ($userDivisiId == $undangan->divisi_id_divisi) {
+        // Update status
+            $undangan->status = $request->status;
+            
+            // Jika status 'approve', simpan tanggal pengesahan
+            if ($request->status == 'approve') {
+                $undangan->tgl_disahkan = now();
+            } elseif ($request->status == 'reject') {
+                $undangan->tgl_disahkan = now();
+            }else{
+                $undangan->tgl_disahkan = null;
+            }
+            
+
+            // Simpan catatan jika ada
+            $undangan->catatan = $request->catatan;
+
+            // Simpan perubahan
+            $undangan->save();
         } else {
-            $undangan->update(['status' => 'pending']);
+                // Jika user dari divisi lain, update status di tabel kirim_document
+                $currentKirim = Kirim_document::where('id_document', $id)
+                ->where('jenis_document', 'undangan')
+                ->where('id_penerima', $userId)
+                ->first();
+
+            if ($currentKirim) {
+                $currentKirim->status = $request->status;
+                $currentKirim->updated_at = now();
+                $currentKirim->save();
+
+                // Update juga status record kiriman sebelumnya (pengirim sebelumnya)
+                Kirim_document::where('id_document', $id)
+                    ->where('jenis_document', 'undangan')
+                    ->where('id_penerima', $currentKirim->id_pengirim)
+                    ->where('status', 'pending')
+                    ->update([
+                        'status' => $request->status,
+                        'updated_at' => now()
+                    ]);
+            }
         }
+
+        Notifikasi::create([
+            'judul' => "Memo {$request->status}",
+            'judul_document' => $undangan->judul,
+            'id_divisi' => $undangan->divisi_id_divisi,
+            'updated_at' => now()
+        ]);
+
+        return redirect()->back()->with('success', 'Status undangan berhasil diperbarui.');
+    
     }
     
     public function updateDocumentApprovalDate(Undangan $undangan) {
@@ -283,7 +362,7 @@ class UndanganController extends Controller
      {
         
         $undangan = Undangan::findOrFail($id);
-        // dd($request->all());    
+        //  dd($request->all());    
 
         $request->validate([
             'judul' => 'required|string|max:255',
@@ -350,8 +429,9 @@ class UndanganController extends Controller
             'isi_document' => $undangan->isi_undangan,
             'nama_bertandatangan'=> $undangan->nama_bertandatangan,
             'lampiran' => $undangan->lampiran,
+            'pembuat' => $undangan->pembuat,
             'seri_document' => $undangan->seri_surat,
-            'divisi_id_divisi' => $undangan->divisi_id,
+            'divisi_id_divisi' => $undangan->divisi_id_divisi,
             'created_at' => $undangan->created_at,
             'updated_at' => $undangan->updated_at,
             // tambahkan kolom lain jika ada

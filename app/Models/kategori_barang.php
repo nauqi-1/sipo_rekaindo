@@ -15,6 +15,6 @@ class kategori_barang extends Model
 
     public function memo()
     {
-        return $this->belongsTo(Document::class, 'memo_id_memo', 'id_memo');
+        return $this->belongsTo(Memo::class, 'memo_id_memo', 'id_memo');
     }
 }

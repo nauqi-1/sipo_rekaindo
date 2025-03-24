@@ -53,10 +53,20 @@
                     <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                 </div>
             </div>
+                <div  class="dropdown">
+                    <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" onchange="this.form.submit()">
+                    <option value="">Pilih Divisi</option>
+                        @foreach($divisi as $d)
+                            <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}>
+                                {{ $d->nm_divisi }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </form>
 
             <!-- Add User Button to Open Modal -->
-            <a href="{{route ('undangan-admin/add')}}" class="btn btn-add">+ <span>Tambah Undangan Rapat</span></a>
+    
         </div>
     </div>
     </div>
@@ -95,79 +105,34 @@
             @foreach ($undangans as $index => $undangan)
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
-                @if (Auth::user()->divisi->id_divisi == $undangan->divisi->id_divisi)
                     <td class="nama-dokumen 
                         {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $undangan->judul }}
                     </td>
-                @else
-                    <td class="nama-dokumen 
-                        {{ $status == 'reject' ? 'text-danger' : ($status == 'pending' ? 'text-warning' : 'text-success') }}">
-                        {{ $undangan->judul }}
-                    </td>
-                @endif
+               
                 <td>{{ \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') }}</td>
-                <td >{{ $undangan->seri_surat }}</td>
-                <td>{{ $undangan->nomor_undangan }}</td>
+                <td >{{ $undangan->seri_document }}</td>
+                <td>{{ $undangan->nomor_document }}</td>
                 <td>{{ $undangan->tgl_disahkan ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
                 <td>{{ $undangan->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
                 </td>
                 <td>
-                        @if ($undangan->final_status == 'reject')
+                        @if ($undangan->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($undangan->final_status == 'pending')
+                        @elseif ($undangan->status  == 'pending')
                             <span class="badge bg-warning">Diproses</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
                         @endif
+                    
                 </td>
                 <td>
-                    @if (Auth::user()->divisi->id_divisi == $undangan->divisi->id_divisi)
-                        @if($undangan->status == 'pending' || $undangan->status == 'approve' )
-                        <a href="{{ route('kirim-undanganAdmin.admin',['id' => $undangan->id_undangan]) }}" class="btn btn-sm1">
+                    
+                        <a href="{{ route('undangan.restore',['id' => $undangan->id]) }}" class="btn btn-sm1">
                             <img src="/img/undangan/share.png" alt="share">
                         </a>
-                        @endif
-                    @elseif (Auth::user()->divisi->id_divisi != $undangan->divisi->id_divisi)
-                        @if($undangan->final_status == 'pending' )
-                        <a href="{{ route('kirim-undanganAdmin.admin',['id' => $undangan->id_undangan]) }}" class="btn btn-sm1">
-                            <img src="/img/undangan/share.png" alt="share">
-                        </a>
-                        @endif               
-                    @endif
-
-                        @if (Auth::user()->divisi->id_divisi == $undangan->divisi->id_divisi)
-                            @if ($undangan->status == 'approve' || $undangan->status == 'reject')
-                                <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('POST')
-                                    <button type="submit" class="btn btn-sm3 submitArsipUndangan">
-                                        <img src="/img/undangan/arsip.png" alt="arsip">
-                                    </button>
-                                </form>
-                            @else
-                                <a href="{{ route('undangan.edit', $undangan->id_undangan) }}" class="btn btn-sm3">
-                                    <img src="/img/undangan/edit.png" alt="edit">
-                                </a>
-                            @endif
-                        @elseif (Auth::user()->divisi->id_divisi != $undangan->divisi->id_divisi)
-                            @if ($status == 'approve')
-                                <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'undangan']) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
-                                    <button type="submit" class="btn btn-sm3">
-                                        <img src="/img/undangan/arsip.png" alt="arsip">
-                                    </button>
-                                </form>
-                            @else
-                                <a href="{{ route('undangan.edit', $undangan->id_undangan) }}" class="btn btn-sm3">
-                                    <img src="/img/undangan/edit.png" alt="edit">
-                                </a>
-                            @endif
-                        @endif
-                        <a href="{{ route('view.undangan',$undangan->id_undangan) }}" class="btn btn-sm1">
-                            <img src="/img/memo-admin/viewBlue.png" alt="view">
-                        </a>
+                        
+                        
                     </td>
                 </tr>
                 @endforeach

@@ -14,8 +14,8 @@ class Undangan extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'judul', 'tujuan', 'isi_undangan', 'tgl_dibuat', 'tgl_disahkan', 'status','pembuat','catatan',
-        'nomor_undangan', 'nama_bertandatangan', 'tanda_identitas', 'divisi_id_divisi', 'seri_surat'
+        'judul', 'tujuan', 'isi_undangan', 'tgl_dibuat', 'tgl_disahkan', 'status','pembuat','catatan','lampiran',
+        'nomor_undangan', 'nama_bertandatangan', 'divisi_id_divisi', 'seri_surat'
     ];
 
     protected $casts = [

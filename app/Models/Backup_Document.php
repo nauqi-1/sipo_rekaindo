@@ -35,7 +35,8 @@ class Backup_Document extends Model
         'nama_bertandatangan',
         'nomor_document',
         'lampiran',
-        'divisi_id_divisi',          
+        'divisi_id_divisi',  
+        'pembuat',        
     ];
 
     /**
@@ -51,9 +52,9 @@ class Backup_Document extends Model
     /**
      * Get the division associated with the document.
      */
-    public function division()
+    public function divisi()
     {
-        return $this->belongsTo(Divisi::class, 'id_divisi');
+        return $this->belongsTo(Divisi::class, 'divisi_id_divisi','id_divisi');
     }
     public function kategori_barang()
     {

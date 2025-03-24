@@ -89,17 +89,13 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl" value="{{ $memo->tgl_dibuat->translatedFormat('d F Y') }}" readonly>
                     </div>
-                    <div class="card-white">
-                        <label for="lampiran">Lampiran</label>
-                        <div class="separator"></div>
-                        <input type="text" id="kepada" value="{{ $memo->tanda_identitas }}" readonly>
-                    </div>
+                    
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
                         <!-- <button class="view" onclick="window.location.href='{{ route('view-memoPDF', $memo->id_memo) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button> -->
                         @if ($memo->status=='approve')
-                        <a style="text-decoration: none;" class="view" onclick="window.location.href='{{ route('cetakmemo',['id' => $memo->id_memo]) }}'"><img src="/img/memo-admin/view.png" alt="view">Lihat</a>
+                        <a style="text-decoration: none;" class="view" onclick="window.location.href='{{ route('view-memoPDF',[$memo->id_memo]) }}'"><img src="/img/memo-admin/view.png" alt="view">Lihat</a>
                         @endif
                     </div>
                 </div>
