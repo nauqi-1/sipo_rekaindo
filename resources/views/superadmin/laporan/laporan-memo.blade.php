@@ -24,7 +24,7 @@
     <div class="laporan">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('cetak-laporan-memo.filter') }}" method="POST">
+                <form action="{{ route('cetak-laporan-memo.superadmin') }}" method="POST">
                     @csrf
                     <div class="row mb-4">
                         <div class="col-md-6">

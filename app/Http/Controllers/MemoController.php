@@ -130,6 +130,10 @@ class MemoController extends Controller
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
         $query->orderBy('created_at', $sortDirection);
 
+        if ($request->filled('divisi_id_divisi') && $request->divisi_id_divisi != 'pilih') {
+    $query->where('divisi_id_divisi', $request->divisi_id_divisi);
+}
+
         // Pencarian berdasarkan nama dokumen atau nomor memo
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -144,7 +148,23 @@ class MemoController extends Controller
 
     public function show($id)
     {
+        $userId = Auth::id();
         $memo = Memo::with('divisi')->findOrFail($id);
+
+        $memo->getCollection()->transform(function ($memo) use ($userId) {
+            if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $memo->final_status = $memo->status; // Memo dari divisi sendiri
+            } else {
+                $statusKirim= Kirim_Document::where('id_document', $memo->id_memo)
+                    ->where('jenis_document', 'memo')
+                    ->where('id_penerima', $userId)
+                    ->first();
+                $memo->final_status = $statusKirim ? $statusKirim->status : '-';
+                // Cari status kiriman untuk user login
+            }
+            return $memo;
+        });
+
         return view('admin.view-memo', compact('memo'));
     }
 
@@ -341,6 +361,13 @@ class MemoController extends Controller
                         'status' => $request->status,
                         'updated_at' => now()
                     ]);
+                
+                    if ($request->status == 'reject') {
+                        $memo->status = 'reject';
+                        $memo->tgl_disahkan = now();
+                        $memo->catatan = $request->catatan ?? $memo->catatan;
+                        $memo->save();
+                    }
             }
         }
 
@@ -358,9 +385,13 @@ class MemoController extends Controller
      {
          $memo = Memo::findOrFail($id);
          $divisi = Divisi::all();
+         $divisiId = auth()->user()->divisi_id_divisi;
          $seri = Seri::all();  
+         $managers = User::where('divisi_id_divisi', $divisiId)
+        ->where('position_id_position', '2')
+        ->get(['id', 'firstname', 'lastname']);
          
-         return view(Auth::user()->role->nm_role. '.memo.edit-memo', compact('memo', 'divisi', 'seri'));
+         return view(Auth::user()->role->nm_role. '.memo.edit-memo', compact('memo', 'divisi', 'seri', 'managers'));
      }
      public function update(Request $request, $id)
      {
@@ -418,7 +449,7 @@ class MemoController extends Controller
             foreach ($request->kategori_barang as $dataBarang) {
                 if (isset($dataBarang['id_kategori_barang']) && $dataBarang['id_kategori_barang'] != null) {
                     // Cek apakah barang sudah ada di database
-                    $barang = $memo->kategoriBarang()->find($dataBarang['id']);
+                    $barang = $memo->kategoriBarang()->find($dataBarang['id_kategori_barang']);
                     if ($barang) {
                         $barang->update([
                             'memo_id_memo' => $memo->id_memo,
@@ -455,9 +486,11 @@ class MemoController extends Controller
             'seri_document' => $memo->seri_surat,
             'nama_bertandatangan'=> $memo->nama_bertandatangan,
             'lampiran' => $memo->lampiran,
-            'divisi_id_divisi' => $memo->divisi_id,
+            'pembuat' => $memo->pembuat,
+            'divisi_id_divisi' => $memo->divisi_id_divisi,
             'created_at' => $memo->created_at,
             'updated_at' => $memo->updated_at,
+            
             // tambahkan kolom lain jika ada
         ]);
     

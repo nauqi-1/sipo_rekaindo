@@ -47,9 +47,18 @@
                         <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                     </div>
                 </div>
+                <div  class="dropdown">
+                    <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" onchange="this.form.submit()">
+                    <option value="">Pilih Divisi</option>
+                        @foreach($divisi as $d)
+                            <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}>
+                                {{ $d->nm_divisi }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
                 </form>
                 <!-- Add User Button to Open Modal -->
-                <a href="{{route ('memo-admin/add')}}" class="btn btn-add">+ <span>Tambah Memo</span></a>
             </div>
         </div>
     </div>
@@ -87,29 +96,23 @@
                 @foreach ($memos as $index => $memo)
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
-                    @if (Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)
                     <td class="nama-dokumen 
                         {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $memo->judul }}
                     </td>
-                    @elseif(Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
-                    <td class="nama-dokumen 
-                        {{ $memo->final_status == 'reject' ? 'text-danger' : ($memo->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
-                        {{ $memo->judul }}
-                    </td>
-                    @endif
+                    
                     <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
-                    <td>{{ $memo->seri_surat }}</td>
-                    <td>{{ $memo->nomor_memo }}</td>
+                    <td>{{ $memo->seri_document }}</td>
+                    <td>{{ $memo->nomor_document }}</td>
                     <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $memo->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                    <td>{{ $memo->divisi->nm_divisi  ?? 'No Divisi Assigned' }}</td>
                     </td>
                     <td>
                         
                         
-                            @if ($memo->final_status == 'reject')
+                            @if ($memo->status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($memo->final_status == 'pending')
+                            @elseif ($memo->status == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
@@ -118,57 +121,13 @@
                     </td>
 
                     <td>
-                        @if (Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)
-                            @if($memo->final_status == 'pending' || $memo->final_status == 'approve' )
-                            <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
+                       
+                            
+                            <a href="{{ route('memo.restore',['id' => $memo->id]) }}" class="btn btn-sm1">
                                 <img src="/img/memo-admin/share.png" alt="share">
                             </a>
-                            @endif
-                        @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
-                            @if($memo->final_status == 'pending' )
-                            <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
-                                <img src="/img/memo-admin/share.png" alt="share">
-                            </a>
-                            @endif               
-                        @endif
-            
-
-                        <!-- Status Approve -->
-                        @if (Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)
-                            @if ($memo->status == 'approve' || $memo->status == 'reject' )
-                                <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
-                                    <button type="submit" class="btn btn-sm3 submitArsipMemo">
-                                        <img src="/img/memo-superadmin/arsip.png" alt="arsip">
-                                    </button>
-                                </form>
-                            @else
-                                <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
-                                    <img src="/img/memo-admin/edit.png" alt="edit">
-                                </a>
-                            @endif
-                            @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
-                            @if ($memo->final_status == 'approve' || $memo->final_status == 'reject')
-                                <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
-                                    <button type="submit" class="btn btn-sm3">
-                                        <img src="/img/memo-superadmin/arsip.png" alt="arsip">
-                                    </button>
-                                </form>
-                            @else
-                                <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3 submitArsipMemo">
-                                    <img src="/img/memo-admin/edit.png" alt="edit">
-                                </a>
-                            @endif
-                        @endif
-                        
-                        
-
-                    <a href="{{ route('view.memo',$memo->id_memo) }}" class="btn btn-sm1">
-                        <img src="/img/memo-admin/viewBlue.png" alt="view">
-                    </a>
+                           
+                       
 
                 </td>
             </tr>

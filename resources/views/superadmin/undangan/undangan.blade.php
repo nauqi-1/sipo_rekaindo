@@ -47,9 +47,19 @@
                             <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                         </div>
                     </div>
+                    <div  class="dropdown">
+                        <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" onchange="this.form.submit()">
+                            <option value="pilih" disabled {{ !request()->filled('divisi_id_divisi') ? 'selected' : '' }}>Pilih Divisi</option>
+                            @foreach($divisi as $d)
+                                <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}>
+                                    {{ $d->nm_divisi }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </form>
                 <!-- Add User Button to Open Modal -->
-                <a href="{{route ('undangan-superadmin/add')}}" class="btn btn-add">+ <span>Tambah Undangan Rapat</span></a>
+                
             </div>
         </div>
     </div>
@@ -101,7 +111,7 @@
                     @endif
                 </td>
                 <td>
-                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteUndanganModal" data-memo-id="{{ $undangan->id_undangan }}"  data-route="{{ route('undangan.destroy', $undangan->id_undangan) }}">
+                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteUndanganModal" data-memo-id="{{ $undangan->id_undangan }}"  data-route="{{ route('undangan.destroy', [$undangan->id_undangan, 'jenis_document' => 'Undangan']) }}">
                         <img src="/img/undangan/Delete.png" alt="delete">
                     </button>
                     
