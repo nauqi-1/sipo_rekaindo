@@ -156,16 +156,14 @@ Route::get('/laporan-undangan', function() {
 })->name('laporan-undangan.superadmin');
 
 // cetak laporan
-Route::get('/cetak-laporan-memo', function() {
-    return view('superadmin.laporan.cetak-laporan-memo');
-})->name('laporan-memo');
+
 Route::get('/cetak-laporan-memo', [LaporanController::class, 'index'])
     ->name('cetak-laporan-memo.superadmin');
 
-Route::post('/cetak-laporan-memo', [LaporanController::class, 'filterMemosByDate'])
+    Route::post('/cetak-laporan-memo', [LaporanController::class, 'filterMemosByDate'])
     ->name('cetak-laporan-memo.filter');
 
-Route::get('/cetak-laporan-undangan', [LaporanController::class, 'index'])
+Route::get('/cetak-laporan-undangan', [LaporanController::class, 'undangan'])
 ->name('cetak-laporan-undangan.superadmin');
 
 Route::post('/cetak-laporan-undangan', [LaporanController::class, 'filterUndanganByDate'])
@@ -175,10 +173,10 @@ Route::get('/cetak-laporan-risalah', function() {
     return view('superadmin.laporan.cetak-laporan-risalah');
 })->name('laporan-risalah');
 
-Route::get('/format-cetakLaporan-memo', [LaporanController::class, 'index'])
+Route::get('/format-cetakLaporan-memo', [CetakPDFController::class, 'laporanmemoPDF'])
     ->name('format-cetakLaporan-memo');
 
-Route::get('/format-cetakLaporan-undangan', [LaporanController::class, 'undangan']
+Route::get('/format-cetakLaporan-undangan', [CetakPDFController::class, 'laporanundanganPDF']
 )->name('format-cetakLaporan-undangan');    
 
 // memo supervisor
@@ -265,7 +263,7 @@ Route::get('/edit-profileSupervisor', function() {
     return view('manager.edit-profileSupervisor'); })->name('edit-profile.manager');
 
 Route::put('/memo/{id}/update-status', [MemoController::class, 'updateStatus'])->name('memo.updateStatus');
-Route::put('/undangan/{id}/update-status', [UndanganController::class, 'updateStatus'])->name('undangan.updateStatus');
+Route::put('/undangan/{id}/update-status', [UndanganController::class, 'updateDocumentStatus'])->name('undangan.updateStatus');
 
 // Lampiran memo
 Route::get('/memo/{id}/file', [MemoController::class, 'showFile'])->name('memo.file');

@@ -43,19 +43,20 @@
                         <label for="tgl_surat" class="form-label">
                             <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                         </label>
-                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ $undangan->tgl_dibuat }}" required>
+                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ $undangan->tgl_dibuat->format('Y-m-d') }}" required>
                         <input type="hidden" name="tgl_disahkan" >
                         <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
+
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
-                        <input type="text" name="jenis_document" id="seru-surat" class="form-control" value="{{ $undangan->seri_surat }}" required readonly>
+                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $undangan->seri_surat }}" required readonly>
                     </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="nomor_document" class="form-label">Nomor Surat</label>
-                        <input type="text" name="jenis_document" id="nomor-surat" class="form-control" value="{{ $undangan->nomor_undangan }}" required>
+                        <label for="nomor_undangan" class="form-label">Nomor Surat</label>
+                        <input type="text" name="nomor_undangan" id="nomor_undangan" class="form-control" value="{{ $undangan->nomor_undangan }}" required>
                     </div>
                     <div class="col-md-6" >
                         <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
@@ -70,7 +71,17 @@
                         </label>
                         <input type="text" name="tujuan" id="tujuan" class="form-control" value="{{ $undangan->tujuan }}" required>
                     </div>
-                    <div class="col-md-6" style="border: none;"></div>
+                    <div class="col-md-6">
+                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
+                        <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
+                        @foreach($managers as $manager)
+                            <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}" 
+                                {{ $undangan->nama_bertandatangan == ($manager->firstname . ' ' . $manager->lastname) ? 'selected' : '' }}>
+                                {{ $manager->firstname . ' ' . $manager->lastname }}
+                            </option>
+                        @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
@@ -80,21 +91,8 @@
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_undangan">{{ $undangan->isi_undangan }}</textarea>
                     </div>
-                </div>
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="nama_pimpinan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                        <!-- <select name="nama_pimpinan" id="nama_pimpinan" class="form-control" required>
-                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                        </select> -->
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="dropdownMenuButton">
-                            <option disabled selected style="text-align: left;">--Pilih--</option>
-                            <option value="pimpinan1">Jokowi</option>
-                            <option value="pimpinan2">Prabowo</option>
-                        </select>
-                    </div>
-                    
-                </div>
+                </div>    
+                
             </div>
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.superadmin')}}">Batal</a></button>

@@ -43,7 +43,7 @@
                         <label for="tgl_surat" class="form-label">
                             <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                         </label>
-                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ $undangan->tgl_dibuat }}" required>
+                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ $undangan->tgl_dibuat->format('Y-m-d') }}" required>
                         <input type="hidden" name="tgl_disahkan" >
                         <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
 
@@ -74,10 +74,12 @@
                     <div class="col-md-6">
                         <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
                         <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
-                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                            @foreach($managers as $manager)
-                                <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname . ' ' . $manager->lastname }}</option>
-                            @endforeach
+                        @foreach($managers as $manager)
+                            <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}" 
+                                {{ $undangan->nama_bertandatangan == ($manager->firstname . ' ' . $manager->lastname) ? 'selected' : '' }}>
+                                {{ $manager->firstname . ' ' . $manager->lastname }}
+                            </option>
+                        @endforeach
                         </select>
                     </div>
                 </div>
@@ -94,7 +96,7 @@
             </div>
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.admin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save"><a href="{{route ('undangan.admin')}}">Simpan</a></button>
+                <button type="submit" class="btn btn-save">Simpan</button>
             </div>
         </div>
         </form>

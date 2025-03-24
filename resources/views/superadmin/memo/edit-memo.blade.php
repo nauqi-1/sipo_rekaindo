@@ -93,6 +93,7 @@
             </div>
             @foreach ($memo->kategoriBarang as $index => $barang)
             <div class="row mb-4 isi">
+                <input type="hidden" name="kategori_barang[{{ $index }}][id_kategori_barang]" value="{{ $barang->id_kategori_barang }}">
                 <div class="col-md-6">
                     <label for="kategori_barang_{{ $index }}_nomor">Nomor</label>
                     <input type="text" id="kategori_barang_{{ $index }}_nomor" name="kategori_barang[{{ $index }}][nomor]" class="form-control" value="{{ $barang->nomor }}">
@@ -113,7 +114,7 @@
             @endforeach
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('memo.superadmin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save"><a href="{{route ('memo.superadmin')}}">Simpan</a></button>
+                <button type="submit" class="btn btn-save">Simpan</button>
             </div>
         </div>
         </form>
