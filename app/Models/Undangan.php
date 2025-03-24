@@ -36,7 +36,7 @@ class Undangan extends Model
     }
     public function kirimDocument()
     {
-        return $this->hasMany(Kirim_Document::class, 'id_document');
+        return $this->hasMany(Kirim_Document::class, 'id_document','id_undangan');
 
     }
 }

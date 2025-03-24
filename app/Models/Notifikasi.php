@@ -12,7 +12,7 @@ class Notifikasi extends Model
     protected $table = 'notifikasi';
     public $timestamps = false;
 
-    protected $fillable = ['judul','judul_document', 'jenis_document', 'id_divisi', 'updated_at', 'dibaca'];
+    protected $fillable = ['judul','judul_document', 'id_divisi', 'updated_at', 'dibaca'];
     protected $attributes = [
         'dibaca' => false, // Secara default 'dibaca' akan bernilai false
     ]; 

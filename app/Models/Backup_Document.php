@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Document extends Model
+class Backup_Document extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,7 @@ class Document extends Model
      *
      * @var string
      */
-    protected $table = 'document';
+    protected $table = 'backup_document';
 
     /**
      * The attributes that are mass assignable.
@@ -22,21 +22,20 @@ class Document extends Model
      * @var array
      */
     protected $fillable = [
-        'divisi_id_divisi',          // ID divisi pengirim
+        'id_document',              // ID dokumen asli
         'jenis_document',              // Jenis dokumen (memo, undangan, risalah)
         'judul',
         'tujuan',                            // Judul dokumen
         'isi_document',             // Isi dokumen
-        'status',             // Status dokumen (pending, approve, reject)
+        'status',  
+        'catatan',
+        'seri_document',           // Status dokumen (pending, approve, reject)
         'tgl_dibuat',     // Tanggal dokumen dibuat
-        'tgl_disahkan',   // Tanggal dokumen disahkan secara global
-        'seri_bulanan', // Nomor seri bulanan
-        'seri_tahunan', // Nomor seri tahunan
-        'bulan',              // Bulan dokumen dibuat (angka)
-        'tahun',              // Tahun dokumen dibuat
-        'nama_pimpinan',
+        'tgl_disahkan',   // Tanggal dokumen disahkan secara global       // Tahun dokumen dibuat
+        'nama_bertandatangan',
         'nomor_document',
-        'tanda_identitas',
+        'lampiran',
+        'divisi_id_divisi',          
     ];
 
     /**
@@ -45,8 +44,8 @@ class Document extends Model
      * @var array
      */
     protected $casts = [
-        'tanggal_dibuat' => 'datetime',
-        'tanggal_disahkan' => 'datetime',
+        'tgl_dibuat' => 'date',
+        'tgl_disahkan' => 'date',
     ];
 
     /**

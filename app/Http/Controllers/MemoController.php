@@ -11,13 +11,14 @@ use App\Models\User;
 use App\Models\Divisi;
 use App\Models\Notifikasi;
 use App\Models\Kirim_Document;
+use App\Models\Backup_Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 class MemoController extends Controller
 {
     public function index(Request $request)
     {
-        $memo = null;
+        
         $divisi = Divisi::all();
         $seri = Seri::all();
         $userDivisiId = Auth::user()->divisi_id_divisi;
@@ -98,11 +99,14 @@ class MemoController extends Controller
         $divisi = Divisi::all();
         $seri = Seri::all();
         $userId = Auth::id();
-        $query = Memo::query(); 
+        
 
         $memoDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-        $query->orderBy('created_at', $sortDirection);
+
+        $query = Memo::query()
+        ->whereNotIn('id_memo', $memoDiarsipkan)
+        ->orderBy('created_at', $sortDirection);
 
         // Filter berdasarkan status
         if ($request->filled('status')) {
@@ -434,13 +438,36 @@ class MemoController extends Controller
      }
      public function destroy($id)
      {
-         $memo = Memo::findOrFail($id);
+        $memo = Memo::findOrFail($id);
 
+        // Pindahkan data ke tabel backup
+        Backup_Document::create([
+            'id_document' => $memo->id_memo,
+            'jenis_document' => 'memo',
+            'tujuan'=> $memo->tujuan,
+            'judul' => $memo->judul,
+            'nomor_document' => $memo->nomor_memo,
+            'tgl_dibuat' => $memo->tgl_dibuat,
+            'tgl_disahkan' => $memo->tgl_disahkan,
+            'status' => $memo->status,
+            'catatan' => $memo->catatan,
+            'isi_document' => $memo->isi_memo,
+            'seri_document' => $memo->seri_surat,
+            'nama_bertandatangan'=> $memo->nama_bertandatangan,
+            'lampiran' => $memo->lampiran,
+            'divisi_id_divisi' => $memo->divisi_id,
+            'created_at' => $memo->created_at,
+            'updated_at' => $memo->updated_at,
+            // tambahkan kolom lain jika ada
+        ]);
+    
+        // Hapus file lampiran jika ada
         if ($memo->lampiran && file_exists(public_path($memo->lampiran))) {
             unlink(public_path($memo->lampiran));
         }
-
-         $memo->delete();
+    
+        // Hapus dari tabel memo
+        $memo->delete();
  
          return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo deleted successfully.');
      }

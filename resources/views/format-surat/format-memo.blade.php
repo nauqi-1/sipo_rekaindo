@@ -257,11 +257,18 @@
                         </tr>
                     </table>                 
                 </div>
-                <div class="collab">
-                    <div class="fill">
-                        <p>{!! $memo->isi_memo !!}</p>
-                        @if($memo->kategoriBarang) 
-                        <table>
+            <div class="collab">
+                <div class="fill">
+                    <p>{!! $memo->isi_memo !!}</p>
+                    @if($memo->kategoriBarang != null) 
+                    <table>
+                        <tr>
+                            <th>No</th>
+                            <th>Barang</th>
+                            <th>Qty</th>
+                            <th>Satuan</th>
+                        </tr>
+                        @foreach ($memo->kategoriBarang as $index => $barang)
                             <tr>
                                 <th>No</th>
                                 <th>Barang</th>

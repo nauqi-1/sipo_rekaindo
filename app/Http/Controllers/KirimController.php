@@ -148,7 +148,7 @@ class KirimController extends Controller
                 $query->whereHas('memo', function ($subQuery) {
                     $subQuery->where('status', 'pending'); // Status di tabel memo
                 })
-                ->orWhere('status', 'pending'); // Status di tabel kirim_document
+                ->orWhere('status', '==','pending'); // Status di tabel kirim_document
             })
             ->with('memo') // Pastikan ada relasi 'memo' di model Kirim_Document
             ->get();

@@ -70,4 +70,7 @@ Route::middleware('auth')->group(function () {
             [KirimController::class, 'index']
         )->name('kirim-memoAdmin.admin');
 
+        Route::get('/memo-terkirim', [KirimController::class, 'memoTerkirim'])->name('memo.terkirim');
+        Route::get('/memo-diterima', [KirimController::class, 'memoDiterima'])->name('memo.diterima');
+
 });

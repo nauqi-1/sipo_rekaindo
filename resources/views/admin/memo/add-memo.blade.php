@@ -29,7 +29,7 @@
     </div>
 
     <!-- form add memo -->
-    <form method="POST" action="{{ route('memo-admin.store') }}">
+    <form method="POST" action="{{ route('memo-admin.store') }}" enctype="multipart/form-data">
     @csrf 
     <div class="card">
         <div class="card-header">
@@ -81,14 +81,23 @@
                     </select>
                 </div>
             </div>
+            <div class="row mb-4">
             <div class="col-md-6 lampiran">
-                <label for="lampiran" class="form-label">Lampiran</label>
-                <div class="upload-wrapper">
-                    <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
-                    <input type="file" id="lampiran" name="lampiran" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+            <label for="lampiran" class="form-label">Lampiran</label>
+            <div class="separator"></div>
+            <div class="upload-wrapper">
+                    <button type="button" class="btn btn-primary upload-button" id="openUploadModal" style="margin-left: 30px;">Pilih File</button>
+                    <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                    <div id="filePreview" style="display: none; text-align: center">
+                        <img id="previewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
+                        <span id="fileName"></span>
+                        <button type="button" id="removeFile" class="bi bi-x remove-btn" style="border: none; color:red; background-color: white;"></button>
+                    </div>
                 </div>
             </div>
-            
+                <div class="col-md-6 lampiran">
+                </div>   
+            </div>
             <div class="row mb-4 isi-surat-row">
                 <div class="col-md-12">
                     <img src="\img\memo-admin\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
@@ -142,36 +151,58 @@
     </form>
 </div>
 
-<!-- Modal Upload File -->
-<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="uploadModalLabel">
-                    <img src="/img/memo-admin/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
-                    Unggah file
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p class="modal-subtitle">Pilih dan unggah file pilihan Anda</p>
-                <div class="upload-container">
-                    <div class="upload-box" id="uploadBox">
-                        <img src="/img/memo-admin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
-                        <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
-                        <p class="upload-note">Ukuran file PDF tidak lebih dari 20MB</p>
-                        <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
-                        <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+
+        <!-- Modal Berhasil -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content text-center p-4">
+                    <div class="modal-body">
+                        <img src="/img/memo-admin/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
+                        <!-- Success Message -->
+                        <h5 class="modal-title"><b>Sukses</b></h5>
+                        <p class="mt-2">Berhasil Mengirimkan Memo</p>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}" style="color: white; text-decoration: none">Kembali ke Halaman Memo</a></button>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary" id="uploadBtn" >Unggah</button>
+        </div>
+
+        <!-- Modal Upload File -->
+        <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadModalLabel">
+                            <img src="/img/memo-superadmin/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
+                            Unggah file
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="modal-subtitle">Pilih dan unggah file pilihan Anda</p>
+                        <div class="upload-container">
+                            <div class="upload-box" id="uploadBox">
+                                <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
+                                <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
+                                <p class="upload-note">Ukuran file PDF tidak lebih dari 2MB</p>
+                                <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
+                                <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                                <div id="fileInfo" style="display: none; text-align: center ">
+                                    <div id="fileInfoWrapper" style="display: flex; align-items: center; justify-content: center">
+                                        <img id="modalPreviewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; margin-right: 5px; display: none;">
+                                        <span id="modalFileName"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-primary" id="uploadBtn" >Unggah</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
     <script>
         // Modal Upload File - Menampilkan Modal
         document.getElementById('openUploadModal').addEventListener('click', function () {
@@ -235,7 +266,7 @@
         document.getElementById('uploadBtn').addEventListener('click', function () {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
-            const tandaIdentitas = document.getElementById('lampiran');
+            const lampiran = document.getElementById('lampiran');
             const fileNameDisplay = document.getElementById('fileName');
             const filePreview = document.getElementById('filePreview');
             const previewIcon = document.getElementById('previewIcon');
@@ -246,7 +277,7 @@
             document.getElementById('fileInfoWrapper').style.alignItems = 'center';
             
             if (file) {
-                tandaIdentitas.files = fileInput.files;
+                lampiran.files = fileInput.files;
                 fileNameDisplay.textContent = file.name;
                 filePreview.style.display = 'block';
                 uploadButton.style.display = 'none';
