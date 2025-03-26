@@ -63,14 +63,13 @@
                 </th>
                 <th>Seri</th>
                 <th>Dokumen</th>
+                <th>Divisi</th>
                 <th>Data Disahkan
                     <button class="data-md">
                         <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
                     </button>
                 </th>
-                <!-- <th>Divisi</th> -->
                 <th>Status</th>
-                <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -85,19 +84,20 @@
                 <td>{{ $laporan->tgl_dibuat->format('d-m-Y') }}</td>
                 <td>{{ $laporan->seri_surat }}</td>
                 <td>{{ $laporan->nomor_undangan }}</td>
+                <td>{{ $laporan->divisi ? $laporan->divisi->nm_divisi : '-' }}</td>
                 <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                 <td>
                     <span class="badge bg-{{ $laporan->status == 'approve' ? 'success' : 'warning' }}">
                         {{ $laporan->status == 'approve' ? 'Diterima' : 'Pending' }}
                     </span>
                 </td>
-                <td>
+                <!-- <td>
                     <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
                     <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                         <img src="/img/arsip/delete.png" alt="delete">
                     </button>
                     <button class="btn btn-sm3"><img src="/img/arsip/preview.png" alt="preview"></button>
-                </td>
+                </td> -->
             </tr>
             @endforeach
         @else

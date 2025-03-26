@@ -102,7 +102,7 @@
         @if(Auth::user()->role->nm_role == 'superadmin')
         <li class="pc-item pc-hasmenu">
           <a href="#!" class="pc-link"
-            ><span class="pc-micon"><img src="/img/memo-superadmin/Delete.png" alt="" srcset=""></span><span class="pc-mtext">Memulihkan</span
+            ><span class="pc-micon"><img src="/img/memo-superadmin/restore.png" alt="" srcset=""></span><span class="pc-mtext">Memulihkan</span
             ><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
           </a>
           <ul class="pc-submenu">

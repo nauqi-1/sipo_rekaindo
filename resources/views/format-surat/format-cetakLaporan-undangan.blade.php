@@ -58,12 +58,12 @@
         }
 
         .letter {
-            margin-left: 2cm;
-            margin-right: 2cm;
+            margin: 0 auto;
             background-color: #ffffff;
             line-height: 0.7cm;
             position: relative;
             z-index: 1;
+            width: 90%;
         }
 
         .header1 tr td:first-child {
@@ -132,7 +132,7 @@
             text-align: left !important;
             width: fit-content;
             margin-left: auto;
-            margin-right: 3%;
+            margin-right: 10%;
         }
 
         .signature p {
@@ -236,9 +236,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="fill">
-                            <h3>Laporan Tgl. {{ \Carbon\Carbon::parse($tgl_awal)->format('d-m-Y') }} / {{ \Carbon\Carbon::parse($tgl_akhir)->format('d-m-Y') }}</h3>
-                            <table>
-                                <tr>
+                            <h3 style="text-align: left;">Laporan Tgl. {{ \Carbon\Carbon::parse($tgl_awal)->format('d-m-Y') }} / {{ \Carbon\Carbon::parse($tgl_akhir)->format('d-m-Y') }}</h3>
+                            <table class="header1">
+                                <tr style="background-color: #92C5FF99;">
                                     <th>NO</th>
                                     <th>SERI</th>
                                     <th>DATA MASUK</th>
@@ -248,26 +248,20 @@
                                     <th>STATUS</th>
                                 </tr>
                                 @foreach ($undangans as $index => $laporan)
-        <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $laporan->seri_surat }}</td>
-            <td>{{ $laporan->tgl_dibuat ? $laporan->tgl_dibuat->format('d-m-Y') : '-' }}</td>
-
-            <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-
-            <td>{{ $laporan->judul ?? '-' }}</td>
-
-            <td>{{ $laporan->nomor_undangan ?? '-' }}</td>
-
-
-            <td>
-                <span class="badge bg-{{ $laporan->status == 'approve' ? 'success' : 'warning' }}">
-                    {{ $laporan->status == 'approve' ? 'Diterima' : 'Pending' }}
-                </span>
-            </td>
-
-        </tr>
-        @endforeach
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $laporan->seri_surat }}</td>
+                                    <td>{{ $laporan->tgl_dibuat ? $laporan->tgl_dibuat->format('d-m-Y') : '-' }}</td>
+                                    <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
+                                    <td>{{ $laporan->judul ?? '-' }}</td>
+                                    <td>{{ $laporan->nomor_undangan ?? '-' }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ $laporan->status == 'approve' ? 'success' : 'warning' }}">
+                                            {{ $laporan->status == 'approve' ? 'Diterima' : 'Pending' }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                @endforeach
                             </table>
                         </div>
                     </div>
