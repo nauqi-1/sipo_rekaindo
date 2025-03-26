@@ -124,6 +124,7 @@ class KirimController extends Controller
 
         $memoTerkirim = Kirim_Document::where('jenis_document', 'memo')
             ->where('id_penerima', $userId)
+            ->where('status', '!=', 'pending')
             ->whereHas('penerima', function ($query) use ($divisiId) {
                 $query->where('divisi_id_divisi', $divisiId); // Mencari memo yang ditujukan ke divisi ini
             })
@@ -135,6 +136,7 @@ class KirimController extends Controller
             ->with('memo') // Relasi ke tabel memo
             ->get();
 
+
         return view('manager.memo.memo-terkirim', compact('memoTerkirim'));
     }
     public function memoDiterima()
@@ -143,13 +145,9 @@ class KirimController extends Controller
 
         $memoDiterima = Kirim_Document::where('jenis_document', 'memo')
             ->where('id_penerima', $userId)
-            ->where(function ($query) {
-                // Hanya ambil memo dengan status 'pending' baik di tabel memo maupun kirim_document
-                $query->whereHas('memo', function ($subQuery) {
-                    $subQuery->where('status', 'pending'); // Status di tabel memo
-                })
-                ->orWhere('status', '==','pending'); // Status di tabel kirim_document
-            })
+            
+            ->Where('status', 'pending') // Status di tabel kirim_document
+            ->whereHas('memo')
             ->with('memo') // Pastikan ada relasi 'memo' di model Kirim_Document
             ->get();
 

@@ -44,7 +44,7 @@ class ForgotPwController extends Controller
         session()->put('email', $email);
 
         // Kirim kode ke email
-        Mail::raw("Your verification code is: $verificationCode", function ($message) use ($email) {
+        Mail::raw("Kode verifikasi Anda adalah: $verificationCode", function ($message) use ($email) {
             $message->to($email)->subject('Password Reset Verification Code');
         });
        
@@ -94,6 +94,18 @@ class ForgotPwController extends Controller
         
         return redirect()->route('reset-password')->with('email', $request->email);
     }
+
+    public function resendCode()
+    {
+        $email = session('email');
+
+        if (!$email) {
+            return redirect()->route('forgot-password')->withErrors(['email' => 'Session expired. Please try again.']);
+        }
+
+        return $this->sendVerificationCode(new Request(['email' => $email]));
+    }
+
 
     public function showResetPasswordForm(Request $request)
     {

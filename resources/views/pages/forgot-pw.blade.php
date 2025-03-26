@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forgot Password</title>
+  <title>Lupa Kata Sandi</title>
   <link rel="stylesheet" href="{{ asset('css/forgot-pw.css') }}">
 </head>
 <body>
@@ -15,13 +15,13 @@
       <div class="logo">
         <img src="/img/logo-reka.png" alt="Reka Inka Group">
       </div>
-      <h1>Forgot Password</h1>
-      <p>Enter your email for the verification process, we will send 4 digits code for your email.</p>
+      <h1>Lupa Kata Sandi</h1>
+      <p>Masukkan email Anda untuk proses verifikasi, kami akan mengirimkan kode 4 digit ke email Anda.</p>
       <form action="{{ route('forgot-password.send') }}" method="POST">
       @csrf
         <label for="email">Email</label>
         <input type="email" id="email" name="email" placeholder="Enter email" required>
-        <button type="submit">CONTINUE</button>
+        <button type="submit">MELANJUTKAN</button>
       </form>
     </div>
   </div>

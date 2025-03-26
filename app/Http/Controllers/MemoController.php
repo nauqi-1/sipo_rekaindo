@@ -328,8 +328,20 @@ class MemoController extends Controller
             // Jika status 'approve', simpan tanggal pengesahan
             if ($request->status == 'approve') {
                 $memo->tgl_disahkan = now();
+                Notifikasi::create([
+                    'judul' => "Memo Disetujui",
+                    'judul_document' => $memo->judul,
+                    'id_divisi' => $memo->divisi_id_divisi,
+                    'updated_at' => now()
+                ]);
             } elseif ($request->status == 'reject') {
                 $memo->tgl_disahkan = now();
+                Notifikasi::create([
+                    'judul' => "Memo Ditolak",
+                    'judul_document' => $memo->judul,
+                    'id_divisi' => $memo->divisi_id_divisi,
+                    'updated_at' => now()
+                ]);
             }else{
                 $memo->tgl_disahkan = null;
             }
@@ -340,6 +352,7 @@ class MemoController extends Controller
 
             // Simpan perubahan
             $memo->save();
+            
         } else {
                 // Jika user dari divisi lain, update status di tabel kirim_document
                 $currentKirim = Kirim_document::where('id_document', $id)
@@ -361,22 +374,32 @@ class MemoController extends Controller
                         'status' => $request->status,
                         'updated_at' => now()
                     ]);
+                    if(($request->status == 'approve')){
+                        Notifikasi::create([
+                            'judul' => "Memo Ditindak Lanjuti",
+                            'judul_document' => $memo->judul,
+                            'id_divisi' => $memo->divisi_id_divisi,
+                            'updated_at' => now()
+                        ]);
+                    }
                 
                     if ($request->status == 'reject') {
                         $memo->status = 'reject';
                         $memo->tgl_disahkan = now();
                         $memo->catatan = $request->catatan ?? $memo->catatan;
                         $memo->save();
+                        
+                        Notifikasi::create([
+                            'judul' => "Memo Tidak Ditindak Lanjuti",
+                            'judul_document' => $memo->judul,
+                            'id_divisi' => $memo->divisi_id_divisi,
+                            'updated_at' => now()
+                        ]);
                     }
             }
         }
 
-        Notifikasi::create([
-            'judul' => "Memo {$request->status}",
-            'judul_document' => $memo->judul,
-            'id_divisi' => $memo->divisi_id_divisi,
-            'updated_at' => now()
-        ]);
+        
 
         return redirect()->back()->with('success', 'Status memo berhasil diperbarui.');
     }

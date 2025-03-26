@@ -82,6 +82,9 @@ Route::middleware('web')->group(function () {
     
     Route::get('/verify-code', [ForgotPwController::class, 'showVerifyCodeForm'])->name('verify-code');
     Route::post('/verify-code', [ForgotPwController::class, 'verifyCode'])->name('verify-code.check');
+
+    Route::get('/forgot-password/resend-code', [ForgotPwController::class, 'resendCode'])->name('resend-verification-code');
+
     
     
     Route::get('/reset-password', [ForgotPwController::class, 'showResetPasswordForm'])->name('reset-password');

@@ -15,17 +15,16 @@
       <div class="logo">
         <img src="/img/logo-reka.png" alt="Reka Inka Group">
       </div>
-      <h1>New Password</h1>
-      <p>Set the new password for your account so you can login and access 
-      all featuress.</p>
+      <h1>Kata Sandi Baru</h1>
+      <p>Tetapkan kata sandi baru untuk akun Anda sehingga Anda dapat masuk dan mengakses semua fitur.</p>
       <form action="{{ route('reset-password.update') }}" method="POST">
       @csrf
         <input type="hidden" name="email" value="{{ $email }}">
-        <label for="password">Enter New Password</label>
+        <label for="password">Masukkan Kata Sandi Baru</label>
         <input type="password" id="password" name="password" placeholder="Enter new password" required autocomplete="new-password">
-        <label for="password_confirmation">Confirm Password</label>
+        <label for="password_confirmation">Konfirmasi Kata Sandi</label>
         <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm password" required autocomplete="new-password">
-        <button type="submit">UPDATE PASSWORD</button>
+        <button type="submit">PERBARUI KATA SANDI</button>
       </form>
     </div>
   </div>

@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verification</title>
+  <title>Verifikasi</title>
   <link rel="stylesheet" href="{{ asset('css/forgot-pw.css') }}">
 </head>
 <body>
   <div class="container">
     <div class="card">
       <div class="back-button">
-        <a href="#"><img src="/img/user-manage/Vector_back.png" alt="back"></a>
+        <a href="{{ route('forgot-password') }}"><img src="/img/user-manage/Vector_back.png" alt="back"></a>
       </div>
       <div class="logo">
         <img src="/img/logo-reka.png" alt="Reka Inka Group">
       </div>
-      <h1>Verification</h1>
-      <p>Enter your 4 digits code that you received on your email</p>
+      <h1>Verifikasi</h1>
+      <p>Masukkan kode 4 digit yang Anda terima di email Anda</p>
       <form action="{{ route('verify-code.check') }}" method="POST">
         @csrf
         <div class="input-verifemail">
@@ -27,9 +27,9 @@
           <input type="text" maxlength="1" name="digit4" class="code-input" required>
         </div>
         <p id="timer" class="timer">60s</p>
-        <button type="submit">VERIFY</button>
+        <button type="submit">MEMERIKSA</button>
       </form>
-      <p class="resend">If you didn't receive a code! <a href="#" class="resend-link">Resend</a></p>
+      <p class="resend">Jika Anda tidak menerima kode!<a href="{{ route('resend-verification-code') }}" class="resend-link">Kirim ulang</a></p>
     </div>
   </div>
 
