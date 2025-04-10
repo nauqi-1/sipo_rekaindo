@@ -270,13 +270,34 @@ class UndanganController extends Controller
         
         if ($userDivisiId == $undangan->divisi_id_divisi) {
         // Update status
-            $undangan->status = $request->status;
+        $undangan->status = $request->status;
+        $currentKirim = Kirim_document::where('id_document', $id)
+        ->where('jenis_document', 'undangan')
+        ->where('id_penerima', $userId)
+        ->first();
+
+        if ($currentKirim) {
+        $currentKirim->status = $request->status;
+        $currentKirim->updated_at = now();
+        $currentKirim->save();
             
             // Jika status 'approve', simpan tanggal pengesahan
             if ($request->status == 'approve') {
                 $undangan->tgl_disahkan = now();
+                Notifikasi::create([
+                    'judul' => "Undangan Disetujui",
+                    'judul_document' => $undangan->judul,
+                    'id_divisi' => $undangan->divisi_id_divisi,
+                    'updated_at' => now()
+                ]);
             } elseif ($request->status == 'reject') {
                 $undangan->tgl_disahkan = now();
+                Notifikasi::create([
+                    'judul' => "Undangan Tidak Disetujui",
+                    'judul_document' => $undangan->judul,
+                    'id_divisi' => $undangan->divisi_id_divisi,
+                    'updated_at' => now()
+                ]);
             }else{
                 $undangan->tgl_disahkan = null;
             }
@@ -287,6 +308,10 @@ class UndanganController extends Controller
 
             // Simpan perubahan
             $undangan->save();
+        }
+
+            
+           
         } else {
                 // Jika user dari divisi lain, update status di tabel kirim_document
                 $currentKirim = Kirim_document::where('id_document', $id)
@@ -308,15 +333,25 @@ class UndanganController extends Controller
                         'status' => $request->status,
                         'updated_at' => now()
                     ]);
+                    if($request->status=='approve'){
+                        Notifikasi::create([
+                            'judul' => "Undangan Diterima",
+                            'judul_document' => $undangan->judul,
+                            'id_divisi' => $undangan->divisi_id_divisi,
+                            'updated_at' => now()
+                        ]);
+                    }else{
+                        Notifikasi::create([
+                            'judul' => "Undangan Ditolak",
+                            'judul_document' => $undangan->judul,
+                            'id_divisi' => $undangan->divisi_id_divisi,
+                            'updated_at' => now()
+                        ]);
+                    }
             }
         }
 
-        Notifikasi::create([
-            'judul' => "Memo {$request->status}",
-            'judul_document' => $undangan->judul,
-            'id_divisi' => $undangan->divisi_id_divisi,
-            'updated_at' => now()
-        ]);
+       
 
         return redirect()->back()->with('success', 'Status undangan berhasil diperbarui.');
     

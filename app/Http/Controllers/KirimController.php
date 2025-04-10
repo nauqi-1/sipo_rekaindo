@@ -16,26 +16,46 @@ class KirimController extends Controller
 {
     public function index($id)
     {
-        // Cek apakah ID ini milik Memo, Undangan, atau Risalah
         $memo = Memo::find($id);
         $undangan = Undangan::find($id);
         $risalah = Risalah::find($id);
 
-        // Pastikan minimal satu dokumen ditemukan
         if (!$memo && !$undangan && !$risalah) {
             return redirect()->back()->with('error', 'Dokumen tidak ditemukan.');
         }
 
-        // Ambil data divisi dan user
         $divisi = Divisi::all();
         $position = Position::all();
         $user = User::whereIn('role_id_role', ['2', '3'])->get();  
+        $userId = Auth::id();
 
-        if($memo)
-        return view('admin.memo.kirim-memoAdmin', compact('user', 'divisi', 'memo', 'position'));
-        elseif($undangan)
-        return view('admin.undangan.kirim-undanganAdmin', compact('user', 'divisi', 'undangan', 'position'));
+        if ($memo) {
+            if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $memo->final_status = $memo->status;
+            } else {
+                $statusKirim = Kirim_Document::where('id_document', $memo->id_memo)
+                    ->where('jenis_document', 'memo')
+                    ->where('id_penerima', $userId)
+                    ->first();
+                $memo->final_status = $statusKirim ? $statusKirim->status : '-';
+            }
+            return view('admin.memo.kirim-memoAdmin', compact('user', 'divisi', 'memo', 'position'));
+        } elseif ($undangan) {
+            if ($undangan->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $undangan->final_status = $undangan->status;
+            } else {
+                $statusKirim = Kirim_Document::where('id_document', $undangan->id_undangan)
+                    ->where('jenis_document', 'undangan')
+                    ->where('id_penerima', $userId)
+                    ->first();
+                $undangan->final_status = $statusKirim ? $statusKirim->status : '-';
+            }
+            return view('admin.undangan.kirim-undanganAdmin', compact('user', 'divisi', 'undangan', 'position'));
+        }
+
+        // Bisa tambahkan elseif risalah di sini jika ada
     }
+
     public function viewManager($id)
     {
         // Cek apakah ID ini milik Memo, Undangan, atau Risalah
@@ -163,11 +183,11 @@ class KirimController extends Controller
 
         $undangans = Kirim_Document::where('jenis_document', 'undangan')
             ->where('id_penerima', $userId)
-            ->whereHas('undangan', function ($query) {
-                $query->where('status', 'pending'); // Cek status dari tabel memo
-            })
+            ->Where('status', 'pending') // Status di tabel kirim_document
+            ->whereHas('undangan')
             ->with('undangan') // Pastikan ada relasi 'memo' di model Kirim_Document
             ->get();
+
 
         return view('manager.undangan.undangan', compact('undangans'));
     }
