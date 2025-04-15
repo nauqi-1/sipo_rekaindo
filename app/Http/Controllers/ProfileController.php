@@ -17,47 +17,53 @@ class ProfileController extends Controller {
     // Simpan atau update profil user
     public function updateProfile(Request $request) {
         /** @var User $user */
-        $user = Auth::user(); // Ambil user yang sedang login
-
-        // Validasi data
+        $user = Auth::user();
+    
+        // Validasi data input
         $request->validate([
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'phone_number' => 'nullable|string|max:15',
             'password' => 'nullable|min:6|confirmed',
-            'image' => 'nullable|image|max:2048', // Maksimal 2MB
+            'profile_image' => 'nullable|image|max:2048',
         ]);
-
-        // Cek jika ada file profile_image
-        if ($request->hasFile('image')) {
-            // Hapus foto lama jika ada
-            if ($user->image) {
-                Storage::disk('public')->delete('images/' . $user->image);
-            }
-
-            // Simpan foto baru
-            $file = $request->file('image');
-            $filePath = $file->store('images', 'public'); // Simpan di storage/profile_images/
-            $user->image = basename($filePath);
-        }
-
-        // Update data user
+    
+        // Persiapkan data yang akan diupdate
         $userData = [
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'username' => $request->username,
             'phone_number' => $request->phone_number,
         ];
-
-        // Update password jika diisi
+    
+        // Jika password diisi, update password
         if ($request->filled('password')) {
             $userData['password'] = bcrypt($request->password);
         }
-
-        // Update user data
+    
+        // Jika ada file gambar yang diunggah
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+    
+            // Encode gambar jadi base64
+            $imageData = base64_encode(file_get_contents($file->getRealPath()));
+    
+            // Simpan ke field image_blob
+            $userData['profile_image'] = $imageData;
+        }
+    
+        // Update user di database
         User::where('id', $user->id)->update($userData);
-
+    
         return redirect()->route('edit-profile.superadmin')->with('success', 'Profil berhasil diperbarui');
     }
-}
+
+    public function deletePhoto(Request $request) {
+        $user = Auth::user();
+        $user->profile_image = null;
+        $user->save();
+
+        return back()->with('success', 'Foto profil berhasil dihapus.');
+    }
+}    
