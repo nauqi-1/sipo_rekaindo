@@ -80,9 +80,9 @@
                         <label for="status">Status</label>
                         <div class="separator"></div>
                         
-                            @if ($memo->status == 'reject')
+                            @if ($memo->final_status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($memo->status  == 'pending')
+                            @elseif ($memo->final_status == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>

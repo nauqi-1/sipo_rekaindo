@@ -79,13 +79,13 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        @if ($undangan->status == 'reject')
-                                <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($undangan->status  == 'pending')
-                                <span class="badge bg-warning">Diproses</span>
-                            @else
-                                <span class="badge bg-success">Diterima</span>
-                            @endif
+                        @if ($undangan->final_status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($undangan->final_status == 'pending')
+                            <span class="badge bg-warning">Diproses</span>
+                        @else
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
                     </div>
                     <div class="card-white">
                         <label for="tgl-buat">Dibuat Tanggal</label>

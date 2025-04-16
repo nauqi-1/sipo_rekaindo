@@ -78,7 +78,7 @@
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
                     <td class="nama-dokumen 
-                        {{ $undangan->undangan->status == 'reject' ? 'text-danger' : ($undangan->undangan->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $undangan->undangan->judul }}
                     </td>
                     <td>{{ \Carbon\Carbon::parse($undangan->undangan->tgl_dibuat)->format('d-m-Y') }}</td>
@@ -88,9 +88,9 @@
                     <td>{{ $undangan->undangan->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
                     </td>
                     <td>
-                        @if ($undangan->undangan->status == 'reject')
+                        @if ($undangan->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($undangan->undangan->status == 'pending')
+                        @elseif ($undangan->status == 'pending')
 
                             <span class="badge bg-warning">Diproses</span>
                         @else

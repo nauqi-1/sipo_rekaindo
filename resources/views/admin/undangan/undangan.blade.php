@@ -102,7 +102,7 @@
                     </td>
                 @else
                     <td class="nama-dokumen 
-                        {{ $status == 'reject' ? 'text-danger' : ($status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $undangan->final_status == 'reject' ? 'text-danger' : ($undangan->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $undangan->judul }}
                     </td>
                 @endif
@@ -151,7 +151,7 @@
                                 </a>
                             @endif
                         @elseif (Auth::user()->divisi->id_divisi != $undangan->divisi->id_divisi)
-                            @if ($status == 'approve')
+                            @if ($undangan->status == 'approve')
                                 <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'undangan']) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('POST') <!-- Pastikan metode ini sesuai dengan route -->

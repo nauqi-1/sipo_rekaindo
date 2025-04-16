@@ -324,6 +324,15 @@ class MemoController extends Controller
         if ($userDivisiId == $memo->divisi_id_divisi) {
         // Update status
             $memo->status = $request->status;
+            $currentKirim = Kirim_document::where('id_document', $id)
+                ->where('jenis_document', 'memo')
+                ->where('id_penerima', $userId)
+                ->first();
+                
+            if ($currentKirim) {
+                $currentKirim->status = $request->status;
+                $currentKirim->updated_at = now();
+                $currentKirim->save();
             
             // Jika status 'approve', simpan tanggal pengesahan
             if ($request->status == 'approve') {
@@ -352,6 +361,7 @@ class MemoController extends Controller
 
             // Simpan perubahan
             $memo->save();
+        }
             
         } else {
                 // Jika user dari divisi lain, update status di tabel kirim_document

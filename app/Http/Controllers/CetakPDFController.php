@@ -74,32 +74,52 @@ class CetakPDFController extends Controller
     //     return view('format-surat.format-memo', compact('memo'));
     // }
 
-    public function viewmemoPDF($id)
-    {
-        // $memo = Memo::findOrFail($id);
-        
-        // // Ambil path gambar background dari storage atau public
-        // $path = public_path('img/border-surat.png'); 
+    public function viewmemoPDF($id_memo)
+{
+    // Ambil data memo berdasarkan ID
+    $memo = Memo::findOrFail($id_memo);
+    $headerPath = public_path('img/bheader.png');
+    $footerPath = public_path('img/bfooter.png');
 
+    // Konversi gambar ke base64
+    $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
+    $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
 
-        
-        $memo = Memo::findOrFail($id);
-    
-        // Path gambar header & footer
-        $headerPath = public_path('img/bheader.png');
-        $footerPath = public_path('img/bfooter.png');
-    
-        // Konversi gambar ke base64
-        $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
-        $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
-    
-        return view('format-surat.format-memo', [
-            'memo' => $memo,
-            'headerImage' => $headerBase64,
-            'footerImage' => $footerBase64
-        ]);
-    
+    // Generate PDF halaman pertama (format memo)
+    $formatMemoPdf = PDF::loadView('format-surat.format-memo', [
+        'memo' => $memo,
+        'headerImage' => $headerBase64,
+        'footerImage' => $footerBase64,
+        'isPdf' => true
+    ])->setPaper('A4', 'portrait');
+
+    // Simpan PDF memo sementara
+    $formatMemoPath = storage_path('app/temp_format_memo_' . $memo->id . '.pdf');
+    $formatMemoPdf->save($formatMemoPath);
+
+    // Jika ada lampiran, gabungkan PDF-nya
+    if (!empty($memo->lampiran)) {
+        $lampiranTempPath = storage_path('app/temp_lampiran_' . $memo->id . '.pdf');
+        file_put_contents($lampiranTempPath, base64_decode($memo->lampiran));
+
+        $pdfMerger = new \Clegginabox\PDFMerger\PDFMerger;
+        $pdfMerger->addPDF($formatMemoPath, 'all');
+        $pdfMerger->addPDF($lampiranTempPath, 'all');
+
+        $outputPath = storage_path('app/view_memo_' . $memo->id . '.pdf');
+        $pdfMerger->merge('file', $outputPath);
+
+        // Hapus file sementara setelah digabung
+        if (file_exists($formatMemoPath)) unlink($formatMemoPath);
+        if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
+
+        // Tampilkan file hasil merge
+        return response()->file($outputPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
+    } else {
+        // Kalau tidak ada lampiran, tampilkan risalah langsung
+        return response()->file($formatMemoPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
     }
+}
 
     public function cetakundanganPDF($id)
     {
@@ -117,7 +137,7 @@ class CetakPDFController extends Controller
 
         // Set ukuran kertas (opsional)
         // $pdf->setPaper('A4', 'portrait');
-        $pdf = PDF::loadView('format-surat.format-undangan', [
+        $formatUndanganPdf = PDF::loadView('format-surat.format-undangan', [
             'undangan' => $undangan,
             'headerImage' => $headerBase64,
             'footerImage' => $footerBase64,
@@ -125,8 +145,34 @@ class CetakPDFController extends Controller
         ])->setPaper('A4', 'portrait');
             
         // Return PDF untuk didownload
-        // return $pdf->download('laporan-undangan.pdf');
-        return $pdf->stream('laporan-undangan.pdf');
+        $formatUndanganPath = storage_path('app/temp_format_undangan_' . $undangan->id . '.pdf');
+        $formatUndanganPdf->save($formatUndanganPath);
+    
+        // Jika ada lampiran, gabungkan PDF-nya
+        if (!empty($undangan->lampiran)) {
+            $lampiranTempPath = storage_path('app/temp_lampiran_' . $undangan->id . '.pdf');
+            file_put_contents($lampiranTempPath, base64_decode($undangan->lampiran));
+    
+            $pdfMerger = new \Clegginabox\PDFMerger\PDFMerger;
+            $pdfMerger->addPDF($formatUndanganPath, 'all');
+            $pdfMerger->addPDF($lampiranTempPath, 'all');
+    
+            $outputPath = storage_path('app/view_undangan_' . $undangan->id . '.pdf');
+            $pdfMerger->merge('file', $outputPath);
+    
+            // Download lalu hapus semua file sementara
+        if (file_exists($formatUndanganPath)) unlink($formatUndanganPath);
+        if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
+        return response()->download($outputPath)->deleteFileAfterSend(true);
+
+
+    } else {
+        // Jika tidak ada lampiran, langsung download PDF memo saja
+        return response()->streamDownload(function () use ($formatUndanganPdf, $formatUndanganPath) {
+            echo $formatUndanganPdf->output();
+            if (file_exists($formatUndanganPath)) unlink($formatUndanganPath);
+        }, 'cetak_memo_' . $undangan->id . '.pdf');
+    }
 
     }
 
@@ -144,11 +190,39 @@ class CetakPDFController extends Controller
 
         // Tampilkan langsung dalam browser
         // return view('format-surat.format-undangan', compact('undangan','tujuanList'));
-        return view('format-surat.format-undangan', [
+        $formatUndanganPdf = PDF::loadView('format-surat.format-undangan', [
             'undangan' => $undangan,
             'headerImage' => $headerBase64,
-            'footerImage' => $footerBase64
-        ]);
+            'footerImage' => $footerBase64,
+            'isPdf' => true
+        ])->setPaper('A4', 'portrait');
+
+        // Simpan PDF memo sementara
+    $formatUndanganPath = storage_path('app/temp_format_undangan_' . $undangan->id . '.pdf');
+    $formatUndanganPdf->save($formatUndanganPath);
+
+    // Jika ada lampiran, gabungkan PDF-nya
+    if (!empty($undangan->lampiran)) {
+        $lampiranTempPath = storage_path('app/temp_lampiran_' . $undangan->id . '.pdf');
+        file_put_contents($lampiranTempPath, base64_decode($undangan->lampiran));
+
+        $pdfMerger = new \Clegginabox\PDFMerger\PDFMerger;
+        $pdfMerger->addPDF($formatUndanganPath, 'all');
+        $pdfMerger->addPDF($lampiranTempPath, 'all');
+
+        $outputPath = storage_path('app/view_undangan_' . $undangan->id . '.pdf');
+        $pdfMerger->merge('file', $outputPath);
+
+        // Hapus file sementara setelah digabung
+        if (file_exists($formatUndanganPath)) unlink($formatUndanganPath);
+        if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
+
+        // Tampilkan file hasil merge
+        return response()->file($outputPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
+    } else {
+        // Kalau tidak ada lampiran, tampilkan risalah langsung
+        return response()->file($formatUndanganPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
+    }
     }
 
     public function laporanmemoPDF(Request $request)

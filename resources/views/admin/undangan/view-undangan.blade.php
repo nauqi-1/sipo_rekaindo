@@ -75,9 +75,15 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        <button class="status">Diproses</button>
-                    </div>
-                    
+                        
+                            @if ($undangan->final_status == 'reject')
+                                <span class="badge bg-danger">Ditolak</span>
+                            @elseif ($undangan->final_status == 'pending')
+                                <span class="badge bg-warning">Diproses</span>
+                            @else
+                                <span class="badge bg-success">Diterima</span>
+                            @endif
+                    </div>                    
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
