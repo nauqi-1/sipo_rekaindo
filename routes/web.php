@@ -7,6 +7,7 @@ use App\Http\Controllers\ForgotPWController;
 use App\Http\Controllers\CetakPDFController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\UndanganController;
+use App\Http\Controllers\RisalahController;
 use App\Http\Controllers\KirimController;
 use App\Http\Controllers\NotifController;
 use App\Http\Controllers\ArsipController;
@@ -284,3 +285,44 @@ Route::get('/undangan/manager/{id}', [UndanganController::class, 'view'])->name(
 Route::get('/notifikasi', [NotifController::class, 'index'])->name('notifications.index');
 Route::get('/notifikasi/jumlah', [NotifController::class, 'getUnreadCount'])->name('notifications.count');
 Route::get('/notifications/tanda-dibaca', [NotifController::class, 'markAllAsRead'])->name('notifications.markAsRead');
+
+// Risalah
+Route::get('berkas/cetak/risalah/{id} ', [CetakPDFController::class, 'cetakrisalahPDF'])->name('cetakrisalah');
+Route::get('view/risalahPDF/{id_risalah}', [CetakPDFController::class, 'viewrisalahPDF'])->name('view-risalahPDF');
+// lampiran risalah
+Route::get('/risalah/{id}/file', [RisalahController::class, 'showFile'])->name('risalah.file');
+Route::get('/risalah/download/{id}', [RisalahController::class, 'downloadFile'])->name('risalah.download');
+Route::get('/risalah/{id}/preview', [RisalahController::class, 'showFile'])->name('risalah.preview');
+
+// risalah admin
+Route::get('/risalah/Admin', [RisalahController::class, 'index'])->name('risalah.admin');
+Route::get('/risalah/tambah', [RisalahController::class, 'create'])->name('add-risalah.admin');
+Route::post('/risalah/store', [RisalahController::class, 'store'])->name('risalah.store');
+Route::get('/risalah/{id}/edit', [RisalahController::class, 'edit'])->name('risalah.edit');
+Route::put('/risalah/{id}', [RisalahController::class, 'update'])->name('risalah.update');
+Route::put('/risalah/lampiran/{id}', [RisalahController::class, 'showFile'])->name('showFile');
+Route::get('/kirim-risalahAdmin/{id}', [KirimController::class, 'index'])->name('kirim-risalahAdmin.admin');   
+Route::get('/risalah/view/{id}', [RisalahController::class, 'view'])->name('view.risalahAdmin');
+
+Route::get('/persetujuan-risalah/{id}', [KirimController::class,'viewRisalah'])->name('persetujuan.risalah');
+
+Route::get('/manager/risalah', [KirimController::class, 'risalah'])->name('risalah.manager');
+Route::get('/format-risalah', function() {
+    return view('format-surat.format-risalah');
+})->name('format-risalah');
+
+// edit profile
+Route::get('/edit-profileSuperadmin', [ProfileController::class, 'editProfile'])->name('edit-profile.superadmin');
+Route::post('/superadmin/delete-photo', [ProfileController::class, 'deletePhoto'])->name('superadmin.deletePhoto');
+Route::post('/update-profileSuperadmin', [ProfileController::class, 'updateProfile'])->name('superadmin.updateProfile');
+
+Route::put('/risalah/{id}/update-status', [RisalahController::class, 'updateStatus'])->name('risalah.updateStatus');
+
+// Lampiran risalah
+Route::get('/risalah/{id}/file', [RisalahController::class, 'showFile'])->name('risalah.file');
+Route::get('/risalah/download/{id}', [RisalahController::class, 'downloadFile'])->name('risalah.download');
+Route::get('/risalah/{id}/preview', [RisalahController::class, 'showFile'])->name('risalah.preview');
+
+Route::get('/risalah/arsip/{id}', [ArsipController::class, 'viewRisalah'])->name('view.risalah-arsip');
+
+Route::get('/risalah/manager/{id}', [RisalahController::class, 'view'])->name('view.risalah');

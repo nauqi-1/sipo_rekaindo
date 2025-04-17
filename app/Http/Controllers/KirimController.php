@@ -51,6 +51,17 @@ class KirimController extends Controller
                 $undangan->final_status = $statusKirim ? $statusKirim->status : '-';
             }
             return view('admin.undangan.kirim-undanganAdmin', compact('user', 'divisi', 'undangan', 'position'));
+        } elseif ($risalah) {
+            if ($risalah->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $risalah->final_status = $risalah->status;
+            } else {
+                $statusKirim = Kirim_Document::where('id_document', $risalah->id_risalah)
+                    ->where('jenis_document', 'risalah')
+                    ->where('id_penerima', $userId)
+                    ->first();
+                $risalah->final_status = $statusKirim ? $statusKirim->status : '-';
+            }
+            return view('admin.risalah.kirim-risalahAdmin', compact('user', 'divisi', 'risalah', 'position'));
         }
 
         // Bisa tambahkan elseif risalah di sini jika ada
@@ -204,4 +215,42 @@ class KirimController extends Controller
 
     // Daftar dokumen yang diterima
 
+
+    public function viewRisalah($id)
+    {
+        // Cek apakah ID ini milik Memo, Undangan, atau Risalah
+        $risalah = Risalah::find($id);
+
+        // Pastikan minimal satu dokumen ditemukan
+        if (!$risalah) {
+            return redirect()->back()->with('error', 'Dokumen tidak ditemukan.');
+        }
+
+        // Ambil data divisi dan user
+        $divisi = Divisi::all();
+        $position = Position::all();
+        $user = User::whereIn('role_id_role', ['2', '3'])->get();  
+
+        return view('manager.risalah.persetujuan-risalah', compact('user', 'divisi', 'risalah', 'position'));
+       
+    }
+
+    public function risalah()
+    {
+        $userId = auth()->id(); // Ambil ID user yang sedang login (Manager divisi)
+        $divisiId = auth()->user()->divisi_id_divisi; // Ambil divisi manager
+
+        $risalahs = Kirim_Document::where('jenis_document', 'risalah')
+        ->where('id_penerima', $userId)
+        ->whereHas('risalah', function ($query) {
+            $query->where('status', 'pending'); // Cek status dari tabel memo
+        })
+        ->with('risalah') // Pastikan ada relasi 'memo' di model Kirim_Document
+        ->get();
+
+        return view('manager.risalah.risalah', compact('risalahs'));
+    }
+
 }
+
+

@@ -93,6 +93,57 @@ class RisalahController extends Controller
         return view(Auth::user()->role->nm_role.'.risalah.risalah-'.Auth::user()->role->nm_role, compact('risalahs', 'divisi', 'seri', 'sortDirection'));
     }
 
+    public function superadmin(Request $request){
+        $risalah = null;
+        $divisi = Divisi::all();
+        $seri = Seri::all(); 
+        $userDivisiId = Auth::user()->divisi_id_divisi;
+        $userId = Auth::id(); 
+        
+
+        // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
+        $risalahDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+
+        // Sorting default menggunakan tgl_dibuat
+        
+        // Filter berdasarkan status
+        $query = Risalah::query()
+        ->whereNotIn('id_risalah', $risalahDiarsipkan)
+        ->orderBy('created_at', $sortDirection);
+
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        // Filter berdasarkan tanggal dibuat
+        if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
+            $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
+        } elseif ($request->filled('tgl_dibuat_awal')) {
+            $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
+        } elseif ($request->filled('tgl_dibuat_akhir')) {
+            $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
+        }
+
+        if ($request->filled('divisi_id_divisi') && $request->divisi_id_divisi != 'pilih' ) {
+            $query->where('divisi_id_divisi', $request->divisi_id_divisi);
+        }
+
+
+        // Pencarian berdasarkan nama dokumen atau nomor undangans
+        if ($request->has('search') && $request->search != '') {
+            $query->where(function ($q) use ($request) {
+                $q->where('judul', 'like', '%' . $request->search . '%')
+                  ->orWhere('nomor_risalah', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $risalahs = $query->paginate(6);
+
+        return view(Auth::user()->role->nm_role.'.risalah.risalah', compact('risalahs','divisi','seri','sortDirection'));
+
+    }
+
     public function create()
     {
         $divisiId = auth()->user()->divisi_id_divisi;

@@ -37,7 +37,11 @@ class Kirim_Document extends Model
         return $this->belongsTo(Undangan::class, 'id_document'); // Sesuaikan dengan foreign key yang benar
     }
 
-
+    public function risalah()
+    {
+        return $this->belongsTo(Risalah::class, 'id_document'); // Sesuaikan dengan foreign key yang benar
+    }
+    
     // Relasi ke User (Penerima)
     public function penerima()
     {

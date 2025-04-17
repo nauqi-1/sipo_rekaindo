@@ -1,166 +1,191 @@
+ris admin
+
+
 @extends('layouts.admin')
 
 @section('title', 'Risalah Rapat')
 
 @section('content')
-    <div class="container">
-        <div class="header">
-            <!-- Back Button -->
-            <div class="back-button">
-                <a href="#"><img src="/img/risalah/Vector_back.png" alt=""></a>
-            </div>
-            <h1>Risalah Rapat</h1>
-        </div>        
-        <div class="row">
-            <div class="breadcrumb-wrapper">
-                <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Risalah Rapat</a>
-                </div>
+<div class="container">
+    <div class="header">
+        <!-- Back Button -->
+        <div class="back-button">
+            <a href="{{ route('admin.dashboard')}}"><img src="/img/memo-admin/Vector_back.png" alt=""></a>
+        </div>
+        <h1>Risalah Rapat</h1>
+    </div>        
+    <div class="row">
+        <div class="breadcrumb-wrapper">
+            <div class="breadcrumb" style="gap: 5px;">
+                <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="#" style="color: #565656;">Memo</a>
             </div>
         </div>
+    </div>
 
-        <!-- Filter & Search Bar -->
-        <!-- <div class="header-tools">
+    <!-- Filter & Search Bar -->
+    <div class="surat">
+        <div class="header-tools">
             <div class="search-filter">
+            <form method="GET" action="{{ route('risalah.admin') }}" class="search-filter d-flex gap-2">
                 <div class="dropdown">
-                    <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="me-2">Status</span>
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'asc']) }}" style="justify-content: center; text-align: center;">
-                                Diterima
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
-                                Proses
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
-                                Ditolak
-                            </a>
-                        </li>
-                    </ul>
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">Status</option>
+                        <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                        <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
+                    </select>
                 </div>
                 <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                    <input type="text" class="form-control date-placeholder" placeholder="Data Dibuat" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                    <img src="/img/risalah/kalender.png" alt="Kalender Icon" class="input-icon">
+                    <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                 </div>
                 <i class="bi bi-arrow-right"></i>
                 <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                    <input type="text" class="form-control date-placeholder" placeholder="Data Keluar" onfocus="(this.type='date')" onblur="(this.type='text')" style="width: 100%;">
-                    <img src="/img/risalah/kalender.png" alt="Kalender Icon" class="input-icon">
+                    <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
+                        class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" placeholder="Tanggal Akhir"
+                        onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }" onchange="this.form.submit()">
                 </div>
                 <div class="d-flex gap-2">
                     <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                        <img src="/img/risalah/search.png" alt="search" style="width: 20px; height: 20px;">
-                        <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+                        <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
+                        <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                     </div>
                 </div>
-                <a href="{{route ('add-risalah.admin')}}" class="btn btn-add">+ Tambah Risalah Rapat</a>
-            </div>
-        </div> -->
-        <!-- Filter & Search Bar -->
-        <div class="surat">
-            <div class="header-tools">
-                <div class="search-filter">
-                <form method="GET" action="{{ route('risalah.admin') }}" class="search-filter d-flex gap-2">
-                    <div class="dropdown">
-                        <select name="status" class="form-select" onchange="this.form.submit()">
-                            <option value="">Status</option>
-                            <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
-                            <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
-                        </select>
-                    </div>
-                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                        <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
-                    </div>
-                    <i class="bi bi-arrow-right"></i>
-                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                        <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
-                            class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" placeholder="Tanggal Akhir"
-                            onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }" onchange="this.form.submit()">
-                    </div>
-                    <div class="d-flex gap-2">
-                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                            <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
-                            <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
-                        </div>
-                    </div>
-                    </form>
-                    <!-- Add User Button to Open Modal -->
-                    <a href="{{route ('add-risalah.admin')}}" class="btn btn-add">+ <span>Tambah Risalah Rapat</span></a>
-                </div>
+                </form>
+                <!-- Add User Button to Open Modal -->
+                <a href="{{route ('add-risalah.admin')}}" class="btn btn-add">+ <span>Tambah Risalah</span></a>
             </div>
         </div>
+    </div>
 
         <!-- Table -->
         <table class="table-light">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Dokumen</th>
-                    <th>Tanggal Risalah
-                        <button class="data-md">
-                            <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
-                        </button>
-                    </th>
-                    <th>Seri</th>
-                    <th>Dokumen</th>
-                    <th>Tanggal Disahkan
-                        <button class="data-md">
-                            <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
-                        </button>
-                    </th>
-                    <th>Divisi</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for ($i = 1; $i <= 3; $i++)
-                <tr>
-                    <td class="nomor">{{ $i }}</td>
-                    <td class="nama-dokumen {{ $i % 3 == 0 ? 'text-danger' : ($i % 2 == 0 ? 'text-warning' : 'text-success') }}">Risalah Rapat Kajian</td>
-                    <td>21-10-2024</td>
-                    <td>1596</td>
-                    <td>837.06/REKA/GEN/VII/2024</td>
-                    <td>22-10-2024</td>
-                    <td>HR & GA</td>
-                    <td>
-                        @if ($i % 3 == 0)
+            <tr>
+                <th>No</th>
+                <th>Nama Dokumen</th>
+                <th>
+                    <button class="data-md">
+                        <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                            style="color:rgb(135, 135, 148); text-decoration: none;">
+                            <span class="bi-arrow-down-up"></span>
+                        </a>
+                    </button>
+                </th>
+                <th>Seri</th>
+                <th>Dokumen</th>
+                <th>
+                    <button class="data-md">
+                        <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                            style="color:rgb(135, 135, 148); text-decoration: none;">
+                            <span class="bi-arrow-down-up"></span>
+                        </a>
+                    </button>
+                </th>
+                <th>Divisi</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($risalahs as $index => $risalah)
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                @if (Auth::user()->divisi->id_divisi == $risalah->divisi->id_divisi)
+                    <td class="nama-dokumen 
+                        {{ $risalah->status == 'reject' ? 'text-danger' : ($risalah->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $risalah->judul }}
+                    </td>
+                @elseif(Auth::user()->divisi->id_divisi != $risalah->divisi->id_divisi)
+                    <td class="nama-dokumen 
+                        {{ $risalah->final_status == 'reject' ? 'text-danger' : ($risalah->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $risalah->judul }}
+                    </td>
+                @endif
+                <td>{{ \Carbon\Carbon::parse($risalah->tgl_dibuat)->format('d-m-Y') }}</td>
+                <td>{{ $risalah->seri_surat }}</td>
+                <td>{{ $risalah->nomor_risalah }}</td>
+                <td>{{ $risalah->tgl_disahkan ? \Carbon\Carbon::parse($risalah->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
+                <td>{{ $risalah->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                <td>
+                        @if ($risalah->final_status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($i % 2 == 0)
+                        @elseif ($risalah->final_status == 'pending')
                             <span class="badge bg-warning">Diproses</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
                         @endif
-                    </td>
-                    <td>
-                        <a href="{{route ('kirim-risalahAdmin.admin')}}" class="btn btn-sm1">
-                            <img src="/img/risalah/share.png" alt="share">
-                        </a>
-                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            <img src="/img/risalah/Delete.png" alt="delete">
-                        </button>
-                        <!-- Status Approve -->
-                        @if ($i % 3 != 0 && $i % 2 != 0) 
-                            <button class="btn btn-sm3" data-bs-toggle="modal" data-bs-target="#arsipModal">
-                                <img src="/img/risalah/arsip.png" alt="arsip">
-                            </button>
-                        @else
-                            <a href="{{route ('edit-risalah.admin')}}" class="btn btn-sm3">
-                                <img src="/img/risalah/edit.png" alt="edit">
-                            </a>
+                </td>
+                <td>
+                    @if (Auth::user()->divisi->id_divisi == $risalah->divisi->id_divisi)
+                            @if($risalah->final_status == 'pending' || $risalah->final_status == 'approve' )
+                            <a href="{{ route('kirim-risalahAdmin.admin',['id' => $risalah->id_risalah]) }}" class="btn btn-sm1">
+                                <img src="/img/memo-admin/share.png" alt="share">
+                            </a>       
+                            @endif
+                        @elseif (Auth::user()->divisi->id_divisi != $risalah->divisi->id_divisi)
+                            @if($risalah->final_status == 'pending' )
+                            <a href="{{ route('kirim-risalahAdmin.admin',['id' => $risalah->id_risalah]) }}" class="btn btn-sm1">
+                                <img src="/img/memo-admin/share.png" alt="share">
+                            </a>       
+                            @endif               
                         @endif
-                    </td>
-                </tr>
-                @endfor
+
+                    @if (Auth::user()->divisi->id_divisi == $risalah->divisi->id_divisi)
+                            @if ($risalah->status == 'approve' || $risalah->status == 'reject' )
+                                <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('POST') 
+                                    <button type="submit" class="btn btn-sm3">
+                                        <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('risalah.edit', $risalah->id_risalah) }}" class="btn btn-sm3">
+                                    <img src="/img/risalah/edit.png" alt="edit">
+                                </a>
+                            @endif
+                            @elseif (Auth::user()->divisi->id_divisi != $risalah->divisi->id_divisi)
+                            @if ($risalah->final_status == 'approve' || $risalah->final_status == 'reject')
+                                <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('POST') 
+                                    <button type="submit" class="btn btn-sm3">
+                                        <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('risalah.edit', $risalah->id_risalah) }}" class="btn btn-sm3">
+                                    <img src="/img/risalah/edit.png" alt="edit">
+                                </a>
+                            @endif
+                        @endif
+                    <!-- @if ($risalah->status != 'reject' && ($risalah->status != 'approve' || Auth::user()->divisi->id_divisi == $risalah->divisi->id_divisi)) 
+                    <a href="{{ route('kirim-risalahAdmin.admin',['id' => $risalah->id_risalah]) }}" class="btn btn-sm1">
+                        <img src="/img/memo-admin/share.png" alt="share">
+                    </a>               
+                    @endif
+                    <!-- Status Approve 
+                    @if ($risalah->status == 'approve') 
+                    <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display: inline;">
+                    @csrf
+                    @method('POST') 
+                        <button type="submit" class="btn btn-sm3">
+                            <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                        </button>
+                    </form>
+                    @else
+                        <a href="{{ route('risalah.edit', $risalah->id_risalah) }}" class="btn btn-sm3">
+                            <img src="/img/memo-admin/edit.png" alt="edit">
+                        </a>
+                    @endif -->
+                    <a href="{{ route('view.risalahAdmin', ['id' => $risalah->id_risalah]) }}" class="btn btn-sm1">
+                        <img src="/img/memo-admin/viewBlue.png" alt="view">
+                    </a>
+                </td>
+            </tr>
+            @endforeach
             </tbody>
         </table>
+        {{ $risalahs->links('pagination::bootstrap-5') }}
 
         <!-- Modal Hapus -->
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">

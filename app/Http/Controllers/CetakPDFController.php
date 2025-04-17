@@ -7,6 +7,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Clegginabox\PDFMerger\PDFMerger;
 use App\Models\Memo;
 use App\Models\Undangan;
+use App\Models\Risalah;
+
 
 
 class CetakPDFController extends Controller
@@ -306,5 +308,100 @@ class CetakPDFController extends Controller
         // Tampilkan PDF langsung di browser
         return $pdf->stream('laporan-undangan.pdf');
     }
+
+    public function cetakrisalahPDF($id_risalah)
+{
+    $risalah = Risalah::findOrFail($id_risalah);
+    $path = public_path('img/border-surat.png');
+
+    if (file_exists($path)) {
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64Image = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    } else {
+        $base64Image = null;
+    }
+
+    // Gunakan PDF::loadView() secara langsung
+    $pdf = Pdf::loadView('format-surat.format-risalah', compact('risalah', 'base64Image'))
+              ->setPaper('A4', 'portrait');
+
+    // Simpan PDF memo sementara
+    $formatRisalahPath = storage_path('app/temp_format_risalah_' . $risalah->id . '.pdf');
+    $pdf->save($formatRisalahPath);
+
+    // Cek apakah lampiran tidak kosong
+    if (!empty($risalah->lampiran)) {
+     // Decode base64 lampiran dan simpan sementara
+     $lampiranTempPath = storage_path('app/temp_lampiran_' . $risalah->id . '.pdf');
+     file_put_contents($lampiranTempPath, base64_decode($risalah->lampiran));
+
+     // Gabungkan format memo + lampiran
+     $pdfMerger = new PDFMerger;
+     $pdfMerger->addPDF($formatRisalahPath, 'all');
+     $pdfMerger->addPDF($lampiranTempPath, 'all');
+
+     $outputPath = storage_path('app/cetak_risalah_' . $risalah->id . '.pdf');
+     $pdfMerger->merge('file', $outputPath);
+
+     // Download lalu hapus semua file sementara
+     if (file_exists($formatRisalahPath)) unlink($formatRisalahPath);
+     if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
+     return response()->download($outputPath)->deleteFileAfterSend(true);
+
+
+ } else {
+     // Jika tidak ada lampiran, langsung download PDF memo saja
+     return response()->streamDownload(function () use ($pdf, $formatRisalahPath) {
+         echo $formatRisalahPath->output();
+         if (file_exists($formatRisalahPath)) unlink($formatRisalahPath);
+     }, 'cetak_risalah_' . $risalah->id . '.pdf');
+ }
+}
+ 
+public function viewrisalahPDF($id_risalah)
+{
+    $risalah = Risalah::findOrFail($id_risalah);
+    $path = public_path('img/border-surat.png');
+
+    if (file_exists($path)) {
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64Image = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    } else {
+        $base64Image = null;
+    }
+
+    // Generate PDF risalah
+    $pdf = Pdf::loadView('format-surat.format-risalah', compact('risalah', 'base64Image'))
+              ->setPaper('A4', 'portrait');
+
+    // Simpan PDF risalah sementara
+    $formatRisalahPath = storage_path('app/temp_format_risalah_' . $risalah->id . '.pdf');
+    $pdf->save($formatRisalahPath);
+
+    // Jika ada lampiran, gabungkan PDF-nya
+    if (!empty($risalah->lampiran)) {
+        $lampiranTempPath = storage_path('app/temp_lampiran_' . $risalah->id . '.pdf');
+        file_put_contents($lampiranTempPath, base64_decode($risalah->lampiran));
+
+        $pdfMerger = new \Clegginabox\PDFMerger\PDFMerger;
+        $pdfMerger->addPDF($formatRisalahPath, 'all');
+        $pdfMerger->addPDF($lampiranTempPath, 'all');
+
+        $outputPath = storage_path('app/view_risalah_' . $risalah->id . '.pdf');
+        $pdfMerger->merge('file', $outputPath);
+
+        // Hapus file sementara setelah digabung
+        if (file_exists($formatRisalahPath)) unlink($formatRisalahPath);
+        if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
+
+        // Tampilkan file hasil merge
+        return response()->file($outputPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
+    } else {
+        // Kalau tidak ada lampiran, tampilkan risalah langsung
+        return response()->file($formatRisalahPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
+    }
+}
 
 }
