@@ -30,13 +30,17 @@
         <!-- User Profile -->
         <li class="dropdown pc-h-item header-user-profile">
           <a class="pc-head-link head-link-primary dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown">
-            <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar" />
+          @if(Auth::user()->profile_image)
+            <img src="data:image/jpeg;base64,{{ Auth::user()->profile_image }}" alt="user-image" class="user-avtar" style=" width: 40px; height: 40px; object-fit: cover; border-radius: 50%;" />
+          @else
+            <img src="../assets/images/user/default1.png" alt="user-image" class="user-avtar" />
+          @endif
             <span><i class="ti ti-settings"></i></span>
           </a>
           <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
             <div class="dropdown-header">
-              <h4>Good Morning, {{ Auth::user()->username }}</h4>
-              <p class="text-muted">Project Admin</p>
+              <h4 style="text-transform: capitalize;">Good Morning, {{ Auth::user()->username }} </h4>
+              <p class="text-muted" style="text-transform: capitalize;">{{ Auth::user()->role->nm_role }} </p>
               <a href="{{ route('edit-profile.superadmin') }}" class="dropdown-item">
                 <i class="ti ti-user"></i> <span>Edit Profile</span>
               </a>

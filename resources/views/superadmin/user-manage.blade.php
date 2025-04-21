@@ -74,7 +74,11 @@
                 <tr>
                     <td>
                         <div class="user-info">
-                            <img src="\img\user-manage\user.png" alt="User Image" class="rounded-circle-light">
+                        @if($user->profile_image)
+                            <img src="data:image/jpeg;base64,{{ $user->profile_image }}" alt="user-image" class="user-avtar" style=" width: 40px; height: 40px; object-fit: cover; border-radius: 50%;" />
+                        @else
+                            <img src="../assets/images/user/default1.png" alt="user-image" class="user-avtar" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;"/>
+                        @endif
                             <div class="text-info">
                                 <span>{{ $user->firstname }} {{ $user->lastname }}</span>
                             </div>

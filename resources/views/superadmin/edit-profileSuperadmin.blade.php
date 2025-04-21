@@ -1,115 +1,283 @@
-
 @extends('layouts.superadmin')
-
 
 @section('title', 'Edit Profil')
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* ===== Custom Profile Edit Page ===== */
+body {
+    background-color: #f8f9fc;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.card {
+    border: none;
+    background-color: #fff;
+}
+
+h4.fw-semibold {
+    font-weight: 600;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: '/';
+}
+
+.form-label {
+    font-weight: 500;
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+input.form-control {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.65rem;
+}
+
+input.form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+input[readonly] {
+    background-color: #f1f1f1;
+    color: #888;
+}
+
+#profileImagePreview {
+    transition: 0.3s ease;
+}
+
+#profileImagePreview:hover {
+    opacity: 0.8;
+    transform: scale(1.02);
+}
+
+#photoOverlay {
+    backdrop-filter: blur(3px);
+    z-index: 1050;
+}
+
+#photoOverlay .bg-white {
+    border-radius: 1.25rem;
+}
+
+.btn {
+    border-radius: 2rem;
+    font-size: 0.875rem;
+}
+
+.btn-warning {
+    background-color: #fbbf24;
+    border-color: #fbbf24;
+    color: #000;
+}
+
+.btn-warning:hover {
+    background-color: #f59e0b;
+    border-color: #f59e0b;
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+.btn-light {
+    background-color: #f3f4f6;
+    color: #111827;
+}
+
+.input-group-text {
+    background-color: #f3f4f6;
+    border: 1px solid #ced4da;
+    padding: 0.55rem 0.75rem;
+    border-radius: 0.65rem;
+}
+
+small.text-muted {
+    font-size: 0.85rem;
+}
+
+.rounded-circle.shadow {
+    border: 3px solid #e2e8f0;
+}
+
+@media (max-width: 768px) {
+    .card {
+        padding: 1.5rem;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    #editButtons {
+        text-align: center;
+    }
+}
+</style>
+
 <div class="container mt-4">
-    <div class="header">
-        <div class="back-button">
-            <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
-        </div>
-        <h1>Edit Profil</h1>
-    </div>        
-    
-    <div class="row">
-        <div class="breadcrumb-wrapper">
-            <div class="breadcrumb" style="gap: 5px;">
-                <a href="#">Beranda</a> / <a href="#" style="color: #565656;">Edit Profil</a>
-            </div>
-        </div>
-    </div>
+    <div class="card p-4 shadow-sm rounded-4">
+        <form id="formProfile" action="{{ route('superadmin.updateProfile') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="file" name="profile_image" id="profileImage" class="d-none" accept="image/*">
 
-    <div class="card p-4">
-        <h4 class="fw-bold">Informasi Profil</h4>
-        <div class="row">
-            <!-- Kolom Form -->
-            <div class="col-md-8">
-                <form id="formProfile" action="{{ route('superadmin.updateProfile') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Nama Depan</label>
-                        <input type="text" class="form-control" name="firstname" value="{{ Auth::user()->firstname }}" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Nama Akhir</label>
-                        <input type="text" class="form-control" name="lastname" value="{{ Auth::user()->lastname }}" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Email</label>
-                        <input type="email" class="form-control" name="email" value="{{ Auth::user()->email }}" readonly required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">No. Telepon</label>
-                        <input type="text" class="form-control" name="phone_number" value="{{ Auth::user()->phone_number }}" readonly required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Username</label>
-                        <input type="text" class="form-control" name="username" value="{{ Auth::user()->username }}" readonly required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Divisi</label>
-                        <input type="text" class="form-control" value="{{ Auth::user()->divisi->nm_divisi ?? '-' }}" readonly>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Posisi</label>
-                        <input type="text" class="form-control" value="{{ Auth::user()->position->nm_position ?? '-' }}" readonly>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Foto Profil</label>
-                        <input type="file" class="form-control" name="image" accept="image/*">
-                    </div>
-
-                    <div id="buttonGroup">
-                        <button type="button" class="btn btn-primary" id="editButton">Edit</button>
-                        <button type="button" class="btn btn-secondary d-none" id="cancelButton">Batal</button>
-                        <button type="submit" class="btn btn-success d-none" id="saveButton">Simpan</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Kolom Foto Profil -->
-            <div class="col-md-4 d-flex align-items-center justify-content-center">
-                <div class="border rounded p-3" style="width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
+            <div class="text-center mb-4">
+                <div class="position-relative d-inline-block" onclick="openOverlay()" style="cursor:pointer;">
                     @if(Auth::user()->profile_image)
-                        <img src="{{ asset('storage/profile_images/' . Auth::user()->profile_image) }}" alt="Foto Profil" class="img-fluid rounded" style="max-width: 100%; max-height: 100%;">
+                        <img id="profileImagePreview" src="data:image/jpeg;base64,{{ Auth::user()->profile_image }}" alt="Foto Profil" class="rounded-circle shadow" style="width: 130px; height: 130px; object-fit: cover;">
                     @else
-                        <img src="{{ asset('default-profile.png') }}" alt="No Profile" class="img-fluid" style="opacity: 0.5; width: 80%;">
+                        <img id="profileImagePreview" src="../assets/images/user/default1.png" alt="No Profile" class="rounded-circle shadow" style="width: 130px; height: 130px; object-fit: cover;">
                     @endif
                 </div>
+                <h6 class="mt-3 fw-bold">{{ Auth::user()->username }}</h6>
+                <small class="text-muted">{{ Auth::user()->email }}</small>
             </div>
-        </div>
+
+            <div id="profileEdit">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-muted small">NIP</label>
+                        <input type="text" class="form-control rounded-3" value="{{ Auth::user()->id }}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-muted small">Email</label>
+                        <input type="email" class="form-control rounded-3" value="{{ Auth::user()->email }}" readonly>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-muted small">Nama Depan</label>
+                        <input type="text" name="firstname" class="form-control rounded-3" value="{{ Auth::user()->firstname }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-muted small">Nama Belakang</label>
+                        <input type="text" name="lastname" class="form-control rounded-3" value="{{ Auth::user()->lastname }}" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-muted small">Nama Pengguna</label>
+                        <input type="text" name="username" class="form-control rounded-3" value="{{ Auth::user()->username }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-muted small">Nomor Telepon</label>
+                        <input type="text" name="phone_number" class="form-control rounded-3" value="{{ Auth::user()->phone_number }}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-muted small">Password</label>
+                        <div class="input-group rounded-3">
+                            <input type="password" name="password" id="password" class="form-control rounded-start-3" placeholder="********">
+                            <span class="input-group-text rounded-end-3" onclick="togglePassword('password', this)" style="cursor:pointer;">
+                                <i class="fa fa-eye-slash"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-muted small">Konfirmasi Password</label>
+                        <div class="input-group rounded-3">
+                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control rounded-start-3" placeholder="********">
+                            <span class="input-group-text rounded-end-3" onclick="togglePassword('password_confirmation', this)" style="cursor:pointer;">
+                                <i class="fa fa-eye-slash"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-end mt-4" id="profileButtons">
+                <button type="button" class="btn btn-warning rounded-pill px-4" onclick="enableEditProfile()">Edit Profil</button>
+            </div>
+            <div class="text-end mt-4" id="editButtons" style="display: none;">
+                <button type="button" class="btn btn-light rounded-pill me-2" onclick="cancelEdit()">Batal</button>
+                <button type="submit" class="btn btn-primary rounded-pill px-4">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- Overlay --}}
+<div id="photoOverlay" class="position-fixed top-0 start-0 w-100 h-100 d-none justify-content-center align-items-center"
+     style="background: rgba(0,0,0,0.6); z-index: 1050;">
+    <div class="bg-white p-4 rounded-4 text-center shadow position-relative" style="width: 300px;">
+        <button onclick="closeOverlay()" class="btn-close position-absolute top-0 end-0 m-2"></button>
+        <h5 class="mb-3">Ubah Foto Profil</h5>
+
+        <button type="button" class="btn btn-outline-primary w-100 mb-2" onclick="triggerImageUpload()">
+            <i class="fa fa-pen me-2"></i>Edit Foto
+        </button>
+
+        <form action="{{ route('superadmin.deletePhoto') }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-outline-danger w-100">
+                <i class="fa fa-trash me-2"></i>Hapus Foto
+            </button>
+        </form>
     </div>
 </div>
 
 <script>
-    document.getElementById('editButton').addEventListener('click', function() {
-        let inputs = document.querySelectorAll('#formProfile input');
-        inputs.forEach(input => input.removeAttribute('readonly'));
-        document.querySelector('input[name="profile_image"]').removeAttribute('disabled');
+    function enableEditProfile() {
+        document.getElementById('profileEdit').style.display = 'block';
+        document.getElementById('profileButtons').style.display = 'none';
+        document.getElementById('editButtons').style.display = 'block';
+    }
 
-        document.getElementById('editButton').classList.add('d-none');
-        document.getElementById('cancelButton').classList.remove('d-none');
-        document.getElementById('saveButton').classList.remove('d-none');
+    function cancelEdit() {
+        document.getElementById('profileEdit').style.display = 'block';
+        document.getElementById('profileButtons').style.display = 'block';
+        document.getElementById('editButtons').style.display = 'none';
+    }
+
+    function openOverlay() {
+        document.getElementById('photoOverlay').classList.remove('d-none');
+        document.getElementById('photoOverlay').style.display = 'flex';
+    }
+
+    function closeOverlay() {
+        document.getElementById('photoOverlay').classList.add('d-none');
+        document.getElementById('photoOverlay').style.display = 'none';
+    }
+
+    function triggerImageUpload() {
+        closeOverlay();
+        document.getElementById('profileImage').click();
+    }
+
+    function togglePassword(fieldId, iconElement) {
+        const field = document.getElementById(fieldId);
+        const icon = iconElement.querySelector('i');
+        if (field.type === "password") {
+            field.type = "text";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        } else {
+            field.type = "password";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        }
+    }
+
+    // Tutup overlay jika klik di luar box
+    document.getElementById('photoOverlay').addEventListener('click', function (e) {
+        if (e.target === this) closeOverlay();
     });
 
-    document.getElementById('cancelButton').addEventListener('click', function() {
-        let inputs = document.querySelectorAll('#formProfile input');
-        inputs.forEach(input => input.setAttribute('readonly', true));
-        document.querySelector('input[name="profile_image"]').setAttribute('disabled', true);
-
-        document.getElementById('editButton').classList.remove('d-none');
-        document.getElementById('cancelButton').classList.add('d-none');
-        document.getElementById('saveButton').classList.add('d-none');
+    document.addEventListener('DOMContentLoaded', function () {
+        const preview = document.getElementById('profileImagePreview');
+        if (preview) preview.style.opacity = '1';
     });
 </script>
 @endsection
