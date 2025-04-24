@@ -39,13 +39,13 @@
           </a>
           <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
             <div class="dropdown-header">
-              <h4 style="text-transform: capitalize;">Good Morning, {{ Auth::user()->username }} </h4>
+              <h4 style="text-transform: capitalize;">Selamat Pagi, {{ Auth::user()->username }} </h4>
               <p class="text-muted" style="text-transform: capitalize;">{{ Auth::user()->role->nm_role }} </p>
               <a href="{{ route('edit-profile.superadmin') }}" class="dropdown-item">
-                <i class="ti ti-user"></i> <span>Edit Profile</span>
+                <i class="ti ti-user"></i> <span>Profil</span>
               </a>
               <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="ti ti-logout"></i> <span>Logout</span>
+                <i class="ti ti-logout"></i> <span>Keluar</span>
               </a>
               <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display: none;">
                 @csrf

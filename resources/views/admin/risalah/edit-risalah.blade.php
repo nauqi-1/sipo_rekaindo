@@ -25,7 +25,7 @@
             @method('PUT')
             <div class="card">
             <div class="card-header">
-                <h5 class="card-title" style="font-size: 18px;"><b>Formulir Tambah Risalah Rapat</b></h5>
+                <h5 class="card-title" style="font-size: 18px;"><b>Formulir Edit Risalah Rapat</b></h5>
             </div>
             <div class="card-body">
                 <div class="mb-3 row">
@@ -95,7 +95,7 @@
                 <div class="isi-surat-row">
                     <div class="col-md-1">
                         <label for="no">No</label>
-                        <input type="text" class="form-control" name="nomor[]" value="{{ $detail->nomor }}">
+                        <textarea class="form-control no-auto" name="nomor[]" rows="2" readonly>{{ $detail->nomor }}</textarea>
                     </div>
                     <div class="col-md-3">
                         <label for="topik">Topik</label>
@@ -256,8 +256,9 @@
 });
 
 function updateNomor() {
-    document.querySelectorAll('.isi-surat-row .no-auto').forEach((input, index) => {
-        input.value = index + 2;
+    const nomorInputs = document.querySelectorAll('.isi-surat-row .no-auto');
+    nomorInputs.forEach((input, index) => {
+        input.value = index + 1;
     });
 }
 

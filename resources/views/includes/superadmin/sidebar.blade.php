@@ -108,7 +108,7 @@
           <ul class="pc-submenu">
             <li class="pc-item"><a class="pc-link" href="{{ route('memo.backup')}}">Memo</a></li>
             <li class="pc-item pc-hasmenu"><a href="{{ route('undangan.backup')}}" class="pc-link">Undangan Rapat</span></a></li>
-            <li class="pc-item pc-hasmenu"><a href="" class="pc-link">Risalah Rapat</span></a></li>
+            <li class="pc-item pc-hasmenu"><a href="{{ route('risalah.backup')}}" class="pc-link">Risalah Rapat</span></a></li>
           </ul>
         </li>
         @endif

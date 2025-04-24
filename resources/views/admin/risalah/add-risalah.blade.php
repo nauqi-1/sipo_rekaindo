@@ -1,5 +1,3 @@
-add ris
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -104,7 +102,7 @@ add ris
                     <div class="isi-surat-row">
                         <div class="col-md-1">
                             <label for="no">No</label>
-                            <input type="text" class="form-control" name="nomor[]">
+                            <input type="text" class="form-control no-auto" name="nomor[]" readonly>
                             <input type="hidden" name="pembuat" value="{{ auth()->user()->firstname . auth()->user()->lastname }}">
                         </div>
                         <div class="col-md-3">
@@ -237,7 +235,7 @@ add ris
 
     newRow.innerHTML = `
         <div class="col-md-1">
-            <textarea class="form-control" name="nomor[]" rows="2"></textarea>
+            <input type="text" class="form-control no-auto" name="nomor[]" readonly>
         </div>
         <div class="col-md-3">
             <textarea class="form-control" name="topik[]" placeholder="Topik Pembahasan" rows="2"></textarea>

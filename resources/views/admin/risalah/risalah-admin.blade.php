@@ -1,6 +1,3 @@
-ris admin
-
-
 @extends('layouts.admin')
 
 @section('title', 'Risalah Rapat')
