@@ -11,11 +11,11 @@
     <link rel="stylesheet" href="{{ asset('/css/superadmin/viewArsip.css') }}">
 </head>
 <body>
-    <div class="container">
+<div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('arsip-risalah.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route ('arsip.risalah')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Detail Arsip Risalah</h1>
         </div>        
@@ -24,7 +24,7 @@
                 <div class="breadcrumb" style="gap: 5px;">
                 <a href="{{route('superadmin.dashboard')}}">Beranda</a>/
                 <a href="#">Arsip</a>/
-                <a href="{{route ('arsip-risalah.superadmin')}}">Arsip Risalah</a>/
+                <a href="{{route ('arsip.risalah')}}">Arsip Risalah</a>/
                 <a style="color:#565656" href="#">Detail Arsip Risalah</a>
                 </div>
             </div>
@@ -38,12 +38,12 @@
                     <div class="card-white">
                         <label for="seri">No Seri</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri">
+                        <input type="text" id="seri" value="{{ $risalah->seri_surat }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
-                        <input type="text" id="diterima">
+                        <input type="text" id="diterima" value="{{ $risalah->tujuan }}">
                     </div>
                 </div>
                 <div class="col">
@@ -53,12 +53,12 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        <button class="status">Diterima</button>
+                        <button class="status" >Diterima</button>
                     </div>
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tanggal">
+                        <input type="text" id="tanggal" value="{{ $risalah->tgl_disahkan->translatedFormat('d F Y') }}" readonly>
                     </div>
                 </div>
             </div>
@@ -72,35 +72,30 @@
                     <div class="card-white">
                         <label for="nomor">No Dokumen</label>
                         <div class="separator"></div>
-                        <input type="text" id="nomor">
+                        <input type="text" id="nomor" value="{{ $risalah->nomor_risalah }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="divisi">Divisi</label>
                         <div class="separator"></div>
-                        <input type="text" id="divisi">
+                        <input type="text" id="divisi" value="{{ $risalah->divisi->nm_divisi }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
                         <div class="separator"></div>
-                        <input type="text" id="perihal">
+                        <input type="text" id="perihal" value="{{ $risalah->judul }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl">
+                        <input type="text" id="tgl" value="{{ $risalah->tgl_dibuat->translatedFormat('d F Y') }}" readonly>
                     </div>
-                    <div class="card-white">
-                        <label for="lampiran">Lampiran</label>
-                        <div class="separator"></div>
-                        <input type="text" id="kepada">
-                    </div>
+                    
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
-                        <!-- <button class="btn-file"><img src="/img/mata.png" alt="view"><a href="#">Lihat</a></button>
-                        <button class="down btn-file"><img src="/img/download.png" alt="down"><a href="#">Unduh</a></button> -->
-                        <a href="#" class="btn btn-file"><img src="/img/mata.png" alt="view"> Lihat</a>
-                        <a href="#" class="btn btn-file down"><img src="/img/download.png" alt="down"> Unduh</a>
+                        @if ($risalah->status=='approve')
+                        <a style="text-decoration: none;" class="view" onclick="window.location.href='{{ route('view-risalahPDF',[$risalah->id_risalah]) }}'"><img src="/img/memo-admin/view.png" alt="view">Lihat</a>
+                        @endif
                     </div>
                 </div>
             </div>

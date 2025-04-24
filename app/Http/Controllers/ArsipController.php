@@ -110,7 +110,7 @@ class ArsipController extends Controller
 }
 
         
-        public function indexUndangan(Request $request)
+    public function indexUndangan(Request $request)
     {
         $user_id = Auth::id();
         $arsipUndangan = Arsip::where('user_id', $user_id)
@@ -147,19 +147,41 @@ class ArsipController extends Controller
         return view('arsip.arsip-undangan', compact('arsipUndangan','sortDirection','undangans'));
     }
 
-    public function indexRisalah()
+    public function indexRisalah(Request $request)
     {
         $user_id = Auth::id();
         $arsipRisalah = Arsip::where('user_id', $user_id)
             ->where('jenis_document', 'App\Models\Risalah')
             ->get();
+        
+        $risalahIds = $arsipRisalah->pluck('document_id');
 
-        // Ambil data risalah berdasarkan document_id dari Arsip
+        // Query Memo berdasarkan ID dari arsip
+        $query = Risalah::whereIn('id_risalah', $risalahIds);
+
+         // Tambahkan fitur pencarian berdasarkan judul dan nomor memo
+    if ($request->filled('search')) {
+        $searchTerm = '%' . str_replace(' ', '%', $request->search) . '%';
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('judul', 'like', $searchTerm)
+              ->orWhere('nomor_risalah', 'like', $searchTerm);
+        });
+    }
+        
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $query->orderBy('tgl_dibuat', $sortDirection);
+
+        $risalahs = $query->paginate(6);
+        $arsipRisalah = $arsipRisalah->filter(function ($arsip) use ($risalahs) {
+            return $risalahs->contains('id_risalah', $arsip->document_id);
+        });
+
+        // Ambil data undangan berdasarkan document_id dari Arsip
         foreach ($arsipRisalah as $arsip) {
             $arsip->document = Risalah::where('id_risalah', $arsip->document_id)->first();
         }
 
-        return view('arsip.arsip-risalah', compact('arsipRisalah'));
+        return view('arsip.arsip-risalah', compact('arsipRisalah', 'sortDirection', 'risalahs'));
     }
 
     public function view($id)
@@ -174,5 +196,13 @@ class ArsipController extends Controller
         $undangan = Undangan::where('id_undangan', $id)->firstOrFail();
 
         return view('arsip.view-arsipUndangan', compact('undangan'));
+    }
+
+    
+    public function viewRisalah($id)
+    {
+        $risalah = Risalah::where('id_risalah', $id)->firstOrFail();
+
+        return view('arsip.view-arsipRisalah', compact('risalah'));
     }
 }

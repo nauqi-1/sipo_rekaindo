@@ -13,6 +13,7 @@ use App\Models\Seri;
 use App\Models\Arsip;
 use App\Models\Notifikasi;
 use App\Models\Kirim_Document;
+use App\Models\BackupRisalah;
 use App\Models\User;
 use App\Models\Divisi;
 
@@ -94,25 +95,20 @@ class RisalahController extends Controller
     }
 
     public function superadmin(Request $request){
-        $risalah = null;
         $divisi = Divisi::all();
-        $seri = Seri::all(); 
-        $userDivisiId = Auth::user()->divisi_id_divisi;
-        $userId = Auth::id(); 
+        $seri = Seri::all();
+        $userId = Auth::id();
         
 
-        // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
         $risalahDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
 
-        // Sorting default menggunakan tgl_dibuat
-        
-        // Filter berdasarkan status
         $query = Risalah::query()
         ->whereNotIn('id_risalah', $risalahDiarsipkan)
         ->orderBy('created_at', $sortDirection);
 
-        if ($request->has('status') && $request->status != '') {
+        // Filter berdasarkan status
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
@@ -125,23 +121,28 @@ class RisalahController extends Controller
             $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
         }
 
-        if ($request->filled('divisi_id_divisi') && $request->divisi_id_divisi != 'pilih' ) {
-            $query->where('divisi_id_divisi', $request->divisi_id_divisi);
-        }
+         // Ambil semua arsip memo berdasarkan user login
+        $arsipRisalahQuery = Arsip::where('user_id', $userId)
+        ->where('jenis_document', 'risalah')
+        ->with('document');
 
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $query->orderBy('created_at', $sortDirection);
 
-        // Pencarian berdasarkan nama dokumen atau nomor undangans
-        if ($request->has('search') && $request->search != '') {
+        if ($request->filled('divisi_id_divisi') && $request->divisi_id_divisi != 'pilih') {
+    $query->where('divisi_id_divisi', $request->divisi_id_divisi);
+}
+
+        // Pencarian berdasarkan nama dokumen atau nomor memo
+        if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('judul', 'like', '%' . $request->search . '%')
-                  ->orWhere('nomor_risalah', 'like', '%' . $request->search . '%');
+                ->orWhere('nomor_risalah', 'like', '%' . $request->search . '%');
             });
         }
-
         $risalahs = $query->paginate(6);
 
-        return view(Auth::user()->role->nm_role.'.risalah.risalah', compact('risalahs','divisi','seri','sortDirection'));
-
+        return view( 'superadmin.risalah.risalah-superadmin', compact('risalahs', 'divisi', 'seri','sortDirection'));
     }
 
     public function create()
@@ -362,21 +363,51 @@ public function update(Request $request, $id)
         }
 
         // Redirect ke halaman risalah dengan pesan sukses
-        return redirect()->route('risalah.admin')->with('success', 'Risalah berhasil diperbarui.');
+        return redirect()->route('risalah.'.Auth::user()->role->nm_role)->with('success', 'Risalah berhasil diperbarui.');
     }
 
     public function destroy($id)
-    {
-        $risalah = Risalah::findOrFail($id);
+{
+    $risalah = Risalah::findOrFail($id);
 
-        DB::transaction(function () use ($risalah) {
-            RisalahDetail::where('risalah_id_risalah', $risalah->id_risalah)->delete();
-            $risalah->delete();
-        });
+    DB::transaction(function () use ($risalah) {
+        BackupRisalah::create([
+            'id_document' => $risalah->id_risalah,
+            'jenis_document' => 'risalah',
+            'nomor_document' => $risalah->nomor_risalah,
+            'seri_document' => $risalah->seri_surat,
+            'tgl_dibuat' => $risalah->tgl_dibuat,
+            'tgl_disahkan' => $risalah->tgl_disahkan,
+            'tujuan'=> $risalah->tujuan,
+            'waktu_mulai' => $risalah->waktu_mulai,
+            'waktu_selesai' => $risalah->waktu_selesai,
+            'agenda' => $risalah->agenda,
+            'tempat' => $risalah->tempat,
+            'nama_bertandatangan'=> $risalah->nama_bertandatangan,
+            'lampiran' => $risalah->lampiran,
+            'judul' => $risalah->judul,
+            'pembuat' => $risalah->pembuat,
+            'catatan' => $risalah->catatan,
+            'divisi_id_divisi' => $risalah->divisi_id_divisi,
+            'status' => $risalah->status,           
+            'created_at' => $risalah->created_at,
+            'updated_at' => $risalah->updated_at,
+        ]);
 
-        return redirect()->route('risalah.'.Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dihapus.');
-    } 
+        // Hapus file lampiran jika ada
+        $lampiranPath = public_path($risalah->lampiran);
+        if ($risalah->lampiran && file_exists($lampiranPath)) {
+            unlink($lampiranPath);
+        }
 
+        RisalahDetail::where('risalah_id_risalah', $risalah->id_risalah)->delete();
+        $risalah->delete();
+    });
+
+    return redirect()->route('risalah.'.Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dihapus.');
+}
+
+    
     private function convertToRoman($number)
     {
         $map = [

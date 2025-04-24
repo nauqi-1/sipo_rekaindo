@@ -20,8 +20,8 @@
 
 
     <!-- [Favicon] icon -->
-    <link rel="icon" href="../assets/images/favicon.svg" type="image/x-icon" />
- <!-- [Google Font] Family -->
+    <link href="/img/icon-reka.png" rel="icon">
+    <!-- [Google Font] Family -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" id="main-font-link" />
 <!-- [phosphor Icons] https://phosphoricons.com/ -->
 <link rel="stylesheet" href="../assets/fonts/phosphor/duotone/style.css" />

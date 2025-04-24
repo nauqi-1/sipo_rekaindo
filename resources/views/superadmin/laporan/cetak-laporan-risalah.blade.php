@@ -22,21 +22,30 @@
     <!-- Filter & Search Bar -->
     <div class="cetak-laporan">
         <div class="title d-flex justify-content-between align-items-center mb-3">
-            <h2><b>Laporan Risalah</b></h2>
-            @if(session('filter_dates'))
-                <div class="filter-info">
-                    Menampilkan risalah rapat dari tanggal {{ session('filter_dates')['tgl_awal'] }} hingga {{ session('filter_dates')['tgl_akhir'] }}
-                </div>
-            @endif
+            <h2><b>Laporan Risalah Rapat</b></h2>
             <div class="d-flex gap-2">
-                <div class="search">
-                    <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
-                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari" style="outline: none; box-shadow: none;">
+            <form method="GET" action="{{ route('cetak-laporan-risalah.superadmin') }}" class="search-filter d-flex gap-2">
+                <div  class="dropdown" style="margin-bottom: 8px;">
+                    <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" onchange="this.form.submit()">
+                        <option value="pilih" disabled {{ !request()->filled('divisi_id_divisi') ? 'selected' : '' }}>Pilih Divisi</option>
+                        @foreach($divisi as $d)
+                            <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}>
+                                {{ $d->nm_divisi }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
+                <div class="d-flex gap-2">
+                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px; width: 200px; height: 80%; border: 1px solid #E5E5E5;">
+                        <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
+                        <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
+                    </div>
+                </div>
+                </form>
                 <!-- Add User Button to Open Mod    al -->
-                <button class="btn btn-primary-print">
+                <a href="{{route ('format-cetakLaporan-risalah',request()->all())}}" class="btn btn-primary-print">
                     <img src="/img/laporan/print.png" alt="print"> Cetak Data
-                </button>
+</a>
             </div>
         </div>
     </div>
@@ -54,62 +63,41 @@
                 </th>
                 <th>Seri</th>
                 <th>Dokumen</th>
+                <th>Divisi</th>
                 <th>Data Disahkan
                     <button class="data-md">
                         <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
                     </button>
                 </th>
-                <!-- <th>Divisi</th> -->
                 <th>Status</th>
-                <th>Aksi</th>
             </tr>
         </thead>
-        <!-- <tbody>
-            @for ($i = 1; $i <= 3; $i++)
-            <tr>
-                <td class="nomor">{{ $i }}</td>
-                <td class="nama-dokumen text-success">Risalah Rapat Pengesahan</td>
-                <td>21-10-2024</td>
-                <td>1596</td>
-                <td>837.06/REKA/GEN/VII/2024</td>
-                <td>22-10-2024</td>
-                <td>HR & GA</td>
-                <td>
-                    <span class="badge bg-success">Diterima</span>
-                </td>
-                <td>
-                    <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
-                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        <img src="/img/arsip/delete.png" alt="delete">
-                    </button>
-                    <button class="btn btn-sm3"><img src="/img/arsip/preview.png" alt="preview"></button>
-                </td>
-            </tr>
-            @endfor
-        </tbody> -->
         <tbody>
         @if ($risalahs->isNotEmpty())
             @foreach ($risalahs as $index => $laporan)
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
-                <td>{{ $laporan->judul }}</td>
+                <td class="nama-dokumen 
+                    {{ $laporan->status == 'reject' ? 'text-danger' : ($laporan->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                    {{ $laporan->judul }}
+                </td>
                 <td>{{ $laporan->tgl_dibuat->format('d-m-Y') }}</td>
                 <td>{{ $laporan->seri_surat }}</td>
-                <td>{{ $laporan->nomor_laporan }}</td>
+                <td>{{ $laporan->nomor_risalah }}</td>
+                <td>{{ $laporan->divisi ? $laporan->divisi->nm_divisi : '-' }}</td>
                 <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-                <!-- <td>{{ $laporan->divisi->nm_divisi }}</td> -->
                 <td>
                     <span class="badge bg-{{ $laporan->status == 'approve' ? 'success' : 'warning' }}">
                         {{ $laporan->status == 'approve' ? 'Diterima' : 'Pending' }}
                     </span>
                 </td>
-                <td>
+                <!-- <td>
                     <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
                     <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
                         <img src="/img/arsip/delete.png" alt="delete">
                     </button>
                     <button class="btn btn-sm3"><img src="/img/arsip/preview.png" alt="preview"></button>
-                </td>
+                </td> -->
             </tr>
             @endforeach
         @else

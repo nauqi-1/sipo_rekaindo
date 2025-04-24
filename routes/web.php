@@ -67,6 +67,10 @@ Route::get('/undangan/edit/{id_undangan}', [UndanganController::class, 'edit'])-
 Route::delete('/undangan/delete/{id_undangan}', [UndanganController::class, 'destroy'])->name('undangan.destroy');
 Route::put('/undangan/update/{id_undangan}', [UndanganController::class, 'update'])->name('undangan/update');
 
+Route::get('/risalah/edit/{id_risalah}', [RisalahController::class, 'edit'])->name('risalah.edit');
+Route::delete('/risalah/delete/{id_risalah}', [RisalahController::class, 'destroy'])->name('risalah.destroy');
+Route::put('/risalah/update/{id_risalah}', [RisalahController::class, 'update'])->name('risalah/update');
+
 
 Route::get('/dashboard.admin',  [DashboardController::class, 'index']
 )->name('admin.dashboard');
@@ -164,7 +168,7 @@ Route::get('/laporan-undangan', function() {
 Route::get('/cetak-laporan-memo', [LaporanController::class, 'index'])
     ->name('cetak-laporan-memo.superadmin');
 
-    Route::post('/cetak-laporan-memo', [LaporanController::class, 'filterMemosByDate'])
+Route::post('/cetak-laporan-memo', [LaporanController::class, 'filterMemosByDate'])
     ->name('cetak-laporan-memo.filter');
 
 Route::get('/cetak-laporan-undangan', [LaporanController::class, 'undangan'])
@@ -172,10 +176,12 @@ Route::get('/cetak-laporan-undangan', [LaporanController::class, 'undangan'])
 
 Route::post('/cetak-laporan-undangan', [LaporanController::class, 'filterUndanganByDate'])
     ->name('cetak-laporan-undangan.filter');
-
-Route::get('/cetak-laporan-risalah', function() {
-    return view('superadmin.laporan.cetak-laporan-risalah');
-})->name('laporan-risalah');
+    
+Route::get('/cetak-laporan-risalah', [LaporanController::class, 'risalah'])
+    ->name('cetak-laporan-risalah.superadmin');
+    
+Route::post('/cetak-laporan-risalah', [LaporanController::class, 'filterRisalahByDate'])
+        ->name('cetak-laporan-risalah.filter');
 
 Route::get('/format-cetakLaporan-memo', [CetakPDFController::class, 'laporanmemoPDF'])
     ->name('format-cetakLaporan-memo');
@@ -183,6 +189,8 @@ Route::get('/format-cetakLaporan-memo', [CetakPDFController::class, 'laporanmemo
 Route::get('/format-cetakLaporan-undangan', [CetakPDFController::class, 'laporanundanganPDF']
 )->name('format-cetakLaporan-undangan');    
 
+Route::get('/format-cetakLaporan-risalah', [CetakPDFController::class, 'laporanRisalahPDF']
+)->name('format-cetakLaporan-risalah');  
 // memo supervisor
 // Route::get('/memo-terkirim', function() {
 //     return view('manager.memo.memo-terkirim'); })->name('memo.terkirim');
@@ -237,6 +245,7 @@ Route::delete('/arsip/restore/{document_id}/{jenis_document}', [ArsipController:
 
 Route::get('/superadmin/memo', [MemoController::class, 'superadmin'])->name('memo.superadmin');
 Route::get('/superadmin/undangan', [UndanganController::class, 'superadmin'])->name('undangan.superadmin');
+Route::get('/superadmin/risalah', [RisalahController::class, 'superadmin'])->name('risalah.superadmin');
 Route::get('/admin/undangan', [UndanganController::class, 'index'])->name('undangan.admin');
 Route::get('/manager/undangan', [KirimController::class, 'undangan'])->name('undangan.manager');
 
@@ -276,7 +285,7 @@ Route::get('/memo/{id}/preview', [MemoController::class, 'showFile'])->name('mem
 
 Route::get('/memo/arsip/{id}', [ArsipController::class, 'view'])->name('view.memo-arsip');
 Route::get('/undangan/arsip/{id}', [ArsipController::class, 'viewUndangan'])->name('view.undangan-arsip');
-Route::get('/risalah/arsip', [ArsipController::class, 'view'])->name('view.risalah-arsip');
+Route::get('/risalah/arsip/{id}', [ArsipController::class, 'viewRisalah'])->name('view.risalah-arsip');
 
 Route::get('/memo/{id}', [MemoController::class, 'view'])->name('view.memo');
 Route::get('/undangan/manager/{id}', [UndanganController::class, 'view'])->name('view.undangan');

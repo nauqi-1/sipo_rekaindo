@@ -15,32 +15,23 @@ class PerusahaanController extends Controller {
 
     // Simpan atau update data perusahaan
     public function update(Request $request) {
-        $perusahaan = Perusahaan::firstOrNew([]); // Jika belum ada, buat baru
-
-        // Validasi data
+        $perusahaan = Perusahaan::firstOrNew([]);
+    
         $request->validate([
             'nama_instansi' => 'required',
             'alamat_web' => 'required',
             'telepon' => 'required',
             'email' => 'required|email',
             'alamat' => 'required',
-            'logo' => 'nullable|image|max:2048', // Validasi file gambar max 2MB
+            'logo' => 'nullable|image|max:2048',
         ]);
-
-        // Cek jika ada file logo
+    
         if ($request->hasFile('logo')) {
-            // Hapus logo lama jika ada
-            if ($perusahaan->logo) {
-                Storage::disk('public')->delete('logos/' . $perusahaan->logo);
-            }
-
-            // Simpan logo baru
-            $logo = $request->file('logo');
-            $logoPath = $logo->store('logos', 'public'); // Simpan di storage/logos/
-            $perusahaan->logo = basename($logoPath);
+            $logoFile = $request->file('logo');
+            $logoContent = file_get_contents($logoFile->getRealPath());
+            $perusahaan->logo = base64_encode($logoContent);
         }
-
-        // Update data
+    
         $perusahaan->fill([
             'nama_instansi' => $request->nama_instansi,
             'alamat_web' => $request->alamat_web,
@@ -48,7 +39,7 @@ class PerusahaanController extends Controller {
             'email' => $request->email,
             'alamat' => $request->alamat,
         ])->save();
-
+    
         return redirect()->route('data-perusahaan')->with('success', 'Data perusahaan berhasil diperbarui');
-    }
+    }    
 }

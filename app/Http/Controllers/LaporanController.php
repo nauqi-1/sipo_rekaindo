@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Laporan;
 use App\Models\Memo;
 use App\Models\Undangan;
+use App\Models\Risalah;
 use App\Models\Role;
 use App\Models\Seri;
 use App\Models\User;
@@ -70,6 +71,35 @@ class LaporanController extends Controller
 
         return view('superadmin.laporan.cetak-laporan-undangan', [
             'undangans' => $undangans,
+            'divisi' => $divisi
+        ]);
+    }
+
+    public function filterRisalahByDate(Request $request)
+    {
+        $divisi = Divisi::all(); // Menambahkan variabel divisi
+        $request->validate([
+            'tgl_awal' => 'required|date',
+            'tgl_akhir' => 'required|date|after_or_equal:tgl_awal'
+        ]);
+
+        // Store dates in session
+        $request->session()->put('filter_dates', [
+            'tgl_awal' => $request->tgl_awal,
+            'tgl_akhir' => $request->tgl_akhir
+        ]);
+
+        // Get filtered memos
+        $risalahs = Risalah::where(function($query) {
+            $query->where('status', 'diterima')
+                  ->orWhere('status', 'approve');
+        })->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
+          ->whereDate('tgl_dibuat', '<=', $request->tgl_akhir)
+          ->orderBy('tgl_dibuat', 'desc')
+          ->get();
+
+        return view('superadmin.laporan.cetak-laporan-risalah', [
+            'risalahs' => $risalahs,
             'divisi' => $divisi
         ]);
     }
@@ -164,5 +194,46 @@ class LaporanController extends Controller
         
     }
 
+    public function risalah(Request $request)
+    {
+        $divisi = Divisi::all();
+        $seri = Seri::all();  
+        $user = Auth::user();
+        if (!$user) {
+            return redirect('/');
+        }
 
+        $risalahs = Risalah::query()
+            ->where(function($query) {
+                $query->where('status', 'diterima')
+                    ->orWhere('status', 'approve');
+            });
+
+        // Filter tanggal dari session
+        if (session()->has('filter_dates')) {
+            $dates = session('filter_dates');
+            $risalahs->whereDate('tgl_dibuat', '>=', $dates['tgl_awal'])
+                    ->whereDate('tgl_dibuat', '<=', $dates['tgl_akhir']);
+        }
+
+        // Filter divisi jika ada
+        if ($request->filled('divisi_id_divisi')) {
+            $risalahs->where('divisi_id_divisi', $request->divisi_id_divisi);
+        }
+
+        // Filter search jika ada
+        if ($request->filled('search')) {
+            $risalahs->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        $risalahs = $risalahs->orderBy('tgl_dibuat', 'desc')->get();
+
+        // Jika masuk route cetak, tampilkan cetak-laporan-undangan
+        if (request()->route()->getName() === 'cetak-laporan-risalah.superadmin' || request()->is('cetak-laporan-risalah')) {
+            return view('superadmin.laporan.cetak-laporan-risalah', [
+                'risalahs' => $risalahs,
+                'divisi' => $divisi
+            ]);
+        }   
+    }
 }

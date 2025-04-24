@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Memo;
 use App\Models\Undangan;
+use App\Models\Risalah;
 use App\Models\Divisi;
 use App\Models\Backup_Document;
+use App\Models\BackupRisalah;
 
 use Auth;
 
@@ -94,7 +96,6 @@ class BackupController extends Controller
         return view('superadmin.backup.undangan', compact('undangans','divisi', 'sortDirection'));
     }
 
-
     public function RestoreMmeo($id)
      {
         $memo = Backup_Document::findOrFail($id);
@@ -167,5 +168,45 @@ class BackupController extends Controller
         $undangan->delete();
  
          return redirect()->route('undangan.backup' )->with('success', 'Memo deleted successfully.');
+     }
+
+     public function RestoreRisalah($id)
+     {
+        $risalah = BackupRisalah::findOrFail($id);
+
+        // Pindahkan data ke tabel backup
+        risalah::create([
+            'id_risalah' => $risalah->id_document,
+            'tgl_dibuat' => $risalah->tgl_dibuat,
+            'tgl_disahkan' => $risalah->tgl_disahkan,
+            'seri_surat' => $risalah->seri_document,
+            'nomor_risalah' => $risalah->nomor_document,
+            'tujuan'=> $risalah->tujuan,
+            'waktu_mulai' => $risalah->waktu_mulai,
+            'waktu_selesai' => $risalah->waktu_selesai,
+            'agenda' => $risalah->agenda,
+            'tempat' => $risalah->tempat,
+            'nama_bertandatangan'=> $risalah->nama_bertandatangan,
+            'lampiran' => $risalah->lampiran,
+            'judul' => $risalah->judul,
+            'pembuat' => $risalah->pembuat,
+            'catatan' => $risalah->catatan,
+            'divisi_id_divisi' => $risalah->divisi_id_divisi,
+            'status' => $risalah->status,           
+            'created_at' => $risalah->created_at,
+            'updated_at' => $risalah->updated_at,
+            
+            // tambahkan kolom lain jika ada
+        ]);
+    
+        // Hapus file lampiran jika ada
+        if ($risalah->lampiran && file_exists(public_path($risalah->lampiran))) {
+            unlink(public_path($risalah->lampiran));
+        }
+    
+        // Hapus dari tabel memo
+        $risalah->delete();
+ 
+         return redirect()->route('risalah.backup')->with('success', 'Risalah deleted successfully.');
      }
 }

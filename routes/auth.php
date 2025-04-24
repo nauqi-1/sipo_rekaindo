@@ -6,7 +6,7 @@ use App\Http\Controllers\MemoController;
 use App\Http\Controllers\KirimController;
 use App\Http\Controllers\ArsipController;
 use App\Http\Controllers\BackupController;
-
+use App\Http\Controllers\BackupRisalahController;
 use App\Http\Controllers\UndanganController;
 use Illuminate\Support\Facades\Route;
 
@@ -76,7 +76,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/memo-restore', [BackupController::class, 'memo'])->name('memo.backup');
         Route::get('/undangan-restore', [BackupController::class, 'undangan'])->name('undangan.backup');
+        Route::get('/risalah-restore', [BackupRisalahController::class, 'risalah'])->name('risalah.backup');
         Route::get('/memo-restore/{id}', [BackupController::class, 'RestoreMmeo'])->name('memo.restore');
         Route::get('/undangan-restore/{id}', [BackupController::class, 'RestoreUndangan'])->name('undangan.restore');
-
+        Route::get('/risalah-restore/{id}', [BackupRisalahController::class, 'RestoreRisalah'])->name('risalah.restore');
 });

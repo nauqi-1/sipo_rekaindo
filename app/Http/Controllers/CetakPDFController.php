@@ -404,4 +404,45 @@ public function viewrisalahPDF($id_risalah)
     }
 }
 
+    public function laporanrisalahPDF(Request $request)
+    {
+        // Ambil data divisi
+        $risalahs = Risalah::query();
+
+        // Filter berdasarkan divisi jika ada
+        if ($request->filled('divisi_id_divisi')) {
+            $risalahs->where('divisi_id_divisi', $request->divisi_id_divisi);
+        }
+
+        // Filter berdasarkan pencarian judul jika ada
+        if ($request->filled('search')) {
+            $risalahs->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        $risalahs->where('status', 'approve');
+
+        // Ambil semua data yang sudah difilter
+        $risalahs = $risalahs->orderBy('tgl_dibuat', 'desc')->get();
+
+        // Ambil path gambar header dan footer
+        $headerPath = public_path('img/bheader.png');
+        $footerPath = public_path('img/bfooter.png');    
+
+        $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
+        $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
+        
+        // Generate PDF dari view
+        $pdf = PDF::loadView('format-surat.format-cetakLaporan-risalah', [
+            'risalahs' => $risalahs,
+            'tgl_awal' => $request->tgl_awal,
+            'tgl_akhir' => $request->tgl_akhir,
+            'headerImage' => $headerBase64,
+            'footerImage' => $footerBase64,
+            'isPdf' => true
+        ])->setPaper('A4', 'portrait');
+
+        // Tampilkan PDF langsung di browser
+        return $pdf->stream('laporan-risalah.pdf');
+    }
+
 }

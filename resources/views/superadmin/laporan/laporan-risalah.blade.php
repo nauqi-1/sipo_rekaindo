@@ -14,13 +14,12 @@
     <div class="row">
         <div class="breadcrumb-wrapper">
             <div class="breadcrumb" style="gap: 5px;">
-                <a href="#">Beranda</a>/<a href="#">Laporan</a>/<a href="#" style="color: #565656">Laporan Risalah Rapat</a>
+                <a href="#">Beranda</a>/<a href="#">Laporan</a>/<a href="#" style="color: #565656;">Laporan Risalah Rapat</a>
             </div>
         </div>
     </div>
 
-
-    <!-- form add risalah -->
+    <!-- form add udangan -->
     <div class="laporan">
         <div class="card">
             <div class="card-body">
@@ -32,7 +31,7 @@
                                 <img src="/img/laporan/tanggal.png" alt="date">
                                 <span>Tanggal Awal</span>
                             </div>
-                            <input type="date" name="tgl_surat" id="tgl_surat" class="form-control" required>
+                            <input type="date" name="tgl_awal" id="tgl_awal" class="form-control" required>
                             <p>* Masukkan tanggal awal filter data risalah!</p>
                         </div> 
                         <div class="col-md-6">
@@ -40,7 +39,7 @@
                                 <img src="/img/laporan/tanggal.png" alt="date">
                                 <span>Tanggal Akhir</span>
                             </div>
-                            <input type="date" name="tgl_surat" id="tgl_surat" class="form-control" required>
+                            <input type="date" name="tgl_akhir" id="tgl_akhir" class="form-control" required>
                             <p>* Masukkan tanggal akhir filter data risalah!</p>
                         </div>
                     </div>
