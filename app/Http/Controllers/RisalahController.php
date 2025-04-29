@@ -502,7 +502,7 @@ public function update(Request $request, $id)
                     if ($request->status == 'reject') {
                         $risalah->status = 'reject';
                         $risalah->tgl_disahkan = now();
-                        $risalah->catatan = $request->catatan ?? $memo->catatan;
+                        $risalah->catatan = $request->catatan ?? $risalah->catatan;
                         $risalah->save();
                         
                         Notifikasi::create([

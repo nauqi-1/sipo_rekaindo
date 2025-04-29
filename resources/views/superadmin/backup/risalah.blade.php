@@ -101,8 +101,8 @@
                         {{ $risalah->judul }}
                     </td>
                     <td>{{ \Carbon\Carbon::parse($risalah->tgl_dibuat)->format('d-m-Y') }}</td>
-                    <td>{{ $risalah->seri_surat }}</td>
-                    <td>{{ $risalah->nomor_risalah }}</td>
+                    <td>{{ $risalah->seri_document }}</td>
+                    <td>{{ $risalah->nomor_document }}</td>
                     <td>{{ $risalah->tgl_disahkan ? \Carbon\Carbon::parse($risalah->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
                     <td>{{ $risalah->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
                     </td>

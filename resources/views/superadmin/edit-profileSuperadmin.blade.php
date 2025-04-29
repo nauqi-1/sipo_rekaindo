@@ -161,7 +161,7 @@ input[readonly] {
                         <div class="col-md-6">
                             <label class="form-label">Konfirmasi Password</label>
                             <div class="input-group">
-                                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="********">
+                                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="Konfirmasi Password">
                                 <span class="input-group-text" onclick="togglePassword('password_confirmation', this)" style="cursor:pointer;">
                                     <i class="fa fa-eye-slash"></i>
                                 </span>

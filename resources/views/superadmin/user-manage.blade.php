@@ -156,16 +156,19 @@
                         <div class="col-md-6">
                             <label for="firstname" class="form-label">Nama Depan :<span style="color : red;"> *</span></label>
                             <input type="text" name="firstname" id="firstname" class="form-control" required autocomplete="firstname">
+                            <x-input-error :messages="$errors->get('firstname')" class="mt-2" />
                         </div>
                         <div class="col-md-6">
                             <label for="lastname" class="form-label">Nama Akhir :<span style="color : red;"> *</span></label>
                             <input type="text" name="lastname" id="lastname" class="form-control" required autocomplete="lastname">
+                            <x-input-error :messages="$errors->get('lastname')" class="mt-2" />
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="username" class="form-label">Nama Pengguna :<span style="color : red;"> *</span></label>
                             <input type="text" name="username" id="username" class="form-control" required autocomplete="username">
+                            <x-input-error :messages="$errors->get('username')" class="mt-2" />
                         </div>
                         <div class="col-md-6">
                             <label for="phone_number" class="form-label">No. Telpon :<span style="color : red;"> *</span></label>

@@ -19,7 +19,7 @@ class ProfileController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
-
+        
         // Validasi data input
         $request->validate([
             'firstname'         => 'required|string|max:50',

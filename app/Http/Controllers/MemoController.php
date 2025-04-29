@@ -321,6 +321,7 @@ class MemoController extends Controller
             'catatan' => 'nullable|string',
         ]);
         
+        
         if ($userDivisiId == $memo->divisi_id_divisi) {
         // Update status
             $memo->status = $request->status;
@@ -374,6 +375,7 @@ class MemoController extends Controller
                 $currentKirim->status = $request->status;
                 $currentKirim->updated_at = now();
                 $currentKirim->save();
+                
 
                 // Update juga status record kiriman sebelumnya (pengirim sebelumnya)
                 Kirim_document::where('id_document', $id)
@@ -391,6 +393,7 @@ class MemoController extends Controller
                             'id_divisi' => $memo->divisi_id_divisi,
                             'updated_at' => now()
                         ]);
+                        
                     }
                 
                     if ($request->status == 'reject') {
@@ -406,7 +409,10 @@ class MemoController extends Controller
                             'updated_at' => now()
                         ]);
                     }
+                    
             }
+            
+            
         }
 
         
@@ -628,9 +634,14 @@ class MemoController extends Controller
 
     public function showDiterima($id)
     {
+        $userId = auth()->id(); // Ambil ID user yang sedang login (Manager divisi)
+
         $memo = Kirim_Document::where('jenis_document', 'memo')
-            ->where('id_document', $id)
-            ->with(['memo', 'pengirim', 'penerima'])
+            ->where('id_penerima', $userId)
+            
+            ->Where('status', 'pending') // Status di tabel kirim_document
+            ->whereHas('memo')
+            ->with('memo') // Pastikan ada relasi 'memo' di model Kirim_Document
             ->firstOrFail();
 
         return view('manager.memo.view-memoDiterima', compact('memo'));

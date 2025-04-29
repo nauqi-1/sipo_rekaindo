@@ -53,10 +53,10 @@
                         <label for="status">Status</label>
                         <div class="separator"></div>
                         <button class="status">
-                        @if ($memo->memo->status == 'reject')
+                        @if ($memo->status == 'reject')
                             <!-- <span class="badge bg-danger">Ditolak</span> -->
                             <span>Ditolak</span>
-                        @elseif ($memo->memo->status == 'pending')
+                        @elseif ($memo->status == 'pending')
                             <!-- <span class="badge bg-warning">Diproses</span> -->
                             <span>Diproses</span>
                         @else

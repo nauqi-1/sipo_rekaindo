@@ -21,7 +21,7 @@
                         <div class="modal-header">
                             <img src="/img/user-manage/editUser.png" alt="editUser" style="margin-right: 10px;">
                             <h5 class="modal-title" id="editUserModalLabel"><b>Edit Pengguna</b></h5>
-                            <button type="button" class="btn-close" onclick="window.location='#'" aria-label="Close"></button>
+                            <button type="button" class="btn-close" onclick="window.location='{{ route('user.manage') }}'" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="row mb-3">
