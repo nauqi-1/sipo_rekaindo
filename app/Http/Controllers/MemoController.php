@@ -13,7 +13,7 @@ use App\Models\Notifikasi;
 use App\Models\Kirim_Document;
 use App\Models\Backup_Document;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 class MemoController extends Controller
 {
     public function index(Request $request)
@@ -208,10 +208,10 @@ class MemoController extends Controller
     {
         //  dd($request->all());
 
-        $request->validate([
-            'judul' => 'required|string|max:70',
+        $validator = Validator::make($request->all(), [
+            'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
-            'tujuan' => 'required|string|max:255',
+            'tujuan' => 'required|string|max:100',
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
             'pembuat'=>'required|string|max:255',
@@ -225,6 +225,11 @@ class MemoController extends Controller
             'lampiran.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
             'lampiran.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+    
         
         
 
@@ -417,7 +422,7 @@ class MemoController extends Controller
 
         
 
-        return redirect()->back()->with('success', 'Status memo berhasil diperbarui.');
+        return redirect()->route('memo.diterima')->with('success', 'Status memo berhasil diperbarui.');
     }
 
     public function edit($id)

@@ -166,9 +166,10 @@
                     <div class="modal-body">
                         <!-- Close Button -->
                         <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-                        <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
-                        <h5 class="modal-title mb-4"><b>Kirim Memo Diterima?</b></h5>
-                        <div class="d-flex justify-content-center mt-3">
+                        <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
+                        <h5 class="modal-title mb-4"><b>Kirim Memo?</b></h5>
+                        <div class="d-flex justify-content-center mt
+                        -3">
                             <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
                             <button type="button" class="btn btn-primary" id="confirmSubmit" data-bs-toggle="modal">Oke</button>
                         </div>    
@@ -182,11 +183,11 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content text-center p-4">
                     <div class="modal-body">
-                        <img src="/img/memo-admin/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
+                        <img src="/img/undangan/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
                         <!-- Success Message -->
                         <h5 class="modal-title"><b>Sukses</b></h5>
                         <p class="mt-2">Berhasil Mengirimkan Memo</p>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}" style="color: white; text-decoration: none">Kembali ke Halaman Memo</a></button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}" style="color: white; text-decoration: none">Kembali ke Halaman Undangan</a></button>
                     </div>
                 </div>
             </div>
@@ -197,16 +198,6 @@
     <script>
     // Overlay kirim
     document.addEventListener('DOMContentLoaded', function () {
-        // Mengatur agar hanya satu checkbox approval yang bisa dipilih
-        const checkboxes = document.querySelectorAll('.approval-checkbox');
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function () {
-                checkboxes.forEach(cb => {
-                    if (cb !== this) cb.checked = false;
-                });
-            });
-        });
-
         const approvalForm = document.getElementById('approvalForm');
         const confirmSubmitButton = document.getElementById('confirmSubmit');
 
@@ -226,6 +217,7 @@
     });
     </script>
     <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

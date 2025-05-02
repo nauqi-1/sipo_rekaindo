@@ -140,45 +140,39 @@
             </div>
 
             <div class="footer">
-                <button type="button" class="btn back" id="backBtn">Kembali</button>
-                <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submitModal">Kirim</button>
+                <button type="button" class="btn back" id="backBtn" onclick="window.location.href=' '">Kembali</button>
+                <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
             </div>
         </form>
   
         <!-- Modal kirim -->
-        <div class="modal fade" id="submitModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
+        <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Kirim dan Konfirmasi Undangan?</b></h5>
-                        <!-- Tombol -->
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="#">Batal</a></button>
-                            <button type="button" class="btn ok" id="confirmSubmit">Oke</button>
-                        </div>
+                <div class="modal-content text-center p-4">
+                    <div class="modal-body">
+                        <!-- Close Button -->
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
+                        <h5 class="modal-title mb-4"><b>Kirim Undangan Rapat?</b></h5>
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-primary" id="confirmSubmit" data-bs-toggle="modal">Oke</button>
+                        </div>    
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Modal Berhasil -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Berhasil Mengirim</b></h5>
-                        <!-- Tombol -->
-                        <button type="button" class="btn backPage" data-bs-dismiss="modal"><a href="{{route ('undangan.manager')}}">Kembali</a></button>
+                <div class="modal-content text-center p-4">
+                    <div class="modal-body">
+                        <img src="/img/undangan/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
+                        <!-- Success Message -->
+                        <h5 class="modal-title"><b>Sukses</b></h5>
+                        <p class="mt-2">Berhasil Mengirimkan Undangan</p>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('undangan.manager')}}" style="color: white; text-decoration: none">Kembali ke Halaman Undangan</a></button>
                     </div>
                 </div>
             </div>
@@ -186,21 +180,42 @@
     </div>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-const checkboxes = document.querySelectorAll('.approval-checkbox');
+        const checkboxes = document.querySelectorAll('.approval-checkbox');
 
-checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', function () {
-        checkboxes.forEach(cb => {
-            if (cb !== this) cb.checked = false;
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                checkboxes.forEach(cb => {
+                    if (cb !== this) cb.checked = false;
+                });
+            });
         });
     });
-});
 
-// Ketika tombol konfirmasi di modal ditekan, submit form
-document.getElementById('confirmSubmit').addEventListener('click', function () {
-    document.getElementById('approvalForm').submit();
-});
-});
+    // Overlay kirim
+    document.addEventListener('DOMContentLoaded', function () {
+        const approvalForm = document.getElementById('approvalForm');
+        const confirmSubmitButton = document.getElementById('confirmSubmit');
+
+        confirmSubmitButton.addEventListener('click', function (event) {
+            event.preventDefault(); // Mencegah submit default
+            
+            // Kirim form secara normal
+            approvalForm.submit();
+        });
+
+        // Jika ada notifikasi sukses dari server, tampilkan modal sukses
+        const successMessage = "{{ session('success') }}";
+        if (successMessage) {
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        }
+    });
     </script>
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

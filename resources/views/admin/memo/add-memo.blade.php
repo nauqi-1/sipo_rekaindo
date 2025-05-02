@@ -41,7 +41,10 @@
                     <label for="tgl_surat" class="form-label">
                         <img src="/img/memo-admin/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                     </label>
-                    <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" required>
+                    <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ old('tgl_dibuat') }}">
+                    @error('tgl_dibuat')
+                        <div class="form-control text-danger">{{ $message }}</div>
+                    @enderror
                     <input type="hidden" name="tgl_disahkan" >
                     <input type="hidden" name="catatan" >                    
                 </div>
@@ -59,7 +62,10 @@
                 </div>
                 <div class="col-md-6" >
                     <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
-                    <input type="text" name="judul" id="judul" class="form-control" placeholder="Masukkan Perihal / Judul Surat" required>
+                    <input type="text" name="judul" id="judul" class="form-control" placeholder="Masukkan Perihal / Judul Surat" value="{{ old('judul') }}" >
+                    @error('judul')
+                        <div class="form-control text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
             </div>
@@ -69,16 +75,24 @@
                         <img src="/img/memo-admin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
                         <label for="tujuan" class="label-kepada"></label>
                     </label>
-                    <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="Silahkan Isi Tujuan Memo" required>
+                    <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="Silahkan Isi Tujuan Memo" value="{{ old('tujuan') }}" >
+                    @error('tujuan')
+                        <div class="form-control text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="col-md-6">
                     <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                    <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
+                    <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" >
                         <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                         @foreach($managers as $manager)
-                            <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname . ' ' . $manager->lastname }}</option>
+                            <option value="{{  $manager->firstname . ' ' . $manager->lastname }}" {{ old('nama_bertandatangan') == $manager->firstname . ' ' . $manager->lastname ? 'selected' : '' }}>
+                                {{ $manager->firstname . ' ' . $manager->lastname }}
+                            </option>
                         @endforeach
                     </select>
+                    @error('nama_bertandatangan')
+                        <div class="form-control text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
             <div class="row mb-4">
@@ -104,7 +118,10 @@
                     <label for="isi_memo">Isi Surat<span class="text-danger">*</span></label>
                 </div>
                 <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
-                    <textarea id="summernote" name="isi_memo"></textarea>
+                    <textarea id="summernote" name="isi_memo" value="{{ old('isi_memo') }}" ></textarea>
+                    @error('isi_memo')
+                        <div class=" text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
         </div>

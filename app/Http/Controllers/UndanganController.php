@@ -7,10 +7,12 @@ use App\Models\Seri;
 use App\Models\User;
 use App\Models\Divisi;
 use App\Models\Arsip;
-use App\Models\Notifikasi;
+use App\Models\Notifikasi; 
 use App\Models\Undangan;
 use App\Models\Backup_Document;
 use App\Models\Kirim_document;
+use Illuminate\Support\Facades\Validator;
+
 
 use Illuminate\Http\Request;
 
@@ -191,7 +193,7 @@ class UndanganController extends Controller
         // dd($request->all());
 
 
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:70',
             'isi_undangan' => 'required|string',
             'tujuan' => 'required|string|max:255',
@@ -214,6 +216,10 @@ class UndanganController extends Controller
                 $file = $request->file('lampiran');
                 $fileData = base64_encode(file_get_contents($file->getRealPath()));
                 $filePath = $fileData;
+            }
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
             }
 
        

@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <form method="POST" action="{{ route('login') }}">
+                <form method="POST" action="{{ route('login') }}" novalidate>
                     @csrf
                     
                     <!-- Session Status -->

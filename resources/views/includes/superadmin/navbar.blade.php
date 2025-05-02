@@ -4,14 +4,13 @@
     <div class="ms-auto">
       <ul class="list-unstyled">
        <!-- Notifikasi -->
-<li class="dropdown pc-h-item position-relative">
-    <a class="pc-head-link head-link-secondary dropdown-toggle arrow-none me-0" id="notif-toggle">
+  <li class="dropdown pc-h-item">
+    <a class="pc-head-link head-link-secondary dropdown-toggle arrow-none me-0 position-relative" id="notif-toggle">
         <i class="ti ti-bell"></i>
-        <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" id="notif-count">
+        <span class="badge bg-danger rounded-pill position-absolute" id="notif-count">
             0
         </span>
     </a>
-
     <!-- Overlay Notifikasi -->
     <div class="notif-overlay" id="notif-overlay">
         <div class="notif-header">
@@ -101,6 +100,14 @@
     border: none;
     font-size: 18px;
     cursor: pointer;
+  }
+
+  #notif-count {
+    top: -4px;
+    right: -4px;
+    transform: none;
+    font-size: 0.7rem;
+    padding: 4px 6px;
   }
 </style>
 

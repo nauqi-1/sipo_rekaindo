@@ -129,6 +129,7 @@ class KirimController extends Controller
                 $risalah->save();
             }
         }
+        
 
       
     
@@ -142,10 +143,14 @@ class KirimController extends Controller
                 'status' => 'pending',
             ]);
         }
-
+        $previousUrl = session('previous_url', route('memo.diterima'));
+        session()->forget('previous_url');
+        if(Auth::user()->role->nm_role == 'manager'){
+            return redirect($previousUrl)->with('success', 'Dokumen berhasil dikirim.');
+        }else{
         
-
-        return back()->with('success', 'Dokumen berhasil dikirim.');
+        return redirect()->back()->with('success', 'Dokumen berhasil dikirim.');
+        }
     }
 
     public function memoTerkirim()
@@ -173,6 +178,9 @@ class KirimController extends Controller
     public function memoDiterima()
     {
         $userId = auth()->id(); // Ambil ID user yang sedang login (Manager divisi)
+        // Contoh di middleware atau controller sebelumnya
+        session(['previous_url' => url()->previous()]);
+
 
         $memoDiterima = Kirim_Document::where('jenis_document', 'memo')
             ->where('id_penerima', $userId)
