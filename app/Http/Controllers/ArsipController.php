@@ -66,123 +66,203 @@ class ArsipController extends Controller
         return redirect()->back()->with('success', ucfirst($jenis_document) . ' berhasil dikembalikan!');
     }
     public function indexMemo(Request $request)
-{  
+{
     $user_id = Auth::id();
 
-    // Ambil daftar arsip memo yang terkait dengan user
-    $arsipMemo = Arsip::where('user_id', $user_id)
-        ->where('jenis_document', 'App\Models\Memo')
-        ->get();
+    // Ambil daftar arsip memo dari user
+    $arsipQuery = Arsip::where('user_id', $user_id)
+        ->where('jenis_document', 'App\Models\Memo');
 
-    // Ambil daftar document_id dari arsip untuk query memo
-    $memoIds = $arsipMemo->pluck('document_id');
+    // Ambil semua document_id dari arsip terlebih dahulu
+    $arsipAll = $arsipQuery->get();
+    $memoIds = $arsipAll->pluck('document_id');
 
-    // Query Memo berdasarkan ID dari arsip
-    $query = Memo::whereIn('id_memo', $memoIds);
+    // Siapkan query memo berdasarkan ID dari arsip
+    $memoQuery = Memo::whereIn('id_memo', $memoIds);
 
-    // Tambahkan fitur pencarian berdasarkan judul dan nomor memo
+    // Pencarian berdasarkan judul atau nomor memo
     if ($request->filled('search')) {
         $searchTerm = '%' . str_replace(' ', '%', $request->search) . '%';
-        $query->where(function ($q) use ($searchTerm) {
+        $memoQuery->where(function ($q) use ($searchTerm) {
             $q->where('judul', 'like', $searchTerm)
               ->orWhere('nomor_memo', 'like', $searchTerm);
         });
     }
 
-    
-    $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-    $query->orderBy('tgl_dibuat', $sortDirection);
-
-    // Pagination
-    $memos = $query->paginate(6);
-
-    $arsipMemo = $arsipMemo->filter(function ($arsip) use ($memos) {
-        return $memos->contains('id_memo', $arsip->document_id);
-    });
-
-
-    // Tambahkan data memo ke dalam daftar arsip
-    foreach ($arsipMemo as $arsip) {
-        $arsip->document = $memos->where('id_memo', $arsip->document_id)->first();
+    // Filter tanggal dibuat (dari - sampai)
+    if ($request->filled('start_date')) {
+        $memoQuery->whereDate('tgl_dibuat', '>=', $request->start_date);
+    }
+    if ($request->filled('end_date')) {
+        $memoQuery->whereDate('tgl_dibuat', '<=', $request->end_date);
     }
 
-    return view('arsip.arsip-memo', compact('arsipMemo','memos','sortDirection'));
+    // Filter status jika disediakan
+    if ($request->filled('status')) {
+        $memoQuery->where('status', $request->status);
+    }
+
+    // Sorting
+    $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+    $memoQuery->orderBy('tgl_dibuat', $sortDirection);
+
+    // Ambil hasil memo yang sudah difilter
+    $filteredMemos = $memoQuery->get();
+
+    // Ambil kembali ID memo yang tersaring
+    $filteredMemoIds = $filteredMemos->pluck('id_memo');
+
+    // Filter kembali arsip hanya untuk memo yang lolos filter
+    $filteredArsipQuery = Arsip::where('user_id', $user_id)
+        ->where('jenis_document', 'App\Models\Memo')
+        ->whereIn('document_id', $filteredMemoIds);
+
+    // Pagination arsip
+    $perPage = $request->get('per_page', 10);
+    $arsipMemo = $filteredArsipQuery->paginate($perPage);
+
+    // Sisipkan data memo ke dalam arsip
+    $memosMap = $filteredMemos->keyBy('id_memo');
+    foreach ($arsipMemo as $arsip) {
+        $arsip->document = $memosMap->get($arsip->document_id);
+    }
+
+    return view('arsip.arsip-memo', compact('arsipMemo', 'sortDirection'));
 }
+
 
         
     public function indexUndangan(Request $request)
     {
         $user_id = Auth::id();
-        $arsipUndangan = Arsip::where('user_id', $user_id)
-            ->where('jenis_document', 'App\Models\Undangan')
-            ->get();
-        
-        $undanganIds = $arsipUndangan->pluck('document_id');
 
-        // Query Memo berdasarkan ID dari arsip
-        $query = Undangan::whereIn('id_undangan', $undanganIds);
+        // Ambil daftar arsip undangan dari user
+        $arsipQuery = Arsip::where('user_id', $user_id)
+            ->where('jenis_document', 'App\Models\Undangan');
 
-         // Tambahkan fitur pencarian berdasarkan judul dan nomor memo
-    if ($request->filled('search')) {
-        $searchTerm = '%' . str_replace(' ', '%', $request->search) . '%';
-        $query->where(function ($q) use ($searchTerm) {
-            $q->where('judul', 'like', $searchTerm)
-              ->orWhere('nomor_undangan', 'like', $searchTerm);
-        });
-    }
-        
-        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-        $query->orderBy('tgl_dibuat', $sortDirection);
+        // Ambil semua document_id dari arsip terlebih dahulu
+        $arsipAll = $arsipQuery->get();
+        $undanganIds = $arsipAll->pluck('document_id');
 
-        $undangans = $query->paginate(6);
-        $arsipUndangan = $arsipUndangan->filter(function ($arsip) use ($undangans) {
-            return $undangans->contains('id_undangan', $arsip->document_id);
-        });
+        // Siapkan query undangan berdasarkan ID dari arsip
+        $undanganQuery = Undangan::whereIn('id_undangan', $undanganIds);
 
-        // Ambil data undangan berdasarkan document_id dari Arsip
-        foreach ($arsipUndangan as $arsip) {
-            $arsip->document = Undangan::where('id_undangan', $arsip->document_id)->first();
+        // Pencarian berdasarkan judul atau nomor undangan
+        if ($request->filled('search')) {
+            $searchTerm = '%' . str_replace(' ', '%', $request->search) . '%';
+            $undanganQuery->where(function ($q) use ($searchTerm) {
+                $q->where('judul', 'like', $searchTerm)
+                ->orWhere('nomor_undangan', 'like', $searchTerm);
+            });
         }
 
-        return view('arsip.arsip-undangan', compact('arsipUndangan','sortDirection','undangans'));
+        // Filter tanggal dibuat (dari - sampai)
+        if ($request->filled('start_date')) {
+            $undanganQuery->whereDate('tgl_dibuat', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $undanganQuery->whereDate('tgl_dibuat', '<=', $request->end_date);
+        }
+
+        // Filter status jika disediakan
+        if ($request->filled('status')) {
+            $undanganQuery->where('status', $request->status);
+        }
+
+        // Sorting
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $undanganQuery->orderBy('tgl_dibuat', $sortDirection);
+
+        // Ambil hasil undangan yang sudah difilter
+        $filteredUndangan = $undanganQuery->get();
+
+        // Ambil kembali ID undangan yang tersaring
+        $filteredUndanganIds = $filteredUndangan->pluck('id_undangan');
+
+        // Filter kembali arsip hanya untuk undangan yang lolos filter
+        $filteredArsipQuery = Arsip::where('user_id', $user_id)
+            ->where('jenis_document', 'App\Models\Undangan')
+            ->whereIn('document_id', $filteredUndanganIds);
+
+        // Pagination arsip
+        $perPage = $request->get('per_page', 10);
+        $arsipUndangan = $filteredArsipQuery->paginate($perPage);
+
+        // Sisipkan data undangan ke dalam arsip
+        $undanganMap = $filteredUndangan->keyBy('id_undangan');
+        foreach ($arsipUndangan as $arsip) {
+            $arsip->document = $undanganMap->get($arsip->document_id);
+        }
+
+        return view('arsip.arsip-undangan', compact('arsipUndangan', 'sortDirection'));
     }
+
 
     public function indexRisalah(Request $request)
     {
         $user_id = Auth::id();
-        $arsipRisalah = Arsip::where('user_id', $user_id)
-            ->where('jenis_document', 'App\Models\Risalah')
-            ->get();
-        
-        $risalahIds = $arsipRisalah->pluck('document_id');
 
-        // Query Memo berdasarkan ID dari arsip
-        $query = Risalah::whereIn('id_risalah', $risalahIds);
+        // Ambil daftar arsip risalah dari user
+        $arsipQuery = Arsip::where('user_id', $user_id)
+            ->where('jenis_document', 'App\Models\Risalah');
 
-         // Tambahkan fitur pencarian berdasarkan judul dan nomor memo
-    if ($request->filled('search')) {
-        $searchTerm = '%' . str_replace(' ', '%', $request->search) . '%';
-        $query->where(function ($q) use ($searchTerm) {
-            $q->where('judul', 'like', $searchTerm)
-              ->orWhere('nomor_risalah', 'like', $searchTerm);
-        });
-    }
-        
-        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-        $query->orderBy('tgl_dibuat', $sortDirection);
+        // Ambil semua document_id dari arsip terlebih dahulu
+        $arsipAll = $arsipQuery->get();
+        $risalahIds = $arsipAll->pluck('document_id');
 
-        $risalahs = $query->paginate(6);
-        $arsipRisalah = $arsipRisalah->filter(function ($arsip) use ($risalahs) {
-            return $risalahs->contains('id_risalah', $arsip->document_id);
-        });
+        // Siapkan query risalah berdasarkan ID dari arsip
+        $risalahQuery = Risalah::whereIn('id_risalah', $risalahIds);
 
-        // Ambil data undangan berdasarkan document_id dari Arsip
-        foreach ($arsipRisalah as $arsip) {
-            $arsip->document = Risalah::where('id_risalah', $arsip->document_id)->first();
+        // Pencarian berdasarkan judul atau nomor risalah
+        if ($request->filled('search')) {
+            $searchTerm = '%' . str_replace(' ', '%', $request->search) . '%';
+            $risalahQuery->where(function ($q) use ($searchTerm) {
+                $q->where('judul', 'like', $searchTerm)
+                ->orWhere('nomor_risalah', 'like', $searchTerm);
+            });
         }
 
-        return view('arsip.arsip-risalah', compact('arsipRisalah', 'sortDirection', 'risalahs'));
+        // Filter tanggal dibuat (dari - sampai)
+        if ($request->filled('start_date')) {
+            $risalahQuery->whereDate('tgl_dibuat', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $risalahQuery->whereDate('tgl_dibuat', '<=', $request->end_date);
+        }
+
+        // Filter status jika disediakan
+        if ($request->filled('status')) {
+            $risalahQuery->where('status', $request->status);
+        }
+
+        // Sorting
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $risalahQuery->orderBy('tgl_dibuat', $sortDirection);
+
+        // Ambil hasil risalah yang sudah difilter
+        $filteredRisalah = $risalahQuery->get();
+
+        // Ambil kembali ID risalah yang tersaring
+        $filteredRisalahIds = $filteredRisalah->pluck('id_risalah');
+
+        // Filter kembali arsip hanya untuk risalah yang lolos filter
+        $filteredArsipQuery = Arsip::where('user_id', $user_id)
+            ->where('jenis_document', 'App\Models\Risalah')
+            ->whereIn('document_id', $filteredRisalahIds);
+
+        // Pagination arsip
+        $perPage = $request->get('per_page', 10);
+        $arsipRisalah = $filteredArsipQuery->paginate($perPage);
+
+        // Sisipkan data risalah ke dalam arsip
+        $risalahMap = $filteredRisalah->keyBy('id_risalah');
+        foreach ($arsipRisalah as $arsip) {
+            $arsip->document = $risalahMap->get($arsip->document_id);
+        }
+
+        return view('arsip.arsip-risalah', compact('arsipRisalah', 'sortDirection'));
     }
+
 
     public function view($id)
     {

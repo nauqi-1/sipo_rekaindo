@@ -12,10 +12,20 @@
             <h1>Memo Diterima</h1>
         </div>        
         <div class="row">
-            <div class="breadcrumb-wrapper">
-                <div class="breadcrumb" style="gap: 5px;">
+            <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div class="breadcrumb" style="gap: 5px; width: 83%;">
                     <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Memo Diterima</a>
                 </div>
+                <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
+                Show
+                <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
+                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                </select>
+                entries
+            </label>
             </div>
         </div>
 
@@ -107,5 +117,6 @@
                 @endforeach
             </tbody>
         </table>
+        {{ $memoDiterima->links('pagination::bootstrap-5') }}
     </div>
 @endsection

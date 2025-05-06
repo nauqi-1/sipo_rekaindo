@@ -12,10 +12,22 @@
         <h1>Undangan Rapat</h1>
     </div>        
     <div class="row">
-        <div class="breadcrumb-wrapper">
-            <div class="breadcrumb" style="gap: 5px;">
+    <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div class="breadcrumb" style="gap: 5px; width: 82%;">
                 <a href="{{route(Auth::user()->role->nm_role.'.dashboard')}}">Beranda</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Undangan Rapat</a>
             </div>
+            <form method="GET" action="{{ route('arsip.undangan') }}" class="search-filter d-flex gap-2">
+            <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
+                Show
+                <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
+                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                </select>
+                entries
+            </label>
+            </form>
         </div>
     </div>
 
@@ -94,7 +106,7 @@
             @endforeach
         </tbody>
     </table>
-    {{ $undangans->links('pagination::bootstrap-5') }}
+    {{ $arsipUndangan->links('pagination::bootstrap-5') }}
 </div>
 
 

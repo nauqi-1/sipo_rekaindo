@@ -19,53 +19,60 @@ class BackupController extends Controller
     {
         $userId = Auth::id();
         $divisi = Divisi::all();
-        $memo = Backup_Document::where('jenis_document', 'memo');
+    
+        // Gunakan nama variabel $query agar lebih jelas bahwa ini query builder
+        $query = Backup_Document::where('jenis_document', 'memo');
     
         // Filter berdasarkan status
         if ($request->filled('status')) {
-            $memo->where('status', $request->status);
+            $query->where('status', $request->status);
         }
     
         // Filter berdasarkan tanggal dibuat
         if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
-            $memo->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
+            $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
         } elseif ($request->filled('tgl_dibuat_awal')) {
-            $memo->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
+            $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
         } elseif ($request->filled('tgl_dibuat_akhir')) {
-            $memo->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
+            $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
         }
     
+        // Urutan data
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-        $memo->orderBy('created_at', $sortDirection);
+        $query->orderBy('created_at', $sortDirection);
     
-        // Pencarian berdasarkan nama dokumen atau nomor memo
+        // Pencarian berdasarkan judul atau nomor
         if ($request->filled('search')) {
-            $memo->where(function ($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('judul', 'like', '%' . $request->search . '%')
                   ->orWhere('nomor_document', 'like', '%' . $request->search . '%');
             });
         }
-
-        if ($request->filled('divisi_id_divisi') ) {
-            $memo->where('divisi_id_divisi', $request->divisi_id_divisi);
+    
+        // Filter berdasarkan divisi
+        if ($request->filled('divisi_id_divisi')) {
+            $query->where('divisi_id_divisi', $request->divisi_id_divisi);
         }
     
         // Ambil hasil paginate
-        $memos = $memo->paginate(6);
+        $perPage = $request->get('per_page', 10);
+        $memos = $query->paginate($perPage);
     
         return view('superadmin.backup.memo', compact('memos', 'sortDirection', 'divisi'));
     }
+    
     
 
     public function undangan(Request $request)
     {
         $divisi = Divisi::all();
         $undangan = Backup_Document::where('jenis_document', 'undangan');
+
         // Filter berdasarkan status
         if ($request->filled('status')) {
             $undangan->where('status', $request->status);
         }
-    
+
         // Filter berdasarkan tanggal dibuat
         if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
             $undangan->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
@@ -74,27 +81,31 @@ class BackupController extends Controller
         } elseif ($request->filled('tgl_dibuat_akhir')) {
             $undangan->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
         }
-    
+
+        // Urutan sorting
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
         $undangan->orderBy('created_at', $sortDirection);
-    
-        // Pencarian berdasarkan nama dokumen atau nomor memo
+
+        // Pencarian berdasarkan judul atau nomor dokumen
         if ($request->filled('search')) {
             $undangan->where(function ($q) use ($request) {
                 $q->where('judul', 'like', '%' . $request->search . '%')
-                  ->orWhere('nomor_document', 'like', '%' . $request->search . '%');
+                ->orWhere('nomor_document', 'like', '%' . $request->search . '%');
             });
         }
 
-        if ($request->filled('divisi_id_divisi') ) {
+        // Filter berdasarkan divisi
+        if ($request->filled('divisi_id_divisi')) {
             $undangan->where('divisi_id_divisi', $request->divisi_id_divisi);
         }
-    
-        // Ambil hasil paginate
-        $undangans = $undangan->paginate(6);
 
-        return view('superadmin.backup.undangan', compact('undangans','divisi', 'sortDirection'));
+        // Ambil hasil paginate
+        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
+        $undangans = $undangan->paginate($perPage);
+
+        return view('superadmin.backup.undangan', compact('undangans', 'divisi', 'sortDirection'));
     }
+
 
     public function RestoreMmeo($id)
      {

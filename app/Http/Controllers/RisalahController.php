@@ -75,7 +75,8 @@ class RisalahController extends Controller
         // Mengambil daftar memo dengan relasi divisi
         $risalahs = $query->with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(10);
 
-        $risalahs = $query->paginate(6);
+        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
+        $risalahs = Risalah::paginate($perPage);
 
         $risalahs->getCollection()->transform(function ($risalah) use ($userId) {
             if ($risalah->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
@@ -140,7 +141,8 @@ class RisalahController extends Controller
                 ->orWhere('nomor_risalah', 'like', '%' . $request->search . '%');
             });
         }
-        $risalahs = $query->paginate(6);
+        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
+        $risalahs = $query->paginate($perPage);
 
         return view( 'superadmin.risalah.risalah-superadmin', compact('risalahs', 'divisi', 'seri','sortDirection'));
     }

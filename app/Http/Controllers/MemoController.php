@@ -77,7 +77,8 @@ class MemoController extends Controller
         }
 
         // Pagination
-        $memos = $query->paginate(6);
+        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
+        $memos = Memo::paginate($perPage);
         // **Tambahkan status penerima untuk setiap memo**
         $memos->getCollection()->transform(function ($memo) use ($userId) {
             if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
@@ -141,7 +142,9 @@ class MemoController extends Controller
                 ->orWhere('nomor_memo', 'like', '%' . $request->search . '%');
             });
         }
-        $memos = $query->paginate(6);
+        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
+        $memos = $query->paginate($perPage);
+
 
         return view( 'superadmin.memo.memo-superadmin', compact('memos', 'divisi', 'seri','sortDirection'));
     }

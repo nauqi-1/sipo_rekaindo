@@ -169,8 +169,9 @@ class KirimController extends Controller
                 $query->where('status', '!=','pending'); // Cek status dari tabel memo
             })
 
-            ->with('memo') // Relasi ke tabel memo
-            ->get();
+            ->with('memo'); // Relasi ke tabel memo
+            $perPage = request()->get('per_page', 10);
+            $memoTerkirim = $memoTerkirim->paginate($perPage);
 
 
         return view('manager.memo.memo-terkirim', compact('memoTerkirim'));
@@ -187,8 +188,11 @@ class KirimController extends Controller
             
             ->Where('status', 'pending') // Status di tabel kirim_document
             ->whereHas('memo')
-            ->with('memo') // Pastikan ada relasi 'memo' di model Kirim_Document
-            ->get();
+            ->with('memo'); // Pastikan ada relasi 'memo' di model Kirim_Document
+            
+        
+        $perPage = request()->get('per_page', 10);
+        $memoDiterima = $memoDiterima->paginate($perPage);
 
         return view('manager.memo.memo-diterima', compact('memoDiterima'));
     }
@@ -204,9 +208,11 @@ class KirimController extends Controller
             ->where('id_penerima', $userId)
             ->Where('status', 'pending') // Status di tabel kirim_document
             ->whereHas('undangan')
-            ->with('undangan') // Pastikan ada relasi 'memo' di model Kirim_Document
-            ->get();
+            ->with('undangan'); // Pastikan ada relasi 'memo' di model Kirim_Document
+            
 
+            $perPage = request()->get('per_page', 10);
+            $undangans = $undangans->paginate($perPage);
 
         return view('manager.undangan.undangan', compact('undangans'));
     }
@@ -253,8 +259,11 @@ class KirimController extends Controller
         ->whereHas('risalah', function ($query) {
             $query->where('status', 'pending'); // Cek status dari tabel memo
         })
-        ->with('risalah') // Pastikan ada relasi 'memo' di model Kirim_Document
-        ->get();
+        ->with('risalah'); // Pastikan ada relasi 'memo' di model Kirim_Document
+        
+
+        $perPage = request()->get('per_page', 10);
+        $risalahs = $risalahs->paginate($perPage);
 
         return view('manager.risalah.risalah', compact('risalahs'));
     }

@@ -80,7 +80,8 @@ class UndanganController extends Controller
         
         
 
-        $undangans = $query->paginate(6);
+        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
+        $undangans = Undangan::paginate($perPage);
 
         // **Tambahkan status penerima untuk setiap undangan**
         $undangans->getCollection()->transform(function ($undangan) use ($userId) {
@@ -150,7 +151,8 @@ class UndanganController extends Controller
 
         
 
-        $undangans = $query->paginate(6);
+        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
+        $undangans = $query->paginate($perPage);
 
         return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri','sortDirection'));
 
