@@ -7,6 +7,7 @@ use App\Models\Arsip;
 use App\Models\Memo; 
 use App\Models\Undangan; 
 use App\Models\Risalah; 
+use App\Models\Kirim_Document;
 use Illuminate\Support\Facades\Auth;
 
 class ArsipController extends Controller
@@ -127,6 +128,26 @@ class ArsipController extends Controller
         $arsip->document = $memosMap->get($arsip->document_id);
     }
 
+        $arsipMemo->getCollection()->transform(function ($arsip) use ($user_id) {
+        $memo = $arsip->document;
+
+        if ($memo) {
+            if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $memo->final_status = $memo->status; // Memo dari divisi sendiri
+            } else {
+                $statusKirim = Kirim_Document::where('id_document', $memo->id_memo)
+                    ->where('jenis_document', 'memo')
+                    ->where('id_penerima', $user_id)
+                    ->first();
+
+                $memo->final_status = $statusKirim ? $statusKirim->status : '-';
+            }
+        }
+
+        return $arsip;
+    });
+
+
     return view('arsip.arsip-memo', compact('arsipMemo', 'sortDirection'));
 }
 
@@ -194,6 +215,27 @@ class ArsipController extends Controller
             $arsip->document = $undanganMap->get($arsip->document_id);
         }
 
+        $arsipUndangan->getCollection()->transform(function ($arsip) use ($user_id) {
+        $undangan = $arsip->document;
+
+        if ($undangan) {
+            if ($undangan->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $undangan->final_status = $undangan->status; // Dari divisi sendiri
+            } else {
+                $statusKirim = Kirim_Document::where('id_document', $undangan->id_undangan)
+                    ->where('jenis_document', 'undangan')
+                    ->where('id_penerima', $user_id)
+                    ->first();
+
+                $undangan->final_status = $statusKirim ? $statusKirim->status : '-';
+            }
+        }
+
+        return $arsip;
+    });
+
+
+
         return view('arsip.arsip-undangan', compact('arsipUndangan', 'sortDirection'));
     }
 
@@ -259,6 +301,26 @@ class ArsipController extends Controller
         foreach ($arsipRisalah as $arsip) {
             $arsip->document = $risalahMap->get($arsip->document_id);
         }
+
+        $arsipRisalah->getCollection()->transform(function ($arsip) use ($user_id) {
+        $risalah = $arsip->document;
+
+        if ($risalah) {
+            if ($risalah->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $risalah->final_status = $risalah->status; // Dari divisi sendiri
+            }else {
+                $statusKirim = Kirim_Document::where('id_document', $risalah->id_risalah)
+                    ->where('jenis_document', 'risalah')
+                    ->where('id_penerima', $user_id)
+                    ->first();
+
+                $risalah->final_status = $statusKirim ? $statusKirim->status : '-';
+            }
+        }
+
+        return $arsip;
+    });
+
 
         return view('arsip.arsip-risalah', compact('arsipRisalah', 'sortDirection'));
     }

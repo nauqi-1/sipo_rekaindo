@@ -1,8 +1,20 @@
 <!-- [ Header Topbar ] start -->
 <header class="pc-header">
-  <div class="header-wrapper">
-    <div class="ms-auto">
-      <ul class="list-unstyled">
+  <div class="header-wrapper"><!-- [Mobile Media Block] start -->
+<div class="me-auto pc-mob-drp">
+  <ul class="list-unstyled">
+    <li class="pc-h-item header-mobile-collapse">
+      <a href="#" class="pc-head-link head-link-secondary ms-0" id="sidebar-hide">
+        <i class="ti ti-menu-2"></i>
+      </a>
+    </li>
+    <li class="pc-h-item pc-sidebar-popup">
+      <a href="#" class="pc-head-link head-link-secondary ms-0" id="mobile-collapse">
+        <i class="ti ti-menu-2"></i>
+      </a>
+    </li>
+  </ul>
+</div>
        <!-- Notifikasi -->
   <li class="dropdown pc-h-item">
     <a class="pc-head-link head-link-secondary dropdown-toggle arrow-none me-0 position-relative" id="notif-toggle">
@@ -38,7 +50,7 @@
           </a>
           <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
             <div class="dropdown-header">
-              <h4 style="text-transform: capitalize;">Selamat Pagi, {{ Auth::user()->username }} </h4>
+              <h4 style="text-transform: capitalize;">Selamat Datang, {{ Auth::user()->username }} </h4>
               <p class="text-muted" style="text-transform: capitalize;">{{ Auth::user()->role->nm_role }} </p>
               <a href="{{ route('edit-profile.superadmin') }}" class="dropdown-item">
                 <i class="ti ti-user"></i> <span>Profil</span>

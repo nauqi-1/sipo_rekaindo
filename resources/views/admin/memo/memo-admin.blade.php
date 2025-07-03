@@ -72,9 +72,10 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
+                    <th>Verif</th>
                     <th>Tanggal Memo
                     <button class="data-md">
-                            <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                            <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'created_at','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
                                 style="color:rgb(135, 135, 148); text-decoration: none;">
                                 <span class="bi-arrow-down-up"></span>
                             </a>
@@ -84,7 +85,7 @@
                     <th>Dokumen</th>
                     <th>Tanggal Disahkan
                     <button class="data-md">
-                            <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                            <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
                                 style="color:rgb(135, 135, 148); text-decoration: none;">
                                 <span class="bi-arrow-down-up"></span>
                             </a>
@@ -110,6 +111,31 @@
                         {{ $memo->judul }}
                     </td>
                     @endif
+                    <td>
+                        @php
+                            // Cari dokumen kiriman yang sesuai dengan ID memo
+                            $kirimDocument = $kirimDocuments->firstWhere('id_document', $memo->id_memo);
+                        @endphp
+                        <!-- @if($kirimDocument)
+                            <p>Divisi Pengirim: {{ $kirimDocument->divisi_pengirim }}</p>
+                            <p>Divisi Penerima: {{ $kirimDocument->divisi_penerima }}</p>
+                            <p>Status: {{ $memo->status }}</p>
+                            <p>ID Pengirim: {{ $kirimDocument->id_pengirim }}</p>
+                            <p>ID User Login: {{ Auth::user()->id }}</p>
+                        @endif -->
+
+                        @if($kirimDocument)
+                            @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $memo->final_status == 'pending')
+                                <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
+                            @elseif($memo->status == 'approve' && $kirimDocument->id_pengirim == Auth::user()->id && $kirimDocument->divisi_penerima != $kirimDocument->divisi_pengirim && $kirimDocument->status == 'pending')
+                                <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
+                            @else
+                                <p>-</p>
+                            @endif
+                        @else
+                            <p>-</p>
+                        @endif
+                    </td>
                     <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
                     <td>{{ $memo->seri_surat }}</td>
                     <td>{{ $memo->nomor_memo }}</td>

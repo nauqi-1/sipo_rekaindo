@@ -149,7 +149,11 @@
         <div class="signature">
             <p>Madiun, {{ $risalah->tgl_dibuat->translatedFormat('d F Y') }}</p>
             <p>Manager {{ $risalah->divisi->nm_divisi }}</p>
-            <br><br><br>
+            @if(!empty($risalah->qr_approved_by))
+                                    <div style="text-align: right; margin-top: 10px; margin-right: 15px;">
+                                        <img src="data:image/png;base64,{{ $risalah->qr_approved_by }}" width="100" alt="QR Code">
+                                    </div>
+                                @endif
             <p>{{ $risalah->nama_bertandatangan }}</p>
         </div>
     </div>

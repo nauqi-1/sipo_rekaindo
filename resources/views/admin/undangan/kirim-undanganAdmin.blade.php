@@ -23,7 +23,7 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="{{route ('undangan.admin')}}">Undangan</a>/<a href="#" style="color: #565656;">Kirim Undangan Rapat</a>
+                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="{{route ('undangan.admin')}}">Undangan Rapat</a>/<a href="#" style="color: #565656;">Kirim Undangan Rapat</a>
                 </div>
             </div>
         </div>

@@ -16,7 +16,7 @@
             <div class="breadcrumb" style="gap: 5px; width: 83%;">
                 <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="#" style="color: #565656;">Risalah Rapat</a>
             </div>
-            <form method="GET" action="{{ route('risalah.superadmin') }}" class="search-filter d-flex gap-2">
+            <form method="GET" action="{{ route('risalah.backup') }}" class="search-filter d-flex gap-2">
             <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
                 Show
                 <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
@@ -35,15 +35,15 @@
     <div class="surat">
         <div class="header-tools">
             <div class="search-filter">
-            <form method="GET" action="{{ route('risalah.superadmin') }}" class="search-filter d-flex gap-2">
-                <div class="dropdown">
+            <form method="GET" action="{{ route('risalah.backup') }}" class="search-filter d-flex gap-2">
+                <!-- <div class="dropdown">
                     <select name="status" class="form-select" onchange="this.form.submit()">
                         <option value="">Status</option>
                         <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
                         <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                     </select>
-                </div>
+                </div> -->
                 <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                     <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                 </div>
@@ -109,7 +109,7 @@
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
                     <td class="nama-dokumen 
-                        {{ $risalah->status == 'reject' ? 'text-danger' : ($risalah->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ 'text-danger'}}">
                         {{ $risalah->judul }}
                     </td>
                     <td>{{ \Carbon\Carbon::parse($risalah->tgl_dibuat)->format('d-m-Y') }}</td>
@@ -117,23 +117,17 @@
                     <td>{{ $risalah->nomor_document }}</td>
                     <td>{{ $risalah->tgl_disahkan ? \Carbon\Carbon::parse($risalah->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
                     <td>{{ $risalah->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
-                    </td>
+                    
                         <td>
-                            @if ($risalah->status == 'reject')
-                                <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($risalah->status == 'pending')
-                                <span class="badge bg-warning">Diproses</span>
-                            @else
-                                <span class="badge bg-success">Diterima</span>
-                            @endif
+                           <span class="badge bg-danger">Memulihkan</span>  
                         
                     </td>
 
                     <td>
                        
                             
-                            <a href="{{ route('risalah.restore',['id' => $risalah->id_document]) }}" class="btn btn-sm1">
-                                <img src="/img/risalah/share.png" alt="share">
+                            <a href="{{ route('risalah.restore',['id' => $risalah->id]) }}" class="btn btn-sm1">
+                                <img src="/img/restore.png" alt="restore" style="width: 20px; height: 20px;">
                             </a>
                            
                        

@@ -7,6 +7,8 @@ use App\Models\Notifikasi;
 use Illuminate\Support\Facades\View;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+use App\Exceptions\Handler;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -16,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(ExceptionHandler::class, Handler::class);
     }
 
     /**

@@ -121,14 +121,20 @@ h1 {
 }
 
 .status {
-    background-color: #DD9A19;
-    border: 1px solid #DD9A19;
+    
     color: #ffffff;
     border-radius: 10px;
     font-size: 13px;
     margin-left: 30px;
     padding: 4px 15px;
     box-shadow: 2px 2px 6px rgba(70, 118, 251, 0.41);
+}
+.badge {
+    color: #ffffff;
+    border-radius: 10px;
+    font-size: 13px;
+    padding: 10px;
+    margin-left: 20px;
 }
 
 .btn-file {

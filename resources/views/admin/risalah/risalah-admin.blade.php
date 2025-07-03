@@ -14,7 +14,7 @@
     <div class="row">
         <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="breadcrumb" style="gap: 5px; width: 83%;">
-                <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="#" style="color: #565656;">Memo</a>
+                <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="#" style="color: #565656;">Risalah Rapat</a>
             </div>
             <form method="GET" action="{{ route('risalah.admin') }}" class="search-filter d-flex gap-2">
             <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
@@ -61,19 +61,21 @@
                 </div>
                 </form>
                 <!-- Add User Button to Open Modal -->
-                <a href="{{route ('add-risalah.admin')}}" class="btn btn-add">+ <span>Tambah Risalah</span></a>
+                <a href="{{route ('add-risalah.admin')}}" class="btn btn-add">+ <span>Tambah Risalah Rapat</span></a>
             </div>
         </div>
     </div>
 
         <!-- Table -->
         <table class="table-light">
+        <thead>
             <tr>
                 <th>No</th>
                 <th>Nama Dokumen</th>
-                <th>
+                <th>Verif</th>
+                <th>Tgl. Risalah
                     <button class="data-md">
-                        <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'created_at','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
                             style="color:rgb(135, 135, 148); text-decoration: none;">
                             <span class="bi-arrow-down-up"></span>
                         </a>
@@ -81,9 +83,9 @@
                 </th>
                 <th>Seri</th>
                 <th>Dokumen</th>
-                <th>
+                <th>Tgl. Disahkan
                     <button class="data-md">
-                        <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
                             style="color:rgb(135, 135, 148); text-decoration: none;">
                             <span class="bi-arrow-down-up"></span>
                         </a>
@@ -97,7 +99,7 @@
         <tbody>
             @foreach ($risalahs as $index => $risalah)
             <tr>
-                <td>{{ $index + 1 }}</td>
+                <td class="nomor">{{ $index + 1 }}</td>
                 @if (Auth::user()->divisi->id_divisi == $risalah->divisi->id_divisi)
                     <td class="nama-dokumen 
                         {{ $risalah->status == 'reject' ? 'text-danger' : ($risalah->status == 'pending' ? 'text-warning' : 'text-success') }}">
@@ -109,6 +111,24 @@
                         {{ $risalah->judul }}
                     </td>
                 @endif
+                <td>
+                        @php
+                            // Cari dokumen kiriman yang sesuai dengan ID risalah
+                            $kirimDocument = $kirimDocuments->firstWhere('id_document', $risalah->id_risalah);
+                        @endphp
+
+                        @if($kirimDocument)
+                            @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'pending')
+                                <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
+                            @elseif($risalah->status == 'approve' && $kirimDocument->id_pengirim == Auth::user()->id && $kirimDocument->divisi_penerima != $kirimDocument->divisi_pengirim && $kirimDocument->status == 'pending')
+                                <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
+                            @else
+                                <p>-</p>
+                            @endif
+                        @else
+                            <p>-</p>
+                        @endif
+                    </td>
                 <td>{{ \Carbon\Carbon::parse($risalah->tgl_dibuat)->format('d-m-Y') }}</td>
                 <td>{{ $risalah->seri_surat }}</td>
                 <td>{{ $risalah->nomor_risalah }}</td>
@@ -143,7 +163,7 @@
                                 <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('POST') 
-                                    <button type="submit" class="btn btn-sm3">
+                                    <button type="submit" class="btn btn-sm3 submitArsipRisalah">
                                         <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                                     </button>
                                 </form>
@@ -195,121 +215,130 @@
             </tbody>
         </table>
         {{ $risalahs->links('pagination::bootstrap-5') }}
+    </div>
+</div>
 
-        <!-- Modal Hapus -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/risalah/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Hapus Risalah Rapat?</b></h5>
-                        <!-- Tombol -->
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="{{route ('risalah.admin')}}">Batal</a></button>
-                            <button type="button" class="btn ok" id="confirmDelete">Oke</button>
-                        </div>
-                    </div>
+    <!-- Modal Add Risalah Sukses -->
+    <div class="modal fade" id="successAddRisalahModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <!-- Success Icon -->
+                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
+                    <!-- Success Message -->
+                    <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
+                    <p class="mt-2">Berhasil Menambahkan Risalah Rapat</p>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Modal Berhasil -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/risalah/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050; font-size: 20px;"><b>Berhasil Menghapus <br>Risalah Rapat</b></h5>
-                        <!-- Tombol -->
-                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="{{route ('risalah.admin')}}">Kembali</a></button>
-                    </div>
+    <!-- Overlay Edit Risalah Success -->
+    <div class="modal fade" id="successEditRisalahModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <!-- Success Icon -->
+                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
+                    <!-- Success Message -->
+                    <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
+                    <p class="mt-2">Berhasil Mengubah Risalah Rapat</p>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Modal Arsip -->
-        <div class="modal fade" id="arsipModal" tabindex="-1" aria-labelledby="arsipModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/risalah/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Arsip Risalah Rapat?</b></h5>
-                        <!-- Tombol -->
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="#">Batal</a></button>
-                            <button type="button" class="btn ok" id="confirmArsip">Oke</button>
-                        </div>
-                    </div>
+    <!-- Modal Arsip -->
+    <div class="modal fade" id="arsipRisalahModal" tabindex="-1" aria-labelledby="arsipRisalahModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <!-- Close Button -->
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title mb-4"><b>Arsip Risalah Rapat?</b></h5>
+                <!-- Tombol -->
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="confirmArsipRisalah">Oke</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Modal Arsip Berhasil -->
-        <div class="modal fade" id="successArsipModal" tabindex="-1" aria-labelledby="successArsipModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/risalah/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Sukses</b></h5>
-                        <h6 class="mb-4" style="font-size: 14px; color: #5B5757;">Berhasil Arsip Risalah Rapat</h6>
-                        <!-- Tombol -->
-                        <button type="button" class="btn back" data-bs-dismiss="modal"><a href="#">Kembali</a></button>
-                    </div>
+    <!-- Modal Arsip Berhasil -->
+    <div class="modal fade" id="successArsipRisalahModal" tabindex="-1" aria-labelledby="successArsipRisalahModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                    <h5 class="modal-title"><b>Sukses</b></h5>
+                    <p class="mt-2">Berhasil Arsip Risalah Rapat</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        document.getElementById('confirmDelete').addEventListener('click', function () {
-            // Ambil referensi modal
-            const deleteModalEl = document.getElementById('deleteModal');
-            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
-            
-            // Tutup modal Hapus terlebih dahulu
-            deleteModal.hide();
-            
-            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
-            deleteModalEl.addEventListener('hidden.bs.modal', function () {
-                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        // Event listener untuk modal sukses tambah risalah
+        document.addEventListener("DOMContentLoaded", function () {
+            @if(session('success') === 'Risalah berhasil ditambahkan') // merujuk ke parameter controller risalah store
+                var successModal = new bootstrap.Modal(document.getElementById("successAddRisalahModal"));
                 successModal.show();
-            }, { once: true }); // Tambahkan event listener hanya sekali
+                setTimeout(function () {
+                    successModal.hide();
+                }, 1500);
+            @endif
         });
 
-        document.getElementById('confirmArsip').addEventListener('click', function () {
-            // Ambil referensi modal
-            const deleteModalEl = document.getElementById('arsipModal');
-            const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
-            
-            // Tutup modal Hapus terlebih dahulu
-            deleteModal.hide();
-            
-            // Pastikan modal benar-benar tertutup sebelum membuka modal berikutnya
-            deleteModalEl.addEventListener('hidden.bs.modal', function () {
-                const successModal = new bootstrap.Modal(document.getElementById('successArsipModal'));
-                successModal.show();
-            }, { once: true }); // Tambahkan event listener hanya sekali
+        // Event listener untuk modal sukses edit risalah
+        document.addEventListener("DOMContentLoaded", function () {
+            @if(session('success') === 'Risalah berhasil diperbarui.') // merujuk ke parameter controller risalah update
+                var successEditRisalahModal = new bootstrap.Modal(document.getElementById("successEditRisalahModal"));
+                successEditRisalahModal.show();
+                setTimeout(function () {
+                    successEditRisalahModal.hide();
+                }, 1500);
+            @endif
+        });
+
+        // Event Listener Arsip risalah
+        document.addEventListener("DOMContentLoaded", function () {
+            const arsipButtons = document.querySelectorAll(".submitArsipRisalah");
+            const confirmArsipButton = document.getElementById("confirmArsipRisalah");
+            const cancelArsipButton = document.querySelector("#arsipRisalahModal .btn-outline-secondary");
+            const arsipRisalahModal = new bootstrap.Modal(document.getElementById("arsipRisalahModal"));
+            const successArsipRisalahModal = new bootstrap.Modal(document.getElementById("successArsipRisalahModal"));
+
+            let currentForm = null;
+
+            // Saat tombol arsip ditekan, simpan form yang akan dikirim
+            arsipButtons.forEach(button => {
+                button.addEventListener("click", function (event) {
+                    event.preventDefault(); // Mencegah submit langsung
+                    currentForm = this.closest("form"); 
+                    arsipRisalahModal.show(); // Tampilkan modal konfirmasi
+                });
+            });
+
+            // Saat tombol "Batal" ditekan, tutup modal konfirmasi
+            cancelArsipButton.addEventListener("click", function () {
+                arsipRisalahModal.hide();
+            });
+
+            // Saat tombol "OK" ditekan, submit form dan tampilkan modal sukses
+            confirmArsipButton.addEventListener("click", function () {
+                if (currentForm) {
+                    arsipRisalahModal.hide(); // Tutup modal konfirmasi
+                    setTimeout(() => {
+                        successArsipRisalahModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
+                    }, 300); 
+
+                    setTimeout(() => {
+                        successArsipRisalahModal.hide();
+                        currentForm.submit(); // Submit form setelah modal sukses ditutup
+                    }, 1500);
+                }
+            });
         });
     </script>
-
-
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 @endsection

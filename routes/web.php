@@ -39,18 +39,15 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('berkas/cetak/memo/{id} ', [CetakPDFController::class, 'cetakmemoPDF'])->name('cetakmemo');
+    Route::get('berkas/cetak/memo/{id}', [CetakPDFController::class, 'cetakmemoPDF'])->name('cetakmemo');
     Route::get('view/memoPDF/{id_memo}', [CetakPDFController::class, 'viewmemoPDF'])->name('view-memoPDF');
-    Route::get('berkas/cetak/undangan/{id} ', [CetakPDFController::class, 'cetakundanganPDF'])->name('cetakundangan');
+    Route::get('berkas/cetak/undangan/{id}', [CetakPDFController::class, 'cetakundanganPDF'])->name('cetakundangan');
     Route::get('view/undanganPDF/{id_undangan}', [CetakPDFController::class, 'viewundanganPDF'])->name('view-undanganPDF');
 });
 
 require __DIR__.'/auth.php';
 
-Route::get('/memo-superadmin',[MemoController::class, 'superadmin'])
-->name('memo.superadmin');
-Route::get('/memo-admin',[MemoController::class, 'index'])
-->name('memo.admin');
+
 
 
 Route::get('/add-memoSuperadmin', function() {
@@ -71,14 +68,14 @@ Route::get('/risalah/edit/{id_risalah}', [RisalahController::class, 'edit'])->na
 Route::delete('/risalah/delete/{id_risalah}', [RisalahController::class, 'destroy'])->name('risalah.destroy');
 Route::put('/risalah/update/{id_risalah}', [RisalahController::class, 'update'])->name('risalah/update');
 
-
+Route::middleware('auth')->group(function () {
 Route::get('/dashboard.admin',  [DashboardController::class, 'index']
 )->name('admin.dashboard');
 Route::get('/dashboard.superadmin',  [DashboardController::class, 'index']
 )->name('superadmin.dashboard');
 Route::get('dashboard.manager', [DashboardController::class, 'index']
 )->name('manager.dashboard');
-
+});
 
 // routes/web.php
 Route::middleware('web')->group(function () {
@@ -115,9 +112,7 @@ Route::get('/edit-undanganSuperadmin', function() {
     return view('superadmin.undangan.edit-undangan');
 })->name('edit-undangan.superadmin');
 
-Route::get('/risalahSuperadmin', function() {
-    return view('superadmin.risalah.risalah');
-})->name('risalah.superadmin');
+
 
 Route::get('/add-risalahSuperadmin', function() {
     return view('superadmin.risalah.add-risalah');
@@ -211,10 +206,8 @@ Route::get('/edit-undanganAdmin', function() {
 Route::get('/kirim-undanganAdmin/{id}', [KirimController::class, 'index'])->name('kirim-undanganAdmin.admin');
 
 // risalah admin
-Route::get('/risalahAdmin', function() {
-    return view('admin.risalah.risalah-admin'); })->name('risalah.admin');
-Route::get('/add-risalahAdmin', function() {
-    return view('admin.risalah.add-risalah'); })->name('add-risalah.admin');
+
+
 Route::get('/edit-risalahAdmin', function() {
     return view('admin.risalah.edit-risalah'); })->name('edit-risalah.admin');
 Route::get('/kirim-risalahAdmin', function() {
@@ -224,15 +217,14 @@ Route::get('/kirim-risalahAdmin', function() {
 Route::get('/persetujuan-undangan/{id}', [KirimController::class,'viewManager'])->name('persetujuan.undangan');
 
 // risalah supervisor
-Route::get('/risalahSupervisor', function() {
-    return view('manager.risalah.risalah-manager'); })->name('risalah.manager');
+
 Route::get('/approve-risalah', function() {
     return view('manager.risalah.approve-risalah'); })->name('approve.risalah');
 Route::get('/view-risalah', function() { 
     return view('manager.risalah.view-risalah'); })->name('view.risalah');   
 
 // Arsip Superadmin
-Route::delete('/arsip/restore/{document_id}/{jenis_document}', [ArsipController::class, 'restoreDocument'])->name('arsip.restore');
+// Route::delete('/arsip/restore/{document_id}/{jenis_document}', [ArsipController::class, 'restoreDocument'])->name('arsip.restore');
 
 // Arsip Admin
 
@@ -242,12 +234,16 @@ Route::delete('/arsip/restore/{document_id}/{jenis_document}', [ArsipController:
 
 // View Arsip Admin
    
-
+Route::middleware('auth')->group(function () {
 Route::get('/superadmin/memo', [MemoController::class, 'superadmin'])->name('memo.superadmin');
 Route::get('/superadmin/undangan', [UndanganController::class, 'superadmin'])->name('undangan.superadmin');
 Route::get('/superadmin/risalah', [RisalahController::class, 'superadmin'])->name('risalah.superadmin');
+Route::get('/memo-admin',[MemoController::class, 'index'])->name('memo.admin');
 Route::get('/admin/undangan', [UndanganController::class, 'index'])->name('undangan.admin');
+Route::get('/risalah/Admin', [RisalahController::class, 'index'])->name('risalah.admin');
 Route::get('/manager/undangan', [KirimController::class, 'undangan'])->name('undangan.manager');
+Route::get('/manager/risalah', [KirimController::class, 'risalah'])->name('risalah.manager');
+});
 
 Route::get('/info', function() {
     return view('info'); })->name('info');
@@ -296,7 +292,7 @@ Route::get('/notifikasi/jumlah', [NotifController::class, 'getUnreadCount'])->na
 Route::get('/notifications/tanda-dibaca', [NotifController::class, 'markAllAsRead'])->name('notifications.markAsRead');
 
 // Risalah
-Route::get('berkas/cetak/risalah/{id} ', [CetakPDFController::class, 'cetakrisalahPDF'])->name('cetakrisalah');
+Route::get('berkas/cetak/risalah/{id}', [CetakPDFController::class, 'cetakrisalahPDF'])->name('cetakrisalah');
 Route::get('view/risalahPDF/{id_risalah}', [CetakPDFController::class, 'viewrisalahPDF'])->name('view-risalahPDF');
 // lampiran risalah
 Route::get('/risalah/{id}/file', [RisalahController::class, 'showFile'])->name('risalah.file');
@@ -304,7 +300,6 @@ Route::get('/risalah/download/{id}', [RisalahController::class, 'downloadFile'])
 Route::get('/risalah/{id}/preview', [RisalahController::class, 'showFile'])->name('risalah.preview');
 
 // risalah admin
-Route::get('/risalah/Admin', [RisalahController::class, 'index'])->name('risalah.admin');
 Route::get('/risalah/tambah', [RisalahController::class, 'create'])->name('add-risalah.admin');
 Route::post('/risalah/store', [RisalahController::class, 'store'])->name('risalah.store');
 Route::get('/risalah/{id}/edit', [RisalahController::class, 'edit'])->name('risalah.edit');
@@ -315,7 +310,7 @@ Route::get('/risalah/view/{id}', [RisalahController::class, 'view'])->name('view
 
 Route::get('/persetujuan-risalah/{id}', [KirimController::class,'viewRisalah'])->name('persetujuan.risalah');
 
-Route::get('/manager/risalah', [KirimController::class, 'risalah'])->name('risalah.manager');
+
 Route::get('/format-risalah', function() {
     return view('format-surat.format-risalah');
 })->name('format-risalah');

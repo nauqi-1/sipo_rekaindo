@@ -69,8 +69,10 @@
                 <!-- Kolom Logo -->
                 <div class="col-md-3 d-flex align-items-center justify-content-center">
                     <div class="border rounded p-3" style="width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
-                    @if($perusahaan->logo)
+                    @if(isset($perusahaan) && $perusahaan->logo)
                         <img src="data:image/png;base64,{{ $perusahaan->logo }}" alt="Logo Perusahaan" width="150">
+                    @else
+                        <p>Logo tidak tersedia.</p>
                     @endif
                     </div>
                 </div>

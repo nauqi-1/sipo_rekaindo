@@ -14,6 +14,8 @@ use App\Models\Kirim_Document;
 use App\Models\Backup_Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\DB;
 class MemoController extends Controller
 {
     public function index(Request $request)
@@ -21,11 +23,19 @@ class MemoController extends Controller
         
         $divisi = Divisi::all();
         $seri = Seri::all();
+        $user = User::all();
         $userDivisiId = Auth::user()->divisi_id_divisi;
         $userId = Auth::id();
 
         // Ambil ID memo yang sudah diarsipkan oleh user saat ini
         $memoDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
+        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+
+        $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_memo', 'judul'];
+         if (!in_array($sortBy, $allowedSortColumns)) {
+            $sortBy = 'created_at'; // fallback default
+        }
 
         // Query memo dengan filter
         $query = Memo::with('divisi')
@@ -65,8 +75,8 @@ class MemoController extends Controller
         ->where('jenis_document', 'memo')
         ->with('document');
 
-        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-        $query->orderBy('created_at', $sortDirection);
+        
+        $query->orderBy($sortBy, $sortDirection);
 
         // Pencarian berdasarkan nama dokumen atau nomor memo
         if ($request->filled('search')) {
@@ -75,10 +85,11 @@ class MemoController extends Controller
                 ->orWhere('nomor_memo', 'like', '%' . $request->search . '%');
             });
         }
+         
 
         // Pagination
         $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
-        $memos = Memo::paginate($perPage);
+        $memos = $query->paginate($perPage);
         // **Tambahkan status penerima untuk setiap memo**
         $memos->getCollection()->transform(function ($memo) use ($userId) {
             if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
@@ -93,7 +104,22 @@ class MemoController extends Controller
             }
             return $memo;
         });
-        return view(Auth::user()->role->nm_role . '.memo.memo-' . Auth::user()->role->nm_role, compact('memos', 'divisi', 'seri','sortDirection'));
+            $kirimDocuments = Kirim_Document::where('jenis_document', 'memo')
+        ->whereHas('memo') // Memastikan dokumen adalah memo
+        ->orderBy('id_kirim_document', 'desc') // Ambil data terbaru berdasarkan ID terbesar
+        ->get();
+
+    // Ambil divisi penerima dan pengirim melalui relasi user
+    $kirimDocuments->each(function ($kirim) {
+        $pengirim = User::find($kirim->id_pengirim);
+        $penerima = User::find($kirim->id_penerima);
+        $user = Auth::user();
+
+        $kirim->divisi_pengirim = $pengirim ? $pengirim->divisi->nm_divisi : 'Tidak Diketahui';
+        $kirim->divisi_penerima = $penerima ? $penerima->divisi->nm_divisi : 'Tidak Diketahui';
+        $kirim->divisi_user = $user->divisi->nm_divisi ?? 'Tidak Diketahui';
+    });
+        return view(Auth::user()->role->nm_role . '.memo.memo-' . Auth::user()->role->nm_role, compact('memos', 'divisi', 'seri','sortDirection', 'kirimDocuments'));
     }
 
     public function superadmin(Request $request){
@@ -103,11 +129,17 @@ class MemoController extends Controller
         
 
         $memoDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
+        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+
+        $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_memo', 'judul'];
+         if (!in_array($sortBy, $allowedSortColumns)) {
+            $sortBy = 'created_at'; // fallback default
+        }
 
         $query = Memo::query()
         ->whereNotIn('id_memo', $memoDiarsipkan)
-        ->orderBy('created_at', $sortDirection);
+        ->orderBy($sortBy, $sortDirection);
 
         // Filter berdasarkan status
         if ($request->filled('status')) {
@@ -188,8 +220,8 @@ class MemoController extends Controller
     // Format nomor dokumen
     $nomorDokumen = sprintf(
         "%d.%d/REKA/GEN/%s/%s/%d",
-        $nextSeri['seri_bulanan'],
         $nextSeri['seri_tahunan'],
+        $nextSeri['seri_bulanan'],
         strtoupper($divisiName),
         $bulanRomawi,
         now()->year
@@ -293,6 +325,7 @@ class MemoController extends Controller
     
         return redirect()->route('memo.'. Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dibuat.');
     }
+
     private function convertToRoman($number) {
         $map = [
             1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI',
@@ -346,6 +379,11 @@ class MemoController extends Controller
             // Jika status 'approve', simpan tanggal pengesahan
             if ($request->status == 'approve') {
                 $memo->tgl_disahkan = now();
+                $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
+                $qrImage = QrCode::format('svg')->generate($qrText);
+                $qrBase64 = base64_encode($qrImage);
+                $memo->qr_approved_by = $qrBase64;  
+
                 Notifikasi::create([
                     'judul' => "Memo Disetujui",
                     'judul_document' => $memo->judul,
@@ -646,7 +684,7 @@ class MemoController extends Controller
 
         $memo = Kirim_Document::where('jenis_document', 'memo')
             ->where('id_penerima', $userId)
-            
+             ->where('id_document', $id)
             ->Where('status', 'pending') // Status di tabel kirim_document
             ->whereHas('memo')
             ->with('memo') // Pastikan ada relasi 'memo' di model Kirim_Document
@@ -656,10 +694,31 @@ class MemoController extends Controller
     }
     public function view($id)
     {
+        $userId = auth()->id(); // Ambil ID user yang sedang login
         $memo = Memo::where('id_memo', $id)->firstOrFail();
 
-        return view(Auth::user()->role->nm_role.'.memo.view-memo', compact('memo'));
+        // Ubah menjadi Collection manual
+        $memoCollection = collect([$memo]); // Bungkus dalam collection
+
+        $memoCollection->transform(function ($memo) use ($userId) {
+            if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $memo->final_status = $memo->status; // Memo dari divisi sendiri
+            } else {
+                $statusKirim = Kirim_Document::where('id_document', $memo->id_memo)
+                    ->where('jenis_document', 'memo')
+                    ->where('id_penerima', $userId)
+                    ->first();
+                $memo->final_status = $statusKirim ? $statusKirim->status : '-';
+            }
+            return $memo;
+        });
+
+        // Karena hanya satu memo, kita bisa mengambil dari collection lagi
+        $memo = $memoCollection->first();
+
+        return view(Auth::user()->role->nm_role . '.memo.view-memo', compact('memo'));
     }
+
 
 
     public function updateStatusNotif(Request $request, $id)

@@ -31,7 +31,7 @@
                 <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="tgl_dibuat">Tgl. Surat</label>
-                            <input type="date" name="tgl_dibuat" class="form-control" required>
+                            <input type="date" name="tgl_dibuat" class="form-control" value="{{ $risalah->tgl_dibuat->format('Y-m-d') }}" required>
                             <input type="hidden" name="tgl_disahkan" >
                         </div>
                         <div class="col-md-6">

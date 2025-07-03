@@ -11,46 +11,51 @@ use App\Models\Risalah;
 
 
 
+
 class CetakPDFController extends Controller
 {
     public function cetakmemoPDF($id)
-{
-    // Ambil data memo berdasarkan ID
-    $memo = Memo::findOrFail($id);
-    $headerPath = public_path('img/bheader.png');
-    $footerPath = public_path('img/bfooter.png');
+    {
+        // Ambil data dari database
+        $memo = Memo::findOrFail($id); // Sesuaikan dengan model yang benar
+        // $path = public_path('img/border-surat.png'); 
+        $headerPath = public_path('img/bheader.png');
+        $footerPath = public_path('img/bfooter.png'); 
+        $qrCode = $memo->qr_approved_by;   
 
-    // Konversi gambar ke base64
-    $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
-    $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
+        $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
+        $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
+    
+        // Load view yang akan digunakan sebagai template PDF
+        // $pdf = PDF::loadView('format-surat.format-undangan', compact('undangan'));
 
-    // Generate PDF halaman pertama (format memo)
-    $formatMemoPdf = PDF::loadView('format-surat.format-memo', [
-        'memo' => $memo,
-        'headerImage' => $headerBase64,
-        'footerImage' => $footerBase64,
-        'isPdf' => true
-    ])->setPaper('A4', 'portrait');
+        // Set ukuran kertas (opsional)
+        // $pdf->setPaper('A4', 'portrait');
+        $formatMemoPdf = PDF::loadView('format-surat.format-memo', [
+            'memo' => $memo,
+            'headerImage' => $headerBase64,
+            'footerImage' => $footerBase64,
+            'qrCode' => $qrCode,
+            'isPdf' => true
+        ])->setPaper('A4', 'portrait');
+            
+        // Return PDF untuk didownload
+        $formatMemoPath = storage_path('app/temp_format_memo_' . $memo->id . '.pdf');
+        $formatMemoPdf->save($formatMemoPath);
+    
+        // Jika ada lampiran, gabungkan PDF-nya
+        if (!empty($memo->lampiran)) {
+            $lampiranTempPath = storage_path('app/temp_lampiran_' . $memo->id . '.pdf');
+            file_put_contents($lampiranTempPath, base64_decode($memo->lampiran));
 
-    // Simpan PDF memo sementara
-    $formatMemoPath = storage_path('app/temp_format_memo_' . $memo->id . '.pdf');
-    $formatMemoPdf->save($formatMemoPath);
+            $pdfMerger = new \Clegginabox\PDFMerger\PDFMerger;
+            $pdfMerger->addPDF($formatMemoPath, 'all');
+            $pdfMerger->addPDF($lampiranTempPath, 'all');
 
-    // Cek apakah lampiran tidak kosong
-    if (!empty($memo->lampiran)) {
-        // Decode base64 lampiran dan simpan sementara
-        $lampiranTempPath = storage_path('app/temp_lampiran_' . $memo->id . '.pdf');
-        file_put_contents($lampiranTempPath, base64_decode($memo->lampiran));
-
-        // Gabungkan format memo + lampiran
-        $pdfMerger = new PDFMerger;
-        $pdfMerger->addPDF($formatMemoPath, 'all');
-        $pdfMerger->addPDF($lampiranTempPath, 'all');
-
-        $outputPath = storage_path('app/cetak_memo_' . $memo->id . '.pdf');
-        $pdfMerger->merge('file', $outputPath);
-
-        // Download lalu hapus semua file sementara
+            $outputPath = storage_path('app/view_memo_' . $memo->id . '.pdf');
+            $pdfMerger->merge('file', $outputPath);
+    
+            // Download lalu hapus semua file sementara
         if (file_exists($formatMemoPath)) unlink($formatMemoPath);
         if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
         return response()->download($outputPath)->deleteFileAfterSend(true);
@@ -63,7 +68,8 @@ class CetakPDFController extends Controller
             if (file_exists($formatMemoPath)) unlink($formatMemoPath);
         }, 'cetak_memo_' . $memo->id . '.pdf');
     }
-}
+
+    }
     
 
 
@@ -129,7 +135,8 @@ class CetakPDFController extends Controller
         $undangan = Undangan::findOrFail($id); // Sesuaikan dengan model yang benar
         // $path = public_path('img/border-surat.png'); 
         $headerPath = public_path('img/bheader.png');
-        $footerPath = public_path('img/bfooter.png');    
+        $footerPath = public_path('img/bfooter.png'); 
+        $qrCode = $undangan->qr_approved_by;   
 
         $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
         $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
@@ -143,6 +150,7 @@ class CetakPDFController extends Controller
             'undangan' => $undangan,
             'headerImage' => $headerBase64,
             'footerImage' => $footerBase64,
+            'qrCode' => $qrCode,
             'isPdf' => true
         ])->setPaper('A4', 'portrait');
             
@@ -309,10 +317,11 @@ class CetakPDFController extends Controller
         return $pdf->stream('laporan-undangan.pdf');
     }
 
-    public function cetakrisalahPDF($id_risalah)
+    public function cetakrisalahPDF($id)
 {
-    $risalah = Risalah::findOrFail($id_risalah);
+    $risalah = Risalah::findOrFail($id);
     $path = public_path('img/border-surat.png');
+    $qrCode = $risalah->qr_approved_by;
 
     if (file_exists($path)) {
         $type = pathinfo($path, PATHINFO_EXTENSION);
@@ -323,7 +332,7 @@ class CetakPDFController extends Controller
     }
 
     // Gunakan PDF::loadView() secara langsung
-    $pdf = Pdf::loadView('format-surat.format-risalah', compact('risalah', 'base64Image'))
+    $pdf = Pdf::loadView('format-surat.format-risalah', compact('risalah', 'base64Image', 'qrCode'))
               ->setPaper('A4', 'portrait');
 
     // Simpan PDF memo sementara
@@ -353,7 +362,7 @@ class CetakPDFController extends Controller
  } else {
      // Jika tidak ada lampiran, langsung download PDF memo saja
      return response()->streamDownload(function () use ($pdf, $formatRisalahPath) {
-         echo $formatRisalahPath->output();
+         echo $pdf->output();
          if (file_exists($formatRisalahPath)) unlink($formatRisalahPath);
      }, 'cetak_risalah_' . $risalah->id . '.pdf');
  }

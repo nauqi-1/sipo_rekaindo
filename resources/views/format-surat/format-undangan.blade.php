@@ -280,7 +280,7 @@
     <main>
         <div class="content">
             <div class="date">
-                <p>Madiun, {{ $undangan->tgl_disahkan?->translatedFormat('d F Y') }}</p>
+                <p>Madiun, {{ $undangan->tgl_dibuat?->translatedFormat('d F Y') }}</p>
             </div>
             <br>
             <div class="letter">
@@ -322,7 +322,12 @@
                             <td>
                                 <!-- Hormat Kami,<br>  -->
                                 <p><b>Hormat kami,</b></p>
-                                <b>Manajer {{ $undangan->divisi->nm_divisi }}</b> <br><br><br>
+                                <b>Manajer {{ $undangan->divisi->nm_divisi }}</b> 
+                                @if(!empty($undangan->qr_approved_by))
+                                    <div style="text-align: center; margin-top: 10px;">
+                                        <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" width="100" alt="QR Code">
+                                    </div>
+                                @endif
                                 <p><b><u>{{ $undangan->nama_bertandatangan }}</u></b></p>
                             </td>
                         </tr>

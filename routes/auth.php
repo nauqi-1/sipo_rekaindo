@@ -11,11 +11,11 @@ use App\Http\Controllers\UndanganController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('register', [RegisteredUserController::class, 'create'])
-->name('register');
+// Route::get('register', [RegisteredUserController::class, 'create'])
+// ->name('register');
 
-Route::post('registerd', [RegisteredUserController::class, 'store'])
-->name('register');;
+// Route::post('register', [RegisteredUserController::class, 'store'])
+// ->name('register');
 
     Route::get('user-manage/add', [RegisteredUserController::class, 'create'])
         ->name('user-manage/add');

@@ -48,13 +48,13 @@
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
-                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $memo->seri_surat }}" required>
+                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $memo->seri_surat }}" required readonly>
                     </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="nomor_memo" class="form-label">Nomor Surat</label>
-                        <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $memo->nomor_memo }}" required>
+                        <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $memo->nomor_memo }}" required readonly>
                     </div>
                     <div class="col-md-6" >
                         <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>

@@ -23,7 +23,6 @@
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
                 <a href="{{route('superadmin.dashboard')}}">Beranda</a>/
-                <a href="#">Arsip</a>/
                 <a href="{{route ('arsip.risalah')}}">Arsip Risalah</a>/
                 <a style="color:#565656" href="#">Detail Arsip Risalah</a>
                 </div>
@@ -93,9 +92,8 @@
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
-                        @if ($risalah->status=='approve')
-                        <a style="text-decoration: none;" class="view" onclick="window.location.href='{{ route('view-risalahPDF',[$risalah->id_risalah]) }}'"><img src="/img/memo-admin/view.png" alt="view">Lihat</a>
-                        @endif
+                       <a href="{{ route('view-risalahPDF', $risalah->id_risalah)  }}" class="btn btn-file"><img src="/img/mata.png" alt="view"> Lihat</a>
+                        <a class="btn btn-file down" onclick="window.location.href='{{ route('cetakrisalah',['id' => $risalah->id_risalah]) }}'"><img src="/img/download.png" alt="down">Unduh</a>
                     </div>
                 </div>
             </div>

@@ -32,6 +32,7 @@ class RegisteredUserController extends Controller
         // }
         // dd($request->all());
         $request->validate([
+            'id'=>'required|integer|unique:users',
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             'username' => 'required|string|max:25',
@@ -79,6 +80,7 @@ class RegisteredUserController extends Controller
         
 
         $user = User::create([
+            'id' => $request->id,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'username' => $request->username,

@@ -16,7 +16,7 @@
             <div class="breadcrumb" style="gap: 5px; width: 83%;">
                 <a href="{{route('admin.dashboard')}}">Beranda</a>/<a href="#" style="color: #565656;">Undangan Rapat</a>
             </div>
-        <form method="GET" action="{{ route('undangan.admin') }}" class="search-filter d-flex gap-2">
+        <form method="GET" action="{{ route('undangan.backup') }}" class="search-filter d-flex gap-2">
             <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
                 Show
                 <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
@@ -35,15 +35,15 @@
     <div class="surat">
     <div class="header-tools">
         <div class="search-filter">
-        <form method="GET" action="{{ route('undangan.admin') }}" class="search-filter d-flex gap-2">
-            <div class="dropdown">
+        <form method="GET" action="{{ route('undangan.backup') }}" class="search-filter d-flex gap-2">
+            <!-- <div class="dropdown">
             <select name="status" class="form-select" onchange="this.form.submit()">
                     <option value="">Status</option>
                     <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                     <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
                     <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                 </select>
-            </div>
+            </div> -->
             <!-- <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                 <input type="date" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}"  onchange="this.form.submit()" placeholder="Tanggal Awal" style="width: 100%;">
             </div> -->
@@ -118,7 +118,7 @@
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
                     <td class="nama-dokumen 
-                        {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ 'text-danger'}}">
                         {{ $undangan->judul }}
                     </td>
                
@@ -129,19 +129,13 @@
                 <td>{{ $undangan->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
                 </td>
                 <td>
-                        @if ($undangan->status == 'reject')
-                            <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($undangan->status  == 'pending')
-                            <span class="badge bg-warning">Diproses</span>
-                        @else
-                            <span class="badge bg-success">Diterima</span>
-                        @endif
+                        <span class="badge bg-danger">Memulihkan</span>  
                     
                 </td>
                 <td>
                     
                         <a href="{{ route('undangan.restore',['id' => $undangan->id_document]) }}" class="btn btn-sm1">
-                            <img src="/img/undangan/share.png" alt="share">
+                            <img src="/img/restore.png" alt="restore" style="width: 20px; height: 20px;">
                         </a>
                         
                         

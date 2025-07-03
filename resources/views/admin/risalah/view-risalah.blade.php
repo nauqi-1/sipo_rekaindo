@@ -18,12 +18,12 @@
             <div class="back-button">
                 <a href="{{route ('risalah.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Lihat risalah</h1>
+            <h1>Detail Risalah Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="{{ route('risalah.admin') }}">Memo</a>/<a href="#" style="color: #565656;">Lihat Memo</a>
+                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="{{ route('risalah.admin') }}">Risalah Rapat</a>/<a href="#" style="color: #565656;">Lihat Risalah Rapat</a>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
                     <div class="card-white">
                         <label for="tgl">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{$risalah->tgl_dibuat}}" readonly>
+                        <input type="text" id="tgl" value="{{$risalah->tgl_dibuat->translatedFormat('d F Y')}}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="kepada">Kepada</label>

@@ -79,9 +79,10 @@
             <tr>
                 <th>No</th>
                 <th>Nama Dokumen</th>
-                <th>Tanggal Undangan
+                <th>Verif</th>
+                <th>Tgl. Undangan
                     <button class="data-md">
-                        <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'created_at','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
                             style="color:rgb(135, 135, 148); text-decoration: none;">
                             <span class="bi-arrow-down-up"></span>
                         </a>
@@ -90,9 +91,9 @@
                 </th>
                 <th>Seri</th>
                 <th>Dokumen</th>
-                <th>Tanggal Disahkan
+                <th>Tgl. Disahkan
                     <button class="data-md">
-                        <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
                             style="color:rgb(135, 135, 148); text-decoration: none;">
                             <span class="bi-arrow-down-up"></span>
                         </a>
@@ -118,6 +119,27 @@
                         {{ $undangan->judul }}
                     </td>
                 @endif
+                <td>
+                    @php
+                            // Cari dokumen kiriman yang sesuai dengan ID memo
+                        $kirimDocument = $kirimDocuments->firstWhere('id_document', $undangan->id_undangan);
+                    @endphp
+                   
+
+    
+
+                    @if($kirimDocument)
+                    @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $undangan->status == 'pending')
+                            <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
+                        @elseif($undangan->status == 'approve' && $kirimDocument->id_pengirim == Auth::user()->id && $kirimDocument->divisi_penerima != $kirimDocument->divisi_pengirim&&$kirimDocument->status == 'pending')
+                            <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
+                        @else
+                            <p>-</p>
+                            @endif
+                        @else
+                            <p>-</p>
+                        @endif
+                </td>
                 <td>{{ \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') }}</td>
                 <td >{{ $undangan->seri_surat }}</td>
                 <td>{{ $undangan->nomor_undangan }}</td>

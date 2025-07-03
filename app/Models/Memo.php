@@ -29,7 +29,7 @@ class Memo extends Model
      * @var array
      */
     protected $fillable = [
-        'judul', 'tujuan', 'isi_memo', 'tgl_dibuat', 'tgl_disahkan', 'status','pembuat','catatan',
+        'judul', 'tujuan', 'isi_memo', 'tgl_dibuat', 'tgl_disahkan', 'qr_approved_by', 'status','pembuat','catatan',
         'nomor_memo', 'nama_bertandatangan', 'lampiran', 'divisi_id_divisi', 'seri_surat'
 
     ];

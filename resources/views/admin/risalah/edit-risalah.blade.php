@@ -31,7 +31,7 @@
                 <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="tgl_dibuat">Tgl. Surat</label>
-                            <input type="date" name="tgl_dibuat" class="form-control" required>
+                            <input type="date" name="tgl_dibuat" class="form-control" value="{{ $risalah->tgl_dibuat->format('Y-m-d') }}" required>
                             <input type="hidden" name="tgl_disahkan" >
                         </div>
                         <div class="col-md-6">
@@ -90,7 +90,8 @@
                         </div>
                     </div>
                     <div id="risalahContainer">
-                    @if(isset($risalah->risalahDetails) && $risalah->risalahDetails->count() > 0)
+                        <p>Jumlah risalahDetails: {{ $risalah->risalahDetails->count() }}</p>
+                    @if(!empty($risalah->risalahDetails) && $risalah->risalahDetails->isNotEmpty())
                         @foreach ($risalah->risalahDetails as $detail)
                 <div class="isi-surat-row">
                     <div class="col-md-1">
@@ -228,8 +229,9 @@
     newRow.style.gap = '0';
 
     newRow.innerHTML = `
+    <div class="row w-100 g-2">
         <div class="col-md-1">
-            <textarea class="form-control no-auto" name="nomor[]" rows="2" readonly></textarea>
+            <input type="text" class="form-control no-auto" name="nomor[]" readonly>
         </div>
         <div class="col-md-3">
             <textarea class="form-control" name="topik[]" placeholder="Topik Pembahasan" rows="2"></textarea>
@@ -243,12 +245,13 @@
         <div class="col-md-2">
             <textarea class="form-control" name="target[]" placeholder="Target" rows="2"></textarea>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2 position-relative">
             <textarea class="form-control" name="pic[]" placeholder="PIC" rows="2"></textarea>
+            <button type="button" class="btn btn-sm btn-link text-danger position-absolute top-0 end-0" title="Hapus" style="z-index: 2;">
+                <i class="bi bi-x-circle"></i>
+            </button>
         </div>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-danger btn-sm remove-row">Hapus</button>
-        </div>
+    </div>
     `;
 
     risalahContainer.appendChild(newRow);
@@ -263,10 +266,15 @@ function updateNomor() {
 }
 
 document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('remove-row')) {
-        event.preventDefault();
-        event.target.closest('.isi-surat-row').remove();
-        updateNomor();
+    if (event.target.closest('.bi-x-circle')) {
+        const row = event.target.closest('.isi-surat-row');
+        if (row) {
+            const konfirmasi = confirm("Ingin hapus kolom ini?");
+            if (konfirmasi) {
+                row.remove();
+                updateNomor();
+            }
+        }
     }
 });
 </script>

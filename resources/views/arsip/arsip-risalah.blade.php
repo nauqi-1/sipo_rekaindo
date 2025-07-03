@@ -14,7 +14,7 @@
     <div class="row">
     <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="breadcrumb" style="gap: 5px; width: 82%;">
-                <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Risalah Rapat</a>
+                <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a style="color:#565656" href="#">Arsip Risalah Rapat</a>
             </div>
             <form method="GET" action="{{ route('arsip.risalah') }}" class="search-filter d-flex gap-2">
             <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
@@ -83,8 +83,9 @@
             @foreach($arsipRisalah as  $arsip)
             <tr>
                 <td class="nomor">{{ $loop->iteration }}</td>
-                <td class="nama-dokumen text-success">
-                        {{ $arsip->document ? $arsip->document->judul : 'Risalah Tidak Ditemukan' }}
+               <td class="nama-dokumen 
+                        {{ $arsip->document->final_status == 'reject' ? 'text-danger' : ($arsip->document->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $arsip->document->judul }}
                     </td>
                     <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
                     <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
@@ -92,7 +93,13 @@
                     <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                     <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
                     <td>
-                    <span class="badge bg-success">Diterima</span>
+                    @if ($arsip->document->final_status == 'reject')
+                                <span class="badge bg-danger">Ditolak</span>
+                            @elseif ($arsip->document->final_status == 'pending')
+                                <span class="badge bg-warning">Diproses</span>
+                            @else
+                                <span class="badge bg-success">Diterima</span>
+                            @endif
                 </td>
                 <td>
                     <!-- Button Unduh -->
@@ -100,7 +107,7 @@
 
                     <!-- Button Arsip -->
                     @if ($arsip->document)
-                    <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipMemoModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_risalah, 'jenis_document' => 'Risalah']) }}">
+                    <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipRisalahModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_risalah, 'jenis_document' => 'Risalah']) }}">
                         <img src="/img/arsip/delete.png" alt="delete">
                     </button>
 
@@ -122,7 +129,7 @@
             <!-- Close Button -->
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
             <img src="/img/memo-admin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
-            <h5 class="modal-title mb-4"><b>Hapus Memo dari arsip?</b></h5>
+            <h5 class="modal-title mb-4"><b>Hapus Risalah dari arsip?</b></h5>
             <form id="deleteArsipRisalahForm" method="POST">
                 @csrf
                 @method('DELETE')
@@ -143,7 +150,7 @@
             <div class="modal-body">
                 <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                 <h5 class="modal-title"><b>Sukses</b></h5>
-                <p class="mt-2">Berhasil Hapus Memo</p>
+                <p class="mt-2">Berhasil Hapus Risalah</p>
             </div>
         </div>
     </div>
@@ -157,10 +164,10 @@
         let deleteArsipRisalahSuccessModal = new bootstrap.Modal(document.getElementById("deleteSuccessArsipRisalahModal"));
         let confirmDeleteBtn = document.getElementById("confirmDeleteArsipRisalah");
 
-        let deleteRoute = ""; // Menyimpan URL DELETE
+        let deleteRoute = ""; // Menyimpan URL DELxETE
 
         // Event Listener untuk Menampilkan Modal Delete
-        deleteArsipMemoModal.addEventListener("show.bs.modal", function (event) {
+        deleteArsipRisalahModal.addEventListener("show.bs.modal", function (event) {
             let button = event.relatedTarget;
             deleteRoute = button.getAttribute("data-route");
         });

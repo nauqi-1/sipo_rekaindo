@@ -20,7 +20,7 @@
             <div class="overview-cards">
                 <div class="overview-card">
                     <h4>MEMO</h4>
-                    <a href="{{route ('memo.superadmin')}}" class="tampil">View All</a>
+                    <a href="{{route ('memo.superadmin')}}" class="tampil">Lihat Semua</a>
                     <hr>
                     <p>
                         <button><img src="/img/dashboard/memo.png" alt="memo"></button>
@@ -30,7 +30,7 @@
                 </div>
                 <div class="overview-card">
                     <h4>RISALAH RAPAT</h4>
-                    <a href="{{ route ('risalah.superadmin') }}" class="tampil">View All</a>
+                    <a href="{{ route ('risalah.superadmin') }}" class="tampil">Lihat Semua</a>
                     <hr>
                     <p>
                         <button><img src="/img/dashboard/risalah.png" alt="memo"></button>
@@ -40,7 +40,7 @@
                 </div>
                 <div class="overview-card">
                     <h4>UNDANGAN RAPAT</h4>
-                    <a href="{{ route ('undangan.superadmin') }}" class="tampil">View All</a>
+                    <a href="{{ route ('undangan.superadmin') }}" class="tampil">Lihat Semua</a>
                     <hr>
                     <p>
                         <button><img src="/img/dashboard/undangan.png" alt="memo"></button>

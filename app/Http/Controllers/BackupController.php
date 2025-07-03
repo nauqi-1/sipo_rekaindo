@@ -8,8 +8,6 @@ use App\Models\Undangan;
 use App\Models\Risalah;
 use App\Models\Divisi;
 use App\Models\Backup_Document;
-use App\Models\BackupRisalah;
-
 use Auth;
 
 
@@ -108,11 +106,11 @@ class BackupController extends Controller
 
 
     public function RestoreMmeo($id)
-     {
-        $memo = Backup_Document::findOrFail($id);
+    {
 
-        // Pindahkan data ke tabel backup
-        memo::create([
+    $memo = Backup_Document::where('id_document', $id)->first();
+   
+        Memo::create([
             'id_memo' => $memo->id_document,
             'tujuan'=> $memo->tujuan,
             'judul' => $memo->judul,
@@ -127,26 +125,16 @@ class BackupController extends Controller
             'lampiran' => $memo->lampiran,
             'pembuat' => $memo->pembuat,
             'divisi_id_divisi' => $memo->divisi_id_divisi,
-            'created_at' => $memo->created_at,
-            'updated_at' => $memo->updated_at,
-            
-            // tambahkan kolom lain jika ada
         ]);
-    
-        // Hapus file lampiran jika ada
-        if ($memo->lampiran && file_exists(public_path($memo->lampiran))) {
-            unlink(public_path($memo->lampiran));
-        }
-    
-        // Hapus dari tabel memo
+        // Hapus dari backup
         $memo->delete();
- 
-         return redirect()->route('memo.backup')->with('success', 'Memo deleted successfully.');
-     }
+        return redirect()->route('memo.backup')->with('success', 'Memo restored successfully.');
+    
+    }
 
      public function RestoreUndangan($id)
      {
-        $undangan = Backup_Document::findOrFail($id);
+        $undangan = Backup_Document::where('id_document', $id)->first();
 
         // Pindahkan data ke tabel backup
         undangan::create([
@@ -166,7 +154,6 @@ class BackupController extends Controller
             'divisi_id_divisi' => $undangan->divisi_id_divisi,
             'created_at' => $undangan->created_at,
             'updated_at' => $undangan->updated_at,
-            
             // tambahkan kolom lain jika ada
         ]);
     
@@ -180,44 +167,4 @@ class BackupController extends Controller
  
          return redirect()->route('undangan.backup' )->with('success', 'Memo deleted successfully.');
      }
-
-     public function RestoreRisalah($id)
-     {
-        $risalah = BackupRisalah::findOrFail($id);
-
-        // Pindahkan data ke tabel backup
-        risalah::create([
-            'id_risalah' => $risalah->id_document,
-            'tgl_dibuat' => $risalah->tgl_dibuat,
-            'tgl_disahkan' => $risalah->tgl_disahkan,
-            'seri_surat' => $risalah->seri_document,
-            'nomor_risalah' => $risalah->nomor_document,
-            'tujuan'=> $risalah->tujuan,
-            'waktu_mulai' => $risalah->waktu_mulai,
-            'waktu_selesai' => $risalah->waktu_selesai,
-            'agenda' => $risalah->agenda,
-            'tempat' => $risalah->tempat,
-            'nama_bertandatangan'=> $risalah->nama_bertandatangan,
-            'lampiran' => $risalah->lampiran,
-            'judul' => $risalah->judul,
-            'pembuat' => $risalah->pembuat,
-            'catatan' => $risalah->catatan,
-            'divisi_id_divisi' => $risalah->divisi_id_divisi,
-            'status' => $risalah->status,           
-            'created_at' => $risalah->created_at,
-            'updated_at' => $risalah->updated_at,
-            
-            // tambahkan kolom lain jika ada
-        ]);
-    
-        // Hapus file lampiran jika ada
-        if ($risalah->lampiran && file_exists(public_path($risalah->lampiran))) {
-            unlink(public_path($risalah->lampiran));
-        }
-    
-        // Hapus dari tabel memo
-        $risalah->delete();
- 
-         return redirect()->route('risalah.backup')->with('success', 'Risalah deleted successfully.');
-     }
-}
+    }

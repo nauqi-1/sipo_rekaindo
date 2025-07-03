@@ -231,11 +231,11 @@
             <h3 class="memo-title">Memo</h3>
             <div class="letter">
                 <table class="header1">
-                    @if ($memo->tgl_disahkan!= null)
+                    @if ($memo->tgl_dibuat!= null)
                     <tr>
                         <td>Tanggal</td>
                         <td>:</td>
-                        <td>{{ $memo->tgl_disahkan->translatedFormat('d F Y') }}</td>
+                        <td>{{ $memo->tgl_dibuat->translatedFormat('d F Y') }}</td>
                     </tr>
                     @endif
                     <tr>
@@ -284,7 +284,12 @@
                         <tr>
                             <td>
                                 <p><b>Hormat kami,</b></p>
-                                <b>Manajer {{ $memo->divisi->nm_divisi }}</b> <br><br><br>
+                                <b>Manajer {{ $memo->divisi->nm_divisi }}</b> 
+                                @if(!empty($memo->qr_approved_by))
+                                    <div style="text-align: center; margin-top: 10px;" >
+                                        <img src="data:image/png;base64,{{ $memo->qr_approved_by }}" width="100" alt="QR Code">
+                                    </div>
+                                @endif
                                 <p><b><u>{{ $memo->nama_bertandatangan }}</u></b></p>
                             </td>
                         </tr>

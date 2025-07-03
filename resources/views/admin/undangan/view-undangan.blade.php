@@ -53,7 +53,7 @@
                     <div class="card-white">
                         <label for="tgl">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{$undangan->tgl_dibuat}}" readonly>
+                        <input type="text" id="tgl" value="{{$undangan->tgl_dibuat->translatedFormat('d F Y')}}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="kepada">Kepada</label>
@@ -76,13 +76,23 @@
                         <label for="status">Status</label>
                         <div class="separator"></div>
                         
+                            @if($undangan->divisi->id_divisi != Auth::user()->divisi->id_divisi)
                             @if ($undangan->final_status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($undangan->final_status == 'pending')
+                            @elseif ($undangan->final_status  == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
                             @endif
+                        @else
+                            @if ($undangan->status == 'reject')
+                                <span class="badge bg-danger">Ditolak</span>
+                            @elseif ($undangan->status  == 'pending')
+                                <span class="badge bg-warning">Diproses</span>
+                            @else
+                                <span class="badge bg-success">Diterima</span>
+                            @endif
+                        @endif
                     </div>                    
                     <div class="card-white">
                         <label for="file">File</label>
@@ -96,7 +106,7 @@
                     <div class="card-white">
                         <label for="lampiran">Lampiran</label>
                         <div class="separator"></div>
-                        <button class="view" onclick="window.location.href='{{ route('undangan.preview', $undangan->id_undangan) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
+                        <button class="view" onclick="window.location.href='{{ route('view-undanganPDF', $undangan->id_undangan) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
                     </div>
                     @endif
                 </div>

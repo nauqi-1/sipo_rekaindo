@@ -12,10 +12,22 @@
         <h1>Manajemen Pengguna</h1>
     </div>        
     <div class="row">
-        <div class="breadcrumb-wrapper">
-            <div class="breadcrumb" style="gap: 5px;">
-                <a href="#">Beranda</a> / <a href="#">Pengaturan</a> / <a href="#" style="color: #565656;">Manajemen Pengguna</a>
+        <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div class="breadcrumb" style="gap: 5px; width: 82%;">
+                <a href="{{route('superadmin.dashboard')}}">Beranda</a> / <a href="#">Pengaturan</a> / <a href="#" style="color: #565656;">Manajemen Pengguna</a>
             </div>
+            <form method="GET" action="{{ route('user.manage') }}" class="search-filter d-flex gap-2">
+            <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
+                Show
+                <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
+                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                </select>
+                entries
+            </label>
+            </form>
         </div>
     </div>
 
@@ -179,7 +191,7 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="password"  class="form-label">Kata Sandi :<span style="color : red;"> *</span></label>
-                            <input type="text" name="password" id="password" class="form-control" required autocomplete="new-password">
+                            <input type="text" name="password" id="password" class="form-control" required autocomplete="new-password" placeholder="Masukkan Min. 8 karakter">
                             <x-input-error :messages="$errors->get('password')" class="mt-2" />
                         </div>
                         <div class="col-md-6">

@@ -16,6 +16,7 @@
                 <div class="breadcrumb" style="gap: 5px; width: 83%;">
                     <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Undangan Rapat</a>
                 </div>
+                <form method="GET" action="{{ route('memo.terkirim', Auth::user()->id) }}" class="d-flex gap-2">
                 <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
                 Show
                 <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;"> 
@@ -26,6 +27,7 @@
                 </select>
                 entries
             </label>
+            </form>
             </div>
         </div>
 
@@ -33,14 +35,15 @@
         <div class="surat">
             <div class="header-tools">
                 <div class="search-filter">
-                    <div class="dropdown">
+                <form method="GET" action="{{ route('undangan.manager', Auth::user()->id) }}" class="d-flex align-items-center gap-3 flex-wrap w-100">
+                    <!-- <div class="dropdown">
                         <select name="status" class="form-select" onchange="this.form.submit()">
                             <option value="">Status</option>
                             <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                             <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
                             <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                         <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                     </div>
@@ -56,6 +59,7 @@
                             <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                         </div>
                     </div>
+                </form>
                 </div>
             </div>
         </div>
@@ -68,16 +72,22 @@
                     <th>Nama Dokumen</th>
                     <th>Tanggal Undangan
                         <button class="data-md">
-                            <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                            <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'undangan.tgl_dibuat','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                            style="color:rgb(135, 135, 148); text-decoration: none;">
+                            <span class="bi-arrow-down-up"></span>
+                        </a>
                         </button>
                     </th>
                     <th>Seri</th>
                     <th>Dokumen</th>
                     <th>Tanggal Disahkan
                         <button class="data-md">
-                            <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
-                        </button>
-                    </th>
+                               <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'undangan.tgl_disahkan','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                            style="color:rgb(135, 135, 148); text-decoration: none;">
+                            <span class="bi-arrow-down-up"></span>
+                        </a>
+                            </button>
+                        </th>
                     <th>Divisi</th>
                     <th>Status</th>
                     <th>Aksi</th>

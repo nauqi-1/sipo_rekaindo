@@ -23,7 +23,6 @@
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
                 <a href="{{route(Auth::user()->role->nm_role.'.dashboard')}}">Beranda</a>/
-                <a href="#">Arsip</a>/
                 <a href="{{route ('arsip.undangan')}}">Arsip Undangan</a>/
                 <a style="color:#565656" href="#">Detail Arsip Undangan</a>
                 </div>

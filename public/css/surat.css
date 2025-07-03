@@ -99,9 +99,9 @@
 
 /* button tambah pengguna */
 .surat .search-filter .btn-add {
-    background-color: #ffffff;
-    color: #878790;
-    border: 1px solid #DFDFDF;
+    background-color: #1E4178;
+    color: #FFFFFF;
+    border: 1px solid #1E4178;
     border-radius: 7px;
     height: 35px;
     font-size: 14px;
@@ -112,11 +112,11 @@
     justify-content: center;
 }
 
-.surat .search-filter .btn-add:hover {
-    border: 1px solid #1E4178;
-    background-color: #1E4178;
-    color: #ffffff;
-}
+/* .surat .search-filter .btn-add:hover {
+    border: 1px solid #878790;
+    background-color: #FFFFFF;
+    color: #878790;
+} */
 
 .surat .search-filter input {
     box-sizing: border-box; 

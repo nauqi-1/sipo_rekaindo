@@ -56,7 +56,13 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        <button class="status">{{ $undangan->status }}</button>
+                        @if ($undangan->final_status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($undangan->final_status == 'pending')
+                            <span class="badge bg-warning">Diproses</span>
+                        @else
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
                     </div>
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
@@ -92,7 +98,7 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl" value="{{$undangan->tgl_dibuat->translatedFormat('d F Y')}}" readonly>
                     </div>
-                    <!-- <div class="card-white">
+                    <div class="card-white">
                         <label for="lampiran">Lampiran</label>
 
                         <div class="separator"></div>
@@ -101,9 +107,8 @@
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
-                        <button class="btn-file"><img src="/img/mata.png" alt="view"><a href="#">Lihat</a></button>
-                        <button class="down btn-file"><img src="/img/download.png" alt="down"><a href="#">Unduh</a></button>
-                    </div> -->
+                        <button class="btn-file" onclick="window.location.href='{{ route('view-undanganPDF', $undangan->id_undangan) }}'"><img src="/img/mata.png" alt="view">Lihat</button>
+                    </div>
                 </div>
             </div>
             <div class="row mb-4" style="gap: 20px;">
@@ -116,7 +121,13 @@
                     <div class="card-white">
                         <label for="status">Pengesahan</label>
                         <div class="separator"></div>
-                        <button class="status">{{ $undangan->status }}</button>
+                         @if ($undangan->sfinal_status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($undangan->final_status == 'pending')
+                            <span class="badge bg-warning">Diproses</span>
+                        @else
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
                     </div>
                     
                 </div>

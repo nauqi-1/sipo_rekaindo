@@ -20,12 +20,12 @@
             <div class="back-button">
                 <a href="{{route ('risalah.manager')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Undangan Rapat</h1>
+            <h1>Detail Risalah Rapat</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="{{route ('risalah.manager')}}" >Risalah Rapat</a>/ <a href="#" style="color: #565656;">Detail Undangan Rapat</a>
+                    <a href="#">Beranda</a>/<a href="{{route ('risalah.manager')}}" >Risalah Rapat</a>/ <a href="#" style="color: #565656;">Detail Risalah Rapat</a>
                 </div>
             </div>
         </div>
@@ -56,7 +56,13 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        <button class="status">{{ $risalah->status }}</button>
+                        @if ($risalah->final_status == 'reject')
+                            <button class="status btn bg-danger">Ditolak</button>
+                        @elseif ($risalah->final_status == 'pending')
+                            <button class="status btn bg-warning">Diproses</button>
+                        @else
+                            <button class="status btn bg-success">Diterima</button>
+                        @endif
                     </div>
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
@@ -104,9 +110,9 @@
                     <div class="card-white">
                         <label for="status">Pengesahan</label>
                         <div class="separator"></div>
-                        @if ($risalah->status == 'reject')
+                        @if ($risalah->final_status == 'reject')
                             <button class="status btn bg-danger">Ditolak</button>
-                        @elseif ($risalah->status == 'pending')
+                        @elseif ($risalah->final_status == 'pending')
                             <button class="status btn bg-warning">Diproses</button>
                         @else
                             <button class="status btn bg-success">Diterima</button>

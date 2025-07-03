@@ -37,7 +37,8 @@ class UserManageController extends Controller
         $users->orderBy('firstname', $sortOrder);
 
         // Paginate hasil query
-        $users = $users->paginate(6);
+        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
+        $users = $users->paginate($perPage);
 
         // Kirim data ke view user-manage
         return view('superadmin.user-manage', compact('divisi', 'roles', 'positions', 'users', 'sortOrder'));

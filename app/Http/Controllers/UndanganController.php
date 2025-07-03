@@ -12,6 +12,7 @@ use App\Models\Undangan;
 use App\Models\Backup_Document;
 use App\Models\Kirim_document;
 use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
 use Illuminate\Http\Request;
@@ -28,6 +29,13 @@ class UndanganController extends Controller
 
         // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
         $undanganDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
+        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+
+        $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_undangan', 'judul'];
+         if (!in_array($sortBy, $allowedSortColumns)) {
+            $sortBy = 'created_at'; // fallback default
+        }
 
         // Ambil undangan yang belum diarsipkan oleh user saat ini
         $query = Undangan::with('divisi')
@@ -72,16 +80,15 @@ class UndanganController extends Controller
         
     
 
-        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+    
 
         // Sorting default menggunakan tgl_dibuat
-        $query->orderBy('created_at', $sortDirection);
+        $query->orderBy($sortBy, $sortDirection);
 
-        
         
 
         $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
-        $undangans = Undangan::paginate($perPage);
+        $undangans = $query->paginate($perPage);
 
         // **Tambahkan status penerima untuk setiap undangan**
         $undangans->getCollection()->transform(function ($undangan) use ($userId) {
@@ -97,9 +104,23 @@ class UndanganController extends Controller
             }
             return $undangan;
         });
+                $kirimDocuments = Kirim_Document::where('jenis_document', 'undangan')
+        ->whereHas('undangan') // Memastikan dokumen adalah memo
+        ->orderBy('id_kirim_document', 'desc')
+        ->get();
 
+    // Ambil divisi penerima dan pengirim melalui relasi user
+    $kirimDocuments->each(function ($kirim) {
+        $pengirim = User::find($kirim->id_pengirim);
+        $penerima = User::find($kirim->id_penerima);
+        $user = Auth::user();
+
+        $kirim->divisi_pengirim = $pengirim ? $pengirim->divisi->nm_divisi : 'Tidak Diketahui';
+        $kirim->divisi_penerima = $penerima ? $penerima->divisi->nm_divisi : 'Tidak Diketahui';
+        $kirim->divisi_user = $user->divisi->nm_divisi ?? 'Tidak Diketahui';
+    });
     
-        return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri','sortDirection'));
+        return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri','sortDirection','kirimDocuments'));
     }
 
     public function superadmin(Request $request){
@@ -112,14 +133,18 @@ class UndanganController extends Controller
 
         // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
         $undanganDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
+        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
 
+        $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_undangan', 'judul'];
+         if (!in_array($sortBy, $allowedSortColumns)) {
+            $sortBy = 'created_at'; // fallback default
+        }
+
         // Sorting default menggunakan tgl_dibuat
-        
-        // Filter berdasarkan status
         $query = Undangan::query()
-        ->whereNotIn('id_undangan', $undanganDiarsipkan)
-        ->orderBy('created_at', $sortDirection);
+            ->whereNotIn('id_undangan', $undanganDiarsipkan)
+            ->orderBy($sortBy, $sortDirection);
 
         if ($request->has('status') && $request->status != '') {
             $query->where('status', $request->status);
@@ -173,8 +198,8 @@ class UndanganController extends Controller
     // Format nomor dokumen
     $nomorDokumen = sprintf(
         "%d.%d/REKA/GEN/%s/%s/%d",
-        $nextSeri['seri_bulanan'],
         $nextSeri['seri_tahunan'],
+        $nextSeri['seri_bulanan'],
         strtoupper($divisiName),
         $bulanRomawi,
         now()->year
@@ -292,6 +317,12 @@ class UndanganController extends Controller
             // Jika status 'approve', simpan tanggal pengesahan
             if ($request->status == 'approve') {
                 $undangan->tgl_disahkan = now();
+
+                $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
+                $qrImage = QrCode::format('svg')->generate($qrText);
+                $qrBase64 = base64_encode($qrImage);
+                $undangan->qr_approved_by = $qrBase64;
+
                 Notifikasi::create([
                     'judul' => "Undangan Disetujui",
                     'judul_document' => $undangan->judul,
@@ -486,7 +517,26 @@ class UndanganController extends Controller
      }
      public function view($id)
     {
+        $userId = Auth::id(); // Ambil ID user yang sedang login
         $undangan = Undangan::where('id_undangan', $id)->firstOrFail();
+
+        $undanganCollection = collect([$undangan]); // Bungkus dalam collection
+
+        $undanganCollection->transform(function ($undangan) use ($userId) {
+            if ($undangan->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $undangan->final_status = $undangan->status; // Undangan dari divisi sendiri
+            } else {
+                $statusKirim = Kirim_Document::where('id_document', $undangan->id_undangan)
+                    ->where('jenis_document', 'undangan')
+                    ->where('id_penerima', $userId)
+                    ->first();
+                $undangan->final_status = $statusKirim ? $statusKirim->status : '-';
+            }
+            return $undangan;
+        });
+    
+        // Karena hanya satu memo, kita bisa mengambil dari collection lagi
+        $undangan = $undanganCollection->first();
 
         return view(Auth::user()->role->nm_role.'.undangan.view-undangan', compact('undangan'));
     }

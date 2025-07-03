@@ -98,8 +98,8 @@
                             </div>
                         </div>
                     </div>
-                <div id="risalahContainer">
-                    <div class="isi-surat-row">
+                <div id="risalahContainer"></div>
+                    <!-- <div class="isi-surat-row">
                         <div class="col-md-1">
                             <label for="no">No</label>
                             <input type="text" class="form-control no-auto" name="nomor[]" readonly>
@@ -125,8 +125,8 @@
                             <label for="pic">PIC</label>
                             <textarea class="form-control" name="pic[]" placeholder="PIC" rows="2"></textarea>
                         </div>
-                    </div>
-                </div>
+                    </div> -->
+            
                 <div class="card-tambah" style="margin-bottom: 10px;">
                     <button class="btn btn-tambah" id="tambahIsiRisalahBtn">Tambah Isi Risalah</button>
                 </div>

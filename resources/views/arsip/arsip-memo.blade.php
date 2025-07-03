@@ -14,7 +14,7 @@
     <div class="row">
         <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="breadcrumb" style="gap: 5px; width: 82%;">
-                <a href="{{route(Auth::user()->role->nm_role.'.dashboard')}}">Beranda</a>/<a href="#">Arsip</a>/<a style="color:#565656" href="#">Arsip Memo</a>
+                <a href="{{route(Auth::user()->role->nm_role.'.dashboard')}}">Beranda</a>/<a style="color:#565656" href="#">Arsip Memo</a>
             </div>
             <form method="GET" action="{{ route('arsip.memo') }}" class="search-filter d-flex gap-2">
             <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
@@ -83,8 +83,9 @@
             @foreach($arsipMemo as  $arsip)
             <tr>
                 <td class="nomor">{{ $loop->iteration }}</td>
-                <td class="nama-dokumen text-success">
-                        {{ $arsip->document ? $arsip->document->judul : 'Memo Tidak Ditemukan' }}
+                <td class="nama-dokumen 
+                        {{ $arsip->document->final_status == 'reject' ? 'text-danger' : ($arsip->document->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $arsip->document->judul }}
                     </td>
                     <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
                     <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
@@ -92,7 +93,13 @@
                     <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                     <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
                     <td>
-                    <span class="badge bg-success">Diterima</span>
+                    @if ($arsip->document->final_status == 'reject')
+                        <span class="badge bg-danger">Ditolak</span>
+                    @elseif ($arsip->document->final_status == 'pending')
+                        <span class="badge bg-warning">Diproses</span>
+                    @else
+                        <span class="badge bg-success">Diterima</span>
+                    @endif
                 </td>
                 <td>
                     <!-- Button Unduh -->
