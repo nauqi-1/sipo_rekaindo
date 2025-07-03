@@ -102,6 +102,7 @@
                             *Pilih opsi posisi dan divisi tujuan untuk mengirimkan undangan kepada pihak yang dituju.
                         </label>
                     </div>
+                    <!--OPSI PENGIRIMAN ADA DISINI-->
                     <div class="card-white">
                         <label for="posisi_penerima">Posisi Penerima</label>
                         <div class="separator"></div>
@@ -122,6 +123,7 @@
                             @endforeach
                         </select>                      
                     </div>
+                    <!---->
                 </div>
             </div>
         </div>

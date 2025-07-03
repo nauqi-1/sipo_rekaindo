@@ -71,16 +71,31 @@
 
                 </div>
                 <div class="row mb-4">
+                    <!--Checkboxes kepada (tujuan)-->
                     <div class="col-md-6">
                         <label for="kepada" class="form-label">
                             <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                            <label for="tujuan" class="label-kepada">Pisahkan dengan titik koma(;) jika penerima lebih dari satu</label>
+                            <label for="tujuan" class="label-kepada">Centang lebih dari satu jika diperlukan</label>
                         </label>
-                        <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" value="{{ old('tujuan') }}" >
-                        @error('tujuan')
+                        <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+                            @foreach($divisi as $d)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                        name="tujuan[]" 
+                                        value="{{ $d->id_divisi }}" 
+                                        id="divisi_{{ $d->id_divisi }}">
+                                    <label class="form-check-label" for="divisi_{{ $d->id_divisi }}">
+                                        {{ $d->nm_divisi }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        <!-- <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" value="{{ old('tujuan') }}" > -->
+                        @error('tujuan[]')
                             <div class="form-control text-danger">{{ $message }}</div>       
                         @enderror
                     </div>
+                    <!--TTD yang bertanda tangan-->
                     <div class="col-md-6">
                         <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
                         <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" >
@@ -124,13 +139,36 @@
                     </div>
                 </div>
             </div>
+            <!--Permohonan Approval disini yah-->
+            <div class="row mb-4" style="gap: 20px;">
+                <div class="col">
+                    <div class="card-blue1">
+                        <label for="tindakan">Undangan Akan Diajukan untuk Proses Approval</label>
+                        <label for="isi" style="color: #FF000080; font-size: 10px; margin-left: 5px;">
+                            *Undangan akan diapprove oleh :
+                        </label>
+                    </div>
+                   
+                        
+                        <div class="separator"></div>
+                        @foreach($managers as $manager)
+                                <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname . ' ' . $manager->lastname }}</option>
+                            @endforeach
+                        
+                 
+                    
+                    <!---->
+                </div>
+            </div>
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.superadmin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save">Simpan</button>
+                <button type="submit" class="btn btn-save">Ajukan</button>
             </div>
         </div>
         </form>
     </div>
+
+
 
         <!-- Modal Berhasil -->
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
@@ -140,7 +178,7 @@
                         <img src="/img/memo-admin/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
                         <!-- Success Message -->
                         <h5 class="modal-title"><b>Sukses</b></h5>
-                        <p class="mt-2">Berhasil Mengirimkan Undangan</p>
+                        <p class="mt-2">Menunggu Approval dari Manager</p>
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('undangan.admin')}}" style="color: white; text-decoration: none">Kembali ke Halaman Memo</a></button>
                     </div>
                 </div>
