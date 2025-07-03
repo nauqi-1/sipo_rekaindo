@@ -182,7 +182,9 @@ class RisalahController extends Controller
         $divisiName = auth()->user()->divisi->nm_divisi;
         $undangan = Undangan::whereNotIn('judul', function($query) {
                         $query->select('judul')->from('risalah');
-                    })->get();
+                    })
+                    ->where('divisi_id_divisi', $divisiId)
+                    ->get();
 
         $risalah = new Risalah(); // atau ambil dari data risalah terakhir, terserah kebutuhanmu
         
