@@ -43,6 +43,8 @@
                         <div class="separator"></div>
                         <input type="text" id="diterima" value="{{ $undangan->tujuan }}" readonly>
                     </div>
+                    
+
                 </div>
                 <div class="col">
                     <div class="card-blue">
@@ -138,13 +140,36 @@
                     <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>        
                 </div>             
             </div>
-
+            <!--DIVA TEST-->
+        <div class="row mb-4" style="gap: 20px;" id="formPengiriman" style="display: none;">
+        <div class="row mb-4" style="gap: 20px;">
+                <div class="col">
+                    <div class="card-blue1">
+                        <label for="tindakan">Konfirmasi Daftar Penerima</label>
+                        <label for="isi" style="color: #FF000080; font-size: 10px; margin-left: 5px;">
+                            *Berikut adalah daftar divisi tujuan yang akan menerima undangan.
+                        </label>
+                    </div>
+                    <div class="card-white">
+    <label for="diterima">Diterima</label>
+    <div class="separator"></div>
+            <ol>
+        @foreach(explode(';', $undangan->tujuan) as $divisi)
+            <li>{{ trim($divisi) }}</li>
+        @endforeach
+            </ol>
+        </div>
+                </div>
+            </div>
+        </div>
+        <!---->
             <div class="footer">
                 <button type="button" class="btn back" id="backBtn" onclick="window.location.href=' '">Kembali</button>
                 <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
             </div>
         </form>
-  
+        
+
         <!-- Modal kirim -->
         <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -216,6 +241,33 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const diterimaCheckbox = document.getElementById('approve');
+        const tindakLanjutSelect = document.getElementById('nextAction');
+        const formPengiriman = document.getElementById('formPengiriman');
+
+        function togglePengiriman() {
+            if (diterimaCheckbox.checked && tindakLanjutSelect.value === 'dilanjutkan') {
+                formPengiriman.style.display = 'block';
+            } else {
+                formPengiriman.style.display = 'none';
+                document.getElementById('posisi_penerima').value = '';
+                document.getElementById('divisi_penerima').value = '';
+
+            }
+        }
+
+        diterimaCheckbox.addEventListener('change', togglePengiriman);
+        tindakLanjutSelect.addEventListener('change', togglePengiriman);
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    const formPengiriman = document.getElementById('formPengiriman');
+    if (formPengiriman) {
+        formPengiriman.style.display = 'none';
+    }
+});
+</script>
 
 </body>
 </html>
