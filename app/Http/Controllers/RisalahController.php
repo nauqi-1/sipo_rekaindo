@@ -17,6 +17,7 @@ use App\Models\Kirim_Document;
 use App\Models\BackupRisalah;
 use App\Models\User;
 use App\Models\Divisi;
+use App\Models\Undangan;
 
 class RisalahController extends Controller
 {
@@ -179,9 +180,12 @@ class RisalahController extends Controller
     {
         $divisiId = auth()->user()->divisi_id_divisi;
         $divisiName = auth()->user()->divisi->nm_divisi;
-    
-        $risalah = new Risalah(); // atau ambil dari data risalah terakhir, terserah kebutuhanmu
+        $undangan = Undangan::whereNotIn('judul', function($query) {
+                        $query->select('judul')->from('risalah');
+                    })->get();
 
+        $risalah = new Risalah(); // atau ambil dari data risalah terakhir, terserah kebutuhanmu
+        
         // Ambil nomor seri berikutnya
         $nextSeri = Seri::getNextSeri(false);
         
@@ -206,7 +210,8 @@ class RisalahController extends Controller
             'risalah' => $risalah,
             'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
             'nomorDokumen' => $nomorDokumen,
-            'managers' => $managers
+            'managers' => $managers,
+            'undangan' => $undangan
         ]);  
     }
     
@@ -222,7 +227,6 @@ class RisalahController extends Controller
         'tempat' => 'required|string',
         'waktu_mulai' => 'required|string',
         'waktu_selesai' => 'required|string',
-        'tujuan' => 'required|string',
         'judul' => 'required|string',
         'divisi_id_divisi' => 'required|integer|exists:divisi,id_divisi', 
         'nama_bertandatangan' => 'required|string',
@@ -266,7 +270,6 @@ class RisalahController extends Controller
         'tempat' => $request->tempat,
         'waktu_mulai' => $request->waktu_mulai,
         'waktu_selesai' => $request->waktu_selesai,
-        'tujuan' => $request->tujuan,
         'status' => 'pending',
         'judul' => $request->judul,
         'pembuat' => $request->pembuat,
@@ -354,7 +357,6 @@ public function update(Request $request, $id)
             'tempat' => 'required',
             'waktu_mulai' => 'required',
             'waktu_selesai' => 'required',
-            'tujuan' => 'required',
             'nama_bertandatangan' => 'required',
             'nomor.*' => 'required',
             'topik.*' => 'required',
@@ -373,7 +375,6 @@ public function update(Request $request, $id)
             'tempat' => $request->tempat,
             'waktu_mulai' => $request->waktu_mulai,
             'waktu_selesai' => $request->waktu_selesai,
-            'tujuan' => $request->tujuan,
             'nama_bertandatangan' => $request->nama_bertandatangan,
             // tambahan lainnya sesuai kebutuhan
         ]);
@@ -414,7 +415,6 @@ public function update(Request $request, $id)
             'seri_document' => $risalah->seri_surat,
             'tgl_dibuat' => $risalah->tgl_dibuat,
             'tgl_disahkan' => $risalah->tgl_disahkan,
-            'tujuan'=> $risalah->tujuan,
             'waktu_mulai' => $risalah->waktu_mulai,
             'waktu_selesai' => $risalah->waktu_selesai,
             'agenda' => $risalah->agenda,

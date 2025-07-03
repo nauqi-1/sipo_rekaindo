@@ -70,9 +70,16 @@
         }
 
         .signature {
-            margin-top: 20mm;
-            text-align: right;
-            margin-right: 50px;
+            margin-top: 5%;
+            text-align: left !important;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: 3%;
+        }
+
+        .signature p {
+            text-align: center;
+            margin: 0;
         }
 
         .nowrap {
@@ -146,16 +153,20 @@
             </tbody>
         </table>
 
-        <div class="signature">
-            <p>Madiun, {{ $risalah->tgl_dibuat->translatedFormat('d F Y') }}</p>
-            <p>Manager {{ $risalah->divisi->nm_divisi }}</p>
-            @if(!empty($risalah->qr_approved_by))
-                                    <div style="text-align: right; margin-top: 10px; margin-right: 15px;">
-                                        <img src="data:image/png;base64,{{ $risalah->qr_approved_by }}" width="100" alt="QR Code">
-                                    </div>
-                                @endif
-            <p>{{ $risalah->nama_bertandatangan }}</p>
-        </div>
+        <table class="signature">
+            <tr>
+                <td>
+                    <p>Madiun, {{ $risalah->tgl_dibuat->translatedFormat('d F Y') }}</p>
+                    <p>Manager {{ $risalah->divisi->nm_divisi }}</p>
+                    @if(!empty($risalah->qr_approved_by))
+                                            <div style="text-align: right; margin-top: 10px; margin-right: 15px;">
+                                                <img src="data:image/png;base64,{{ $risalah->qr_approved_by }}" width="100" alt="QR Code">
+                                            </div>
+                                        @endif
+                    <p>{{ $risalah->nama_bertandatangan }}</p>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <div class="pageFooter">
