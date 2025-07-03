@@ -38,7 +38,8 @@
             <form method="GET" action="{{ route('risalah.admin') }}" class="search-filter d-flex gap-2">
                 <div class="dropdown">
                     <select name="status" class="form-select" onchange="this.form.submit()">
-                        <option value="">Status</option>
+                        <option value="" disabled selected>Status</option>
+                        <option value="">Semua</option>
                         <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
                         <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
