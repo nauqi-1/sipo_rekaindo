@@ -182,7 +182,9 @@ class RisalahController extends Controller
         $divisiName = auth()->user()->divisi->nm_divisi;
         $undangan = Undangan::whereNotIn('judul', function($query) {
                         $query->select('judul')->from('risalah');
-                    })->get();
+                    })
+                    ->where('divisi_id_divisi', $divisiId)
+                    ->get();
 
         $risalah = new Risalah(); // atau ambil dari data risalah terakhir, terserah kebutuhanmu
         
@@ -216,7 +218,7 @@ class RisalahController extends Controller
     }
     
     public function store(Request $request)
-{
+    {
     //dd($request->all());
 
     $request->validate([
@@ -292,6 +294,25 @@ class RisalahController extends Controller
     }
 }
 
+    // Kirim otomatis ke semua MANAGER dari divisi pembuat (bukan ke tujuan)
+    $divisiPembuatId = Auth::user()->divisi_id_divisi;
+
+    $sudahDikirim = \App\Models\Kirim_Document::where('id_document', $risalah->id_risalah)
+        ->where('jenis_document', 'risalah')
+        ->where('id_pengirim', Auth::id())
+        ->where('id_penerima', $manager->id)
+        ->exists();
+
+    if (!$sudahDikirim) {
+        \App\Models\Kirim_Document::create([
+            'id_document' => $risalah->id_risalah,
+            'jenis_document' => 'risalah',
+            'id_pengirim' => Auth::id(), // user yang sedang login (admin)
+            'id_penerima' => $request->nama_bertandatangan,
+            'status' => 'pending'
+        ]);
+    }
+    
 
     return redirect()->route('risalah.'.Auth::user()->role->nm_role)->with('success', 'Risalah berhasil ditambahkan');
 }
