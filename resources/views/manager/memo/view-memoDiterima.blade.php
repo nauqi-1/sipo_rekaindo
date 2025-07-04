@@ -34,15 +34,38 @@
                         <label for="tgl_surat" class="form-label">No Agenda</label>
                     </div>
                     <div class="card-white">
-                        <label for="seri">No Seri</label>
+                        <label for="seri">No. Seri</label>
                         <div class="separator"></div>
                         <input type="text" id="seri" value="{{ $memo->memo->seri_surat }}">
                     </div>
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
-                        <div class="separator"></div>
+                        <div class="separator" style="width: 1px; background: #ccc; margin: 0 10px;"></div>
+                       
 
-                        <input type="text" id="diterima" value="{{ $memo->memo->tujuan }}">
+                        @php
+                        use App\Models\Divisi;
+                    
+                            $divisiIds = array_filter(array_map('trim', explode(';', $memo->memo->tujuan))); 
+                            $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi');
+                        @endphp
+
+                        @if (count($divisiNames) === 1)
+                            <input type="text" id="kepada" value="{{ trim($divisiNames[0]) }}" readonly>
+                        @else
+                         <div 
+                        style="border-radius: 8px; 
+                               padding: 8px 12px; 
+                               background-color: #fff; 
+                               font-size: 14px;
+                               height: auto;">
+                            <ol style="padding-left: 20px;">
+                                @foreach ($divisiNames as $tujuan)
+                                    <li>{{ trim($tujuan) }}</li>
+                                @endforeach
+                            </ol>
+                         </div>
+                        @endif
                     </div>
                 </div>
                 <div class="col">

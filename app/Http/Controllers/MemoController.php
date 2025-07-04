@@ -209,7 +209,8 @@ class MemoController extends Controller
     {
         $divisiId = auth()->user()->divisi_id_divisi;
     $divisiName = auth()->user()->divisi->nm_divisi;
-
+    $divisiList = Divisi::all(); 
+    
     // Ambil nomor seri berikutnya
     $nextSeri = Seri::getNextSeri(false);
     
@@ -236,19 +237,21 @@ class MemoController extends Controller
     return view(Auth::user()->role->nm_role.'.memo.add-memo', [
         'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
         'nomorDokumen' => $nomorDokumen,
-        'managers' => $managers
+        'managers' => $managers,
+        'divisiList' => $divisiList
     ]);  
     }
     public function store(Request $request)
     {
-        //  dd($request->all());
+        
 
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
-            'tujuan' => 'required|string|max:100',
+            'tujuan' => 'required|array|min:1',
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
+            'manager_user_id' => 'required|exists:users,id',
             'pembuat'=>'required|string|max:255',
             'catatan'=>'nullable|string|max:255',
             'tgl_dibuat' => 'required|date',
@@ -291,13 +294,11 @@ class MemoController extends Controller
             return back()->with('error', 'Nomor seri tidak ditemukan.');
         }
         
-        
-
         // Simpan dokumen
         $memo = Memo::create([
             'divisi_id_divisi' => $request->input('divisi_id_divisi'),
             'judul' => $request->input('judul'),
-            'tujuan' => $request->input('tujuan'),
+            'tujuan' => implode('; ', $request->tujuan),
             'isi_memo' => $request->input('isi_memo'),
             'nomor_memo' => $request->input('nomor_memo'),
             'tgl_dibuat' => $request->input('tgl_dibuat'),
@@ -323,7 +324,34 @@ class MemoController extends Controller
             }
         }
     
+        $creator = Auth::user();
+            
+
+        $managers = User::where('id', $request->manager_user_id)
+                        ->get();
+
+        $sentCount = 0;
+        
+        foreach ($managers as $manager) {
+            
+            $kirim = Kirim_document::create([
+                'id_document' => $memo->id_memo,
+                'jenis_document' => 'memo',
+                'id_pengirim' => $creator->id,
+                'id_penerima' => $manager->id,
+                'status' => 'pending',
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        
+            if ($kirim) {
+                $sentCount++;
+            }
+        }
+        
+
         return redirect()->route('memo.'. Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dibuat.');
+
     }
 
     private function convertToRoman($number) {
@@ -487,7 +515,7 @@ class MemoController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
-            'tujuan' => 'required|string|max:255',
+            'tujuan' => 'required|array|min:1',
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
             'tgl_dibuat' => 'required|date',
@@ -503,10 +531,10 @@ class MemoController extends Controller
             $memo->isi_memo = $request->isi_memo;
         }
         if ($request->filled('tujuan')) {
-            $memo->tujuan = $request->tujuan;
+            $memo->tujuan = implode(';', $request->tujuan);
         }
         if ($request->filled('nomor_memo')) {
-            $memo->nomor_memo = $request->nomor_memo;
+            $memo->nomor_memo = $request->nomor_memo    ;
         }
         if ($request->filled('nama_bertandatangan')) {
             $memo->nama_bertandatangan = $request->nama_bertandatangan;
