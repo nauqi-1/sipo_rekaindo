@@ -8,6 +8,8 @@ use Clegginabox\PDFMerger\PDFMerger;
 use App\Models\Memo;
 use App\Models\Undangan;
 use App\Models\Risalah;
+use App\Models\Divisi;
+
 
 
 
@@ -86,6 +88,9 @@ class CetakPDFController extends Controller
 {
     // Ambil data memo berdasarkan ID
     $memo = Memo::findOrFail($id_memo);
+
+    $divisiIds = explode(';', $memo->tujuan);
+    $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi')->toArray();
     $headerPath = public_path('img/bheader.png');
     $footerPath = public_path('img/bfooter.png');
 
@@ -98,6 +103,7 @@ class CetakPDFController extends Controller
         'memo' => $memo,
         'headerImage' => $headerBase64,
         'footerImage' => $footerBase64,
+        'divisiNames' => $divisiNames,
         'isPdf' => true
     ])->setPaper('A4', 'portrait');
 

@@ -55,10 +55,33 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl" value="{{$memo->tgl_dibuat->translatedFormat('d F Y')}}" readonly>
                     </div>
-                    <div class="card-white">
+                    <div class="card-white flex items-stretch">
                         <label for="kepada">Kepada</label>
                         <div class="separator"></div>
-                        <input type="text" id="kepada" value="{{$memo->tujuan}}" readonly>
+
+                        @php
+                        use App\Models\Divisi;
+
+                            $divisiIds = explode(';', $memo->tujuan); 
+                            $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi');
+                        @endphp
+
+                        @if (count($divisiNames) === 1)
+                            <input type="text" id="kepada" value="{{ trim($divisiNames[0]) }}" readonly>
+                        @else
+                         <div 
+                        style="border-radius: 8px; 
+                               padding: 8px 12px; 
+                               background-color: #fff; 
+                               font-size: 14px;
+                               height: auto;">
+                            <ol style="padding-left: 20px;">
+                                @foreach ($divisiNames as $tujuan)
+                                    <li>{{ trim($tujuan) }}</li>
+                                @endforeach
+                            </ol>
+                         </div>
+                        @endif
                     </div>
                 </div>
                 <div class="col">

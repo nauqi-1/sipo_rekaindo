@@ -252,10 +252,22 @@
                 <div class="header2">
                     <table>
                         <tr>
-                            <th>Dari : Unit {{ $memo->divisi->nm_divisi }}</th>
-                            <th>Kepada Yth : {{ $memo->tujuan }}</th>
+                            <th style="text-align: left; vertical-align: top;">Dari : Unit {{ $memo->divisi->nm_divisi }}</th>
+                            <th style="text-align: left; vertical-align: top;">
+                                Kepada :
+                                @if (count($divisiNames) === 1)
+                                    <p>Divisi {{ $divisiNames[0] }}</p>
+                                @else
+                                    <ol style="margin: 0; padding-left: 20px;">
+                                        @foreach ($divisiNames as $name)
+                                            <li>Divisi {{ $name }}</li>
+                                        @endforeach
+                                    </ol>
+                                @endif
+                            </th>
                         </tr>
-                    </table>                 
+                    </table>
+
                 </div>
             <div class="collab">
                 <div class="fill">

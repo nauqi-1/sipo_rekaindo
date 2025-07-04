@@ -70,26 +70,43 @@
 
             </div>
             <div class="row mb-4">
-                <div class="col-md-6">
-                    <label for="kepada" class="form-label">
-                        <img src="/img/memo-admin/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                        <label for="tujuan" class="label-kepada"></label>
-                    </label>
-                    <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="Silahkan Isi Tujuan Memo" value="{{ old('tujuan') }}" >
-                    @error('tujuan')
-                        <div class="form-control text-danger">{{ $message }}</div>
-                    @enderror
-                </div>
+                <!--Checkboxes kepada (tujuan)-->
+                    <div class="col-md-6">
+                        <label for="kepada" class="form-label">
+                            <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
+                            <label for="tujuan" class="label-kepada">Centang lebih dari satu jika diperlukan</label>
+                        </label>
+                        <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+                            @foreach($divisiList as $d)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                        name="tujuan[]" 
+                                        value="{{ $d->id_divisi }}" 
+                                        id="divisi_{{ $d->id_divisi }}">
+                                    <label class="form-check-label" for="divisi_{{ $d->id_divisi }}">
+                                        {{ $d->nm_divisi }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        @error('tujuan[]')
+                            <div class="form-control text-danger">{{ $message }}</div>       
+                        @enderror
+                    </div>
+
                 <div class="col-md-6">
                     <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                    <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" >
-                        <option value="" disabled selected style="text-align: left;">--Pilih--</option>
+                   <select name="manager_user_id" required id="managerDropdown" class="form-control">
+                        <option value="">-- Pilih Penandatangan --</option>
                         @foreach($managers as $manager)
-                            <option value="{{  $manager->firstname . ' ' . $manager->lastname }}" {{ old('nama_bertandatangan') == $manager->firstname . ' ' . $manager->lastname ? 'selected' : '' }}>
-                                {{ $manager->firstname . ' ' . $manager->lastname }}
+                            <option value="{{ $manager->id }}">
+                                {{ $manager->firstname }} {{ $manager->lastname }}
                             </option>
                         @endforeach
                     </select>
+
+                    <input type="hidden" name="nama_bertandatangan" id="namaBertandatangan">
+
                     @error('nama_bertandatangan')
                         <div class="form-control text-danger">{{ $message }}</div>
                     @enderror
@@ -220,6 +237,36 @@
                 </div>
             </div>
         </div>
+        <script>
+document.getElementById('managerDropdown').addEventListener('change', function () {
+    const selectedName = this.options[this.selectedIndex].text;
+    document.getElementById('namaBertandatangan').value = selectedName;
+});
+</script>
+
+        <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const button = document.getElementById('tujuanDropdownButton');
+        const checkboxes = document.querySelectorAll('input[name="tujuan[]"]');
+
+        function updateButtonLabel() {
+            const selected = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.nextElementSibling.textContent.trim());
+
+            if (selected.length > 0) {
+                button.textContent = selected.join(', ');
+            } else {
+                button.textContent = 'Pilih Divisi';
+            }
+        }
+
+        checkboxes.forEach(cb => cb.addEventListener('change', updateButtonLabel));
+
+        // Call on page load in case of old checked values
+        updateButtonLabel();
+    });
+</script>
     <script>
         // Modal Upload File - Menampilkan Modal
         document.getElementById('openUploadModal').addEventListener('click', function () {
