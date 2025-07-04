@@ -90,7 +90,7 @@
                             <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control select2" required>
                                 <option value="" disabled selected>--Pilih--</option>
                             @foreach($managers as $manager)
-                                <option value="{{ $manager->firstname . ' ' . $manager->lastname }}">
+                                <option value="{{ $manager->id }}">
                                     {{ $manager->firstname . ' ' . $manager->lastname }}
                                 </option>
                             @endforeach

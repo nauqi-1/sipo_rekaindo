@@ -121,7 +121,7 @@
                         @if($kirimDocument)
                             @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'pending')
                                 <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
-                            @elseif($risalah->status == 'approve' && $kirimDocument->id_pengirim == Auth::user()->id && $kirimDocument->divisi_penerima != $kirimDocument->divisi_pengirim && $kirimDocument->status == 'pending')
+                            @elseif($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'approve')
                                 <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
                             @else
                                 <p>-</p>
