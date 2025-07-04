@@ -368,6 +368,8 @@ class MemoController extends Controller
             $memo->update(['status' => 'approve']);
         } elseif ($recipients->contains(fn($recipient) => $recipient->status === 'reject')) {
             $memo->update(['status' => 'reject']);
+        } elseif ($recipients->contains(fn($recipient) => $recipient->status === 'correction')) {
+            $memo->update(['status' => 'correction']);
         } else {
             $memo->update(['status' => 'pending']);
         }
@@ -385,10 +387,17 @@ class MemoController extends Controller
         $userId = Auth::id();
 
         // Validasi input
-        $request->validate([
-            'status' => 'required|in:approve,reject,pending',
-            'catatan' => 'nullable|string',
-        ]);
+        if ($request->status == 'approve') {
+            $request->validate([
+                'status' => 'required|in:approve,reject,pending,correction',
+                'catatan' => 'nullable|string',
+            ]);
+        } else {
+            $request->validate([
+                'status' => 'required|in:approve,reject,pending,correction',
+                'catatan' => 'required|string',
+            ]);
+        }
         
         
         if ($userDivisiId == $memo->divisi_id_divisi) {
@@ -422,6 +431,13 @@ class MemoController extends Controller
                 $memo->tgl_disahkan = now();
                 Notifikasi::create([
                     'judul' => "Memo Ditolak",
+                    'judul_document' => $memo->judul,
+                    'id_divisi' => $memo->divisi_id_divisi,
+                    'updated_at' => now()
+                ]);
+            } elseif ($request->status == 'correction') {
+                Notifikasi::create([
+                    'judul' => "Memo Perlu Revisi",
                     'judul_document' => $memo->judul,
                     'id_divisi' => $memo->divisi_id_divisi,
                     'updated_at' => now()
@@ -555,7 +571,7 @@ class MemoController extends Controller
             $file = $request->file('lampiran');
             $memo->lampiran = file_get_contents($file->getRealPath());
         }
-        
+        $memo->status = 'pending'; // Set status ke pending saat update
         $memo->save();
 
         if ($request->has('kategori_barang')) {

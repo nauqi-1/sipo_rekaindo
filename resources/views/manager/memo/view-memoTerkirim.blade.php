@@ -74,6 +74,8 @@
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($memo->status == 'pending')
                             <span class="badge bg-warning">Diproses</span>
+                        @elseif ($memo->status == 'correction')
+                            <span class="badge bg-danger">Dikoreksi</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
                         @endif

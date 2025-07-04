@@ -106,6 +106,8 @@
                                 <span class="badge bg-danger">Ditolak</span>
                             @elseif ($kirim->status == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
+                            @elseif ($kirim->status == 'correction')
+                                <span class="badge bg-danger">Dikoreksi</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
                             @endif

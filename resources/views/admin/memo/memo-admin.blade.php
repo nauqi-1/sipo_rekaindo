@@ -41,6 +41,7 @@
                         <option value="">Status</option>
                         <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                        <option value="correction" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi</option>
                         <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                     </select>
                 </div>
@@ -149,6 +150,8 @@
                                 <span class="badge bg-danger">Ditolak</span>
                             @elseif ($memo->final_status == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
+                            @elseif ($memo->final_status == 'correction')
+                                <span class="badge bg-warning">Dikoreksi</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
                             @endif
@@ -181,12 +184,12 @@
                                         <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                                     </button>
                                 </form>
-                            @else
+                            @elseif ($memo->status == 'pending' || $memo->status == 'correction')
                                 <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
                                     <img src="/img/memo-admin/edit.png" alt="edit">
                                 </a>
                             @endif
-                            @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
+                        @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
                             @if ($memo->final_status == 'approve' || $memo->final_status == 'reject')
                                 <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                                     @csrf
@@ -195,7 +198,7 @@
                                         <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                                     </button>
                                 </form>
-                            @else
+                            @elseif ($memo->final_status == 'pending' || $memo->final_status == 'correction')
                                 <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3 submitArsipMemo">
                                     <img src="/img/memo-admin/edit.png" alt="edit">
                                 </a>
