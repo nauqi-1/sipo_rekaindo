@@ -48,7 +48,7 @@
                         </div>
                         <div class="col-md-6">
                                 <label for="judul" class="form-label">Judul</label>
-                                <input type="text" name="judul" id="judul" class="form-control" value="{{ $risalah->judul }}" required>
+                                <input type="text" name="judul" id="judul" class="form-control" value="{{ $risalah->judul }}" readonly>
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -70,11 +70,6 @@
                                 <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2" placeholder="waktu selesai" value="{{ $risalah->waktu_selesai }}" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <label for="tujuan" class="form-label">Tujuan</label>
-                            <input type="text" name="tujuan" id="tujuan" class="form-control" value="{{ $risalah->tujuan }}" required>
-                        </div>
-                        <div class="row mb-3">
                             <div class="col-md-6">
                             <label for="nama_bertandatangan">Nama yang Bertanda Tangan</label>
                             <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control select2" required>
@@ -87,10 +82,8 @@
                                 @endforeach
                             </select>
                             </div>
-                        </div>
                     </div>
                     <div id="risalahContainer">
-                        <p>Jumlah risalahDetails: {{ $risalah->risalahDetails->count() }}</p>
                     @if(!empty($risalah->risalahDetails) && $risalah->risalahDetails->isNotEmpty())
                         @foreach ($risalah->risalahDetails as $detail)
                 <div class="isi-surat-row">
