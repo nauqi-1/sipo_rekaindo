@@ -62,7 +62,20 @@
                     <div class="card-white">
                         <label for="kepada">Kepada</label>
                         <div class="separator"></div>
-                        <input type="text" id="kepada" value="{{ $memo->tujuan }}" readonly>
+
+                        @php
+                            $tujuanList = explode(';', $memo->tujuan); // Split by comma
+                        @endphp
+
+                        @if (count($tujuanList) === 1)
+                            <input type="text" id="kepada" value="{{ trim($tujuanList[0]) }}" readonly>
+                        @else
+                            <ol style="padding-left: 20px;">
+                                @foreach ($tujuanList as $tujuan)
+                                    <li>{{ trim($tujuan) }}</li>
+                                @endforeach
+                            </ol>
+                        @endif
                     </div>
                 </div>
                 <div class="col">
