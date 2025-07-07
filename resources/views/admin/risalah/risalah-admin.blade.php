@@ -119,9 +119,9 @@
                         @endphp
 
                         @if($kirimDocument)
-                            @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'pending')
+                            @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'pending' || $risalah->final_status == 'correction')
                                 <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
-                            @elseif($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'approve')
+                            @elseif($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'approve' || $risalah->final_status == 'reject')
                                 <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
                             @else
                                 <p>-</p>
@@ -140,6 +140,8 @@
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($risalah->final_status == 'pending')
                             <span class="badge bg-warning">Diproses</span>
+                        @elseif ($risalah->final_status == 'correction')
+                            <span class="badge bg-danger">Dikoreksi</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
                         @endif
