@@ -217,8 +217,8 @@ class RisalahController extends Controller
         ]);  
     }
     
-    public function store(Request $request)
-    {
+public function store(Request $request)
+{
     //dd($request->all());
 
     $request->validate([
@@ -297,23 +297,29 @@ class RisalahController extends Controller
     // Kirim otomatis ke semua MANAGER dari divisi pembuat (bukan ke tujuan)
     $divisiPembuatId = Auth::user()->divisi_id_divisi;
 
+    $penerima = \App\Models\User::whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$request->nama_bertandatangan])->first();
+
+    if (!$penerima) {
+        return back()->withErrors(['nama_bertandatangan' => 'Nama penerima tidak ditemukan.']);
+    }
+
     $sudahDikirim = \App\Models\Kirim_Document::where('id_document', $risalah->id_risalah)
         ->where('jenis_document', 'risalah')
         ->where('id_pengirim', Auth::id())
-        ->where('id_penerima', $manager->id)
+        ->where('id_penerima', $penerima->id)
         ->exists();
 
     if (!$sudahDikirim) {
-        \App\Models\Kirim_Document::create([
+        \App\Models\Kirim_Document::firstOrCreate([
             'id_document' => $risalah->id_risalah,
             'jenis_document' => 'risalah',
-            'id_pengirim' => Auth::id(), // user yang sedang login (admin)
-            'id_penerima' => $request->nama_bertandatangan,
+            'id_pengirim' => Auth::id(),
+            'id_penerima' => $penerima->id,
+        ], [
             'status' => 'pending'
         ]);
     }
     
-
     return redirect()->route('risalah.'.Auth::user()->role->nm_role)->with('success', 'Risalah berhasil ditambahkan');
 }
 
@@ -507,11 +513,16 @@ public function update(Request $request, $id)
         $userDivisiId = Auth::user()->divisi_id_divisi;
         $userId = Auth::id();
 
-        // Validasi input
-        $request->validate([
-            'status' => 'required|in:approve,reject,pending',
-            'catatan' => 'nullable|string',
-        ]);
+        $rules = [
+            'status' => 'required|in:pending,approve,reject,correction',
+        ];
+
+        // Jika status reject atau correction, catatan wajib diisi
+        if (in_array($request->status, ['reject', 'correction'])) {
+            $rules['catatan'] = 'required|string';
+        }
+
+        $validated = $request->validate($rules);
         
         if ($userDivisiId == $risalah->divisi_id_divisi) {
         // Update status
@@ -542,10 +553,48 @@ public function update(Request $request, $id)
                     'id_divisi' => $risalah->divisi_id_divisi,
                     'updated_at' => now()
                 ]);
-            } elseif ($request->status == 'reject') {
+
+                $undangan = Undangan::where('judul', $risalah->judul)->first();
+
+                if ($undangan) {
+                    $tujuanString = $undangan->tujuan; // misalnya: "General Affair; QMSHE;"
+                    $tujuanArray = explode(';', $tujuanString);
+
+                    foreach ($tujuanArray as $namaDivisi) {
+                        $namaDivisi = trim($namaDivisi); // hilangkan spasi di pinggir
+                        if (!$namaDivisi) continue; // skip kalau kosong
+
+                        // cari divisi
+                        $divisi = \App\Models\Divisi::where('nm_divisi', $namaDivisi)->first();
+
+                        if ($divisi) {
+                            $users = \App\Models\User::where('divisi_id_divisi', $divisi->id_divisi)->get();
+
+                            foreach ($users as $user) {
+                                \App\Models\Kirim_Document::firstOrCreate([
+                                    'id_document' => $risalah->id_risalah,
+                                    'jenis_document' => 'risalah',
+                                    'id_pengirim' => $currentKirim->id_pengirim,
+                                    'id_penerima' => $user->id,
+                                ], [
+                                    'status' => 'approve'
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }elseif ($request->status == 'reject') {
                 $risalah->tgl_disahkan = now();
                 Notifikasi::create([
                     'judul' => "Risalah Ditolak",
+                    'judul_document' => $risalah->judul,
+                    'id_divisi' => $risalah->divisi_id_divisi,
+                    'updated_at' => now()
+                ]);
+            }elseif ($request->status == 'correction') {
+                $risalah->tgl_disahkan = now();
+                Notifikasi::create([
+                    'judul' => "Risalah Dikoreksi",
                     'judul_document' => $risalah->judul,
                     'id_divisi' => $risalah->divisi_id_divisi,
                     'updated_at' => now()

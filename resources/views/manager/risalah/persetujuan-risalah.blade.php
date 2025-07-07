@@ -41,7 +41,11 @@
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
-                        <input type="text" id="diterima" value="{{ $risalah->tujuan }}" readonly>
+                        <input type="text"
+                            id="diterima"
+                            value="{{ str_replace(';', ', ', $undangan->tujuan) }}"
+                            title="{{ str_replace(';', ', ', $undangan->tujuan) }}"
+                            readonly>
                     </div>
                 </div>
                 <div class="col">
@@ -51,7 +55,15 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        <button class="status">Diproses</button>
+                        @if($risalah->status == 'pending')
+                            <button class="status">Diproses</button>
+                        @elseif($risalah->status == 'approve')
+                            <button class="status">Diterima</button>
+                        @elseif($risalah->status == 'reject')
+                            <button class="status">Ditolak</button>
+                        @elseif($risalah->status == 'correction')
+                            <button class="status">Dikoreksi</button>
+                        @endif
                     </div>
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
@@ -87,6 +99,11 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl" value="{{ $risalah->tgl_dibuat->translatedFormat('d F Y')  }}" readonly>
                     </div>
+                    <div class="card-white">
+                        <label for="file">File</label>
+                        <div class="separator"></div>
+                        <button class="btn-file"  onclick="window.location.href='{{ route('view-risalahPDF', $risalah->id_risalah) }}'"><img src="/img/mata.png" alt="view">Lihat</button>
+                    </div>
                     <!-- <div class="card-white">
                         <label for="lampiran">Lampiran</label>
                         <div class="separator"></div>
@@ -100,51 +117,53 @@
                     </div> -->
                 </div>
             </div>
-            <form id="approvalForm" method="POST" action="{{ route('risalah.updateStatus', $risalah->id_risalah) }}">
-            @csrf
-            @method('PUT')
-
-            <div class="row mb-4" style="gap: 20px;">
-                <div class="col">
-                    <div class="label1 card-blue1">
-                        <label for="pengesahan" class="label">Pengesahan</label>
-                        
-                        <div class="form-check1">
-                            <label class="form-check-label" for="approve">Diterima</label>
-                            <input type="radio" class="form-check-input approval-checkbox" id="approve" name="status" value="approve">
-                        </div>
-                        <div class="form-check2">
-                            <label class="form-check-label" for="reject">Ditolak</label>
-                            <input type="radio" class="form-check-input approval-checkbox" id="reject" name="status" value="reject">
-                        </div>
-                        <div class="form-check3">
-                            <label class="form-check-label" for="correction">Dikoreksi</label>
-                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="pending">
-                        </div>
-                    </div>
-
-                    <div class="card-blue1">Tindakan Selanjutnya</div>
-                    <div class="card-white">
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="nextAction" name="next_action">
-                            <option disabled selected style="text-align: left;">--Pilih Tindakan--</option>
-                            <option value="koreksi">Koreksi kembali</option>
-                            <option value="dilanjutkan">Dilanjutkan</option>
-                        </select>                    
-                    </div>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
+            @endif
+            @if ($risalah->status == 'pending' || $risalah->status == 'reject' || $risalah->status == 'correction')
+                <form id="approvalForm" method="POST" action="{{ route('risalah.updateStatus', $risalah->id_risalah) }}">
+                    @csrf
+                    @method('PUT')
 
-                <div class="col">
-                    <div class="card-blue1">Catatan</div>
-                    <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>        
-                </div>             
-            </div>
-
-            <div class="footer">
-                <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('risalah.manager') }}'">Kembali</button>
-                <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
-            </div>
-        </form>
-  
+                    <div class="row mb-4" style="gap: 20px;">
+                        <div class="col">
+                            <div class="label1 card-blue1">
+                                <label for="pengesahan" class="label">Pengesahan</label>
+                                
+                                <div class="form-check1">
+                                    <label class="form-check-label" for="approve">Diterima</label>
+                                    <input type="radio" class="form-check-input approval-checkbox" id="approve" name="status" value="approve"
+                                        {{ $risalah->status == 'approve' ? 'checked' : '' }}>
+                                </div>
+                                <div class="form-check2">
+                                    <label class="form-check-label" for="reject">Ditolak</label>
+                                    <input type="radio" class="form-check-input approval-checkbox" id="reject" name="status" value="reject"
+                                        {{ $risalah->status == 'reject' ? 'checked' : '' }}>
+                                </div>
+                                <div class="form-check3">
+                                    <label class="form-check-label" for="correction">Dikoreksi</label>
+                                    <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="correction"
+                                        {{ $risalah->status == 'correction' ? 'checked' : '' }}>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col" id="catatanSection" style="{{ $risalah->status == 'correction' || $risalah->status == 'reject' ? '' : 'display: none;' }}">
+                            <div class="card-blue1">Catatan</div>
+                            <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan">{{ $risalah->catatan }}</textarea>        
+                        </div>             
+                    </div>
+                <div class="footer">
+                    <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('risalah.manager') }}'">Kembali</button>
+                    <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+                </div>
+            </form>
+        @endif
         <!-- Modal kirim -->
         <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -180,6 +199,21 @@
     </div>
 
     <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const radios = document.querySelectorAll('input[name="status"]');
+        const catatanSection = document.getElementById('catatanSection');
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'correction' || this.value === 'reject') {
+                    catatanSection.style.display = 'block';
+                } else {
+                    catatanSection.style.display = 'none';
+                }
+            });
+        });
+    });
+        
     document.addEventListener('DOMContentLoaded', function () {
         const checkboxes = document.querySelectorAll('.approval-checkbox');
 
