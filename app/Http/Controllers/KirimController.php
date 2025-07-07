@@ -351,7 +351,6 @@ class KirimController extends Controller
 
         $risalahs = Kirim_Document::where('jenis_document', 'risalah')
             ->where('id_penerima', $userId)
-            ->where('kirim_document.status', 'pending')
             ->whereHas('risalah', function ($query) use ($request, $sortBy, $sortDirection) { 
                 if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
                     $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
@@ -413,7 +412,9 @@ class KirimController extends Controller
         $position = Position::all();
         $user = User::whereIn('role_id_role', ['2', '3'])->get();  
 
-        return view('manager.risalah.persetujuan-risalah', compact('user', 'divisi', 'risalah', 'position'));
+        $undangan = Undangan::where('judul', $risalah->judul)->first();
+
+        return view('manager.risalah.persetujuan-risalah', compact('user', 'divisi', 'risalah', 'position', 'undangan'));
        
     }
 
