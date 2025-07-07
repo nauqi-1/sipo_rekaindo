@@ -146,20 +146,6 @@
                 </td>
                 <td>
                     @if (Auth::user()->divisi->id_divisi == $risalah->divisi->id_divisi)
-                            @if($risalah->final_status == 'pending' || $risalah->final_status == 'approve' )
-                            <a href="{{ route('kirim-risalahAdmin.admin',['id' => $risalah->id_risalah]) }}" class="btn btn-sm1">
-                                <img src="/img/memo-admin/share.png" alt="share">
-                            </a>       
-                            @endif
-                        @elseif (Auth::user()->divisi->id_divisi != $risalah->divisi->id_divisi)
-                            @if($risalah->final_status == 'pending' )
-                            <a href="{{ route('kirim-risalahAdmin.admin',['id' => $risalah->id_risalah]) }}" class="btn btn-sm1">
-                                <img src="/img/memo-admin/share.png" alt="share">
-                            </a>       
-                            @endif               
-                        @endif
-
-                    @if (Auth::user()->divisi->id_divisi == $risalah->divisi->id_divisi)
                             @if ($risalah->status == 'approve' || $risalah->status == 'reject' )
                                 <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display: inline;">
                                 @csrf
