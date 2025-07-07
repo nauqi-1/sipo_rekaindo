@@ -486,6 +486,9 @@ public function update(Request $request, $id)
         $userId = Auth::id();
         $risalah = risalah::where('id_risalah', $id)->firstOrFail();
 
+        // Ambil data undangan yang judulnya sama dengan judul risalah
+        $undangan = Undangan::where('judul', $risalah->judul)->first();
+
         $risalahCollection = collect([$risalah]); // Bungkus dalam collection
 
         $risalahCollection->transform(function ($risalah) use ($userId) {
@@ -504,7 +507,7 @@ public function update(Request $request, $id)
         // Karena hanya satu memo, kita bisa mengambil dari collection lagi
         $risalah = $risalahCollection->first();
 
-        return view(Auth::user()->role->nm_role.'.risalah.view-risalah', compact('risalah'));
+        return view(Auth::user()->role->nm_role.'.risalah.view-risalah', compact('risalah', 'undangan'));
     }
 
     public function updateStatus(Request $request, $id)

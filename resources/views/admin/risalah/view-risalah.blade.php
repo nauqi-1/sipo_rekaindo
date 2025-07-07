@@ -58,7 +58,11 @@
                     <div class="card-white">
                         <label for="kepada">Kepada</label>
                         <div class="separator"></div>
-                        <input type="text" id="kepada" value="{{$risalah->tujuan}}" readonly>
+                        <input type="text"
+                            id="kepada"
+                            value="{{ str_replace(';', ', ', $undangan->tujuan) }}"
+                            title="{{ str_replace(';', ', ', $undangan->tujuan) }}"
+                            readonly>
                     </div>
                 </div>
                 <div class="col">
@@ -101,12 +105,14 @@
                     @endif
                 </div>
             </div>
-            <div class="row mb-4" style="gap: 20px;">
-                <div class="col">
-                    <div class="card-blue1">Catatan</div>
-                    <textarea type="text" for="catatan" id="catatan"  readonly>{{$risalah->catatan}}</textarea>        
+            @if ($risalah->status != 'approve')
+                <div class="row mb-4" style="gap: 20px;">
+                    <div class="col">
+                        <div class="card-blue1">Catatan</div>
+                        <textarea type="text" for="catatan" id="catatan"  readonly>{{$risalah->catatan}}</textarea>        
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 </body>
