@@ -103,12 +103,12 @@
                     <td class="nomor">{{ $index + 1 }}</td>
                     @if (Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)
                     <td class="nama-dokumen 
-                        {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ ($memo->status == 'reject' || $memo->status == 'correction') ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $memo->judul }}
                     </td>
                     @elseif(Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
                     <td class="nama-dokumen 
-                        {{ $memo->final_status == 'reject' ? 'text-danger' : ($memo->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ ($memo->final_status == 'reject' || $memo->final_status == 'correction') ? 'text-danger' : ($memo->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $memo->judul }}
                     </td>
                     @endif
@@ -151,7 +151,7 @@
                             @elseif ($memo->final_status == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
                             @elseif ($memo->final_status == 'correction')
-                                <span class="badge bg-warning">Dikoreksi</span>
+                                <span class="badge bg-danger">Dikoreksi</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
                             @endif

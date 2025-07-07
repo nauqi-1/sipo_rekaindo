@@ -419,7 +419,38 @@ class MemoController extends Controller
                 $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
                 $qrImage = QrCode::format('svg')->generate($qrText);
                 $qrBase64 = base64_encode($qrImage);
-                $memo->qr_approved_by = $qrBase64;  
+                $memo->qr_approved_by = $qrBase64;
+
+                // Kirim otomatis ke tujuan jika status approve
+                $tujuanDivisiIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
+                
+            foreach ($tujuanDivisiIds as $divisiId) {
+                $divisiId = trim($divisiId);
+
+                // Lewati jika sama dengan divisi pengirim
+                if ($divisiId == Auth::user()->divisi_id_divisi) {
+                    continue;
+                }
+            
+                // Ambil semua user yang merupakan manager (position_id_position == 2) di divisi terkait
+                $managers = \App\Models\User::where('divisi_id_divisi', $divisiId)
+                    ->where('position_id_position', 2)
+                    ->get();
+            
+                foreach ($managers as $manager) {
+                    \App\Models\Kirim_Document::create([
+                        'id_document' => $memo->id_memo,
+                        'jenis_document' => 'memo',
+                        'id_pengirim' => Auth::id(),
+                        'id_penerima' => $manager->id,
+                        'status' => 'pending',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+
+
 
                 Notifikasi::create([
                     'judul' => "Memo Disetujui",
@@ -483,6 +514,24 @@ class MemoController extends Controller
                             'id_divisi' => $memo->divisi_id_divisi,
                             'updated_at' => now()
                         ]);
+
+                        $adminDivisiId = Auth::user()->divisi_id_divisi;
+
+                        $admins = \App\Models\User::where('divisi_id_divisi', $adminDivisiId)
+                            ->where('position_id_position', 1)
+                            ->get();
+
+                        foreach ($admins as $admin) {
+                            \App\Models\Kirim_Document::create([
+                                'id_document' => $memo->id_memo,
+                                'jenis_document' => 'memo',
+                                'id_pengirim' => $currentKirim->id_pengirim,
+                                'id_penerima' => $admin->id,
+                                'status' => 'approve',
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]);
+                        }
                         
                     }
                 
@@ -571,8 +620,14 @@ class MemoController extends Controller
             $file = $request->file('lampiran');
             $memo->lampiran = file_get_contents($file->getRealPath());
         }
+
         $memo->status = 'pending'; // Set status ke pending saat update
         $memo->save();
+
+        // Update status pada kirim_document juga jika ada
+        \App\Models\Kirim_Document::where('id_document', $memo->id_memo)
+            ->where('jenis_document', 'memo')
+            ->update(['status' => 'pending', 'updated_at' => now()]);
 
         if ($request->has('kategori_barang')) {
             foreach ($request->kategori_barang as $dataBarang) {
@@ -733,8 +788,8 @@ class MemoController extends Controller
             ->whereHas('memo')
             ->with('memo') // Pastikan ada relasi 'memo' di model Kirim_Document
             ->firstOrFail();
-
-        return view('manager.memo.view-memoDiterima', compact('memo'));
+        $memo2 = Memo::where('id_memo', $id)->firstOrFail();
+        return view('manager.memo.view-memoDiterima', compact('memo', 'memo2'));
     }
     public function view($id)
     {

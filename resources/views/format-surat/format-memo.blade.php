@@ -256,11 +256,11 @@
                             <th style="text-align: left; vertical-align: top;">
                                 Kepada :
                                 @if (count($divisiNames) === 1)
-                                    <p>Divisi {{ $divisiNames[0] }}</p>
+                                       <span style="display: inline;">{{ $divisiNames[0] }}</span>
                                 @else
                                     <ol style="margin: 0; padding-left: 20px;">
                                         @foreach ($divisiNames as $name)
-                                            <li>Divisi {{ $name }}</li>
+                                            <li>{{ $name }}</li>
                                         @endforeach
                                     </ol>
                                 @endif

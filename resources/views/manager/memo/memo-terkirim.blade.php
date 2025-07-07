@@ -41,6 +41,7 @@
                                 <option value="">Status</option>
                                 <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                                 <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
+                                <option value="correction" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi</option>
                             </select>
                         </div>
                         <div class="input-icon-wrapper" style="position: relative; width: 150px;">
@@ -96,10 +97,10 @@
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
                     @if (Auth::user()->divisi_id_divisi == $kirim->memo->divisi_id_divisi)
-                        <td class="nama-dokumen {{ $kirim->memo->status == 'reject' ? 'text-danger' : ($kirim->memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        <td class="nama-dokumen {{ $kirim->memo->status == 'reject' || $kirim->memo->status == 'correction' ? 'text-danger' : ($kirim->memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $kirim->memo->judul }}</td>
                     @else
-                        <td class="nama-dokumen {{ $kirim->status == 'reject' ? 'text-danger' : ($kirim->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        <td class="nama-dokumen {{ $kirim->status == 'reject' || $kirim->status == 'correction' ? 'text-danger' : ($kirim->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $kirim->memo->judul }}</td>
                     @endif
                      <!-- <td>{{ $kirim->memo->tgl_dibuat }}</td> -->

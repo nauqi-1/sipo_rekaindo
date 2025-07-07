@@ -70,11 +70,11 @@
                         <label for="status">Status</label>
                         <div class="separator"></div>
                        
-                        @if ($memo->status == 'reject')
+                        @if ($memo->memo->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($memo->status == 'pending')
+                        @elseif ($memo->memo->status == 'pending')
                             <span class="badge bg-warning">Diproses</span>
-                        @elseif ($memo->status == 'correction')
+                        @elseif ($memo->memo->status == 'correction')
                             <span class="badge bg-danger">Dikoreksi</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
@@ -93,8 +93,8 @@
                     <div class="card-white">
                         <label for="file">Penerima</label>
                         <div class="separator"></div>
-                        <input type="text" id="penerima">                  
-                    </div>                        
+                        <input type="text" id="penerima" readonly>                  
+                    </div>
                     <div class="card-white">
                         <label for="file">Catatan</label>
                         <div class="separator"></div>

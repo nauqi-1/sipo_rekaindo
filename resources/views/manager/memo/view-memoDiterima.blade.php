@@ -40,13 +40,13 @@
                     </div>
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
-                        <div class="separator" style="width: 1px; background: #ccc; margin: 0 10px;"></div>
+                        <div class="separator"></div>
                        
 
                         @php
                         use App\Models\Divisi;
                     
-                            $divisiIds = array_filter(array_map('trim', explode(';', $memo->memo->tujuan))); 
+                            $divisiIds = array_filter(array_map('trim', explode(';', $memo2->tujuan))); 
                             $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi');
                         @endphp
 
@@ -151,11 +151,6 @@
                         <div class="form-check3">
                             <label class="form-check-label" for="correction">Dikoreksi</label>
                             <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="correction">
-                        </div>
-                        @else
-                        <div class="form-check3">
-                            <label class="form-check-label" for="correction">Tidak Ditindak Lanjuti</label>
-                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="reject">
                         </div>
                         @endif
                     </div>
