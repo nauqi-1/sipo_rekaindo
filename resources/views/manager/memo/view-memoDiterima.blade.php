@@ -40,13 +40,13 @@
                     </div>
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
-                        <div class="separator" style="width: 1px; background: #ccc; margin: 0 10px;"></div>
+                        <div class="separator"></div>
                        
 
                         @php
                         use App\Models\Divisi;
                     
-                            $divisiIds = array_filter(array_map('trim', explode(';', $memo->memo->tujuan))); 
+                            $divisiIds = array_filter(array_map('trim', explode(';', $memo2->tujuan))); 
                             $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi');
                         @endphp
 
@@ -150,29 +150,18 @@
                         @if (Auth::user()->divisi->id_divisi == $memo->memo->divisi_id_divisi)
                         <div class="form-check3">
                             <label class="form-check-label" for="correction">Dikoreksi</label>
-                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="pending">
-                        </div>
-                        @else
-                        <div class="form-check3">
-                            <label class="form-check-label" for="correction">Tidak Ditindak Lanjuti</label>
-                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="reject">
+                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="correction">
                         </div>
                         @endif
                     </div>
-
-                    <div class="card-blue1">Tindakan Selanjutnya</div>
-                    <div class="card-white">
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="nextAction" name="next_action">
-                            <option disabled selected style="text-align: left;">--Pilih Tindakan--</option>
-                            <option value="koreksi">Koreksi kembali</option>
-                            <option value="dilanjutkan">Dilanjutkan</option>
-                        </select>                    
-                    </div>
                 </div>
 
-                <div class="col">
+                <div class="col" id="catatan-card" style="display:none;">
                     <div class="card-blue1">Catatan</div>
-                    <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>        
+                    <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>
+                    @error('catatan')
+                        <div class=" text-danger">{{ $message }}</div>
+                    @enderror        
                 </div>             
             </div>
 
@@ -226,7 +215,6 @@
 
         confirmSubmitButton.addEventListener('click', function (event) {
             event.preventDefault(); // Mencegah submit default
-            
             // Kirim form secara normal
             approvalForm.submit();
         });
@@ -237,6 +225,24 @@
             const successModal = new bootstrap.Modal(document.getElementById('successModal'));
             successModal.show();
         }
+
+        // Show/hide entire catatan card based on status selection
+        const catatanCard = document.getElementById('catatan-card');
+        const statusRadios = document.querySelectorAll('input[name="status"]');
+        function toggleCatatan() {
+            let show = false;
+            statusRadios.forEach(radio => {
+                if ((radio.checked) && (radio.value === 'reject' || radio.value === 'correction')) {
+                    show = true;
+                }
+            });
+            catatanCard.style.display = show ? 'block' : 'none';
+        }
+        statusRadios.forEach(radio => {
+            radio.addEventListener('change', toggleCatatan);
+        });
+        // Initial check
+        toggleCatatan();
     });
     </script>
     <!-- Bootstrap JS and Popper.js -->

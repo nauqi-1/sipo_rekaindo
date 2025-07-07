@@ -103,6 +103,8 @@
                                 <span class="badge bg-danger">Ditolak</span>
                             @elseif ($memo->final_status  == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
+                            @elseif ($memo->final_status  == 'correction')
+                                <span class="badge bg-warning">Dikoreksi</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
                             @endif
@@ -111,6 +113,8 @@
                                 <span class="badge bg-danger">Ditolak</span>
                             @elseif ($memo->status  == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
+                            @elseif ($memo->status  == 'correction')
+                                <span class="badge bg-warning">Dikoreksi</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
                             @endif
