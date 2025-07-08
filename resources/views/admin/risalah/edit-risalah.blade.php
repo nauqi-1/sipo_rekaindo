@@ -47,8 +47,26 @@
                             <input type="text" name="nomor_risalah" id="nomor_risalah" class="form-control" value="{{ $risalah->nomor_risalah }}" readonly>
                         </div>
                         <div class="col-md-6">
-                                <label for="judul" class="form-label">Judul</label>
-                                <input type="text" name="judul" id="judul" class="form-control" value="{{ $risalah->judul }}" readonly>
+                            <div class="d-flex align-items-center mb-2">
+                                <label for="judul" class="me-3">Judul</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="jenis_risalah" id="baru" value="baru" {{ $risalah->tujuan ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="baru">Buat Risalah Baru</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="jenis_risalah" id="undangan" value="undangan" {{ is_null($risalah->tujuan) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="undangan">Sesuaikan dengan Undangan</label>
+                                </div>
+                            </div>
+                            <!-- Input manual -->
+                            <input type="text" name="judul_baru" id="judul_baru" class="form-control" value="{{ $risalah->tujuan ? $risalah->judul : '' }}" placeholder="Masukkan Judul Baru">
+                            <!-- Select undangan -->
+                            <select name="judul_undangan" id="judul_undangan" class="form-control select2 mt-2" style="display: none;">
+                                <option value="{{ $risalah->tujuan ? '' : '$risalah->judul' }}" selected>{{ $risalah->tujuan ? 'Pilih Judul' : $risalah->judul }}</option>
+                                @foreach ($undangan as $u)
+                                    <option value="{{ $u->judul }}">{{ $u->judul }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -70,18 +88,45 @@
                                 <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2" placeholder="waktu selesai" value="{{ $risalah->waktu_selesai }}" required>
                             </div>
                         </div>
-                            <div class="col-md-6">
+                        <div class="col-md-6">
                             <label for="nama_bertandatangan">Nama yang Bertanda Tangan</label>
                             <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control select2" required>
-                                <option value="" disabled>--Pilih--</option>
-                                @foreach($managers as $manager)
-                                    <option value="{{ $manager->firstname . ' ' . $manager->lastname }}" 
-                                        {{ (old('nama_bertandatangan', $risalah->nama_bertandatangan ?? '') == $manager->firstname . ' ' . $manager->lastname) ? 'selected' : '' }}>
-                                        {{ $manager->firstname . ' ' . $manager->lastname }}
-                                    </option>
-                                @endforeach
+                                <option value="{{ $risalah->nama_bertandatangan }}" selected disabled>{{ $risalah->nama_bertandatangan }}</option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        @php
+                            $checkedTujuan = old('tujuan') ?: ($risalah && $risalah->tujuan ? explode(';', $risalah->tujuan) : []);
+                            $checkedTujuan = array_map('trim', $checkedTujuan); // hilangkan spasi
+                            $checkedTujuan = array_map('strtolower', $checkedTujuan); // normalize lower
+                        @endphp
+
+                        <div class="col-md-6" id="tujuan_section">
+                            <label for="kepada" class="form-label">
+                                Tujuan
+                                <span class="text-danger">*</span>
+                                <label for="tujuan" class="label-kepada">Centang lebih dari satu jika diperlukan</label>
+                            </label>
+                            <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+                            @foreach($divisi as $d)
+                                @php
+                                    $divisiName = strtolower(trim($d->nm_divisi));
+                                @endphp
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                        name="tujuan[]" 
+                                        value="{{ $d->id_divisi }}" 
+                                        id="divisi_{{ $d->id_divisi }}"
+                                        {{ in_array($divisiName, $checkedTujuan) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="divisi_{{ $d->id_divisi }}">
+                                        {{ $d->nm_divisi }}
+                                    </label>
+                                </div>
+                            @endforeach
                             </div>
+                        </div>
+                        <div class="col-md-6"  id="tujuan_kosong"></div>
                     </div>
                     <div id="risalahContainer">
                     @if(!empty($risalah->risalahDetails) && $risalah->risalahDetails->isNotEmpty())
@@ -159,12 +204,42 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const radioBaru = document.getElementById('baru');
+            const radioUndangan = document.getElementById('undangan');
+            const inputJudul = document.getElementById('judul_baru');
+            const selectJudul = document.getElementById('judul_undangan');
+            const selectTujuan = document.getElementById('tujuan_section');
+            const selectTujuanKosong = document.getElementById('tujuan_kosong');
+
+            function toggleForm() {
+                if (radioBaru.checked) {
+                    inputJudul.style.display = 'block';
+                    selectJudul.style.display = 'none';
+                    selectTujuan.style.display = 'block';
+                    selectTujuanKosong.style.display = 'block';
+                } else if (radioUndangan.checked) {
+                    inputJudul.style.display = 'none';
+                    selectJudul.style.display = 'block';
+                    selectTujuan.style.display = 'none';
+                    selectTujuanKosong.style.display = 'none';
+                }
+            }
+
+            // initial state
+            toggleForm();
+
+            // add event listeners
+            radioBaru.addEventListener('change', toggleForm);
+            radioUndangan.addEventListener('change', toggleForm);
+        });
+
         $(document).ready(function() {
-    $('.select2').select2({
-        placeholder: "Pilih Nama",
-        allowClear: true
-    });
-});
+            $('.select2').select2({
+                placeholder: "Pilih Nama",
+                allowClear: true
+            });
+        });
 
         $(document).ready(function() {
             $('#dropdownMenuButton').on('change', function() {
