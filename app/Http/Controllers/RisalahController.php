@@ -203,7 +203,9 @@ class RisalahController extends Controller
             $bulanRomawi,
             now()->year
         );
-    
+        
+        $divisi = Divisi::all();
+
         $managers = User::where('divisi_id_divisi', $divisiId)
             ->where('position_id_position', '2')
             ->get(['id', 'firstname', 'lastname']);
@@ -213,14 +215,20 @@ class RisalahController extends Controller
             'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
             'nomorDokumen' => $nomorDokumen,
             'managers' => $managers,
-            'undangan' => $undangan
+            'undangan' => $undangan,
+            'divisi' => $divisi
         ]);  
     }
     
     public function store(Request $request)
     {
-    //dd($request->all());
-
+    // dd($request->all());
+    if($request->jenis_risalah=="baru"){
+        $judul = $request->judul_baru;
+    } elseif ($request->jenis_risalah=="undangan"){
+        $judul = $request->judul_undangan;
+        // $tujuan = NULL;
+    }
     $request->validate([
         'tgl_dibuat' => 'required|date',
         'seri_surat' => 'required|string',
@@ -229,7 +237,9 @@ class RisalahController extends Controller
         'tempat' => 'required|string',
         'waktu_mulai' => 'required|string',
         'waktu_selesai' => 'required|string',
-        'judul' => 'required|string',
+        'judul' => $judul,
+        'tujuan' => 'required_if:jenis_risalah,baru|array|min:1',
+        'tujuan.*' => 'exists:divisi,id_divisi',
         'divisi_id_divisi' => 'required|integer|exists:divisi,id_divisi', 
         'nama_bertandatangan' => 'required|string',
         'pembuat'=>'required|string',
@@ -241,6 +251,7 @@ class RisalahController extends Controller
         'pic' => 'nullable|array',
         'lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
     ],[
+        'tujuan.required' => 'Minimal satu divisi tujuan harus dipilih.',
         'lampiran.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
         'lampiran.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
     ]);
@@ -251,16 +262,32 @@ class RisalahController extends Controller
         $filePath = base64_encode(file_get_contents($file->getRealPath()));
     }
 
-        $divisiId = auth()->user()->divisi_id_divisi;
-        $seri = Seri::getNextSeri(true);
-        $seri = Seri::where('divisi_id_divisi', $divisiId)
-                ->where('tahun', now()->year)
-                ->latest()
-                ->first();
+    $divisiId = auth()->user()->divisi_id_divisi;
+    $seri = Seri::getNextSeri(true);
+    $seri = Seri::where('divisi_id_divisi', $divisiId)
+            ->where('tahun', now()->year)
+            ->latest()
+            ->first();
 
-        if (!$seri) {
-            return back()->with('error', 'Nomor seri tidak ditemukan.');
-        }
+    if (!$seri) {
+        return back()->with('error', 'Nomor seri tidak ditemukan.');
+    }
+    
+    // Ambil array ID divisi tujuan dari form (checkbox tujuan[])
+    $tujuanArray = $request->input('tujuan'); // contoh: [2,3]
+
+    // Default NULL
+    $tujuanString = null;
+    $namaDivisiString = null;
+
+    if (!empty($tujuanArray)) {
+        // Jika ada isinya
+        $tujuanString = implode(';', $tujuanArray);
+
+        // Ambil nama divisi tujuan (IT, SDM, dst) dan simpan sebagai string
+        $namaDivisiArray = \App\Models\Divisi::whereIn('id_divisi', $tujuanArray)->pluck('nm_divisi')->toArray();
+        $namaDivisiString = implode('; ', $namaDivisiArray);
+    }
 
     // Simpan risalah utama
     $risalah = Risalah::create([
@@ -273,7 +300,8 @@ class RisalahController extends Controller
         'waktu_mulai' => $request->waktu_mulai,
         'waktu_selesai' => $request->waktu_selesai,
         'status' => 'pending',
-        'judul' => $request->judul,
+        'judul' => $judul,
+        'tujuan' => $namaDivisiString,
         'pembuat' => $request->pembuat,
         'lampiran' => $filePath,
         'nama_bertandatangan' => $request->nama_bertandatangan,
