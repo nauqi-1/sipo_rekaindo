@@ -128,7 +128,7 @@
                         @if($kirimDocument)
                             @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $memo->final_status == 'pending')
                                 <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
-                            @elseif($memo->status == 'approve' && $kirimDocument->id_pengirim == Auth::user()->id && $kirimDocument->divisi_penerima != $kirimDocument->divisi_pengirim && $kirimDocument->status == 'pending')
+                            @elseif($memo->status == 'approve' && $kirimDocument->id_pengirim == Auth::user()->id && $kirimDocument->status == 'approve')
                                 <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
                             @else
                                 <p>-</p>

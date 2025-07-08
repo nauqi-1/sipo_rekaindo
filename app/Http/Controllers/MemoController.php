@@ -242,9 +242,8 @@ class MemoController extends Controller
     ]);  
     }
     public function store(Request $request)
-    {
+    {   
         
-
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
@@ -573,7 +572,6 @@ class MemoController extends Controller
      public function update(Request $request, $id)
      {
         $memo = Memo::findOrFail($id);
-        // dd($request->all());    
 
 
         $request->validate([
