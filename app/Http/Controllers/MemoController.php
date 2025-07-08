@@ -431,19 +431,18 @@ class MemoController extends Controller
                 if ($divisiId == Auth::user()->divisi_id_divisi) {
                     continue;
                 }
-            
-                // Ambil semua user yang merupakan manager (position_id_position == 2) di divisi terkait
-                $managers = \App\Models\User::where('divisi_id_divisi', $divisiId)
-                    ->where('position_id_position', 2)
+               // SETELAH DI APPROVE MANAGER DIVISI SENDIRI, LANGSUNG KIRIM KE SEMUA USER DI DIVISI TUJUAN DENGAN STATUS APPROVE
+                // Ambil semua user di divisi terkait
+                $penerima = \App\Models\User::where('divisi_id_divisi', $divisiId)
                     ->get();
             
-                foreach ($managers as $manager) {
+                foreach ($penerima as $penerima) {
                     \App\Models\Kirim_Document::create([
                         'id_document' => $memo->id_memo,
                         'jenis_document' => 'memo',
                         'id_pengirim' => Auth::id(),
-                        'id_penerima' => $manager->id,
-                        'status' => 'pending',
+                        'id_penerima' => $penerima->id,
+                        'status' => 'approve',
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
