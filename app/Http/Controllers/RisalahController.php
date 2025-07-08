@@ -394,26 +394,40 @@ public function edit($id)
     $divisi = Divisi::all();
     $seri = Seri::all(); 
     $risalah = Risalah::with('risalahDetails')->findOrFail($id);
-    
+    $divisiId = auth()->user()->divisi_id_divisi;
+    $divisiName = auth()->user()->divisi->nm_divisi;
+    $undangan = Undangan::whereNotIn('judul', function($query) {
+                        $query->select('judul')->from('risalah');
+                    })
+                    ->where('divisi_id_divisi', $divisiId)
+                    ->get();
 
     // Ambil daftar manajer berdasarkan divisi yang sama
     $managers = User::where('divisi_id_divisi', $risalah->divisi_id_divisi)
         ->where('position_id_position', '2')
         ->get(['id', 'firstname', 'lastname']);
 
-    return view(Auth::user()->role->nm_role.'.risalah.edit-risalah', compact('risalah', 'divisi', 'seri', 'managers'));
+    return view(Auth::user()->role->nm_role.'.risalah.edit-risalah', compact('risalah', 'divisi', 'seri', 'managers', 'undangan'));
 }
     
 public function update(Request $request, $id)
     {
+        // dd($request->all());
+        if($request->jenis_risalah=="baru"){
+            $judul = $request->judul_baru;
+        } elseif ($request->jenis_risalah=="undangan"){
+            $judul = $request->judul_undangan;
+            // $tujuan = NULL;
+        }
         // Validasi data
         $request->validate([
-            'judul' => 'required',
+            'judul' => $judul,
+            'tujuan' => 'required_if:jenis_risalah,baru|array|min:1',
+            'tujuan.*' => 'exists:divisi,id_divisi',
             'agenda' => 'required',
             'tempat' => 'required',
             'waktu_mulai' => 'required',
             'waktu_selesai' => 'required',
-            'nama_bertandatangan' => 'required',
             'nomor.*' => 'required',
             'topik.*' => 'required',
             'pembahasan.*' => 'required',
@@ -422,16 +436,32 @@ public function update(Request $request, $id)
             'pic.*' => 'required',
         ]);
 
+        // Ambil array ID divisi tujuan dari form (checkbox tujuan[])
+        $tujuanArray = $request->input('tujuan'); // contoh: [2,3]
+
+        // Default NULL
+        $tujuanString = null;
+        $namaDivisiString = null;
+
+        if (!empty($tujuanArray)) {
+            // Jika ada isinya
+            $tujuanString = implode(';', $tujuanArray);
+
+            // Ambil nama divisi tujuan (IT, SDM, dst) dan simpan sebagai string
+            $namaDivisiArray = \App\Models\Divisi::whereIn('id_divisi', $tujuanArray)->pluck('nm_divisi')->toArray();
+            $namaDivisiString = implode('; ', $namaDivisiArray);
+        }
+
         // Update data risalah utama
         $risalah = Risalah::findOrFail($id);
         $risalah->update([
             'tgl_dibuat' => $request->tgl_dibuat,
-            'judul' => $request->judul,
+            'judul' => $judul,
+            'tujuan' => $namaDivisiString,
             'agenda' => $request->agenda,
             'tempat' => $request->tempat,
             'waktu_mulai' => $request->waktu_mulai,
             'waktu_selesai' => $request->waktu_selesai,
-            'nama_bertandatangan' => $request->nama_bertandatangan,
             'status' => 'pending',
         ]);
 
