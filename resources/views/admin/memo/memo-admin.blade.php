@@ -46,8 +46,8 @@
                     </select>
                     <select name="divisi_filter" class="form-select" onchange="this.form.submit()">
                         <option value="">Semua Memo</option>
-                        <option value="own" {{ request('divisi_filter') == 'own' ? 'selected' : '' }}>Memo Masuk</option>
-                        <option value="other" {{ request('divisi_filter') == 'other' ? 'selected' : '' }}>Memo Keluar</option>
+                        <option value="own" {{ request('divisi_filter') == 'own' ? 'selected' : '' }}>Memo Keluar</option>
+                        <option value="other" {{ request('divisi_filter') == 'other' ? 'selected' : '' }}>Memo Masuk</option>
                     </select>
                 </div>
                 <div class="d-flex align-items-center gap-1">
@@ -223,7 +223,7 @@
             @endforeach
         </tbody>
     </table>
-    {{ $memos->links('pagination::bootstrap-5') }}
+    {{ $memos->appends(request()->query())->links('pagination::bootstrap-5') }}
 </div>
 
 <!-- Overlay Add Memo Success -->
