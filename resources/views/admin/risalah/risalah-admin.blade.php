@@ -103,7 +103,7 @@
                 <td class="nomor">{{ $index + 1 }}</td>
                 @if (Auth::user()->divisi->id_divisi == $risalah->divisi->id_divisi)
                     <td class="nama-dokumen 
-                        {{ $risalah->status == 'reject' ? 'text-danger' : ($risalah->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $risalah->status == 'reject' || $risalah->status == 'correction' ? 'text-danger' : ($risalah->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $risalah->judul }}
                     </td>
                 @elseif(Auth::user()->divisi->id_divisi != $risalah->divisi->id_divisi)
@@ -119,9 +119,9 @@
                         @endphp
 
                         @if($kirimDocument)
-                            @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'pending' || $risalah->final_status == 'correction')
+                            @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'pending')
                                 <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
-                            @elseif($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'approve' || $risalah->final_status == 'reject')
+                            @elseif($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'approve')
                                 <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
                             @else
                                 <p>-</p>
