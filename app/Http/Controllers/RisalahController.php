@@ -204,8 +204,6 @@ class RisalahController extends Controller
             now()->year
         );
         
-        $divisi = Divisi::all();
-
         $managers = User::where('divisi_id_divisi', $divisiId)
             ->where('position_id_position', '2')
             ->get(['id', 'firstname', 'lastname']);
@@ -215,20 +213,13 @@ class RisalahController extends Controller
             'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
             'nomorDokumen' => $nomorDokumen,
             'managers' => $managers,
-            'undangan' => $undangan,
-            'divisi' => $divisi
+            'undangan' => $undangan
         ]);  
     }
     
     public function store(Request $request)
     {
     // dd($request->all());
-    if($request->jenis_risalah=="baru"){
-        $judul = $request->judul_baru;
-    } elseif ($request->jenis_risalah=="undangan"){
-        $judul = $request->judul_undangan;
-        // $tujuan = NULL;
-    }
     $request->validate([
         'tgl_dibuat' => 'required|date',
         'seri_surat' => 'required|string',
@@ -238,8 +229,6 @@ class RisalahController extends Controller
         'waktu_mulai' => 'required|string',
         'waktu_selesai' => 'required|string',
         'judul' => $judul,
-        'tujuan' => 'required_if:jenis_risalah,baru|array|min:1',
-        'tujuan.*' => 'exists:divisi,id_divisi',
         'divisi_id_divisi' => 'required|integer|exists:divisi,id_divisi', 
         'nama_bertandatangan' => 'required|string',
         'pembuat'=>'required|string',
@@ -272,23 +261,6 @@ class RisalahController extends Controller
     if (!$seri) {
         return back()->with('error', 'Nomor seri tidak ditemukan.');
     }
-    
-    // Ambil array ID divisi tujuan dari form (checkbox tujuan[])
-    $tujuanArray = $request->input('tujuan'); // contoh: [2,3]
-
-    // Default NULL
-    $tujuanString = null;
-    $namaDivisiString = null;
-
-    if (!empty($tujuanArray)) {
-        // Jika ada isinya
-        $tujuanString = implode(';', $tujuanArray);
-
-        // Ambil nama divisi tujuan (IT, SDM, dst) dan simpan sebagai string
-        $namaDivisiArray = \App\Models\Divisi::whereIn('id_divisi', $tujuanArray)->pluck('nm_divisi')->toArray();
-        $namaDivisiString = implode('; ', $namaDivisiArray);
-    }
-
     // Simpan risalah utama
     $risalah = Risalah::create([
         'divisi_id_divisi' => auth()->user()->divisi_id_divisi,
@@ -301,7 +273,6 @@ class RisalahController extends Controller
         'waktu_selesai' => $request->waktu_selesai,
         'status' => 'pending',
         'judul' => $judul,
-        'tujuan' => $namaDivisiString,
         'pembuat' => $request->pembuat,
         'lampiran' => $filePath,
         'nama_bertandatangan' => $request->nama_bertandatangan,
@@ -413,17 +384,9 @@ public function edit($id)
 public function update(Request $request, $id)
     {
         // dd($request->all());
-        if($request->jenis_risalah=="baru"){
-            $judul = $request->judul_baru;
-        } elseif ($request->jenis_risalah=="undangan"){
-            $judul = $request->judul_undangan;
-            // $tujuan = NULL;
-        }
         // Validasi data
         $request->validate([
             'judul' => $judul,
-            'tujuan' => 'required_if:jenis_risalah,baru|array|min:1',
-            'tujuan.*' => 'exists:divisi,id_divisi',
             'agenda' => 'required',
             'tempat' => 'required',
             'waktu_mulai' => 'required',
@@ -435,29 +398,11 @@ public function update(Request $request, $id)
             'target.*' => 'required',
             'pic.*' => 'required',
         ]);
-
-        // Ambil array ID divisi tujuan dari form (checkbox tujuan[])
-        $tujuanArray = $request->input('tujuan'); // contoh: [2,3]
-
-        // Default NULL
-        $tujuanString = null;
-        $namaDivisiString = null;
-
-        if (!empty($tujuanArray)) {
-            // Jika ada isinya
-            $tujuanString = implode(';', $tujuanArray);
-
-            // Ambil nama divisi tujuan (IT, SDM, dst) dan simpan sebagai string
-            $namaDivisiArray = \App\Models\Divisi::whereIn('id_divisi', $tujuanArray)->pluck('nm_divisi')->toArray();
-            $namaDivisiString = implode('; ', $namaDivisiArray);
-        }
-
         // Update data risalah utama
         $risalah = Risalah::findOrFail($id);
         $risalah->update([
             'tgl_dibuat' => $request->tgl_dibuat,
             'judul' => $judul,
-            'tujuan' => $namaDivisiString,
             'agenda' => $request->agenda,
             'tempat' => $request->tempat,
             'waktu_mulai' => $request->waktu_mulai,
