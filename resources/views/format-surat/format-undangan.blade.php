@@ -64,8 +64,7 @@
             margin-top: 15px;
             border-collapse: collapse;
             width: 100%;
-            /* table-layout: fixed;  */
-            table-layout: auto;
+            table-layout: auto; /* Ini biarkan auto jika tidak ingin fixed untuk tabel header2 */
         }
         .header2 th {
             width: 50%;
@@ -81,47 +80,56 @@
             border-left: 3px solid black;
         }
         .header2 td {
-            padding: 0; /* Hapus padding */
-            margin: 0; /* Hapus margin */
+            padding: 0;
+            margin: 0;
             text-align: left;
             white-space: nowrap; /* Cegah teks turun ke bawah */
         }
 
         .header2 td:first-child {
             width: 1%;
-            text-align: left; /* Nomor tetap rata kanan */
-            padding-right: 10px; /* Jarak antara nomor dan teks hanya 2px */
+            text-align: left;
+            padding-right: 10px;
         }
 
         .fill {
             margin-top: 5px;
-            width: 95%;
+            width: 95%; /* Atau bisa 100% jika ingin full lebar `letter` */
             margin: 0 auto;
         }
         .fill p {
             text-align: left;
         }
+        /* ---- Mulai Perubahan Penting untuk Tabel Detail Undangan ---- */
         .fill table {
             border-collapse: collapse;
-            width: 100%;
+            width: 100%; /* Tabel akan mengambil 100% lebar container .fill */
+            table-layout: fixed; /* KUNCI UTAMA: Lebar kolom akan dihitung berdasarkan width yang diberikan */
+            background-color: white; /* Warna tabel jadi putih */
+            margin-left: 20px; /* Indentasi agar mirip contoh */
         }
-        .fill table th, .fill table td {
-            border: 1px solid black;
-            text-align: center;
-            padding: 5px;
+        .fill table td { /* Menghilangkan border dan mengatur padding/text-align untuk semua sel */
+            border: none; /* Hapus border */
+            text-align: left; /* Teks rata kiri */
+            padding: 0; /* Hapus padding default sel */
+            vertical-align: top; /* Pastikan teks di kolom rata atas jika ada multi-baris */
         }
-        .fill table th:first-child,
-        .fill table td:first-child {
-            width: 5%;
-            min-width: 40px;
+        
+        .fill table tr td:first-child { /* Kolom pertama (label: Hari/ Tanggal, Pukul, dll.) */
+            width: 15%; /* Atur lebar ini sesuai kebutuhan agar tidak terlalu lebar */
+            /* Anda bisa pakai '120px' jika ingin lebar tetap dalam piksel */
+            /* min-width: 100px; */ /* Tambahkan min-width jika perlu */
         }
-        .fill table th:nth-child(3),
-        .fill table td:nth-child(3),
-        .fill table th:nth-child(4),
-        .fill table td:nth-child(4) {
-            width: 10%; 
-            min-width: 100px; 
+        .fill table tr td:nth-child(2) { /* Kolom kedua (titik dua) */
+            width: 3%; /* Sangat sempit, hanya untuk titik dua */
+            text-align: center; /* Titik dua di tengah kolomnya */
         }
+        .fill table tr td:nth-child(3) { /* Kolom ketiga (nilai: Jumat / 11 Juli 2025, dll.) */
+            width: 82%; /* Sisa ruang (100% - 15% - 3% = 82%). Ini akan menjadi kolom terlebar */
+            /* Atau gunakan width: auto; agar dia mengambil sisa ruang setelah dua kolom pertama fixed */
+            /* Lebih baik pakai persentase jika sudah fixed table-layout */
+        }
+        /* ---- Akhir Perubahan Penting untuk Tabel Detail Undangan ---- */
 
         .contents {
             text-align: justify;
@@ -188,7 +196,7 @@
 
         .view-mode .fill {
             position: relative;
-            width: 100%;
+            width: 100%; /* Sesuaikan dengan kebutuhan layout utama Diva */
             margin-left: auto;
             margin-right: auto;
             text-align: justify;
@@ -261,7 +269,8 @@
         .header2 table td {
             line-height: 1.5; 
         }
-
+        /* Hapus atau nonaktifkan CSS .undangan-container dan .undangan-detail karena sekarang pakai tabel */
+        /* .undangan-container, .undangan-detail, .undangan-detail .row, .undangan-detail .label, .detail-separator, .detail-value { display: none; } */
     </style>
 </head>
 <body class="{{ isset($isPdf) && $isPdf ? 'pdf-mode' : 'view-mode' }}">
@@ -288,13 +297,11 @@
                     <tr>
                         <td>Nomor</td>
                         <td>:</td>
-                        <!-- <td>{{ $undangan->nomor_undangan }}</td> -->
                         <td>{{ trim($undangan->nomor_undangan) }}</td>
                     </tr>
                     <tr>
                         <td>Perihal</td>
                         <td>:</td>
-                        <!-- <td><b>{{ $undangan->judul }}</b></td> -->
                         <td><b>{{ trim($undangan->judul) }}</b></td>
                     </tr>
                 </table>
@@ -311,30 +318,65 @@
                     </table>
                     <p style="margin-top: 3px;">Di Tempat</p>
                 </div>
-                    <div class="fill">
-                        <p>Dengan Hormat,</p>
-                        <p class="contents">Bersama ini kami mengharapkan kehadiran Bapak / Ibu pada: </p>
-                        <p>{!! $undangan->isi_undangan !!}</p>
-                        <p style="text-align: justify;">Demikian undangan ini kami sampaikan, atas perhatian dan kehadiran Bapak/Ibu kami ucapkan terima kasih.</p>
-                    </div>
-                    <table class="signature">
+                
+                <div class="fill">
+                    <p>Dengan hormat,</p>
+                    <p class="contents">Bersama ini kami mengharapkan kehadiran Bapak / Ibu pada:</p>
+                    <table style="
+                        width: 100%;
+                        margin-top: 10px;
+                        line-height: 1.5;
+                        border-collapse: collapse; 
+                        background-color: white; 
+                        margin-left: 20px; 
+                        table-layout: fixed; 
+                    ">
                         <tr>
+                            <td style="width: 15%;">Hari, Tanggal</td> <td style="width: 3%; text-align: center;">:</td> <td style="width: 82%;">
+                                {{ \Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l , d F Y') }}
+                            </td> </tr>
+                        <tr>
+                            <td>Pukul</td>
+                            <td style="text-align: center;">:</td>
                             <td>
-                                <!-- Hormat Kami,<br>  -->
-                                <p><b>Hormat kami,</b></p>
-                                <b>Manajer {{ $undangan->divisi->nm_divisi }}</b> 
-                                @if(!empty($undangan->qr_approved_by))
-                                    <div style="text-align: center; margin-top: 10px;">
-                                        <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" width="100" alt="QR Code">
-                                    </div>
-                                @endif
-                                <p><b><u>{{ $undangan->nama_bertandatangan }}</u></b></p>
+                                {{ $undangan->waktu_mulai }} WIB s.d {{ $undangan->waktu_selesai ?? 'selesai'  }} WIB
                             </td>
                         </tr>
+                        <tr>
+                            <td>Tempat</td>
+                            <td style="text-align: center;">:</td>
+                            <td>
+                                {!! nl2br(e($undangan->tempat)) !!}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Agenda</td>
+                            <td style="text-align: center;">:</td>
+                            <td>{!! $undangan->isi_undangan !!}</td>
+                        </tr>
                     </table>
+                    <p style="margin-top: 10px; text-align: justify;">
+                        Demikian undangan ini kami sampaikan, atas perhatian dan kehadiran Bapak/Ibu kami ucapkan terima kasih.
+                    </p>
                 </div>
-            </div>
-        </div>
+
+                <table class="signature">
+                    <tr>
+                        <td>
+                            <p><b>Hormat kami,</b></p>
+                            <b>Manajer {{ $undangan->divisi->nm_divisi }}</b> 
+                            @if(!empty($undangan->qr_approved_by))
+                                <div style="text-align: center; margin-top: 10px;">
+                                    <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" width="100" alt="QR Code">
+                                </div>
+                            @endif
+                            <p><b><u>{{ $undangan->nama_bertandatangan }}</u></b></p>
+                        </td>
+                    </tr>
+                </table>
+                </div> {{-- Close collab --}}
+            </div> {{-- Close letter --}}
+        </div> {{-- Close content --}}
     </main>
 </body>
 </html>
