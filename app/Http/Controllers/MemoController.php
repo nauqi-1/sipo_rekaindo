@@ -39,20 +39,45 @@ class MemoController extends Controller
 
         // Query memo dengan filter
         $query = Memo::with('divisi')
-        ->whereNotIn('id_memo', $memoDiarsipkan) // Filter memo yang belum diarsipkan
-        ->where(function ($q) use ($userDivisiId, $userId) {
-            // Memo yang dibuat oleh divisi user sendiri
-            $q->where('divisi_id_divisi', $userDivisiId)
-            
-            // Memo yang dikirim ke user dari divisi lain melalui tabel kirim_document
-            ->orWhereHas('kirimDocument', function ($query) use ($userId, $userDivisiId) {
-                $query->where('jenis_document', 'memo')
-                      ->where('id_penerima', $userId)
-                      ->whereHas('penerima', function ($subQuery) use ($userDivisiId) {
-                          $subQuery->where('divisi_id_divisi', $userDivisiId);
-                      });
+            ->whereNotIn('id_memo', $memoDiarsipkan); // Filter memo yang belum diarsipkan
+
+        // Filter by divisi (own/other/both) if requested
+        // Advanced filter: 3 types
+        // 1. both: own division memos + memos from other divisions sent to own division
+        // 2. own: only memos made by own division
+        // 3. received: only memos from other divisions sent to own division
+        $filterType = $request->get('divisi_filter', 'both');
+        if ($filterType === 'own') {
+            // Only memos made by own division
+            $query->where('divisi_id_divisi', $userDivisiId);
+        } elseif ($filterType === 'received' || $filterType === 'other') {
+            // Only memos from other divisions sent to own division (via kirim_document)
+            $query->where('divisi_id_divisi', '!=', $userDivisiId)
+                ->whereHas('kirimDocument', function ($q) use ($userId, $userDivisiId) {
+                    $q->where('jenis_document', 'memo')
+                        ->where('id_penerima', $userId)
+                        ->whereHas('penerima', function ($subQuery) use ($userDivisiId) {
+                            $subQuery->where('divisi_id_divisi', $userDivisiId);
+                        });
+                });
+        } else {
+            // Default: show both own and received memos
+            $query->where(function ($q) use ($userDivisiId, $userId) {
+                // Memo yang dibuat oleh divisi user sendiri
+                $q->where('divisi_id_divisi', $userDivisiId)
+                // Memo yang dikirim ke user dari divisi lain melalui tabel kirim_document
+                ->orWhere(function ($subQ) use ($userDivisiId, $userId) {
+                    $subQ->where('divisi_id_divisi', '!=', $userDivisiId)
+                          ->whereHas('kirimDocument', function ($query) use ($userId, $userDivisiId) {
+                              $query->where('jenis_document', 'memo')
+                                    ->where('id_penerima', $userId)
+                                    ->whereHas('penerima', function ($subQuery) use ($userDivisiId) {
+                                        $subQuery->where('divisi_id_divisi', $userDivisiId);
+                                    });
+                          });
+                });
             });
-        });
+        }
        
     
 
@@ -436,10 +461,11 @@ class MemoController extends Controller
                     ->get();
             
                 foreach ($penerima as $penerima) {
+                    if (Auth::user()->position_id_position  )
                     \App\Models\Kirim_Document::create([
                         'id_document' => $memo->id_memo,
                         'jenis_document' => 'memo',
-                        'id_pengirim' => Auth::id(),
+                        'id_pengirim' => $currentKirim->id_pengirim,
                         'id_penerima' => $penerima->id,
                         'status' => 'approve',
                         'created_at' => now(),

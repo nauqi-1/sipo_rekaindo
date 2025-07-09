@@ -129,11 +129,11 @@
                     </div>
                 </div>
             </div>
-
+        
             <form id="approvalForm" method="POST" action="{{ route('memo.updateStatus', $memo->memo->id_memo) }}">
             @csrf
             @method('PUT')
-
+            @if (Auth::user()->divisi->id_divisi == $memo->memo->divisi_id_divisi)
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="label1 card-blue1">
@@ -169,6 +169,7 @@
                 <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('memo.diterima') }}'">Kembali</button>
                 <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
             </div>
+            @endif
         </form>
 
         <!-- Modal kirim -->
