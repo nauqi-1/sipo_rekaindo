@@ -102,6 +102,7 @@
                     </div> -->
                 </div>
             </div>
+
             <form id="approvalForm" method="POST" action="{{ route('undangan.updateStatus', $undangan->id_undangan) }}">
             @csrf
             @method('PUT')
@@ -110,7 +111,6 @@
                 <div class="col">
                     <div class="label1 card-blue1">
                         <label for="pengesahan" class="label">Pengesahan</label>
-                        
                         <div class="form-check1">
                             <label class="form-check-label" for="approve">Diterima</label>
                             <input type="radio" class="form-check-input approval-checkbox" id="approve" name="status" value="approve">
@@ -121,52 +121,38 @@
                         </div>
                         <div class="form-check3">
                             <label class="form-check-label" for="correction">Dikoreksi</label>
-                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="pending">
+                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="correction">
                         </div>
-                    </div>
-
-                    <div class="card-blue1">Tindakan Selanjutnya</div>
-                    <div class="card-white">
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="nextAction" name="next_action">
-                            <option disabled selected style="text-align: left;">--Pilih Tindakan--</option>
-                            <option value="koreksi">Koreksi kembali</option>
-                            <option value="dilanjutkan">Dilanjutkan</option>
-                        </select>                    
                     </div>
                 </div>
 
-                <div class="col">
-                    <div class="card-blue1">Catatan</div>
+                <div class="col" id="catatanCol" style="display:none;">
+                    <div class="card-blue1">Catatan <span class="text-danger">*</span></div>
                     <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>        
-                </div>             
+                </div>
+            </div>
+
+            <div class="row mb-4" id="tujuanDivisiRow" style="display:none;">
+                <div class="col">
+                    <div class="card-blue1">Konfirmasi Pengiriman</div>
+                    <div class="card-white">
+                        <label>Undangan akan dikirim ke divisi berikut:</label>
+                        <ul>
+                            @foreach(explode(';', $undangan->tujuan) as $divisiTujuan)
+                                <li>{{ trim($divisiTujuan) }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <div class="footer">
                 <button type="button" class="btn back" id="backBtn">Kembali</button>
-                <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+                <button type="button" class="btn submit" id="submitBtn">Kirim</button>
             </div>
         </form>
 
-        <!-- Modal kirim -->
-        <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Tombol Close -->
-                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="modal-body text-center">
-                        <!-- Ikon atau Gambar -->
-                        <img src="/img/undangan/konfirmasi.png" alt="Hapus Ikon" class="mb-3" style="width: 80px;">
-                        <!-- Tulisan -->
-                        <h5 class="mb-4" style="color: #545050;"><b>Kirim dan Konfirmasi Undangan?</b></h5>
-                        <!-- Tombol -->
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn cancel" data-bs-dismiss="modal"><a href="#">Batal</a></button>
-                            <button type="button" class="btn ok" id="confirmSubmit">Oke</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Modal kirim hanya untuk diterima, akan dihandle via JS -->
 
         <!-- Modal Berhasil -->
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
@@ -187,22 +173,54 @@
         </div>
     </div>
     <script>
-                document.addEventListener('DOMContentLoaded', function () {
-            const checkboxes = document.querySelectorAll('.approval-checkbox');
-            
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
-                    checkboxes.forEach(cb => {
-                        if (cb !== this) cb.checked = false;
-                    });
-                });
-            });
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.approval-checkbox');
+        const catatanCol = document.getElementById('catatanCol');
+        const catatanInput = document.getElementById('catatan');
+        const tujuanDivisiRow = document.getElementById('tujuanDivisiRow');
+        const submitBtn = document.getElementById('submitBtn');
+        let statusValue = null;
 
-            // Ketika tombol konfirmasi di modal ditekan, submit form
-            document.getElementById('confirmSubmit').addEventListener('click', function () {
-                document.getElementById('approvalForm').submit();
+        // Radio button logic
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                checkboxes.forEach(cb => {
+                    if (cb !== this) cb.checked = false;
+                });
+                statusValue = this.value;
+                if (statusValue === 'approve') {
+                    catatanCol.style.display = 'none';
+                    catatanInput.required = false;
+                    tujuanDivisiRow.style.display = 'flex';
+                } else if (statusValue === 'reject' || statusValue === 'pending') {
+                    catatanCol.style.display = 'block';
+                    catatanInput.required = true;
+                    tujuanDivisiRow.style.display = 'none';
+                } else {
+                    catatanCol.style.display = 'none';
+                    catatanInput.required = false;
+                    tujuanDivisiRow.style.display = 'none';
+                }
             });
         });
+
+        // Submit button logic
+        submitBtn.addEventListener('click', function () {
+            if (!statusValue) {
+                alert('Pilih status pengesahan terlebih dahulu!');
+                return;
+            }
+            if (statusValue === 'approve') {
+                // Tampilkan konfirmasi tujuan divisi sebelum submit
+                if (confirm('Undangan akan dikirim ke divisi tujuan. Lanjutkan?')) {
+                    document.getElementById('approvalForm').submit();
+                }
+            } else {
+                // Untuk reject/pending, langsung submit (catatan required dihandle oleh browser)
+                document.getElementById('approvalForm').submit();
+            }
+        });
+    });
     </script>
 </body>
 </html>

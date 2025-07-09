@@ -36,7 +36,7 @@
         <div class="header-tools">
             <div class="search-filter">
             <form method="GET" action="{{ route('memo.admin') }}" class="search-filter d-flex gap-2">
-                <div class="dropdown">
+                <div class="dropdown d-flex gap-3" style="position:relative; width: 300px;">
                     <select name="status" class="form-select" onchange="this.form.submit()">
                         <option value="">Status</option>
                         <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
@@ -44,7 +44,13 @@
                         <option value="correction" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi</option>
                         <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                     </select>
+                    <select name="divisi_filter" class="form-select" onchange="this.form.submit()">
+                        <option value="">Semua Memo</option>
+                        <option value="own" {{ request('divisi_filter') == 'own' ? 'selected' : '' }}>Memo Masuk</option>
+                        <option value="other" {{ request('divisi_filter') == 'other' ? 'selected' : '' }}>Memo Keluar</option>
+                    </select>
                 </div>
+                <div class="d-flex align-items-center gap-1">
                 <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                     <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                 </div>
@@ -53,6 +59,7 @@
                     <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
                         class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" placeholder="Tanggal Akhir"
                         onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }" onchange="this.form.submit()">
+                </div>
                 </div>
                 <div class="d-flex gap-2">
                     <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">

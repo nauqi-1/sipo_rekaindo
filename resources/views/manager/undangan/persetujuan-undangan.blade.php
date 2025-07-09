@@ -102,6 +102,7 @@
                     </div> -->
                 </div>
             </div>
+
             <form id="approvalForm" method="POST" action="{{ route('undangan.updateStatus', $undangan->id_undangan) }}">
             @csrf
             @method('PUT')
@@ -110,7 +111,6 @@
                 <div class="col">
                     <div class="label1 card-blue1">
                         <label for="pengesahan" class="label">Pengesahan</label>
-                        
                         <div class="form-check1">
                             <label class="form-check-label" for="approve">Diterima</label>
                             <input type="radio" class="form-check-input approval-checkbox" id="approve" name="status" value="approve">
@@ -121,28 +121,18 @@
                         </div>
                         <div class="form-check3">
                             <label class="form-check-label" for="correction">Dikoreksi</label>
-                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="pending">
+                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="correction">
                         </div>
-                    </div>
-
-                    <div class="card-blue1">Tindakan Selanjutnya</div>
-                    <div class="card-white">
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="nextAction" name="next_action">
-                            <option disabled selected style="text-align: left;">--Pilih Tindakan--</option>
-                            <option value="koreksi">Koreksi kembali</option>
-                            <option value="dilanjutkan">Dilanjutkan</option>
-                        </select>                    
                     </div>
                 </div>
 
-                <div class="col">
-                    <div class="card-blue1">Catatan</div>
+                <div class="col" id="catatanCol" style="display:none;">
+                    <div class="card-blue1">Catatan <span class="text-danger">*</span></div>
                     <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>        
-                </div>             
+                </div>
             </div>
-            <!--DIVA TEST-->
-        <div class="row mb-4" style="gap: 20px;" id="formPengiriman" style="display: none;">
-        <div class="row mb-4" style="gap: 20px;">
+
+            <div class="row mb-4" id="tujuanDivisiRow" style="display:none;">
                 <div class="col">
                     <div class="card-blue1">
                         <label for="tindakan">Konfirmasi Daftar Penerima</label>
@@ -151,21 +141,20 @@
                         </label>
                     </div>
                     <div class="card-white">
-    <label for="diterima">Diterima</label>
-    <div class="separator"></div>
-            <ol>
-        @foreach(explode(';', $undangan->tujuan) as $divisi)
-            <li>{{ trim($divisi) }}</li>
-        @endforeach
-            </ol>
-        </div>
+                        <label for="diterima">Diterima</label>
+                        <div class="separator"></div>
+                        <ol>
+                        @foreach(explode(';', $undangan->tujuan) as $divisi)
+                            <li>{{ trim($divisi) }}</li>
+                        @endforeach
+                        </ol>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!---->
+
             <div class="footer">
                 <button type="button" class="btn back" id="backBtn" onclick="window.location.href=' '">Kembali</button>
-                <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+                <button type="button" class="btn submit" id="submitBtn">Kirim</button>
             </div>
         </form>
         
@@ -206,29 +195,58 @@
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         const checkboxes = document.querySelectorAll('.approval-checkbox');
+        const catatanCol = document.getElementById('catatanCol');
+        const catatanInput = document.getElementById('catatan');
+        const tujuanDivisiRow = document.getElementById('tujuanDivisiRow');
+        const submitBtn = document.getElementById('submitBtn');
+        let statusValue = null;
 
+        // Radio button logic
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', function () {
                 checkboxes.forEach(cb => {
                     if (cb !== this) cb.checked = false;
                 });
+                statusValue = this.value;
+                if (statusValue === 'approve') {
+                    catatanCol.style.display = 'none';
+                    catatanInput.required = false;
+                    tujuanDivisiRow.style.display = 'flex';
+                } else if (statusValue === 'reject' || statusValue === 'correction') {
+                    catatanCol.style.display = 'block';
+                    catatanInput.required = true;
+                    tujuanDivisiRow.style.display = 'none';
+                } else {
+                    catatanCol.style.display = 'none';
+                    catatanInput.required = false;
+                    tujuanDivisiRow.style.display = 'none';
+                }
             });
         });
-    });
 
-    // Overlay kirim
-    document.addEventListener('DOMContentLoaded', function () {
-        const approvalForm = document.getElementById('approvalForm');
-        const confirmSubmitButton = document.getElementById('confirmSubmit');
-
-        confirmSubmitButton.addEventListener('click', function (event) {
-            event.preventDefault(); // Mencegah submit default
-            
-            // Kirim form secara normal
-            approvalForm.submit();
+        // Submit button logic
+        submitBtn.addEventListener('click', function () {
+            if (!statusValue) {
+                alert('Pilih status pengesahan terlebih dahulu!');
+                return;
+            }
+            // Untuk approve, tetap submit dan tampilkan modal sukses (biarkan reload)
+            if (statusValue === 'approve') {
+                document.getElementById('approvalForm').submit();
+                setTimeout(function() {
+                    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    successModal.show();
+                }, 300);
+            } else {
+                // Untuk reject/correction, submit lalu redirect manual ke halaman undangan manager setelah submit
+                document.getElementById('approvalForm').submit();
+                setTimeout(function() {
+                    window.location.href = "{{ route('undangan.manager') }}";
+                }, 500);
+            }
         });
 
-        // Jika ada notifikasi sukses dari server, tampilkan modal sukses
+        // Jika ada notifikasi sukses dari server, tampilkan modal sukses (fallback jika redirect back)
         const successMessage = "{{ session('success') }}";
         if (successMessage) {
             const successModal = new bootstrap.Modal(document.getElementById('successModal'));

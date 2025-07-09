@@ -99,7 +99,7 @@
                         </a>
                     </button>
                 </th>
-                <th>Divisi</th>
+                <th>Divisi Pengirim</th>
                 <th>Status</th>
                 <th>Aksi</th>
             </tr>
@@ -108,38 +108,35 @@
             @foreach ($undangans as $index => $undangan)
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
-                @if (Auth::user()->divisi->id_divisi == $undangan->divisi->id_divisi)
-                    <td class="nama-dokumen 
-                        {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'pending' ? 'text-warning' : 'text-success') }}">
-                        {{ $undangan->judul }}
-                    </td>
-                @else
-                    <td class="nama-dokumen 
-                        {{ $undangan->final_status == 'reject' ? 'text-danger' : ($undangan->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
-                        {{ $undangan->judul }}
-                    </td>
-                @endif
+                <td class="nama-dokumen
+                    {{ ($undangan->final_status ?? $undangan->status) == 'reject'  || ($undangan->final_status ?? $undangan->status) == 'correction') ? 'text-danger' : ((($undangan->final_status ?? $undangan->status) == 'pending'  ? 'text-warning': 'text-success') }}">
+                    {{ $undangan->judul }}
+                </td>
                 <td>
                     @php
-                            // Cari dokumen kiriman yang sesuai dengan ID memo
                         $kirimDocument = $kirimDocuments->firstWhere('id_document', $undangan->id_undangan);
                     @endphp
-                   
 
-    
-
-                    @if($kirimDocument)
-                    @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $undangan->status == 'pending')
+                    @if ($kirimDocument)
+                        @if (
+                            $kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim &&
+                            in_array($undangan->status, ['pending'])
+                        )
                             <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
-                        @elseif($undangan->status == 'approve' && $kirimDocument->id_pengirim == Auth::user()->id && $kirimDocument->divisi_penerima != $kirimDocument->divisi_pengirim&&$kirimDocument->status == 'pending')
+                        @elseif (
+                            $undangan->status == 'approve' &&
+                            //$kirimDocument->id_pengirim == Auth::user()->id &&
+                            $kirimDocument->status == 'approve'
+                        )
                             <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
                         @else
                             <p>-</p>
-                            @endif
-                        @else
-                            <p>-</p>
                         @endif
+                    @else
+                        <p>-</p>
+                    @endif
                 </td>
+
                 <td>{{ \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') }}</td>
                 <td >{{ $undangan->seri_surat }}</td>
                 <td>{{ $undangan->nomor_undangan }}</td>
@@ -147,27 +144,30 @@
                 <td>{{ $undangan->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
                 </td>
                 <td>
-                        @if ($undangan->final_status == 'reject')
-                            <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($undangan->final_status == 'pending')
-                            <span class="badge bg-warning">Diproses</span>
-                        @else
-                            <span class="badge bg-success">Diterima</span>
-                        @endif
+                    @php $status = $undangan->final_status ?? $undangan->status; @endphp
+                    @if ($status == 'reject')
+                        <span class="badge bg-danger">Ditolak</span>
+                    @elseif ($status == 'pending')
+                        <span class="badge bg-warning">Diproses</span>
+                    @elseif ($status == 'correction')
+                        <span class="badge bg-danger">Dikoreksi</span>
+                    @else
+                        <span class="badge bg-success">Diterima</span>
+                    @endif
                 </td>
                 <td>
                     @if (Auth::user()->divisi->id_divisi == $undangan->divisi->id_divisi)
-                        @if($undangan->status == 'pending' || $undangan->status == 'approve' )
+                        {{-- @if($undangan->status == 'pending' || $undangan->status == 'approve' )
                         <a href="{{ route('kirim-undanganAdmin.admin',['id' => $undangan->id_undangan]) }}" class="btn btn-sm1">
                             <img src="/img/undangan/share.png" alt="share">
                         </a>
-                        @endif
+                        @endif --}}
                     @elseif (Auth::user()->divisi->id_divisi != $undangan->divisi->id_divisi)
-                        @if($undangan->final_status == 'pending' )
+                        {{-- @if($undangan->final_status == 'pending' )
                         <a href="{{ route('kirim-undanganAdmin.admin',['id' => $undangan->id_undangan]) }}" class="btn btn-sm1">
                             <img src="/img/undangan/share.png" alt="share">
                         </a>
-                        @endif               
+                        @endif                --}}
                     @endif
 
                         @if (Auth::user()->divisi->id_divisi == $undangan->divisi->id_divisi)

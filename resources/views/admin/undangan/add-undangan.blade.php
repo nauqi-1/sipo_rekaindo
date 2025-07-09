@@ -95,22 +95,45 @@
                             <div class="form-control text-danger">{{ $message }}</div>       
                         @enderror
                     </div>
-                    <!--TTD yang bertanda tangan-->
+                    <div class="col-md-6">
+                        <label for="tgl_rapat" class="form-label">
+                            <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Rapat<span class="text-danger">*</span>
+                        </label>
+                        <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"  value="{{ old('tgl_rapat') }}" placeholder="Tanggal Rapat">
+                        @error('tgl_rapat')
+                            <div class="form-control text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-6">
+                            <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
+                            <input type="text" name="tempat" id="tempat" class="form-control" placeholder="Ruang Rapat" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="waktu" class="form-label">Waktu Rapat</label> <span class="text-danger">*</span>
+                            <div class="d-flex align-items-center">
+                                <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2" placeholder="Waktu Mulai" required>
+                                <span class="fw-bold">s/d</span>
+                                <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2" placeholder="Waktu Selesai" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <!--TTD yang bertanda tangan-->
                     <div class="col-md-6">
                         <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
                         <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" >
-                            <option value="" disabled selected style="text-align: left;" value="{{ old('nama_bertandatangan') }}">--Pilih--</option>
+                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                             @foreach($managers as $manager)
-                                <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname . ' ' . $manager->lastname }}</option>
+                                <option value="{{  $manager->id  }}">
+                                    {{ $manager->firstname . ' ' . $manager->lastname }}
+                                </option>
                             @endforeach
                         </select>
                         @error('nama_bertandatangan')
                             <div class="form-control text-danger">{{ $message }}</div>
                         @enderror
-                    </div> 
-                </div>
-                <div class="row mb-4">
-                    
+                    </div>
                     <div class="col-md-6 lampiran">
                         <label for="lampiran" class="form-label">Lampiran</label>
                         <div class="separator"></div>
@@ -123,13 +146,19 @@
                                     <button type="button" id="removeFile" class="bi bi-x remove-btn" style="border: none; color:red; background-color: white;"></button>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
+                    </div>
+                    
+                </div>
+                <div class="row mb-4">
+                    
+                    
                     <div class="col-md-6 lampiran"></div>   
                 </div>
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
                         <img src="\img\undangan\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                        <label for="isi_undangan">Isi Surat <span class="text-danger">*</span></label>
+                        <label for="isi_undangan">Agenda <span class="text-danger">*</span></label>
                     </div>
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_undangan" value="{{ old('isi_undangan') }}"></textarea>
@@ -140,7 +169,7 @@
                 </div>
             </div>
             <!--Permohonan Approval disini yah-->
-            <div class="row mb-4" style="gap: 20px;">
+            {{-- <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="card-blue1">
                         <label for="tindakan">Undangan Akan Diajukan untuk Proses Approval</label>
@@ -148,18 +177,15 @@
                             *Undangan akan diapprove oleh :
                         </label>
                     </div>
-                   
-                        
                         <div class="separator"></div>
                         @foreach($managers as $manager)
                                 <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname . ' ' . $manager->lastname }}</option>
                             @endforeach
                         
                  
-                    
                     <!---->
                 </div>
-            </div>
+            </div> --}}
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.superadmin')}}">Batal</a></button>
                 <button type="submit" class="btn btn-save">Ajukan</button>
@@ -167,9 +193,6 @@
         </div>
         </form>
     </div>
-
-
-
         <!-- Modal Berhasil -->
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -179,7 +202,7 @@
                         <!-- Success Message -->
                         <h5 class="modal-title"><b>Sukses</b></h5>
                         <p class="mt-2">Menunggu Approval dari Manager</p>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('undangan.admin')}}" style="color: white; text-decoration: none">Kembali ke Halaman Memo</a></button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('undangan.admin')}}" style="color: white; text-decoration: none">Kembali ke Halaman Undangan</a></button>
                     </div>
                 </div>
             </div>
