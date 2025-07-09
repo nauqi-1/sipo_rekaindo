@@ -311,6 +311,18 @@ public function index(Request $request)
         if (!$sudahDikirim) {
             //ID_PENGIRIM 
             if(@Auth::user()->id == $manager->id) {
+                //PROSES TTD
+                    $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
+                    $qrImage = QrCode::format('svg')->generate($qrText);
+                    $qrBase64 = base64_encode($qrImage);
+                    $undangan->qr_approved_by = $qrBase64;
+                    $undangan->save();
+
+                    Notifikasi::create([
+                        'judul' => "Undangan Disetujui",
+                        'judul_document' => $undangan->judul,
+                        'id_divisi' => $undangan->divisi_id_divisi,
+                        'updated_at' => now()]);
                 // Jika pengirim adalah manager yang sama, set status approve
                 // Kirim dokumen ke semua user di divisi tujuan (kecuali pengirim sendiri)
                     $namaDivisiArray = array_map('trim', explode(';', $undangan->tujuan));
@@ -525,6 +537,10 @@ public function updateDocumentStatus(Request $request, $id)
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
             'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
+            'tgl_rapat' => 'required|date',
+            'tempat' => 'required|string',
+            'waktu_mulai' => 'required|string',
+            'waktu_selesai' => 'required|string',
         ]);
         
         
@@ -561,8 +577,19 @@ public function updateDocumentStatus(Request $request, $id)
         if ($request->filled('divisi_id_divisi')) {
             $undangan->divisi_id_divisi = $request->divisi_id_divisi;
         }
+        if ($request->filled('tgl_rapat')) {
+            $undangan->tgl_rapat = $request->tgl_rapat;
+        }
+        if ($request->filled('tempat')) {
+            $undangan->tempat = $request->tempat;
+        }
+        if ($request->filled('waktu_mulai')) {
+            $undangan->waktu_mulai = $request->waktu_mulai;
+        }
+        if ($request->filled('waktu_selesai')) {
+            $undangan->waktu_selesai = $request->waktu_selesai;
+        }
         
-
         $undangan->save();
         \Log::info('Update undangan berhasil', $undangan->toArray());
 
