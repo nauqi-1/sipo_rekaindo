@@ -34,15 +34,38 @@
                         <label for="tgl_surat" class="form-label">No Agenda</label>
                     </div>
                     <div class="card-white">
-                        <label for="seri">No Seri</label>
+                        <label for="seri">No. Seri</label>
                         <div class="separator"></div>
                         <input type="text" id="seri" value="{{ $memo->memo->seri_surat }}">
                     </div>
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
+                       
 
-                        <input type="text" id="diterima" value="{{ $memo->memo->tujuan }}">
+                        @php
+                        use App\Models\Divisi;
+                    
+                            $divisiIds = array_filter(array_map('trim', explode(';', $memo2->tujuan))); 
+                            $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi');
+                        @endphp
+
+                        @if (count($divisiNames) === 1)
+                            <input type="text" id="kepada" value="{{ trim($divisiNames[0]) }}" readonly>
+                        @else
+                         <div 
+                        style="border-radius: 8px; 
+                               padding: 8px 12px; 
+                               background-color: #fff; 
+                               font-size: 14px;
+                               height: auto;">
+                            <ol style="padding-left: 20px;">
+                                @foreach ($divisiNames as $tujuan)
+                                    <li>{{ trim($tujuan) }}</li>
+                                @endforeach
+                            </ol>
+                         </div>
+                        @endif
                     </div>
                 </div>
                 <div class="col">
@@ -106,11 +129,11 @@
                     </div>
                 </div>
             </div>
-
+        
             <form id="approvalForm" method="POST" action="{{ route('memo.updateStatus', $memo->memo->id_memo) }}">
             @csrf
             @method('PUT')
-
+            @if (Auth::user()->divisi->id_divisi == $memo->memo->divisi_id_divisi)
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="label1 card-blue1">
@@ -127,29 +150,18 @@
                         @if (Auth::user()->divisi->id_divisi == $memo->memo->divisi_id_divisi)
                         <div class="form-check3">
                             <label class="form-check-label" for="correction">Dikoreksi</label>
-                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="pending">
-                        </div>
-                        @else
-                        <div class="form-check3">
-                            <label class="form-check-label" for="correction">Tidak Ditindak Lanjuti</label>
-                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="reject">
+                            <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="correction">
                         </div>
                         @endif
                     </div>
-
-                    <div class="card-blue1">Tindakan Selanjutnya</div>
-                    <div class="card-white">
-                        <select class="btn btn-dropdown dropdown-toggle d-flex justify-content-between align-items-center w-100" id="nextAction" name="next_action">
-                            <option disabled selected style="text-align: left;">--Pilih Tindakan--</option>
-                            <option value="koreksi">Koreksi kembali</option>
-                            <option value="dilanjutkan">Dilanjutkan</option>
-                        </select>                    
-                    </div>
                 </div>
 
-                <div class="col">
+                <div class="col" id="catatan-card" style="display:none;">
                     <div class="card-blue1">Catatan</div>
-                    <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>        
+                    <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>
+                    @error('catatan')
+                        <div class=" text-danger">{{ $message }}</div>
+                    @enderror        
                 </div>             
             </div>
 
@@ -157,6 +169,7 @@
                 <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('memo.diterima') }}'">Kembali</button>
                 <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
             </div>
+            @endif
         </form>
 
         <!-- Modal kirim -->
@@ -203,7 +216,6 @@
 
         confirmSubmitButton.addEventListener('click', function (event) {
             event.preventDefault(); // Mencegah submit default
-            
             // Kirim form secara normal
             approvalForm.submit();
         });
@@ -214,6 +226,24 @@
             const successModal = new bootstrap.Modal(document.getElementById('successModal'));
             successModal.show();
         }
+
+        // Show/hide entire catatan card based on status selection
+        const catatanCard = document.getElementById('catatan-card');
+        const statusRadios = document.querySelectorAll('input[name="status"]');
+        function toggleCatatan() {
+            let show = false;
+            statusRadios.forEach(radio => {
+                if ((radio.checked) && (radio.value === 'reject' || radio.value === 'correction')) {
+                    show = true;
+                }
+            });
+            catatanCard.style.display = show ? 'block' : 'none';
+        }
+        statusRadios.forEach(radio => {
+            radio.addEventListener('change', toggleCatatan);
+        });
+        // Initial check
+        toggleCatatan();
     });
     </script>
     <!-- Bootstrap JS and Popper.js -->

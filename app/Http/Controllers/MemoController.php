@@ -39,20 +39,45 @@ class MemoController extends Controller
 
         // Query memo dengan filter
         $query = Memo::with('divisi')
-        ->whereNotIn('id_memo', $memoDiarsipkan) // Filter memo yang belum diarsipkan
-        ->where(function ($q) use ($userDivisiId, $userId) {
-            // Memo yang dibuat oleh divisi user sendiri
-            $q->where('divisi_id_divisi', $userDivisiId)
-            
-            // Memo yang dikirim ke user dari divisi lain melalui tabel kirim_document
-            ->orWhereHas('kirimDocument', function ($query) use ($userId, $userDivisiId) {
-                $query->where('jenis_document', 'memo')
-                      ->where('id_penerima', $userId)
-                      ->whereHas('penerima', function ($subQuery) use ($userDivisiId) {
-                          $subQuery->where('divisi_id_divisi', $userDivisiId);
-                      });
+            ->whereNotIn('id_memo', $memoDiarsipkan); // Filter memo yang belum diarsipkan
+
+        // Filter by divisi (own/other/both) if requested
+        // Advanced filter: 3 types
+        // 1. both: own division memos + memos from other divisions sent to own division
+        // 2. own: only memos made by own division
+        // 3. received: only memos from other divisions sent to own division
+        $filterType = $request->get('divisi_filter', 'both');
+        if ($filterType === 'own') {
+            // Only memos made by own division
+            $query->where('divisi_id_divisi', $userDivisiId);
+        } elseif ($filterType === 'received' || $filterType === 'other') {
+            // Only memos from other divisions sent to own division (via kirim_document)
+            $query->where('divisi_id_divisi', '!=', $userDivisiId)
+                ->whereHas('kirimDocument', function ($q) use ($userId, $userDivisiId) {
+                    $q->where('jenis_document', 'memo')
+                        ->where('id_penerima', $userId)
+                        ->whereHas('penerima', function ($subQuery) use ($userDivisiId) {
+                            $subQuery->where('divisi_id_divisi', $userDivisiId);
+                        });
+                });
+        } else {
+            // Default: show both own and received memos
+            $query->where(function ($q) use ($userDivisiId, $userId) {
+                // Memo yang dibuat oleh divisi user sendiri
+                $q->where('divisi_id_divisi', $userDivisiId)
+                // Memo yang dikirim ke user dari divisi lain melalui tabel kirim_document
+                ->orWhere(function ($subQ) use ($userDivisiId, $userId) {
+                    $subQ->where('divisi_id_divisi', '!=', $userDivisiId)
+                          ->whereHas('kirimDocument', function ($query) use ($userId, $userDivisiId) {
+                              $query->where('jenis_document', 'memo')
+                                    ->where('id_penerima', $userId)
+                                    ->whereHas('penerima', function ($subQuery) use ($userDivisiId) {
+                                        $subQuery->where('divisi_id_divisi', $userDivisiId);
+                                    });
+                          });
+                });
             });
-        });
+        }
        
     
 
@@ -209,7 +234,8 @@ class MemoController extends Controller
     {
         $divisiId = auth()->user()->divisi_id_divisi;
     $divisiName = auth()->user()->divisi->nm_divisi;
-
+    $divisiList = Divisi::all(); 
+    
     // Ambil nomor seri berikutnya
     $nextSeri = Seri::getNextSeri(false);
     
@@ -236,19 +262,20 @@ class MemoController extends Controller
     return view(Auth::user()->role->nm_role.'.memo.add-memo', [
         'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
         'nomorDokumen' => $nomorDokumen,
-        'managers' => $managers
+        'managers' => $managers,
+        'divisiList' => $divisiList
     ]);  
     }
     public function store(Request $request)
-    {
-        //  dd($request->all());
-
+    {   
+        
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
-            'tujuan' => 'required|string|max:100',
+            'tujuan' => 'required|array|min:1',
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
+            'manager_user_id' => 'required|exists:users,id',
             'pembuat'=>'required|string|max:255',
             'catatan'=>'nullable|string|max:255',
             'tgl_dibuat' => 'required|date',
@@ -291,13 +318,11 @@ class MemoController extends Controller
             return back()->with('error', 'Nomor seri tidak ditemukan.');
         }
         
-        
-
         // Simpan dokumen
         $memo = Memo::create([
             'divisi_id_divisi' => $request->input('divisi_id_divisi'),
             'judul' => $request->input('judul'),
-            'tujuan' => $request->input('tujuan'),
+            'tujuan' => implode('; ', $request->tujuan),
             'isi_memo' => $request->input('isi_memo'),
             'nomor_memo' => $request->input('nomor_memo'),
             'tgl_dibuat' => $request->input('tgl_dibuat'),
@@ -323,7 +348,34 @@ class MemoController extends Controller
             }
         }
     
+        $creator = Auth::user();
+            
+
+        $managers = User::where('id', $request->manager_user_id)
+                        ->get();
+
+        $sentCount = 0;
+        
+        foreach ($managers as $manager) {
+            
+            $kirim = Kirim_document::create([
+                'id_document' => $memo->id_memo,
+                'jenis_document' => 'memo',
+                'id_pengirim' => $creator->id,
+                'id_penerima' => $manager->id,
+                'status' => 'pending',
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        
+            if ($kirim) {
+                $sentCount++;
+            }
+        }
+        
+
         return redirect()->route('memo.'. Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dibuat.');
+
     }
 
     private function convertToRoman($number) {
@@ -340,6 +392,8 @@ class MemoController extends Controller
             $memo->update(['status' => 'approve']);
         } elseif ($recipients->contains(fn($recipient) => $recipient->status === 'reject')) {
             $memo->update(['status' => 'reject']);
+        } elseif ($recipients->contains(fn($recipient) => $recipient->status === 'correction')) {
+            $memo->update(['status' => 'correction']);
         } else {
             $memo->update(['status' => 'pending']);
         }
@@ -357,10 +411,17 @@ class MemoController extends Controller
         $userId = Auth::id();
 
         // Validasi input
-        $request->validate([
-            'status' => 'required|in:approve,reject,pending',
-            'catatan' => 'nullable|string',
-        ]);
+        if ($request->status == 'approve') {
+            $request->validate([
+                'status' => 'required|in:approve,reject,pending,correction',
+                'catatan' => 'nullable|string',
+            ]);
+        } else {
+            $request->validate([
+                'status' => 'required|in:approve,reject,pending,correction',
+                'catatan' => 'required|string',
+            ]);
+        }
         
         
         if ($userDivisiId == $memo->divisi_id_divisi) {
@@ -382,7 +443,38 @@ class MemoController extends Controller
                 $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
                 $qrImage = QrCode::format('svg')->generate($qrText);
                 $qrBase64 = base64_encode($qrImage);
-                $memo->qr_approved_by = $qrBase64;  
+                $memo->qr_approved_by = $qrBase64;
+
+                // Kirim otomatis ke tujuan jika status approve
+                $tujuanDivisiIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
+                
+            foreach ($tujuanDivisiIds as $divisiId) {
+                $divisiId = trim($divisiId);
+
+                // Lewati jika sama dengan divisi pengirim
+                if ($divisiId == Auth::user()->divisi_id_divisi) {
+                    continue;
+                }
+               // SETELAH DI APPROVE MANAGER DIVISI SENDIRI, LANGSUNG KIRIM KE SEMUA USER DI DIVISI TUJUAN DENGAN STATUS APPROVE
+                // Ambil semua user di divisi terkait
+                $penerima = \App\Models\User::where('divisi_id_divisi', $divisiId)
+                    ->get();
+            
+                foreach ($penerima as $penerima) {
+                    if (Auth::user()->position_id_position  )
+                    \App\Models\Kirim_Document::create([
+                        'id_document' => $memo->id_memo,
+                        'jenis_document' => 'memo',
+                        'id_pengirim' => $currentKirim->id_pengirim,
+                        'id_penerima' => $penerima->id,
+                        'status' => 'approve',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+
+
 
                 Notifikasi::create([
                     'judul' => "Memo Disetujui",
@@ -394,6 +486,13 @@ class MemoController extends Controller
                 $memo->tgl_disahkan = now();
                 Notifikasi::create([
                     'judul' => "Memo Ditolak",
+                    'judul_document' => $memo->judul,
+                    'id_divisi' => $memo->divisi_id_divisi,
+                    'updated_at' => now()
+                ]);
+            } elseif ($request->status == 'correction') {
+                Notifikasi::create([
+                    'judul' => "Memo Perlu Revisi",
                     'judul_document' => $memo->judul,
                     'id_divisi' => $memo->divisi_id_divisi,
                     'updated_at' => now()
@@ -439,6 +538,24 @@ class MemoController extends Controller
                             'id_divisi' => $memo->divisi_id_divisi,
                             'updated_at' => now()
                         ]);
+
+                        $adminDivisiId = Auth::user()->divisi_id_divisi;
+
+                        $admins = \App\Models\User::where('divisi_id_divisi', $adminDivisiId)
+                            ->where('position_id_position', 1)
+                            ->get();
+
+                        foreach ($admins as $admin) {
+                            \App\Models\Kirim_Document::create([
+                                'id_document' => $memo->id_memo,
+                                'jenis_document' => 'memo',
+                                'id_pengirim' => $currentKirim->id_pengirim,
+                                'id_penerima' => $admin->id,
+                                'status' => 'approve',
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]);
+                        }
                         
                     }
                 
@@ -481,13 +598,12 @@ class MemoController extends Controller
      public function update(Request $request, $id)
      {
         $memo = Memo::findOrFail($id);
-        // dd($request->all());    
 
 
         $request->validate([
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
-            'tujuan' => 'required|string|max:255',
+            'tujuan' => 'required|array|min:1',
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
             'tgl_dibuat' => 'required|date',
@@ -503,10 +619,10 @@ class MemoController extends Controller
             $memo->isi_memo = $request->isi_memo;
         }
         if ($request->filled('tujuan')) {
-            $memo->tujuan = $request->tujuan;
+            $memo->tujuan = implode(';', $request->tujuan);
         }
         if ($request->filled('nomor_memo')) {
-            $memo->nomor_memo = $request->nomor_memo;
+            $memo->nomor_memo = $request->nomor_memo    ;
         }
         if ($request->filled('nama_bertandatangan')) {
             $memo->nama_bertandatangan = $request->nama_bertandatangan;
@@ -527,8 +643,14 @@ class MemoController extends Controller
             $file = $request->file('lampiran');
             $memo->lampiran = file_get_contents($file->getRealPath());
         }
-        
+
+        $memo->status = 'pending'; // Set status ke pending saat update
         $memo->save();
+
+        // Update status pada kirim_document juga jika ada
+        \App\Models\Kirim_Document::where('id_document', $memo->id_memo)
+            ->where('jenis_document', 'memo')
+            ->update(['status' => 'pending', 'updated_at' => now()]);
 
         if ($request->has('kategori_barang')) {
             foreach ($request->kategori_barang as $dataBarang) {
@@ -689,8 +811,8 @@ class MemoController extends Controller
             ->whereHas('memo')
             ->with('memo') // Pastikan ada relasi 'memo' di model Kirim_Document
             ->firstOrFail();
-
-        return view('manager.memo.view-memoDiterima', compact('memo'));
+        $memo2 = Memo::where('id_memo', $id)->firstOrFail();
+        return view('manager.memo.view-memoDiterima', compact('memo', 'memo2'));
     }
     public function view($id)
     {

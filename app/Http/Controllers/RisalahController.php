@@ -182,7 +182,9 @@ class RisalahController extends Controller
         $divisiName = auth()->user()->divisi->nm_divisi;
         $undangan = Undangan::whereNotIn('judul', function($query) {
                         $query->select('judul')->from('risalah');
-                    })->get();
+                    })
+                    ->where('divisi_id_divisi', $divisiId)
+                    ->get();
 
         $risalah = new Risalah(); // atau ambil dari data risalah terakhir, terserah kebutuhanmu
         
@@ -201,7 +203,9 @@ class RisalahController extends Controller
             $bulanRomawi,
             now()->year
         );
-    
+        
+        $divisi = Divisi::all();
+
         $managers = User::where('divisi_id_divisi', $divisiId)
             ->where('position_id_position', '2')
             ->get(['id', 'firstname', 'lastname']);
@@ -211,14 +215,20 @@ class RisalahController extends Controller
             'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
             'nomorDokumen' => $nomorDokumen,
             'managers' => $managers,
-            'undangan' => $undangan
+            'undangan' => $undangan,
+            'divisi' => $divisi
         ]);  
     }
     
     public function store(Request $request)
-{
-    //dd($request->all());
-
+    {
+    // dd($request->all());
+    if($request->jenis_risalah=="baru"){
+        $judul = $request->judul_baru;
+    } elseif ($request->jenis_risalah=="undangan"){
+        $judul = $request->judul_undangan;
+        // $tujuan = NULL;
+    }
     $request->validate([
         'tgl_dibuat' => 'required|date',
         'seri_surat' => 'required|string',
@@ -227,7 +237,9 @@ class RisalahController extends Controller
         'tempat' => 'required|string',
         'waktu_mulai' => 'required|string',
         'waktu_selesai' => 'required|string',
-        'judul' => 'required|string',
+        'judul' => $judul,
+        'tujuan' => 'required_if:jenis_risalah,baru|array|min:1',
+        'tujuan.*' => 'exists:divisi,id_divisi',
         'divisi_id_divisi' => 'required|integer|exists:divisi,id_divisi', 
         'nama_bertandatangan' => 'required|string',
         'pembuat'=>'required|string',
@@ -239,6 +251,7 @@ class RisalahController extends Controller
         'pic' => 'nullable|array',
         'lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
     ],[
+        'tujuan.required' => 'Minimal satu divisi tujuan harus dipilih.',
         'lampiran.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
         'lampiran.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
     ]);
@@ -249,16 +262,32 @@ class RisalahController extends Controller
         $filePath = base64_encode(file_get_contents($file->getRealPath()));
     }
 
-        $divisiId = auth()->user()->divisi_id_divisi;
-        $seri = Seri::getNextSeri(true);
-        $seri = Seri::where('divisi_id_divisi', $divisiId)
-                ->where('tahun', now()->year)
-                ->latest()
-                ->first();
+    $divisiId = auth()->user()->divisi_id_divisi;
+    $seri = Seri::getNextSeri(true);
+    $seri = Seri::where('divisi_id_divisi', $divisiId)
+            ->where('tahun', now()->year)
+            ->latest()
+            ->first();
 
-        if (!$seri) {
-            return back()->with('error', 'Nomor seri tidak ditemukan.');
-        }
+    if (!$seri) {
+        return back()->with('error', 'Nomor seri tidak ditemukan.');
+    }
+    
+    // Ambil array ID divisi tujuan dari form (checkbox tujuan[])
+    $tujuanArray = $request->input('tujuan'); // contoh: [2,3]
+
+    // Default NULL
+    $tujuanString = null;
+    $namaDivisiString = null;
+
+    if (!empty($tujuanArray)) {
+        // Jika ada isinya
+        $tujuanString = implode(';', $tujuanArray);
+
+        // Ambil nama divisi tujuan (IT, SDM, dst) dan simpan sebagai string
+        $namaDivisiArray = \App\Models\Divisi::whereIn('id_divisi', $tujuanArray)->pluck('nm_divisi')->toArray();
+        $namaDivisiString = implode('; ', $namaDivisiArray);
+    }
 
     // Simpan risalah utama
     $risalah = Risalah::create([
@@ -271,7 +300,8 @@ class RisalahController extends Controller
         'waktu_mulai' => $request->waktu_mulai,
         'waktu_selesai' => $request->waktu_selesai,
         'status' => 'pending',
-        'judul' => $request->judul,
+        'judul' => $judul,
+        'tujuan' => $namaDivisiString,
         'pembuat' => $request->pembuat,
         'lampiran' => $filePath,
         'nama_bertandatangan' => $request->nama_bertandatangan,
@@ -292,6 +322,32 @@ class RisalahController extends Controller
     }
 }
 
+    // Kirim otomatis ke semua MANAGER dari divisi pembuat (bukan ke tujuan)
+    $divisiPembuatId = Auth::user()->divisi_id_divisi;
+
+    $penerima = \App\Models\User::whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$request->nama_bertandatangan])->first();
+
+    if (!$penerima) {
+        return back()->withErrors(['nama_bertandatangan' => 'Nama penerima tidak ditemukan.']);
+    }
+
+    $sudahDikirim = \App\Models\Kirim_Document::where('id_document', $risalah->id_risalah)
+        ->where('jenis_document', 'risalah')
+        ->where('id_pengirim', Auth::id())
+        ->where('id_penerima', $penerima->id)
+        ->exists();
+
+    if (!$sudahDikirim) {
+        \App\Models\Kirim_Document::firstOrCreate([
+            'id_document' => $risalah->id_risalah,
+            'jenis_document' => 'risalah',
+            'id_pengirim' => Auth::id(),
+            'id_penerima' => $penerima->id,
+        ], [
+            'status' => 'pending'
+        ]);
+    }
+    
 
     return redirect()->route('risalah.'.Auth::user()->role->nm_role)->with('success', 'Risalah berhasil ditambahkan');
 }
@@ -338,26 +394,40 @@ public function edit($id)
     $divisi = Divisi::all();
     $seri = Seri::all(); 
     $risalah = Risalah::with('risalahDetails')->findOrFail($id);
-    
+    $divisiId = auth()->user()->divisi_id_divisi;
+    $divisiName = auth()->user()->divisi->nm_divisi;
+    $undangan = Undangan::whereNotIn('judul', function($query) {
+                        $query->select('judul')->from('risalah');
+                    })
+                    ->where('divisi_id_divisi', $divisiId)
+                    ->get();
 
     // Ambil daftar manajer berdasarkan divisi yang sama
     $managers = User::where('divisi_id_divisi', $risalah->divisi_id_divisi)
         ->where('position_id_position', '2')
         ->get(['id', 'firstname', 'lastname']);
 
-    return view(Auth::user()->role->nm_role.'.risalah.edit-risalah', compact('risalah', 'divisi', 'seri', 'managers'));
+    return view(Auth::user()->role->nm_role.'.risalah.edit-risalah', compact('risalah', 'divisi', 'seri', 'managers', 'undangan'));
 }
     
 public function update(Request $request, $id)
     {
+        // dd($request->all());
+        if($request->jenis_risalah=="baru"){
+            $judul = $request->judul_baru;
+        } elseif ($request->jenis_risalah=="undangan"){
+            $judul = $request->judul_undangan;
+            // $tujuan = NULL;
+        }
         // Validasi data
         $request->validate([
-            'judul' => 'required',
+            'judul' => $judul,
+            'tujuan' => 'required_if:jenis_risalah,baru|array|min:1',
+            'tujuan.*' => 'exists:divisi,id_divisi',
             'agenda' => 'required',
             'tempat' => 'required',
             'waktu_mulai' => 'required',
             'waktu_selesai' => 'required',
-            'nama_bertandatangan' => 'required',
             'nomor.*' => 'required',
             'topik.*' => 'required',
             'pembahasan.*' => 'required',
@@ -366,18 +436,43 @@ public function update(Request $request, $id)
             'pic.*' => 'required',
         ]);
 
+        // Ambil array ID divisi tujuan dari form (checkbox tujuan[])
+        $tujuanArray = $request->input('tujuan'); // contoh: [2,3]
+
+        // Default NULL
+        $tujuanString = null;
+        $namaDivisiString = null;
+
+        if (!empty($tujuanArray)) {
+            // Jika ada isinya
+            $tujuanString = implode(';', $tujuanArray);
+
+            // Ambil nama divisi tujuan (IT, SDM, dst) dan simpan sebagai string
+            $namaDivisiArray = \App\Models\Divisi::whereIn('id_divisi', $tujuanArray)->pluck('nm_divisi')->toArray();
+            $namaDivisiString = implode('; ', $namaDivisiArray);
+        }
+
         // Update data risalah utama
         $risalah = Risalah::findOrFail($id);
         $risalah->update([
             'tgl_dibuat' => $request->tgl_dibuat,
-            'judul' => $request->judul,
+            'judul' => $judul,
+            'tujuan' => $namaDivisiString,
             'agenda' => $request->agenda,
             'tempat' => $request->tempat,
             'waktu_mulai' => $request->waktu_mulai,
             'waktu_selesai' => $request->waktu_selesai,
-            'nama_bertandatangan' => $request->nama_bertandatangan,
-            // tambahan lainnya sesuai kebutuhan
+            'status' => 'pending',
         ]);
+
+        $statusKirimDokumen = Kirim_Document::where('id_document', $risalah->id_risalah)
+                    ->where('jenis_document', 'risalah')
+                    ->first();
+        
+        if ($statusKirimDokumen) {
+            $statusKirimDokumen->status = 'pending';
+            $statusKirimDokumen->save();
+        }
 
         // Hapus data risalahDetails lama jika ada
         if ($request->has('nomor')) {
@@ -459,6 +554,9 @@ public function update(Request $request, $id)
         $userId = Auth::id();
         $risalah = risalah::where('id_risalah', $id)->firstOrFail();
 
+        // Ambil data undangan yang judulnya sama dengan judul risalah
+        $undangan = Undangan::where('judul', $risalah->judul)->first();
+
         $risalahCollection = collect([$risalah]); // Bungkus dalam collection
 
         $risalahCollection->transform(function ($risalah) use ($userId) {
@@ -477,7 +575,7 @@ public function update(Request $request, $id)
         // Karena hanya satu memo, kita bisa mengambil dari collection lagi
         $risalah = $risalahCollection->first();
 
-        return view(Auth::user()->role->nm_role.'.risalah.view-risalah', compact('risalah'));
+        return view(Auth::user()->role->nm_role.'.risalah.view-risalah', compact('risalah', 'undangan'));
     }
 
     public function updateStatus(Request $request, $id)
@@ -486,11 +584,16 @@ public function update(Request $request, $id)
         $userDivisiId = Auth::user()->divisi_id_divisi;
         $userId = Auth::id();
 
-        // Validasi input
-        $request->validate([
-            'status' => 'required|in:approve,reject,pending',
-            'catatan' => 'nullable|string',
-        ]);
+        $rules = [
+            'status' => 'required|in:pending,approve,reject,correction',
+        ];
+
+        // Jika status reject atau correction, catatan wajib diisi
+        if (in_array($request->status, ['reject', 'correction'])) {
+            $rules['catatan'] = 'required|string';
+        }
+
+        $validated = $request->validate($rules);
         
         if ($userDivisiId == $risalah->divisi_id_divisi) {
         // Update status
@@ -514,6 +617,40 @@ public function update(Request $request, $id)
                 $qrImage = QrCode::format('svg')->generate($qrText);
                 $qrBase64 = base64_encode($qrImage);
                 $risalah->qr_approved_by = $qrBase64;
+                $undangan = Undangan::where('judul', $risalah->judul)->first();
+                
+                if ($undangan) {
+                    $currentUserDivisiId = Auth::user()->divisi_id_divisi;
+                    $currentDivisi = Divisi::where('id_divisi', $currentUserDivisiId)->first();
+                    $tujuanString = $undangan->tujuan; // misalnya: "General Affair; QMSHE;"
+                    $tujuanArray = explode(';', $tujuanString);
+
+                    foreach ($tujuanArray as $namaDivisi) {
+                        $namaDivisi = trim($namaDivisi); // hilangkan spasi di pinggir
+                        if (!$namaDivisi) continue; // skip kalau kosong
+
+                        // cari divisi
+                        $divisi = \App\Models\Divisi::where('nm_divisi', $namaDivisi)->first();
+
+                        if ($divisi) {
+                            if ($currentDivisi->nm_divisi == $divisi->nm_divisi) {
+                                continue; // skip kirim ke divisi user sendiri
+                            }
+                            $users = \App\Models\User::where('divisi_id_divisi', $divisi->id_divisi)->get();
+
+                            foreach ($users as $user) {
+                                \App\Models\Kirim_Document::firstOrCreate([
+                                    'id_document' => $risalah->id_risalah,
+                                    'jenis_document' => 'risalah',
+                                    'id_pengirim' => $currentKirim->id_pengirim,
+                                    'id_penerima' => $user->id,
+                                ], [
+                                    'status' => 'approve'
+                                ]);
+                            }
+                        }
+                    }
+                }
 
                 Notifikasi::create([
                     'judul' => "Risalah Disetujui",
@@ -525,6 +662,14 @@ public function update(Request $request, $id)
                 $risalah->tgl_disahkan = now();
                 Notifikasi::create([
                     'judul' => "Risalah Ditolak",
+                    'judul_document' => $risalah->judul,
+                    'id_divisi' => $risalah->divisi_id_divisi,
+                    'updated_at' => now()
+                ]);
+            } elseif ($request->status == 'correction') {
+                $risalah->tgl_disahkan = now();
+                Notifikasi::create([
+                    'judul' => "Risalah Dikoreksi",
                     'judul_document' => $risalah->judul,
                     'id_divisi' => $risalah->divisi_id_divisi,
                     'updated_at' => now()
@@ -556,7 +701,6 @@ public function update(Request $request, $id)
                 Kirim_document::where('id_document', $id)
                     ->where('jenis_document', 'risalah')
                     ->where('id_penerima', $currentKirim->id_pengirim)
-                    ->where('status', 'pending')
                     ->update([
                         'status' => $request->status,
                         'updated_at' => now()

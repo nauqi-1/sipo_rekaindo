@@ -95,10 +95,10 @@
                         {{ $kirim->memo->judul }}</td>
                     
                     <!-- <td>{{ $kirim->memo->tgl_dibuat }}</td> -->
-                    <td>{{ $kirim->memo->tgl_dibuat ? \Carbon\Carbon::parse($kirim->tgl_dibuat)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $kirim->memo->tgl_dibuat ? \Carbon\Carbon::parse($kirim->memo->tgl_dibuat)->format('d-m-Y') : '-' }}</td>
                     <td>{{ $kirim->memo->seri_surat }}</td>
                     <td>{{ $kirim->memo->nomor_memo }}</td>
-                    <td>{{ $kirim->memo->tgl_disahkan ? \Carbon\Carbon::parse($kirim->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $kirim->memo->tgl_disahkan ? \Carbon\Carbon::parse($kirim->memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
                     <td>{{ $kirim->memo->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
                     <td>
                         
@@ -106,6 +106,8 @@
                                 <span class="badge bg-danger">Ditolak</span>
                             @elseif ($kirim->status == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
+                            @elseif ($kirim->status == 'correction')
+                                <span class="badge bg-danger">Dikoreksi</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
                             @endif

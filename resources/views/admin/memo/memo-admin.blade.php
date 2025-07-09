@@ -36,14 +36,21 @@
         <div class="header-tools">
             <div class="search-filter">
             <form method="GET" action="{{ route('memo.admin') }}" class="search-filter d-flex gap-2">
-                <div class="dropdown">
+                <div class="dropdown d-flex gap-3" style="position:relative; width: 300px;">
                     <select name="status" class="form-select" onchange="this.form.submit()">
                         <option value="">Status</option>
                         <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                        <option value="correction" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi</option>
                         <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                     </select>
+                    <select name="divisi_filter" class="form-select" onchange="this.form.submit()">
+                        <option value="">Semua Memo</option>
+                        <option value="own" {{ request('divisi_filter') == 'own' ? 'selected' : '' }}>Memo Masuk</option>
+                        <option value="other" {{ request('divisi_filter') == 'other' ? 'selected' : '' }}>Memo Keluar</option>
+                    </select>
                 </div>
+                <div class="d-flex align-items-center gap-1">
                 <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                     <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                 </div>
@@ -52,6 +59,7 @@
                     <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
                         class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" placeholder="Tanggal Akhir"
                         onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }" onchange="this.form.submit()">
+                </div>
                 </div>
                 <div class="d-flex gap-2">
                     <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
@@ -102,12 +110,12 @@
                     <td class="nomor">{{ $index + 1 }}</td>
                     @if (Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)
                     <td class="nama-dokumen 
-                        {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ ($memo->status == 'reject' || $memo->status == 'correction') ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $memo->judul }}
                     </td>
                     @elseif(Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
                     <td class="nama-dokumen 
-                        {{ $memo->final_status == 'reject' ? 'text-danger' : ($memo->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ ($memo->final_status == 'reject' || $memo->final_status == 'correction') ? 'text-danger' : ($memo->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $memo->judul }}
                     </td>
                     @endif
@@ -127,7 +135,7 @@
                         @if($kirimDocument)
                             @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $memo->final_status == 'pending')
                                 <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
-                            @elseif($memo->status == 'approve' && $kirimDocument->id_pengirim == Auth::user()->id && $kirimDocument->divisi_penerima != $kirimDocument->divisi_pengirim && $kirimDocument->status == 'pending')
+                            @elseif($memo->status == 'approve' && $kirimDocument->id_pengirim == Auth::user()->id && $kirimDocument->status == 'approve')
                                 <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
                             @else
                                 <p>-</p>
@@ -149,6 +157,8 @@
                                 <span class="badge bg-danger">Ditolak</span>
                             @elseif ($memo->final_status == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
+                            @elseif ($memo->final_status == 'correction')
+                                <span class="badge bg-danger">Dikoreksi</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
                             @endif
@@ -181,12 +191,12 @@
                                         <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                                     </button>
                                 </form>
-                            @else
+                            @elseif ($memo->status == 'pending' || $memo->status == 'correction')
                                 <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
                                     <img src="/img/memo-admin/edit.png" alt="edit">
                                 </a>
                             @endif
-                            @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
+                        @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
                             @if ($memo->final_status == 'approve' || $memo->final_status == 'reject')
                                 <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                                     @csrf
@@ -195,7 +205,7 @@
                                         <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                                     </button>
                                 </form>
-                            @else
+                            @elseif ($memo->final_status == 'pending' || $memo->final_status == 'correction')
                                 <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3 submitArsipMemo">
                                     <img src="/img/memo-admin/edit.png" alt="edit">
                                 </a>

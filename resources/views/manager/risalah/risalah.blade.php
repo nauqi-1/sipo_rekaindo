@@ -100,7 +100,7 @@
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
                     <td class="nama-dokumen 
-                        {{ $risalah->status == 'reject' ? 'text-danger' : ($risalah->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $risalah->status == 'reject' || $risalah->status == 'correction' ? 'text-danger' : ($risalah->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $risalah->risalah->judul }}
                     </td>
                     <td>{{ \Carbon\Carbon::parse($risalah->risalah->tgl_dibuat)->format('d-m-Y') }}</td>
@@ -112,8 +112,9 @@
                     <td>
                         @if ($risalah->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($risalah->status == 'correction')
+                            <span class="badge bg-danger">Dikoreksi</span>
                         @elseif ($risalah->status == 'pending')
-
                             <span class="badge bg-warning">Diproses</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
@@ -121,12 +122,13 @@
                     </td>
                     <td>
                         <a href="{{route ('persetujuan.risalah',['id'=>$risalah->risalah->id_risalah])}}" class="btn btn-sm1">
-                            <img src="/img/undangan/share.png" alt="share">
-                        </a>
-                        <a class="btn btn-sm3" href="{{route ('view.risalah',['id'=>$risalah->risalah->id_risalah])}}">
-
+                            <!-- <img src="/img/undangan/share.png" alt="share"> -->
                             <img src="/img/undangan/viewBlue.png" alt="view">
                         </a>
+                        <!-- <a class="btn btn-sm3" href="{{route ('view.risalah',['id'=>$risalah->risalah->id_risalah])}}">
+
+                            <img src="/img/undangan/viewBlue.png" alt="view">
+                        </a> -->
                     </td>
                 </tr>
                 @endforeach

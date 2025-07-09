@@ -51,13 +51,13 @@
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
-                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $memo->seri_surat }}" required>
+                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $memo->seri_surat }}" readonly>
                     </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="nomor_memo" class="form-label">Nomor Surat</label>
-                        <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $memo->nomor_memo }}" required>
+                        <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $memo->nomor_memo }}" readonly>
                     </div>
                     <div class="col-md-6" >
                         <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
@@ -66,12 +66,37 @@
 
                 </div>
                 <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="tujuan" class="form-label">
-                            <img src="/img/memo-superadmin/kepada.png" alt="tujuan" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" name="tujuan" id="tujuan" class="form-control" value="{{ $memo->tujuan }}" required>
-                    </div>
+                   <div class="col-md-6">
+    <label for="kepada" class="form-label">
+        <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">
+        Kepada <span class="text-danger">*</span>
+        <label for="tujuan" class="label-kepada">Centang lebih dari satu jika diperlukan</label>
+    </label>
+
+    @php
+        $selectedTujuan = is_array(old('tujuan')) ? old('tujuan') : explode(';', $memo->tujuan ?? '');
+    @endphp
+
+    <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+        @foreach($divisi as $d)
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" 
+                    name="tujuan[]" 
+                    value="{{ $d->id_divisi }}" 
+                    id="divisi_{{ $d->id_divisi }}"
+                    {{ in_array($d->id_divisi, $selectedTujuan) ? 'checked' : '' }}>
+                <label class="form-check-label" for="divisi_{{ $d->id_divisi }}">
+                    {{ $d->nm_divisi }}
+                </label>
+            </div>
+        @endforeach
+    </div>
+
+    @error('tujuan')
+        <div class="form-control text-danger">{{ $message }}</div>
+    @enderror
+</div>
+
                     <!-- <div class="col-md-6 lampiran">
                         <label for="upload_file" class="form-label">Lampiran <span class="text-danger">*</span></label>
                         <div class="upload-wrapper">
@@ -80,8 +105,9 @@
                         </div>
                     </div> -->
                     <div class="col-md-6">
-                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                        <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
+                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger"></span></label>
+                        <input type="hidden" name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" value="{{ $memo->nama_bertandatangan }}" required>
+                        <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" disabled>
                         @foreach($managers as $manager)
                             <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}" 
                                 {{ $memo->nama_bertandatangan == ($manager->firstname . ' ' . $manager->lastname) ? 'selected' : '' }}>
