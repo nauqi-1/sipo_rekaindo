@@ -9,12 +9,12 @@
             <div class="back-button">
                 <a href="#"><img src="/img/memo-supervisor/Vector_back.png" alt="back"></a>
             </div>
-            <h1>Memo Terkirim</h1>
+            <h1>Memo Keluar</h1>
         </div>        
         <div class="row">
         <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
                 <div class="breadcrumb" style="gap: 5px; width: 83%;">
-                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Memo Terkirim</a>
+                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Memo Keluar</a>
                 </div>
                 <form method="GET" action="{{ route('memo.terkirim', Auth::user()->id) }}" class="d-flex gap-2">
                 <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">

@@ -36,6 +36,7 @@ class MemoController extends Controller
          if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'created_at'; // fallback default
         }
+        
 
         // Query memo dengan filter
         $query = Memo::with('divisi')
@@ -113,8 +114,7 @@ class MemoController extends Controller
          
 
         // Pagination
-        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
-        $memos = $query->paginate($perPage);
+        
         // **Tambahkan status penerima untuk setiap memo**
         $memos->getCollection()->transform(function ($memo) use ($userId) {
             if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
