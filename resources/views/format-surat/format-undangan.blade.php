@@ -339,7 +339,7 @@
                             <td>Pukul</td>
                             <td style="text-align: center;">:</td>
                             <td>
-                                {{ $undangan->waktu_mulai }} WIB s.d {{ $undangan->waktu_selesai ?? 'selesai'  }} WIB
+                                {{ $undangan->waktu_mulai }} WIB s.d {{ $undangan->waktu_selesai ?? 'selesai'  }} 
                             </td>
                         </tr>
                         <tr>

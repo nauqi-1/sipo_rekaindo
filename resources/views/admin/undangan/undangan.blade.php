@@ -41,6 +41,7 @@
                     <option value="">Status</option>
                     <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                     <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                    <option value="correction" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi</option>
                     <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                 </select>
             </div>

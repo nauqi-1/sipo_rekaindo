@@ -36,14 +36,15 @@
             <div class="header-tools">
                 <div class="search-filter">
                 <form method="GET" action="{{ route('undangan.manager', Auth::user()->id) }}" class="d-flex align-items-center gap-3 flex-wrap w-100">
-                    <!-- <div class="dropdown">
+                     <div class="dropdown">
                         <select name="status" class="form-select" onchange="this.form.submit()">
                             <option value="">Status</option>
                             <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                             <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                            <option value="correction" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi</option>
                             <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                         </select>
-                    </div> -->
+                    </div>
                     <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                         <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                     </div>
