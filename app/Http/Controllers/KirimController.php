@@ -182,9 +182,10 @@ class KirimController extends Controller
                 $query->where('divisi_id_divisi', $divisiId);
                       
             })
-            ->whereHas('memo', function ($query) use ($request) {
-                $query->where('memo.status', '!=', 'pending');
-    
+            ->whereHas('memo', function ($query) use ($request, $divisiId) {
+                $query->where('memo.status', '!=', 'pending')
+                    ->where('memo.divisi_id_divisi', $divisiId);
+
                 if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
                     $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
                 } elseif ($request->filled('tgl_dibuat_awal')) {
@@ -244,14 +245,22 @@ class KirimController extends Controller
         ->where('id_penerima', $userId)
         ->whereIn('kirim_document.status',  ['pending','approve'])
         ->whereHas('memo', function ($query) use ($request, $divisiId) {
-            $query->where(function ($q) use ($divisiId) {
-                // Show if same divisi
-                $q->where('divisi_id_divisi', $divisiId);
-            })->orWhere(function ($q) use ($divisiId) {
-                // Show if different divisi but approved
-                $q->where('divisi_id_divisi', '!=', $divisiId)
-                  ->where('kirim_document.status', 'approve');
-            });
+            if ($request->filled('divisi_filter')) {
+        if ($request->divisi_filter === 'own') {
+            $query->where('divisi_id_divisi', $divisiId);
+        } elseif ($request->divisi_filter === 'other') {
+            $query->where('divisi_id_divisi', '!=', $divisiId)
+                  ->where('status', 'approve'); // only approved from other divisions
+        }
+    } else {
+        // Default: show same division OR approved from other division
+        $query->where(function ($q) use ($divisiId) {
+            $q->where('divisi_id_divisi', $divisiId);
+        })->orWhere(function ($q) use ($divisiId) {
+            $q->where('divisi_id_divisi', '!=', $divisiId)
+              ->where('status', 'approve');
+        });
+    }
 
             // Additional filters
             if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
@@ -268,6 +277,8 @@ class KirimController extends Controller
                         ->orWhere('nomor_memo', 'like', '%' . $request->search . '%');
                 });
             }
+
+            
         });
 
         
