@@ -77,21 +77,25 @@
                         <div class="separator"></div>
                         
                             @if($undangan->divisi->id_divisi != Auth::user()->divisi->id_divisi)
-                            @if ($undangan->final_status == 'reject')
-                                <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($undangan->final_status  == 'pending')
-                                <span class="badge bg-warning">Diproses</span>
-                            @else
-                                <span class="badge bg-success">Diterima</span>
-                            @endif
+                            @if ($undangan->status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($undangan->status == 'pending')
+                            <span class="badge bg-warning">Diproses</span>
+                        @elseif ($undangan->status == 'correction')
+                            <span class="badge bg-danger">Dikoreksi</span>
+                        @else 
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
                         @else
                             @if ($undangan->status == 'reject')
-                                <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($undangan->status  == 'pending')
-                                <span class="badge bg-warning">Diproses</span>
-                            @else
-                                <span class="badge bg-success">Diterima</span>
-                            @endif
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($undangan->status == 'pending')
+                            <span class="badge bg-warning">Diproses</span>
+                        @elseif ($undangan->status == 'correction')
+                            <span class="badge bg-danger">Dikoreksi</span>
+                        @else 
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
                         @endif
                     </div>                    
                     <div class="card-white">
