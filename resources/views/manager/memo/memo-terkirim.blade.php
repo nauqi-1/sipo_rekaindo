@@ -1,6 +1,6 @@
 @extends('layouts.manager')
 
-@section('title', 'Memo Terkirim')
+@section('title', 'Memo Keluar')
 
 @section('content')
     <div class="container">
