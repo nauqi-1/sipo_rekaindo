@@ -176,7 +176,10 @@ class KirimController extends Controller
     }
 
         $memoTerkirim = Kirim_Document::where('jenis_document', 'memo')
-            ->where('id_penerima', $userId)
+            ->where(function ($query) use ($userId) {
+                $query->where('id_pengirim', $userId)
+                      ->orWhere('id_penerima', $userId);
+            })
             ->where('kirim_document.status', '!=', 'pending')
             ->whereHas('penerima', function ($query) use ($divisiId) {
                 $query->where('divisi_id_divisi', $divisiId);
@@ -217,7 +220,7 @@ class KirimController extends Controller
 
         $perPage = $request->get('per_page', 10);
         $memoTerkirim = $memoTerkirim->paginate($perPage);
-
+        
         return view('manager.memo.memo-terkirim', compact('memoTerkirim', 'sortBy', 'sortDirection'));
     }
 
@@ -255,7 +258,9 @@ class KirimController extends Controller
     } else {
         // Default: show same division OR approved from other division
         $query->where(function ($q) use ($divisiId) {
-            $q->where('divisi_id_divisi', $divisiId);
+            $q->where('divisi_id_divisi', $divisiId)
+              ->where('status', 'pending')
+              ;
         })->orWhere(function ($q) use ($divisiId) {
             $q->where('divisi_id_divisi', '!=', $divisiId)
               ->where('status', 'approve');

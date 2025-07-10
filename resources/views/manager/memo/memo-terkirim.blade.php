@@ -60,6 +60,7 @@
                         </div>
                     </div>
                     </form>
+                    <a href="{{route ('memo-admin/add')}}" class="btn btn-add">+ <span>Tambah Memo</span></a>
                 </div>
             </div>
         </div>
