@@ -18,12 +18,12 @@
             <div class="back-button">
                 <a href="{{route ('memo.terkirim')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Memo Terkirim</h1>
+            <h1>Memo Keluar</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="{{route ('memo.terkirim')}}">Memo Terkirim</a>/<a href="#" style="color: #565656;">Detail Memo</a>
+                    <a href="#">Beranda</a>/<a href="{{route ('memo.terkirim')}}">Memo Keluar</a>/<a href="#" style="color: #565656;">Detail Memo</a>
                 </div>
             </div>
         </div>

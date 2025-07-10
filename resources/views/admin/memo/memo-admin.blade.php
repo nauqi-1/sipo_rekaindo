@@ -168,9 +168,9 @@
                     <td>
                         @if (Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)
                             @if($memo->final_status == 'pending' || $memo->final_status == 'approve' )
-                            <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
+                            <!--<a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
                                 <img src="/img/memo-admin/share.png" alt="share">
-                            </a>
+                            </a>-->
                             @endif
                         @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
                             @if($memo->final_status == 'pending' )
