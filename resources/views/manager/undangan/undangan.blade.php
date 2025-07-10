@@ -61,6 +61,8 @@
                         </div>
                     </div>
                 </form>
+                <!-- Add User Button to Open Modal -->
+            <a href="{{route ('undangan-admin/add')}}" class="btn btn-add">+ <span>Tambah Undangan Rapat</span></a>
                 </div>
             </div>
         </div>

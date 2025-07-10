@@ -197,13 +197,13 @@
     <script>
         $(document).ready(function() {
             $('#summernote').summernote({
-                height: 300,
+                height: 200,
                 toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'fontsize', 'color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
+                // ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'color']],
+                // ['para', ['ul', 'ol', 'paragraph']],
+                // ['insert', ['link', 'picture', 'video']],
+                // ['view', ['fullscreen', 'codeview', 'help']],
                 ],
                 fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']
