@@ -90,7 +90,7 @@
                                 </div>
                             @endforeach
                         </div>
-                        <!-- <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" value="{{ old('tujuan') }}" > -->
+                        
                         @error('tujuan[]')
                             <div class="form-control text-danger">{{ $message }}</div>       
                         @enderror
@@ -121,15 +121,20 @@
                     <div class="mb-3 row">
                         <!--TTD yang bertanda tangan-->
                     <div class="col-md-6">
-                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                        <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" >
-                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
+                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan </label>
+                    <select name="manager_user_id" required id="managerDropdown" class="form-control" disabled>
+                            <option value="">-- Pilih Penandatangan --</option>
                             @foreach($managers as $manager)
-                                <option value="{{  $manager->id  }}">
-                                    {{ $manager->firstname . ' ' . $manager->lastname }}
+                                <option value="{{ $manager->id }}" {{ $manager->id == Auth::id() ? 'selected' : '' }}>
+                                    {{ $manager->firstname }} {{ $manager->lastname }}
                                 </option>
                             @endforeach
                         </select>
+
+                        <input type="hidden" name="manager_user_id" id="managerUserId" class="form-control" value="{{ Auth::user()->id }}">
+
+                        <input type="hidden" name="nama_bertandatangan" id="namaBertandatangan" class="form-control" value="{{ Auth::user()->firstname }} {{ Auth::user()->lastname}}">
+
                         @error('nama_bertandatangan')
                             <div class="form-control text-danger">{{ $message }}</div>
                         @enderror
@@ -149,6 +154,11 @@
                         </div> 
                     </div>
                     
+                </div>
+                <div class="row mb-4">
+                    
+                    
+                    <div class="col-md-6 lampiran"></div>   
                 </div>
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
@@ -183,7 +193,7 @@
             </div> --}}
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.superadmin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save">Ajukan</button>
+                <button type="submit" class="btn btn-save">Kirim</button>
             </div>
         </div>
         </form>
@@ -196,7 +206,7 @@
                         <img src="/img/memo-admin/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
                         <!-- Success Message -->
                         <h5 class="modal-title"><b>Sukses</b></h5>
-                        <p class="mt-2">Menunggu Approval dari Manager</p>
+                        <p class="mt-2">Undangan Telah Terkirim</p>
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('undangan.admin')}}" style="color: white; text-decoration: none">Kembali ke Halaman Undangan</a></button>
                     </div>
                 </div>
@@ -416,13 +426,13 @@
 
                 $(document).ready(function() {
             $('#summernote').summernote({
-                height: 200,
+                height: 300,
                 toolbar: [
-                // ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'color']],
-                // ['para', ['ul', 'ol', 'paragraph']],
-                // ['insert', ['link', 'picture', 'video']],
-                // ['view', ['fullscreen', 'codeview', 'help']],
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'fontsize', 'color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']],
                 ],
                 fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']

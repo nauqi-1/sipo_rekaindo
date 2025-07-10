@@ -103,12 +103,6 @@
                         <input type="text" id="tgl" value="{{$undangan->tgl_dibuat->translatedFormat('d F Y')}}" readonly>
                     </div>
                     <div class="card-white">
-                        <label for="lampiran">Lampiran</label>
-
-                        <div class="separator"></div>
-                        <input type="text" id="kepada" value="{{ is_array($undangan->tujuan) ? implode('; ', $undangan->tujuan) : (string) $undangan->tujuan }}">
-                    </div>
-                    <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
                         <button class="btn-file" onclick="window.location.href='{{ route('view-undanganPDF', $undangan->id_undangan) }}'"><img src="/img/mata.png" alt="view">Lihat</button>
