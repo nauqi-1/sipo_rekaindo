@@ -30,7 +30,7 @@
         </div>
 
         <!-- form edit undangan -->
-        <form method="POST" action="{{ route('undangan/update', $undangan->id_undangan) }}">
+        <form method="POST" action="{{ route('undangan/update', $undangan->id_undangan) }}" onsubmit="console.log('FORM DIKIRIM'); return true;">
         @csrf
         @method('PUT')
         <div class="card">
@@ -40,7 +40,7 @@
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="tgl_surat" class="form-label">
+                        <label for="tgl_dibuat" class="form-label">
                             <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                         </label>
                         <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ $undangan->tgl_dibuat->format('Y-m-d') }}" required>
@@ -56,37 +56,99 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="nomor_undangan" class="form-label">Nomor Surat</label>
-                        <input type="text" name="nomor_undangan" id="nomor_undangan" class="form-control" value="{{ $undangan->nomor_undangan }}" required>
+                        <input type="text" name="nomor_undangan" id="nomor_undangan" class="form-control" value="{{ $undangan->nomor_undangan }}" required readonly>
                     </div>
                     <div class="col-md-6" >
                         <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
                         <input type="text" name="judul" id="judul" class="form-control" value="{{ $undangan->judul }}" required>
                     </div>
                 </div>
+                <!--Checkboxes kepada (tujuan)-->
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <label for="kepada" class="form-label">
+                        <label class="form-label">
                             <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                            <label for="tujuan" class="label-kepada">*Pisahkan dengan titik koma(;) jika penerima lebih dari satu</label>
                         </label>
-                        <input type="text" name="tujuan" id="tujuan" class="form-control" value="{{ $undangan->tujuan }}" required>
-                    </div>
+                        @php
+                            $selectedTujuan = old('tujuan') ?? $undangan->tujuan ?? [];
+                        @endphp
+
+                        <span class="label-kepada" style="font-size: 13px; color: #888; margin-bottom: 4px; display: block;">Centang lebih dari satu jika diperlukan</span>
+                        <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+                            @foreach($divisi as $d)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                        name="tujuan[]" 
+                                        value="{{ $d->id_divisi }}" 
+                                        id="divisi_{{ $d->id_divisi }}"
+                                        {{ in_array($d->id_divisi, $selectedTujuan) ? 'checked' : '' }}>
+                                        {{-- {{ is_array($undangan->tujuan) && in_array($d->id_divisi, $undangan->tujuan) ? 'checked' : '' }}> --}}
+                                    <label class="form-check-label" for="divisi_{{ $d->id_divisi }}">
+                                        {{ $d->nm_divisi }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                      
+                        @error('tujuan')
+                            <div class="form-control text-danger">{{ $message }}</div>
+                        @enderror
+                                   
+                </div>
+                <!-- Tanggal Rapat -->
                     <div class="col-md-6">
-                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                        <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
+                        <label for="tgl_rapat" class="form-label">
+                            <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Rapat <span class="text-danger">*</span>
+                        </label>
+                        <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"  
+                            value="{{ old('tgl_rapat', optional($undangan->tgl_rapat)->format('Y-m-d')) }}" required>
+                        @error('tgl_rapat')
+                            <div class="form-control text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Tempat Rapat -->
+                    <div class="mb-3 row">
+                        <div class="col-md-6">
+                            <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
+                            <input type="text" name="tempat" id="tempat" class="form-control" 
+                                value="{{ old('tempat', $undangan->tempat) }}" placeholder="Ruang Rapat" required>
+                        </div>
+
+                        <!-- Waktu Rapat -->
+                        <div class="col-md-6">
+                            <label for="waktu" class="form-label">Waktu Rapat</label> <span class="text-danger">*</span>
+                            <div class="d-flex align-items-center">
+                                <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2" 
+                                    value="{{ old('waktu_mulai', $undangan->waktu_mulai) }}" placeholder="Waktu Mulai" required>
+                                <span class="fw-bold">s/d</span>
+                                <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2" 
+                                    value="{{ old('waktu_selesai', $undangan->waktu_selesai) }}" placeholder="Waktu Selesai" required>
+                            </div>
+                        </div>
+                    </div>
+                <div class="col-md-6">
+                    <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
+                     {{-- Hidden input untuk memastikan data terkirim --}}
+                    <input type="hidden" name="nama_bertandatangan" value="{{ $undangan->nama_bertandatangan }}">
+                    <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" disabled>
                         @foreach($managers as $manager)
-                            <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}" 
-                                {{ $undangan->nama_bertandatangan == ($manager->firstname . ' ' . $manager->lastname) ? 'selected' : '' }}>
+                            <option value="{{ $manager->firstname . ' ' . $manager->lastname }}" 
+                                {{ old('nama_bertandatangan', $undangan->nama_bertandatangan) == ($manager->firstname . ' ' . $manager->lastname) ? 'selected' : '' }}>
                                 {{ $manager->firstname . ' ' . $manager->lastname }}
                             </option>
                         @endforeach
-                        </select>
-                    </div>
+                    </select>
+                    @error('nama_bertandatangan')
+                        <div class="form-control text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
+            </div>
+                 
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
                         <img src="\img\undangan\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                        <label for="isi_undangan">Isi Surat <span class="text-danger">*</span></label>
+                        <label for="summernote">Agenda <span class="text-danger">*</span></label>
                     </div>
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_undangan">{{ $undangan->isi_undangan }}</textarea>
@@ -121,7 +183,7 @@
                             <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
                             <p class="upload-note">Ukuran file PDF tidak lebih dari 20MB</p>
                             <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
-                            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                            <input type="file" id="fileInput" name="fileInput" accept=".pdf" style="display: none;">
                         </div>
                     </div>
                 </div>

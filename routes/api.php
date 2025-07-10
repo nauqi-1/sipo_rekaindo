@@ -119,7 +119,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     });
 
-Route::prefix('auth')->group(function () {
+    Route::prefix('auth')->group(function () {
         Route::post('/forgot-password', [ForgotPwApiController::class, 'sendVerificationCode']);
         Route::post('/verify-code', [ForgotPwApiController::class, 'verifyCode']);
         Route::post('/reset-password', [ForgotPwApiController::class, 'resetPassword']);

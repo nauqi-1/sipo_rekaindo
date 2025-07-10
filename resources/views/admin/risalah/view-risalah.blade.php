@@ -60,8 +60,8 @@
                         <div class="separator"></div>
                         <input type="text"
                             id="kepada"
-                            value="{{ str_replace(';', ', ', $risalah->tujuan ? $risalah->tujuan : $undangan->tujuan) }}"
-                            title="{{ str_replace(';', ', ', $risalah->tujuan ? $risalah->tujuan : $undangan->tujuan) }}"
+                            value="{{ str_replace(';', ', ', $undangan->tujuan) }}"
+                            title="{{ str_replace(';', ', ', $undangan->tujuan) }}"
                             readonly>
                     </div>
                 </div>
