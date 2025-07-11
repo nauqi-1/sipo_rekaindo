@@ -46,8 +46,8 @@
                     </select>
                     <select name="divisi_filter" class="form-select" onchange="this.form.submit()">
                         <option value="">Semua Memo</option>
-                        <option value="own" {{ request('divisi_filter') == 'own' ? 'selected' : '' }}>Memo Masuk</option>
-                        <option value="other" {{ request('divisi_filter') == 'other' ? 'selected' : '' }}>Memo Keluar</option>
+                        <option value="own" {{ request('divisi_filter') == 'own' ? 'selected' : '' }}>Memo Keluar</option>
+                        <option value="other" {{ request('divisi_filter') == 'other' ? 'selected' : '' }}>Memo Masuk</option>
                     </select>
                 </div>
                 <div class="d-flex align-items-center gap-1">
@@ -168,9 +168,9 @@
                     <td>
                         @if (Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)
                             @if($memo->final_status == 'pending' || $memo->final_status == 'approve' )
-                            <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
+                            <!--<a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
                                 <img src="/img/memo-admin/share.png" alt="share">
-                            </a>
+                            </a>-->
                             @endif
                         @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
                             @if($memo->final_status == 'pending' )
@@ -223,7 +223,7 @@
             @endforeach
         </tbody>
     </table>
-    {{ $memos->links('pagination::bootstrap-5') }}
+    {{ $memos->appends(request()->query())->links('pagination::bootstrap-5') }}
 </div>
 
 <!-- Overlay Add Memo Success -->

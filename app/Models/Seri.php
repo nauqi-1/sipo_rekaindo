@@ -25,8 +25,12 @@ class Seri extends Model
         $memoCount = DB::table('memo')
             ->where('divisi_id_divisi', $divisiId)
             ->count();
+        // Cek apakah ada undangan untuk divisi ini
+        $undanganCount = DB::table('undangan')
+            ->where('divisi_id_divisi', $divisiId)
+            ->count();
 
-        if ($memoCount === 0) {
+        if ($memoCount === 0 && $undanganCount === 0) {
             // Jika tidak ada memo, reset seri bulanan dan tahunan ke 1
             $seriBulanan = 1;
             $seriTahunan = 1;

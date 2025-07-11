@@ -103,33 +103,30 @@
         /* ---- Mulai Perubahan Penting untuk Tabel Detail Undangan ---- */
         .fill table {
             border-collapse: collapse;
-            width: 100%; /* Tabel akan mengambil 100% lebar container .fill */
-            table-layout: fixed; /* KUNCI UTAMA: Lebar kolom akan dihitung berdasarkan width yang diberikan */
-            background-color: white; /* Warna tabel jadi putih */
-            margin-left: 20px; /* Indentasi agar mirip contoh */
+            width: 100%; 
+            table-layout: fixed; 
+            background-color: white; 
+            margin-left: 20px; 
         }
-        .fill table td { /* Menghilangkan border dan mengatur padding/text-align untuk semua sel */
-            border: none; /* Hapus border */
-            text-align: left; /* Teks rata kiri */
-            padding: 0; /* Hapus padding default sel */
-            vertical-align: top; /* Pastikan teks di kolom rata atas jika ada multi-baris */
+        .fill table td { 
+            border: none; 
+            text-align: left;
+            padding: 0; 
+            vertical-align: top; 
         }
         
-        .fill table tr td:first-child { /* Kolom pertama (label: Hari/ Tanggal, Pukul, dll.) */
-            width: 15%; /* Atur lebar ini sesuai kebutuhan agar tidak terlalu lebar */
-            /* Anda bisa pakai '120px' jika ingin lebar tetap dalam piksel */
-            /* min-width: 100px; */ /* Tambahkan min-width jika perlu */
+        .fill table tr td:first-child {
+            width: 15%;
+            
         }
-        .fill table tr td:nth-child(2) { /* Kolom kedua (titik dua) */
-            width: 3%; /* Sangat sempit, hanya untuk titik dua */
-            text-align: center; /* Titik dua di tengah kolomnya */
+        .fill table tr td:nth-child(2) {
+            width: 3%; 
+            text-align: center; 
         }
-        .fill table tr td:nth-child(3) { /* Kolom ketiga (nilai: Jumat / 11 Juli 2025, dll.) */
-            width: 82%; /* Sisa ruang (100% - 15% - 3% = 82%). Ini akan menjadi kolom terlebar */
-            /* Atau gunakan width: auto; agar dia mengambil sisa ruang setelah dua kolom pertama fixed */
-            /* Lebih baik pakai persentase jika sudah fixed table-layout */
+        .fill table tr td:nth-child(3) { 
+            width: 82%; 
         }
-        /* ---- Akhir Perubahan Penting untuk Tabel Detail Undangan ---- */
+       
 
         .contents {
             text-align: justify;
@@ -269,8 +266,7 @@
         .header2 table td {
             line-height: 1.5; 
         }
-        /* Hapus atau nonaktifkan CSS .undangan-container dan .undangan-detail karena sekarang pakai tabel */
-        /* .undangan-container, .undangan-detail, .undangan-detail .row, .undangan-detail .label, .detail-separator, .detail-value { display: none; } */
+        
     </style>
 </head>
 <body class="{{ isset($isPdf) && $isPdf ? 'pdf-mode' : 'view-mode' }}">
@@ -332,14 +328,14 @@
                         table-layout: fixed; 
                     ">
                         <tr>
-                            <td style="width: 15%;">Hari, Tanggal</td> <td style="width: 3%; text-align: center;">:</td> <td style="width: 82%;">
-                                {{ \Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l , d F Y') }}
+                            <td style="width: 15%;">Hari/Tanggal</td> <td style="width: 3%; text-align: center;">:</td> <td style="width: 82%;">
+                                {{ \Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l / d F Y') }}
                             </td> </tr>
                         <tr>
                             <td>Pukul</td>
                             <td style="text-align: center;">:</td>
                             <td>
-                                {{ $undangan->waktu_mulai }} WIB s.d {{ $undangan->waktu_selesai ?? 'selesai'  }} WIB
+                                {{ $undangan->waktu_mulai }} s.d {{ $undangan->waktu_selesai ?? 'selesai'  }} 
                             </td>
                         </tr>
                         <tr>

@@ -50,11 +50,11 @@
                         <input type="hidden" name="pembuat" value="{{ auth()->user()->firstname . auth()->user()->lastname }}">
                     </div>
                     <div class="col-md-6">
-                        <label for="seri_surat" class="form-label">Seri Surat</label>
-                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan }}"  readonly>
-                        <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
-                        <input type="hidden" name="catatan" >
-                    </div>
+                    <label for="seri_surat" class="form-label">Seri Surat</label>
+                    <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan ?? '' }}" readonly>
+                    <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
+                    <input type="hidden" name="pembuat" value="{{ auth()->user()->firstname .' '. auth()->user()->lastname }}">
+                </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-6">
@@ -78,7 +78,7 @@
                             <label for="tujuan" class="label-kepada">Centang lebih dari satu jika diperlukan</label>
                         </label>
                         <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
-                            @foreach($divisi as $d)
+                            @foreach($divisiList as $d)
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" 
                                         name="tujuan[]" 
@@ -112,9 +112,9 @@
                         <div class="col-md-6">
                             <label for="waktu" class="form-label">Waktu Rapat</label> <span class="text-danger">*</span>
                             <div class="d-flex align-items-center">
-                                <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2" placeholder="Waktu Mulai" required>
+                                <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2" placeholder="09.00" required>
                                 <span class="fw-bold">s/d</span>
-                                <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2" placeholder="Waktu Selesai" required>
+                                <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2" placeholder="Selesai" required>
                             </div>
                         </div>
                     </div>
@@ -149,11 +149,6 @@
                         </div> 
                     </div>
                     
-                </div>
-                <div class="row mb-4">
-                    
-                    
-                    <div class="col-md-6 lampiran"></div>   
                 </div>
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
@@ -421,13 +416,13 @@
 
                 $(document).ready(function() {
             $('#summernote').summernote({
-                height: 300,
+                height: 200,
                 toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'fontsize', 'color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
+                // ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'color']],
+                // ['para', ['ul', 'ol', 'paragraph']],
+                // ['insert', ['link', 'picture', 'video']],
+                // ['view', ['fullscreen', 'codeview', 'help']],
                 ],
                 fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']

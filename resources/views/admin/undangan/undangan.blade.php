@@ -41,8 +41,16 @@
                     <option value="">Status</option>
                     <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                     <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                    <option value="correction" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi</option>
                     <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                 </select>
+            </div>
+            <div class="dropdown" style="gap: 5px; position: relative; width: 180px;">
+            <select name="divisi_filter" class="form-select" onchange="this.form.submit()">
+                        <option value="">Semua Undangan</option>
+                        <option value="own" {{ request('divisi_filter') == 'own' ? 'selected' : '' }}>Undangan Keluar</option>
+                        <option value="other" {{ request('divisi_filter') == 'other' ? 'selected' : '' }}>Undangan Masuk</option>
+            </select>
             </div>
             <!-- <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                 <input type="date" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}"  onchange="this.form.submit()" placeholder="Tanggal Awal" style="width: 100%;">
@@ -60,7 +68,7 @@
                     onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }" onchange="this.form.submit()">
             </div>
             <div class="d-flex gap-2">
-                <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                <div class="btn btn-search d-flex align-items-center" style="gap: 5px; position: relative; width: 150px;">
                     <img src="/img/undangan/search.png" alt="search" style="width: 20px; height: 20px;">
                     <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                 </div>

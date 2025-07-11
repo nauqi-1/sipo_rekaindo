@@ -245,6 +245,8 @@ Route::get('/superadmin/undangan', [UndanganController::class, 'superadmin'])->n
 Route::get('/superadmin/risalah', [RisalahController::class, 'superadmin'])->name('risalah.superadmin');
 Route::get('/memo-admin',[MemoController::class, 'index'])->name('memo.admin');
 Route::get('/admin/undangan', [UndanganController::class, 'index'])->name('undangan.admin');
+
+Route::get('/manager/undangan', [UndanganController::class, 'index'])->name('undangan.manager');
 Route::get('/risalah/Admin', [RisalahController::class, 'index'])->name('risalah.admin');
 Route::get('/manager/undangan', [KirimController::class, 'undangan'])->name('undangan.manager');
 Route::get('/manager/risalah', [KirimController::class, 'risalah'])->name('risalah.manager');

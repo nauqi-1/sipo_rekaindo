@@ -36,7 +36,7 @@
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="card-blue">
-                        <label for="tgl_surat" class="form-label">No Agenda</label>
+                        <label for="tgl_surat" class="form-label">No Seri Surat</label>
                     </div>
                     <div class="card-white">
                         <label for="seri">No Seri</label>
@@ -69,7 +69,7 @@
                         @endif
                     </div>
                     <div class="card-white">
-                        <label for="tanggal">Tanggal</label>
+                        <label for="tanggal">Tanggal Pengesahan</label>
                         <div class="separator"></div>
                         <input type="text" id="tanggal" value="{{$undangan->tgl_disahkan ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-'  }}" readonly>
                     </div>
@@ -88,7 +88,7 @@
                         <input type="text" id="nomor" value="{{$undangan->nomor_undangan }}" readonly>
                     </div>
                     <div class="card-white">
-                        <label for="divisi">Divisi</label>
+                        <label for="divisi">Pengirim</label>
                         <div class="separator"></div>
                         <input type="text" id="divisi" value="{{$undangan->divisi->nm_divisi }}" readonly>
                     </div>
@@ -98,15 +98,9 @@
                         <input type="text" id="perihal" value="{{$undangan->judul }}" readonly> 
                     </div>
                     <div class="card-white">
-                        <label for="tgl">Tanggal Surat</label>
+                        <label for="tgl_rapat">Hari, tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{$undangan->tgl_dibuat->translatedFormat('d F Y')}}" readonly>
-                    </div>
-                    <div class="card-white">
-                        <label for="lampiran">Lampiran</label>
-
-                        <div class="separator"></div>
-                        <input type="text" id="kepada" value="{{ is_array($undangan->tujuan) ? implode('; ', $undangan->tujuan) : (string) $undangan->tujuan }}">
+                        <input type="text" id="tgl_rapat" value="{{\Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l ,d F Y')}}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="file">File</label>

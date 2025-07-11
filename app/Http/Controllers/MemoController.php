@@ -43,9 +43,9 @@ class MemoController extends Controller
 
         // Filter by divisi (own/other/both) if requested
         // Advanced filter: 3 types
-        // 1. both: own division memos + memos from other divisions sent to own division
-        // 2. own: only memos made by own division
-        // 3. received: only memos from other divisions sent to own division
+        // 1. both: memo divisi sendiri dan divisi lain
+        // 2. own: memo divisi sendiri saja
+        // 3. received: memo divisi lain saja
         $filterType = $request->get('divisi_filter', 'both');
         if ($filterType === 'own') {
             // Only memos made by own division
@@ -225,6 +225,7 @@ class MemoController extends Controller
             return $memo;
         });
 
+        
         return view('admin.view-memo', compact('memo'));
     }
 
@@ -268,7 +269,6 @@ class MemoController extends Controller
     }
     public function store(Request $request)
     {   
-        
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
@@ -356,7 +356,8 @@ class MemoController extends Controller
 
         $sentCount = 0;
         
-        foreach ($managers as $manager) {
+        if ($creator->role_id_role == 2)
+        {foreach ($managers as $manager) {
             
             $kirim = Kirim_document::create([
                 'id_document' => $memo->id_memo,
@@ -371,11 +372,52 @@ class MemoController extends Controller
             if ($kirim) {
                 $sentCount++;
             }
+        }}
+
+        elseif ($creator->role_id_role == 3) {
+
+            $kirim = Kirim_document::create([
+                'id_document' => $memo->id_memo,
+                'jenis_document' => 'memo',
+                'id_pengirim' => $creator->id,
+                'id_penerima' => $creator->id,
+                'status' => 'approve',
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            $memo->status = 'approve';
+            $memo->tgl_disahkan = now();
+            $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
+            $qrImage = QrCode::format('svg')->generate($qrText);
+            $qrBase64 = base64_encode($qrImage);
+            $memo->qr_approved_by = $qrBase64;
+            $memo->save();
+
+        $tujuanDivisiIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
+        foreach ($tujuanDivisiIds as $divisiId) {
+            $divisiId = trim($divisiId);
+            if ($divisiId == $creator->divisi_id_divisi) continue;
+            $recipients = User::where('divisi_id_divisi', $divisiId)->get();
+            foreach ($recipients as $recipient) {
+                Kirim_document::create([
+                    'id_document' => $memo->id_memo,
+                    'jenis_document' => 'memo',
+                    'id_pengirim' => $creator->id,
+                    'id_penerima' => $recipient->id,
+                    'status' => 'approve',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
+    }
         
-
+    if (Auth::user()->position_id_position == 1) {
         return redirect()->route('memo.'. Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dibuat.');
-
+    } else {
+        return redirect()->route('memo.terkirim')->with('success', 'Dokumen berhasil dibuat.');
+    }
     }
 
     private function convertToRoman($number) {
@@ -806,8 +848,7 @@ class MemoController extends Controller
 
         $memo = Kirim_Document::where('jenis_document', 'memo')
             ->where('id_penerima', $userId)
-             ->where('id_document', $id)
-            ->Where('status', 'pending') // Status di tabel kirim_document
+            ->where('id_document', $id)
             ->whereHas('memo')
             ->with('memo') // Pastikan ada relasi 'memo' di model Kirim_Document
             ->firstOrFail();

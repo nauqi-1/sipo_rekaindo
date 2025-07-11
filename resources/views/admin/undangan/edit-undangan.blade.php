@@ -93,10 +93,40 @@
                         @error('tujuan')
                             <div class="form-control text-danger">{{ $message }}</div>
                         @enderror
-                    
-
-                    
+                                   
                 </div>
+                <!-- Tanggal Rapat -->
+                    <div class="col-md-6">
+                        <label for="tgl_rapat" class="form-label">
+                            <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Rapat <span class="text-danger">*</span>
+                        </label>
+                        <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"  
+                            value="{{ old('tgl_rapat', optional($undangan->tgl_rapat)->format('Y-m-d')) }}" required>
+                        @error('tgl_rapat')
+                            <div class="form-control text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Tempat Rapat -->
+                    <div class="mb-3 row">
+                        <div class="col-md-6">
+                            <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
+                            <input type="text" name="tempat" id="tempat" class="form-control" 
+                                value="{{ old('tempat', $undangan->tempat) }}" placeholder="Ruang Rapat" required>
+                        </div>
+
+                        <!-- Waktu Rapat -->
+                        <div class="col-md-6">
+                            <label for="waktu" class="form-label">Waktu Rapat</label> <span class="text-danger">*</span>
+                            <div class="d-flex align-items-center">
+                                <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2" 
+                                    value="{{ old('waktu_mulai', $undangan->waktu_mulai) }}" placeholder="Waktu Mulai" required>
+                                <span class="fw-bold">s/d</span>
+                                <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2" 
+                                    value="{{ old('waktu_selesai', $undangan->waktu_selesai) }}" placeholder="Waktu Selesai" required>
+                            </div>
+                        </div>
+                    </div>
                 <div class="col-md-6">
                     <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
                      {{-- Hidden input untuk memastikan data terkirim --}}
@@ -118,7 +148,7 @@
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
                         <img src="\img\undangan\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                        <label for="summernote">Isi Surat <span class="text-danger">*</span></label>
+                        <label for="summernote">Agenda <span class="text-danger">*</span></label>
                     </div>
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_undangan">{{ $undangan->isi_undangan }}</textarea>
@@ -167,13 +197,13 @@
     <script>
         $(document).ready(function() {
             $('#summernote').summernote({
-                height: 300,
+                height: 200,
                 toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'fontsize', 'color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
+                // ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'color']],
+                // ['para', ['ul', 'ol', 'paragraph']],
+                // ['insert', ['link', 'picture', 'video']],
+                // ['view', ['fullscreen', 'codeview', 'help']],
                 ],
                 fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']

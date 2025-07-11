@@ -159,7 +159,7 @@ class KirimController extends Controller
         $userId = auth()->id();
         $divisiId = auth()->user()->divisi_id_divisi;
         $sortBy = $request->get('sort_by', 'kirim_document.id_kirim_document');
-        $sortDirection = $request->get('sort_direction', 'asc');
+        $sortDirection = $request->get('sort_direction', 'desc');
 
 
 
@@ -176,15 +176,19 @@ class KirimController extends Controller
     }
 
         $memoTerkirim = Kirim_Document::where('jenis_document', 'memo')
-            ->where('id_penerima', $userId)
+            ->where(function ($query) use ($userId) {
+                $query->where('id_pengirim', $userId)
+                      ->orWhere('id_penerima', $userId);
+            })
             ->where('kirim_document.status', '!=', 'pending')
             ->whereHas('penerima', function ($query) use ($divisiId) {
                 $query->where('divisi_id_divisi', $divisiId);
                       
             })
-            ->whereHas('memo', function ($query) use ($request) {
-                $query->where('memo.status', '!=', 'pending');
-    
+            ->whereHas('memo', function ($query) use ($request, $divisiId) {
+                $query->where('memo.status', '!=', 'pending')
+                    ->where('memo.divisi_id_divisi', $divisiId);
+
                 if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
                     $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
                 } elseif ($request->filled('tgl_dibuat_awal')) {
@@ -216,7 +220,7 @@ class KirimController extends Controller
 
         $perPage = $request->get('per_page', 10);
         $memoTerkirim = $memoTerkirim->paginate($perPage);
-
+        
         return view('manager.memo.memo-terkirim', compact('memoTerkirim', 'sortBy', 'sortDirection'));
     }
 
@@ -226,7 +230,7 @@ class KirimController extends Controller
         $divisiId = auth()->user()->divisi_id_divisi;
         session(['previous_url' => url()->previous()]);
         $sortBy = $request->get('sort_by', 'kirim_document.id_kirim_document');
-        $sortDirection = $request->get('sort_direction', 'asc');
+        $sortDirection = $request->get('sort_direction', 'desc');
 
         $allowedSorts = [
             'kirim_document.id_kirim_document',
@@ -244,14 +248,24 @@ class KirimController extends Controller
         ->where('id_penerima', $userId)
         ->whereIn('kirim_document.status',  ['pending','approve'])
         ->whereHas('memo', function ($query) use ($request, $divisiId) {
-            $query->where(function ($q) use ($divisiId) {
-                // Show if same divisi
-                $q->where('divisi_id_divisi', $divisiId);
-            })->orWhere(function ($q) use ($divisiId) {
-                // Show if different divisi but approved
-                $q->where('divisi_id_divisi', '!=', $divisiId)
-                  ->where('kirim_document.status', 'approve');
-            });
+            if ($request->filled('divisi_filter')) {
+        if ($request->divisi_filter === 'own') {
+            $query->where('divisi_id_divisi', $divisiId);
+        } elseif ($request->divisi_filter === 'other') {
+            $query->where('divisi_id_divisi', '!=', $divisiId)
+                  ->where('status', 'approve'); // only approved from other divisions
+        }
+    } else {
+        // Default: show same division OR approved from other division
+        $query->where(function ($q) use ($divisiId) {
+            $q->where('divisi_id_divisi', $divisiId)
+              ->where('status', 'pending')
+              ;
+        })->orWhere(function ($q) use ($divisiId) {
+            $q->where('divisi_id_divisi', '!=', $divisiId)
+              ->where('status', 'approve');
+        });
+    }
 
             // Additional filters
             if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
@@ -268,6 +282,8 @@ class KirimController extends Controller
                         ->orWhere('nomor_memo', 'like', '%' . $request->search . '%');
                 });
             }
+
+            
         });
 
         

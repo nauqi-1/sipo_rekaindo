@@ -120,7 +120,7 @@
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl"value="{{  \Carbon\Carbon::parse($memo->memo->tgl_dibuat)->format('d-m-Y')  }}">
+                        <input type="text" id="tgl"value="{{  \Carbon\Carbon::parse($memo->memo->tgl_dibuat)->translatedFormat('d F Y')  }}"> 
                     </div>
                     <div class="card-white">
                         <label for="file">File</label>

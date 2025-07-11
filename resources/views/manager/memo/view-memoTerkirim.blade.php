@@ -18,12 +18,12 @@
             <div class="back-button">
                 <a href="{{route ('memo.terkirim')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Memo Terkirim</h1>
+            <h1>Memo Keluar</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="{{route ('memo.terkirim')}}">Memo Terkirim</a>/<a href="#" style="color: #565656;">Detail Memo</a>
+                    <a href="#">Beranda</a>/<a href="{{route ('memo.terkirim')}}">Memo Keluar</a>/<a href="#" style="color: #565656;">Detail Memo</a>
                 </div>
             </div>
         </div>
@@ -53,18 +53,7 @@
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{ $memo->memo->tgl_dibuat }}" readonly>
-                    </div>
-                    <div class="card-white">
-                        <label for="lampiran">Lampiran</label>
-                        <div class="separator"></div>
-                        <input type="text" id="kepada" value="{{ $memo->memo->tujuan }}" readonly>
-                    </div>
-                    <div class="card-white">
-                        <label for="file">File</label>
-                        <div class="separator"></div>
-                        <button class="btn-file" onclick="window.location.href='{{ route('view-memoPDF', $memo->memo->id_memo) }}'"><img src="/img/mata.png" alt="view">Lihat</button>
-                        
+                        <input type="text" id="tgl" value="{{ $memo->memo->tgl_dibuat->translatedFormat('d F Y') }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="status">Status</label>
@@ -81,6 +70,11 @@
                         @endif
                         
                     </div>
+                    <div class="card-white">
+                        <label for="file">File</label>
+                        <div class="separator"></div>
+                        <button class="btn-file"  onclick="window.location.href='{{ route('view-memoPDF', $memo->memo->id_memo) }}'"><img src="/img/mata.png" alt="view">Lihat</button>
+                    </div>
                 </div>
             </div>
             <div class="row mb-4" style="gap: 20px;">
@@ -90,16 +84,24 @@
                     </label>
                 </div>
                 <div class="col">
+                     @php
+                        use App\Models\Divisi;
+                    
+                        $divisiIds = explode(';', $memo->memo->tujuan); 
+                        $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi')->toArray();
+                    @endphp
                     <div class="card-white">
                         <label for="file">Penerima</label>
                         <div class="separator"></div>
-                        <input type="text" id="penerima" readonly>                  
+                        <input type="text" id="penerima" value="{{ implode(', ', $divisiNames) }}" readonly>                  
                     </div>
+                    @if ($memo->memo->catatan !== null)
                     <div class="card-white">
                         <label for="file">Catatan</label>
                         <div class="separator"></div>
                         <input type="text-area" id="catatan" value="{{ $memo->memo->catatan }}" readonly>                   
                     </div>
+                    @endif
                 </div>             
             </div>
         </div>

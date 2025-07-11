@@ -16,7 +16,7 @@
     <div class="header">
         <!-- Back Button -->
         <div class="back-button">
-            <a href="{{route ('memo.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+            <a href="{{route ('memo.terkirim')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
         </div>
         <h1>Tambah Memo</h1>
     </div>        
@@ -96,16 +96,18 @@
 
                 <div class="col-md-6">
                     <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                   <select name="manager_user_id" required id="managerDropdown" class="form-control">
+                   <select name="manager_user_id" required id="managerDropdown" class="form-control" disabled>
                         <option value="">-- Pilih Penandatangan --</option>
                         @foreach($managers as $manager)
-                            <option value="{{ $manager->id }}">
+                            <option value="{{ $manager->id }}" {{ $manager->id == Auth::id() ? 'selected' : '' }}>
                                 {{ $manager->firstname }} {{ $manager->lastname }}
                             </option>
                         @endforeach
                     </select>
 
-                    <input type="hidden" name="nama_bertandatangan" id="namaBertandatangan">
+                    <input type="hidden" name="manager_user_id" id="managerUserId" class="form-control" value="{{ Auth::user()->id }}">
+
+                    <input type="hidden" name="nama_bertandatangan" id="namaBertandatangan" class="form-control" value="{{ Auth::user()->firstname }} {{ Auth::user()->lastname}}">
 
                     @error('nama_bertandatangan')
                         <div class="form-control text-danger">{{ $message }}</div>
@@ -504,8 +506,8 @@ document.getElementById('managerDropdown').addEventListener('change', function (
                 //['style', ['style']],
                 ['font', ['bold', 'italic', 'underline', 'clear',]],
                 ['para', ['ul', 'ol', 'paragraph']],
-                //['insert', ['link', 'picture', 'video']],
-                //['view', ['fullscreen', 'codeview', 'help']],
+               // ['insert', ['link', 'picture', 'video']],
+               // ['view', ['fullscreen', 'codeview', 'help']],
                 ],
                 fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']

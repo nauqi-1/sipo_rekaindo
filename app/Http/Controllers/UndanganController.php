@@ -184,13 +184,13 @@ public function index(Request $request)
    
     public function create()
     {
-
-        $divisiId = auth()->user()->divisi_id_divisi;
-        $divisiName = auth()->user()->divisi->nm_divisi;
-        $divisi = Divisi::all();
-
+    $divisiId = Auth::user()->divisi_id_divisi;
+    $divisiName = Auth::user()->divisi->nm_divisi;
+    $divisiList = Divisi::all(); 
+    
     // Ambil nomor seri berikutnya
     $nextSeri = Seri::getNextSeri(false);
+    
 
     // Konversi bulan ke angka Romawi
     $bulanRomawi = $this->convertToRoman(now()->month);
@@ -209,16 +209,18 @@ public function index(Request $request)
         ->where('position_id_position', '2')
         ->get(['id', 'firstname', 'lastname']);
 
+       
+
     return view(Auth::user()->role->nm_role.'.undangan.add-undangan', [
         'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
         'nomorDokumen' => $nomorDokumen,
         'managers' => $managers,
-        'divisi' => $divisi
+        'divisiList' => $divisiList
     ]);  
     }
     public function store(Request $request)
 {
-        // dd($request->all());
+        //dd($request->all());
     // Ubah validasi tujuan jadi array
     $validator = Validator::make($request->all(), [
         'judul' => 'required|string|max:70',
@@ -257,33 +259,33 @@ public function index(Request $request)
         $fileData = base64_encode(file_get_contents($file->getRealPath()));
         $filePath = $fileData;
     }
+    //SIMPAN NOMER SERI
+        $divisiId = Auth::user()->divisi_id_divisi;
+        $seri = Seri::getNextSeri(true);
+        $seri = Seri::where('divisi_id_divisi', $divisiId)
+                ->where('tahun', now()->year)
+                ->latest()
+                ->first();
+        
+            if (!$seri) {
+                return back()->with('error', 'Nomor seri tidak ditemukan.');
+            }
 
         //PROSES AMBIL ID DAN NAMA DIVISI TUJUAN UNDANGAN (KEPADA)
-        // Ambil array ID divisi tujuan dari form (checkbox tujuan[])
-
-        $tujuanArray = $request->input('tujuan'); // contoh: [2,3]
-        // Simpan sebagai string "2;3" jika ingin
-        $tujuanString = implode(';', $tujuanArray);
+        
+        $tujuanArray = $request->input('tujuan'); // contoh: [2,3] // Ambil array ID divisi tujuan dari form (checkbox tujuan[])
+        $tujuanString = implode(';', $tujuanArray); // Simpan sebagai string "2;3" jika ingin
         // Ambil nama divisi tujuan (IT, SDM, dst) dan simpan sebagai string
         $namaDivisiArray = \App\Models\Divisi::whereIn('id_divisi', $tujuanArray)->pluck('nm_divisi')->toArray();
         $namaDivisiString = implode('; ', $namaDivisiArray);
         
         // PROSES UNTUK Simpan undangan KE DATABASE
-        // Ambil user manager yang dipilih
-        $manager = User::findOrFail($request->input('nama_bertandatangan'));
-
-        // IF ELSE
-        if($manager->id == Auth::id()) {
-            // Jika pengirim adalah manager yang sama, set status approve
-            
-
-        } else {
-            $status = 'pending'; // Status pending jika bukan pengirim
-        }
+        $manager = User::findOrFail($request->input('nama_bertandatangan'));// Ambil user manager yang dipilih
+        //dd($request->all());
         $undangan = Undangan::create([
             'divisi_id_divisi' => Auth::user()->divisi_id_divisi,
             'judul' => $request->input('judul'),
-            'tujuan' => $namaDivisiString,
+            'tujuan' => $tujuanString,
             'isi_undangan' => $request->input('isi_undangan'),
             'nomor_undangan' => $request->input('nomor_undangan'),
             'tgl_dibuat' => $request->input('tgl_dibuat'),
@@ -300,57 +302,78 @@ public function index(Request $request)
             'nama_bertandatangan' => $manager->firstname . ' ' . $manager->lastname,
             'lampiran' => $filePath,
         ]);
+        
+        //PROSES PENGIRIMAN DOKUMEN
+        
+                    if (Auth::user()->role_id_role == 3) { // Manager 
 
-        // Kirim approval ke manager yang dipilih saja
-        $sudahDikirim = \App\Models\Kirim_Document::where('id_document', $undangan->id_undangan)
-            ->where('jenis_document', 'undangan')
-            ->where('id_pengirim', Auth::id())
-            ->where('id_penerima', $manager->id)
-            ->exists();
+                            // PROSES TTD OLEH MANAGER
+                            $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
+                            $qrImage = QrCode::format('svg')->generate($qrText);
+                            $qrBase64 = base64_encode($qrImage);
+                            
+                            $undangan->qr_approved_by = $qrBase64;
+                            $undangan->status = 'approve';
+                            $undangan->tgl_disahkan = now(); 
+                            $undangan->save();
 
-        if (!$sudahDikirim) {
-            //ID_PENGIRIM 
-            if(@Auth::user()->id == $manager->id) {
-                // Jika pengirim adalah manager yang sama, set status approve
-                // Kirim dokumen ke semua user di divisi tujuan (kecuali pengirim sendiri)
-                    $namaDivisiArray = array_map('trim', explode(';', $undangan->tujuan));
-                    $divisiIds = \App\Models\Divisi::whereIn('nm_divisi', $namaDivisiArray)->pluck('id_divisi');
-                    $userTujuan = \App\Models\User::whereIn('divisi_id_divisi', $divisiIds)
-                        ->where('id', '!=', Auth::id())
-                        ->get();
-                    foreach ($userTujuan as $user) {
-                        $sudahDikirim = Kirim_Document::where('id_document', $undangan->id_undangan)
-                            ->where('jenis_document', 'undangan')
-                            ->where('id_pengirim', Auth::id())
-                            ->where('id_penerima', $user->id)
-                            ->exists();
-                        if (!$sudahDikirim) {
-                            //ID_PENGIRIM
+                            $tujuanString = is_array($undangan->tujuan) ? $undangan->tujuan : explode(';', $undangan->tujuan);
+                                foreach ($tujuanString as $divisiId) {
+                                $divisiId = trim($divisiId);
+                                if ($divisiId == Auth::user()->divisi_id_divisi) continue;
+                                $userTujuan = User::where('divisi_id_divisi', $divisiId)->get();
+
+                            // Kirim ke semua user divisi tujuan kecuali pengirim sendiri
+                            // $namaDivisiArray = array_map('trim', explode(';', $undangan->tujuan));
+                            // $divisiIds = \App\Models\Divisi::whereIn('nm_divisi', $namaDivisiArray)->pluck('id_divisi');
+                            // $userTujuan = \App\Models\User::whereIn('divisi_id_divisi', $divisiIds)
+                            //     ->where('id', '!=', Auth::id())
+                            //     ->get();
+                            
+                            foreach ($userTujuan as $user) {
+                                $sudahDikirim = Kirim_Document::where([
+                                    ['id_document', $undangan->id_undangan],
+                                    ['jenis_document', 'undangan'],
+                                    ['id_pengirim', Auth::user()->id],
+                                    ['id_penerima', $user->id],
+                                    ['status', 'approve'],
+                                    ['updated_at', now()] // Cek apakah sudah dikirim dalam 5 menit terakhir
+                                ])->exists();
+
+                                if (!$sudahDikirim) {
+                                    Kirim_Document::create([
+                                        'id_document' => $undangan->id_undangan,
+                                        'jenis_document' => 'undangan',
+                                        'id_pengirim' => Auth::user()->id,
+                                        'id_penerima' => $user->id,
+                                        'status' => 'approve',
+                                        'created_at' => now(),
+                                        'updated_at' => now(),
+                                    ]);
+                                }
+                            }}
+
+                            // Notifikasi
+                            Notifikasi::create([
+                                'judul' => "Undangan Disetujui",
+                                'judul_document' => $undangan->judul,
+                                'id_divisi' => $undangan->divisi_id_divisi,
+                                'updated_at' => now()
+                            ]);
+
+                        } else {
+                            // Kirim ke manager yang dipilih (approval masih pending)
                             Kirim_Document::create([
                                 'id_document' => $undangan->id_undangan,
                                 'jenis_document' => 'undangan',
-                                'id_pengirim' => Auth::id(),
-                                'id_penerima' => $user->id,
-                                'status' => 'approve',
+                                'id_pengirim' => Auth::user()->id,
+                                'id_penerima' => $manager->id,
+                                'status' => 'pending',
                                 'created_at' => now(),
                                 'updated_at' => now(),
                             ]);
                         }
-                    }
-            } elseif ($manager->id != Auth::id()) {
-                    \App\Models\Kirim_Document::create([
-                    'id_document' => $undangan->id_undangan,
-                    'jenis_document' => 'undangan',
-                    'id_pengirim' => Auth::id(),
-                    'id_penerima' => $manager->id,
-                    'status' => 'pending',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }else{
-                //
-            }
-        }
+
             
 
     return redirect()->route('undangan.' . Auth::user()->role->nm_role)
@@ -435,7 +458,7 @@ public function updateDocumentStatus(Request $request, $id)
                 Kirim_Document::create([
                     'id_document' => $undangan->id_undangan,
                     'jenis_document' => 'undangan',
-                    'id_pengirim' => Auth::id(),
+                    'id_pengirim' => $currentKirim->id_pengirim, // Pengirim yang sudah ada
                     'id_penerima' => $user->id,
                     'status' => 'approve',
                     'created_at' => now(),
@@ -525,6 +548,10 @@ public function updateDocumentStatus(Request $request, $id)
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
             'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
+            'tgl_rapat' => 'required|date',
+            'tempat' => 'required|string',
+            'waktu_mulai' => 'required|string',
+            'waktu_selesai' => 'required|string',
         ]);
         
         
@@ -561,7 +588,18 @@ public function updateDocumentStatus(Request $request, $id)
         if ($request->filled('divisi_id_divisi')) {
             $undangan->divisi_id_divisi = $request->divisi_id_divisi;
         }
-        
+        if ($request->filled('tgl_rapat')) {
+            $undangan->tgl_rapat = $request->tgl_rapat;
+        }
+        if ($request->filled('tempat')) {
+            $undangan->tempat = $request->tempat;
+        }
+        if ($request->filled('waktu_mulai')) {
+            $undangan->waktu_mulai = $request->waktu_mulai;
+        }
+        if ($request->filled('waktu_selesai')) {
+            $undangan->waktu_selesai = $request->waktu_selesai;
+        }
 
         $undangan->save();
         \Log::info('Update undangan berhasil', $undangan->toArray());

@@ -33,8 +33,8 @@
             ><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
           </a>
           <ul class="pc-submenu">
-            <li class="pc-item"><a class="pc-link" href="{{ route('memo.terkirim',Auth::user()->id) }}">Memo Terkirim</a></li>
-            <li class="pc-item pc-hasmenu"><a href="{{ route('memo.diterima',Auth::user()->id) }}" class="pc-link">Memo Diterima</span></a></li>
+            <li class="pc-item"><a class="pc-link" href="{{ route('memo.terkirim',Auth::user()->id) }}">Memo Keluar</a></li>
+            <li class="pc-item pc-hasmenu"><a href="{{ route('memo.diterima',Auth::user()->id) }}" class="pc-link">Memo Masuk</span></a></li>
           </ul>
         </li>
         @endif

@@ -1,6 +1,6 @@
 @extends('layouts.manager')
 
-@section('title', 'Memo Diterima')
+@section('title', 'Memo Masuk')
 
 @section('content')
     <div class="container">
@@ -9,12 +9,12 @@
             <div class="back-button">
                 <a href="#"><img src="/img/memo-supervisor/Vector_back.png" alt="back"></a>
             </div>
-            <h1>Memo Diterima</h1>
+            <h1>Memo Masuk</h1>
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
                 <div class="breadcrumb" style="gap: 5px; width: 83%;">
-                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Memo Diterima</a>
+                    <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Memo Masuk</a>
                 </div>
                 <form method="GET" action="{{ route('memo.diterima', Auth::user()->id) }}" class="d-flex gap-2">
 
@@ -37,7 +37,14 @@
             <div class="header-tools">
                 <div class="search-filter">
                     <form method="GET" action="{{ route('memo.diterima', Auth::user()->id) }}" class="d-flex align-items-center gap-3 flex-wrap">
-                        <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                        <div class="dropdown d-flex gap-3" style="position:relative; width: 300px;">
+                    <select name="divisi_filter" class="form-select" onchange="this.form.submit()">
+                        <option value="">Semua Memo</option>
+                        <option value="own" {{ request('divisi_filter') == 'own' ? 'selected' : '' }}>Memo Keluar</option>
+                        <option value="other" {{ request('divisi_filter') == 'other' ? 'selected' : '' }}>Memo Masuk</option>
+                    </select>
+                </div>
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                             <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                         </div>
                         <i class="bi bi-arrow-right"></i>
@@ -122,6 +129,6 @@
                 @endforeach
             </tbody>
         </table>
-        {{ $memoDiterima->links('pagination::bootstrap-5') }}
+        {{ $memoDiterima->appends(request()->query())->links('pagination::bootstrap-5') }}
     </div>
 @endsection
