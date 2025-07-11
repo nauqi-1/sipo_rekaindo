@@ -45,7 +45,7 @@
                         @error('tgl_dibuat')
                             <div class="form-control text-danger">{{ $message }}</div>
                         @enderror
-                        <input type="hidden" name="tgl_disahkan" >
+                        <input type="hidden" name="tgl_disahkan">
                         <input type="hidden" name="catatan" >
                         <input type="hidden" name="pembuat" value="{{ auth()->user()->firstname . auth()->user()->lastname }}">
                     </div>
@@ -90,8 +90,8 @@
                                 </div>
                             @endforeach
                         </div>
-                        <!-- <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" value="{{ old('tujuan') }}" > -->
-                        @error('tujuan[]')
+                        
+                        @error('tujuan')
                             <div class="form-control text-danger">{{ $message }}</div>       
                         @enderror
                     </div>
@@ -120,7 +120,7 @@
                     </div>
                     <div class="mb-3 row">
                         <!--TTD yang bertanda tangan-->
-                    <div class="col-md-6">
+                            <div class="col-md-6">
                             <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
                             <select name="manager_user_id" required id="managerDropdown" class="form-control" disabled>
                                 <option value="">-- Pilih Penandatangan --</option>
@@ -133,12 +133,12 @@
 
                             <input type="hidden" name="manager_user_id" id="managerUserId" class="form-control" value="{{ Auth::user()->id }}">
 
-                            <input type="hidden" name="nama_bertandatangan" id="namaBertandatangan" class="form-control" value="{{ Auth::user()->firstname }} {{ Auth::user()->lastname}}">
+                            <input type="hidden" name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" value="{{ $manager->id }}">
 
                             @error('nama_bertandatangan')
                                 <div class="form-control text-danger">{{ $message }}</div>
                             @enderror
-                    </div>
+                    </div>                  
                     <div class="col-md-6 lampiran">
                         <label for="lampiran" class="form-label">Lampiran</label>
                         <div class="separator"></div>
