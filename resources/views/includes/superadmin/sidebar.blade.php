@@ -87,6 +87,9 @@
             ><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
           </a>
           <ul class="pc-submenu">
+            @if(Auth::user()->role->nm_role == 'superadmin')
+            <li class="pc-item"><a class="pc-link" href="{{ route('organization.manageOrganization') }}">Manajemen Struktur Organisasi</a></li>
+            @endif
           @if(Auth::user()->role->nm_role == 'superadmin')
             <li class="pc-item"><a class="pc-link" href="{{ route('user.manage') }}">Manajemen Pengguna</a></li>
           @endif

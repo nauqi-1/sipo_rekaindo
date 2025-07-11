@@ -9,6 +9,10 @@ use App\Models\Divisi;
 use App\Models\Position;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Department;
+use App\Models\Unit;
+use App\Models\Director;
+use App\Models\Section;
 
 class UserManageController extends Controller
 {
@@ -43,6 +47,7 @@ class UserManageController extends Controller
         // Kirim data ke view user-manage
         return view('superadmin.user-manage', compact('divisi', 'roles', 'positions', 'users', 'sortOrder'));
     }
+
 
 
     public function store(Request $request)

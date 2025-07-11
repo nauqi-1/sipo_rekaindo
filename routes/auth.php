@@ -8,6 +8,7 @@ use App\Http\Controllers\ArsipController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\BackupRisalahController;
 use App\Http\Controllers\UndanganController;
+use App\Http\Controllers\OrganizationController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,6 +23,9 @@ use Illuminate\Support\Facades\Route;
 
     Route::post('user-manage/add', [RegisteredUserController::class, 'store'])
         ->name('user-manage/add');;
+
+    Route::post('organization-manage/add', [OrganizationController::class, 'store'])
+        ->name('organization-manage/add');;
 
     Route::get('memo-superadmin/add', [MemoController::class, 'create'])
         ->name('memo-superadmin/add');

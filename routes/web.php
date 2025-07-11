@@ -14,6 +14,7 @@ use App\Http\Controllers\ArsipController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PerusahaanController;
+use App\Http\Controllers\OrganizationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/p', function () {
@@ -26,6 +27,9 @@ Route::delete('/user-manage/delete/{id}', [UserController::class, 'destroy'])->n
 Route::put('/user-manage/update/{id}', [UserController::class, 'update'])->name('user-manage/update');
 Route::get('/user-manage/paginate', [UserManageController::class, 'paginateUsers'])->name('user-manage.paginate');
 
+Route::put('/organization/{type}/{id}', [OrganizationController::class, 'update'])->name('organization.update');
+Route::delete('/organization/{type}/{id}', [OrganizationController::class, 'delete'])->name('organization.delete');
+
 Route::get('/role-management', [UserController::class, 'showRole'])->name('user.role');
 
 Route::get('/', function () {
@@ -33,6 +37,7 @@ Route::get('/', function () {
 });
 
 Route::get('/user-manage', [UserManageController::class, 'index'])->name('user.manage');
+Route::get('/organization-manage', [OrganizationController::class, 'index'])->name('organization.manageOrganization');
 
 Route::get('/dashboard', function () {
     return view('layouts.superadmin');

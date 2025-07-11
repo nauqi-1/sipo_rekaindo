@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class divisi extends Model
+class Divisi extends Model
 {
     use HasFactory;
 
@@ -62,4 +62,13 @@ class divisi extends Model
     {
         return $this->hasMany(Seri::class, 'divisi_id_divisi');
     }
+    public function department()
+    {
+        return $this->hasMany(Department::class, 'divisi_id_divisi', 'id_divisi');
+    }
+    public function director()
+    {
+        return $this->belongsTo(Director::class, 'director_id_director');
+    }
+
 }
