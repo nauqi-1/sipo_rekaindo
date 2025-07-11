@@ -328,8 +328,8 @@
                         table-layout: fixed; 
                     ">
                         <tr>
-                            <td style="width: 15%;">Hari, Tanggal</td> <td style="width: 3%; text-align: center;">:</td> <td style="width: 82%;">
-                                {{ \Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l , d F Y') }}
+                            <td style="width: 15%;">Hari/Tanggal</td> <td style="width: 3%; text-align: center;">:</td> <td style="width: 82%;">
+                                {{ \Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l / d F Y') }}
                             </td> </tr>
                         <tr>
                             <td>Pukul</td>
