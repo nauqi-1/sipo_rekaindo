@@ -45,6 +45,13 @@
                             <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                         </select>
                     </div>
+                    <div class="dropdown" style="gap: 5px; position: relative; width: 180px;">
+                    <select name="divisi_filter" class="form-select" onchange="this.form.submit()">
+                        <option value="">Semua Undangan</option>
+                        <option value="own" {{ request('divisi_filter') == 'own' ? 'selected' : '' }}>Undangan Keluar</option>
+                        <option value="other" {{ request('divisi_filter') == 'other' ? 'selected' : '' }}>Undangan Masuk</option>
+                    </select>
+                    </div>
                     <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                         <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                     </div>
@@ -55,12 +62,14 @@
                             onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }" onchange="this.form.submit()">
                     </div>
                     <div class="d-flex gap-2">
-                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px; position: relative; width: 150px;">
                             <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
                             <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                         </div>
                     </div>
                 </form>
+                <!-- Add User Button to Open Modal -->
+            <a href="{{route ('undangan-admin/add')}}" class="btn btn-add">+ <span>Tambah Undangan Rapat</span></a>
                 </div>
             </div>
         </div>

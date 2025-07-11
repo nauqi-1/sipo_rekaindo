@@ -121,18 +121,23 @@
                     <div class="mb-3 row">
                         <!--TTD yang bertanda tangan-->
                     <div class="col-md-6">
-                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                        <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" >
-                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                            @foreach($managers as $manager)
-                                <option value="{{  $manager->id  }}">
-                                    {{ $manager->firstname . ' ' . $manager->lastname }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('nama_bertandatangan')
-                            <div class="form-control text-danger">{{ $message }}</div>
-                        @enderror
+                            <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
+                            <select name="manager_user_id" required id="managerDropdown" class="form-control" disabled>
+                                <option value="">-- Pilih Penandatangan --</option>
+                                @foreach($managers as $manager)
+                                    <option value="{{ $manager->id }}" {{ $manager->id == Auth::id() ? 'selected' : '' }}>
+                                        {{ $manager->firstname }} {{ $manager->lastname }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            <input type="hidden" name="manager_user_id" id="managerUserId" class="form-control" value="{{ Auth::user()->id }}">
+
+                            <input type="hidden" name="nama_bertandatangan" id="namaBertandatangan" class="form-control" value="{{ Auth::user()->firstname }} {{ Auth::user()->lastname}}">
+
+                            @error('nama_bertandatangan')
+                                <div class="form-control text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
                     <div class="col-md-6 lampiran">
                         <label for="lampiran" class="form-label">Lampiran</label>

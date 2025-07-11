@@ -98,15 +98,9 @@
                         <input type="text" id="perihal" value="{{$undangan->judul }}" readonly> 
                     </div>
                     <div class="card-white">
-                        <label for="tgl">Tanggal Surat</label>
+                        <label for="tgl_rapat">Hari, tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{$undangan->tgl_dibuat->translatedFormat('d F Y')}}" readonly>
-                    </div>
-                    <div class="card-white">
-                        <label for="lampiran">Lampiran</label>
-
-                        <div class="separator"></div>
-                        <input type="text" id="kepada" value="{{ is_array($undangan->tujuan) ? implode('; ', $undangan->tujuan) : (string) $undangan->tujuan }}">
+                        <input type="text" id="tgl_rapat" value="{{\Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l ,d F Y')}}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="file">File</label>

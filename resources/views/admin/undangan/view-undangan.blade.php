@@ -51,9 +51,9 @@
                         <input type="text" id="perihal" value="{{$undangan->judul}}" readonly>
                     </div>
                     <div class="card-white">
-                        <label for="tgl">Tanggal</label>
+                        <label for="tgl_rapat">Hari, tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{$undangan->tgl_dibuat->translatedFormat('d F Y')}}" readonly>
+                        <input type="text" id="tgl_rapat" value="{{\Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l ,d F Y')}}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="kepada">Kepada</label>
@@ -102,17 +102,10 @@
                         <label for="file">File</label>
                         <div class="separator"></div>
                         <button class="view" onclick="window.location.href='{{ route('view-undanganPDF', $undangan->id_undangan) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
-                        @if ($undangan->status=='approve' && $undangan->divisi->id_divisi == Auth::user()->divisi->id_divisi)
+                        @if ($undangan->status=='approve')
                         <a style="text-decoration: none;" class="down" onclick="window.location.href='{{ route('cetakundangan',['id' => $undangan->id_undangan]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
                         @endif
                     </div>
-                    @if ($undangan->divisi->id_divisi != Auth::user()->divisi->id_divisi)
-                    <div class="card-white">
-                        <label for="lampiran">Lampiran</label>
-                        <div class="separator"></div>
-                        <button class="view" onclick="window.location.href='{{ route('view-undanganPDF', $undangan->id_undangan) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
-                    </div>
-                    @endif
                 </div>
             </div>
             <div class="row mb-4" style="gap: 20px;">
