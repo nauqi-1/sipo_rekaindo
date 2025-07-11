@@ -159,7 +159,7 @@ class KirimController extends Controller
         $userId = auth()->id();
         $divisiId = auth()->user()->divisi_id_divisi;
         $sortBy = $request->get('sort_by', 'kirim_document.id_kirim_document');
-        $sortDirection = $request->get('sort_direction', 'asc');
+        $sortDirection = $request->get('sort_direction', 'desc');
 
 
 
@@ -230,7 +230,7 @@ class KirimController extends Controller
         $divisiId = auth()->user()->divisi_id_divisi;
         session(['previous_url' => url()->previous()]);
         $sortBy = $request->get('sort_by', 'kirim_document.id_kirim_document');
-        $sortDirection = $request->get('sort_direction', 'asc');
+        $sortDirection = $request->get('sort_direction', 'desc');
 
         $allowedSorts = [
             'kirim_document.id_kirim_document',
