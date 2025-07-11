@@ -71,4 +71,18 @@ class User extends Authenticatable
         return $this->belongsTo(Divisi::class, 'divisi_id_divisi','id_divisi');
     }
     
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id_department', 'id_department');
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class, 'section_id_section', 'id_section');
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class, 'unit_id_unit', 'id_unit');
+    }
 }
