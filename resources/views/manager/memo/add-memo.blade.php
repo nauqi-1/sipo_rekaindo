@@ -16,7 +16,7 @@
     <div class="header">
         <!-- Back Button -->
         <div class="back-button">
-            <a href="{{route ('memo.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+            <a href="{{route ('memo.terkirim')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
         </div>
         <h1>Tambah Memo</h1>
     </div>        
@@ -503,11 +503,11 @@ document.getElementById('managerDropdown').addEventListener('change', function (
             $('#summernote').summernote({
                 height: 300,
                 toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'fontsize', 'color']],
+                //['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear',]],
                 ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
+               // ['insert', ['link', 'picture', 'video']],
+               // ['view', ['fullscreen', 'codeview', 'help']],
                 ],
                 fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']

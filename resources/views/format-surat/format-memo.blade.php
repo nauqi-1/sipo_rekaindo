@@ -271,8 +271,10 @@
                 </div>
             <div class="collab">
                 <div class="fill">
-                    <p>{!! $memo->isi_memo !!}</p>
-                    @if($memo->kategoriBarang && $memo->kategoriBarang->isNotEmpty())
+                    <div style="text-align: justify; width: 600px;">
+                        {!! $memo->isi_memo !!}
+                    </div>
+                        @if($memo->kategoriBarang && $memo->kategoriBarang->isNotEmpty())
                     <table>
                         <tr>
                             <th>No</th>

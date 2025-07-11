@@ -70,6 +70,11 @@
                         @endif
                         
                     </div>
+                    <div class="card-white">
+                        <label for="file">File</label>
+                        <div class="separator"></div>
+                        <button class="btn-file"  onclick="window.location.href='{{ route('view-memoPDF', $memo->memo->id_memo) }}'"><img src="/img/mata.png" alt="view">Lihat</button>
+                    </div>
                 </div>
             </div>
             <div class="row mb-4" style="gap: 20px;">

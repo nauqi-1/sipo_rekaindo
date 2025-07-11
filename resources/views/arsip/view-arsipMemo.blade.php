@@ -39,10 +39,16 @@
                         <div class="separator"></div>
                         <input type="text" id="seri" value="{{ $memo->seri_surat }}" readonly>
                     </div>
+                     @php
+                        use App\Models\Divisi;
+                    
+                        $divisiIds = explode(';', $memo->tujuan); 
+                        $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi')->toArray();
+                    @endphp
                     <div class="card-white">
-                        <label for="diterima">Diterima</label>
+                        <label for="file">Penerima</label>
                         <div class="separator"></div>
-                        <input type="text" id="diterima" value="{{ $memo->tujuan }}">
+                        <input type="text" id="penerima" value="{{ implode(', ', $divisiNames) }}" readonly>                  
                     </div>
                 </div>
                 <div class="col">
