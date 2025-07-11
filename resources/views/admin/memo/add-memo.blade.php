@@ -501,11 +501,11 @@ document.getElementById('managerDropdown').addEventListener('change', function (
             $('#summernote').summernote({
                 height: 300,
                 toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'fontsize', 'color']],
+                //['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear',]],
                 ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
+                //['insert', ['link', 'picture', 'video']],
+                //['view', ['fullscreen', 'codeview', 'help']],
                 ],
                 fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']

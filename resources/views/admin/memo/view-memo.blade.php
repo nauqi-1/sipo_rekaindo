@@ -126,7 +126,7 @@
                         <label for="file">File</label>
                         <div class="separator"></div>
                         <button class="view" onclick="window.location.href='{{ route('view-memoPDF', $memo->id_memo) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
-                        @if ($memo->status=='approve' && $memo->divisi->id_divisi == Auth::user()->divisi->id_divisi)
+                        @if ($memo->status=='approve')
                         <a style="text-decoration: none;" class="down" onclick="window.location.href='{{ route('cetakmemo',['id' => $memo->id_memo]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
                         @endif
                     </div>

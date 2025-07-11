@@ -43,9 +43,9 @@ class MemoController extends Controller
 
         // Filter by divisi (own/other/both) if requested
         // Advanced filter: 3 types
-        // 1. both: own division memos + memos from other divisions sent to own division
-        // 2. own: only memos made by own division
-        // 3. received: only memos from other divisions sent to own division
+        // 1. both: memo divisi sendiri dan divisi lain
+        // 2. own: memo divisi sendiri saja
+        // 3. received: memo divisi lain saja
         $filterType = $request->get('divisi_filter', 'both');
         if ($filterType === 'own') {
             // Only memos made by own division
@@ -225,6 +225,7 @@ class MemoController extends Controller
             return $memo;
         });
 
+        
         return view('admin.view-memo', compact('memo'));
     }
 

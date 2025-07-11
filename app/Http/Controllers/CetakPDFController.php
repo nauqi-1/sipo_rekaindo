@@ -21,7 +21,9 @@ class CetakPDFController extends Controller
     {
         // Ambil data dari database
         $memo = Memo::findOrFail($id); // Sesuaikan dengan model yang benar
-        // $path = public_path('img/border-surat.png'); 
+        
+        $divisiIds = explode(';', $memo->tujuan);
+        $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi')->toArray(); 
         $headerPath = public_path('img/bheader.png');
         $footerPath = public_path('img/bfooter.png'); 
         $qrCode = $memo->qr_approved_by;   
@@ -38,6 +40,7 @@ class CetakPDFController extends Controller
             'memo' => $memo,
             'headerImage' => $headerBase64,
             'footerImage' => $footerBase64,
+            'divisiNames' => $divisiNames,
             'qrCode' => $qrCode,
             'isPdf' => true
         ])->setPaper('A4', 'portrait');
@@ -69,7 +72,7 @@ class CetakPDFController extends Controller
         return response()->streamDownload(function () use ($formatMemoPdf, $formatMemoPath) {
             echo $formatMemoPdf->output();
             if (file_exists($formatMemoPath)) unlink($formatMemoPath);
-        }, 'cetak_memo_' . $memo->id . '.pdf');
+        }, $memo->judul. '_' . $memo->id_memo . '.pdf');
     }
 
     }
