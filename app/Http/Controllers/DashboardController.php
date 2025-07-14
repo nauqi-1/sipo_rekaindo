@@ -18,9 +18,24 @@ class DashboardController extends Controller
         $userDivisiId = auth()->user()->divisi_id_divisi; // Ambil divisi user yang login
         $kirimDocuments = Kirim_Document::where('id_penerima', Auth::user()->id)->get();
 
-        $jumlahMemo = Memo::where('divisi_id_divisi', $userDivisiId)->count();
-        $jumlahRisalah = Risalah::where('divisi_id_divisi', $userDivisiId)->count();
-        $jumlahUndangan = Undangan::where('divisi_id_divisi', $userDivisiId)->count();
+        $jumlahMemo = Kirim_Document::where('jenis_document', 'memo')
+                    ->where(function($query) {
+                        $query->where('id_pengirim', Auth::user()->id)
+                            ->orWhere('id_penerima', Auth::user()->id);
+                    })
+                    ->count();
+        $jumlahRisalah = Kirim_Document::where('jenis_document', 'risalah')
+                    ->where(function($query) {
+                        $query->where('id_pengirim', Auth::user()->id)
+                            ->orWhere('id_penerima', Auth::user()->id);
+                    })
+                    ->count();
+        $jumlahUndangan = Kirim_Document::where('jenis_document', 'undangan')
+                    ->where(function($query) {
+                        $query->where('id_pengirim', Auth::user()->id)
+                            ->orWhere('id_penerima', Auth::user()->id);
+                    })
+                    ->count();
 
         $Memo = Memo::all()->count();
         $Undangan = Undangan::all()->count();
