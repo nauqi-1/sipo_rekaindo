@@ -24,7 +24,7 @@ class UndanganController extends Controller
 {
 public function index(Request $request)
     {
-        
+
         $divisi = Divisi::all();
         $seri = Seri::all(); 
         $userDivisiId = Auth::user()->divisi_id_divisi;
@@ -32,14 +32,14 @@ public function index(Request $request)
 
         // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
         $undanganDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
-        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
-        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $sortBy = $request->get('sort_by', 'tgl_rapat_diff');
+        $sortDirection = $request->get('sort_direction', 'asc') === 'asc' ? 'asc' : 'desc';
 
-        $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_undangan', 'judul'];
+        $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_undangan', 'judul','tgl_rapat_diff'];
          if (!in_array($sortBy, $allowedSortColumns)) {
-            $sortBy = 'created_at'; // fallback default
+            $sortBy = 'tgl_rapat_diff'; // fallback default
         }
-
+         
         // Ambil undangan yang belum diarsipkan oleh user saat ini
         $query = Undangan::with('divisi')
         ->whereNotIn('id_undangan', $undanganDiarsipkan) // Filter undangan yang belum diarsipkan
@@ -56,13 +56,47 @@ public function index(Request $request)
                       });
             });
         });
-        
+        // Sorting default menggunakan tgl_rapat - current date
+        if ($sortBy === 'tgl_rapat_diff') {
+        $query
+        ->whereNotNull('tgl_rapat') // Optional, jaga-jaga jika ada null
+        ->orderByRaw("
+            CASE 
+                WHEN DATEDIFF(tgl_rapat, CURDATE()) < 0 THEN 1
+                ELSE 0
+            END ASC
+        ")
+        ->orderByRaw("
+            ABS(DATEDIFF(tgl_rapat, CURDATE())) $sortDirection
+        ");
+        } elseif (in_array($sortBy, ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_undangan', 'judul'])) {
+            $query->orderBy($sortBy, $sortDirection);
+        } else {
+            $query->orderBy('tgl_dibuat', 'desc'); // fallback terakhir
+        }
         
         // Filter berdasarkan status
         if ($request->has('status') && $request->status != '') {
             $query->where('status', $request->status);
         }
+        //Filter berdasarkan user id masuk keluar undangan
+        $filterType = $request->get('userid_filter', 'both');
 
+        if ($filterType === 'own') {
+            // Undangan keluar: kirim_document.id_pengirim = user login
+            $query->whereHas('kirimDocument', function ($q) use ($userId) {
+                $q->where('jenis_document', 'undangan')
+                ->where('id_pengirim', $userId);
+            });
+        } elseif ($filterType === 'other') {
+            // Undangan masuk: kirim_document.id_penerima = user login
+            $query->whereHas('kirimDocument', function ($q) use ($userId) {
+                $q->where('jenis_document', 'undangan')
+                ->where('id_penerima', $userId);
+            });
+        }
+     
+        
         // Filter berdasarkan tanggal dibuat
         if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
             $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
@@ -80,14 +114,9 @@ public function index(Request $request)
             });
         }
 
-
-        // Sorting default menggunakan tgl_dibuat
-        $query->orderBy($sortBy, $sortDirection);
-
-        
-
         $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
         $undangans = $query->paginate($perPage);
+
 
         // **Tambahkan status penerima untuk setiap undangan**
         $undangans->getCollection()->transform(function ($undangan) use ($userId) {
@@ -108,8 +137,8 @@ public function index(Request $request)
         ->orderBy('id_kirim_document', 'desc')
         ->get();
 
-    // Ambil divisi penerima dan pengirim melalui relasi user
-    $kirimDocuments->each(function ($kirim) {
+        // Ambil divisi penerima dan pengirim melalui relasi user
+        $kirimDocuments->each(function ($kirim) {
         $pengirim = User::find($kirim->id_pengirim);
         $penerima = User::find($kirim->id_penerima);
         $user = Auth::user();
@@ -117,8 +146,8 @@ public function index(Request $request)
         $kirim->divisi_pengirim = $pengirim ? $pengirim->divisi->nm_divisi : 'Tidak Diketahui';
         $kirim->divisi_penerima = $penerima ? $penerima->divisi->nm_divisi : 'Tidak Diketahui';
         $kirim->divisi_user = $user->divisi->nm_divisi ?? 'Tidak Diketahui';
-    });
-    
+        });
+        
         return view(Auth::user()->role->nm_role.'.undangan.undangan', compact('undangans','divisi','seri','sortDirection','kirimDocuments'));
     }
     public function superadmin(Request $request){
@@ -131,13 +160,12 @@ public function index(Request $request)
 
         // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
         $undanganDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
-        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
+        $sortBy = $request->get('sort_by', 'tgl_rapat_diff'); // default ke tgl_rapat_diff
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_undangan', 'judul', 'tgl_rapat_diff'];
 
-        $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_undangan', 'judul'];
-         if (!in_array($sortBy, $allowedSortColumns)) {
-            $sortBy = 'created_at'; // fallback default
-        }
+
+
 
         // Sorting default menggunakan tgl_dibuat
         $query = Undangan::query()
@@ -148,14 +176,22 @@ public function index(Request $request)
             $query->where('status', $request->status);
         }
 
+        if ($sortBy === 'tgl_rapat_diff') {
+                // Order by selisih tgl_rapat dengan hari ini, yang paling kecil di atas
+                $query->orderByRaw('ABS(DATEDIFF(tgl_rapat, CURDATE())) ' . $sortDirection);
+            } elseif (in_array($sortBy, $allowedSortColumns)) {
+                $query->orderBy($sortBy, $sortDirection);
+            } else {
+                $query->orderBy('created_at', $sortDirection); // fallback default
+            }
         // Filter berdasarkan tanggal dibuat
         if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
             $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
-        } elseif ($request->filled('tgl_dibuat_awal')) {
-            $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
-        } elseif ($request->filled('tgl_dibuat_akhir')) {
-            $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
-        }
+            } elseif ($request->filled('tgl_dibuat_awal')) {
+                $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
+            } elseif ($request->filled('tgl_dibuat_akhir')) {
+                $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
+            }
 
         if ($request->filled('divisi_id_divisi') && $request->divisi_id_divisi != 'pilih' ) {
             $query->where('divisi_id_divisi', $request->divisi_id_divisi);
