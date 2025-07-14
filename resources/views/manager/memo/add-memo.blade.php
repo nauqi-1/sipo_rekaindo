@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Memo Admin</title>
+    <title>Tambah Memo Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
@@ -16,14 +16,14 @@
     <div class="header">
         <!-- Back Button -->
         <div class="back-button">
-            <a href="{{route ('memo.terkirim')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+            <a href="{{url()->previous()}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
         </div>
         <h1>Tambah Memo</h1>
     </div>        
     <div class="row">
         <div class="breadcrumb-wrapper">
             <div class="breadcrumb" style="gap: 5px;">
-                <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="{{route('memo.admin')}}">Memo</a>/<a href="#" style="color: #565656;">Tambah Memo</a>
+                <a href="{{ route('manager.dashboard') }}">Beranda</a>/<a href="{{route('memo.terkirim')}}">Memo Keluar</a>/<a href="#" style="color: #565656;">Tambah Memo</a>
             </div>
         </div>
     </div>

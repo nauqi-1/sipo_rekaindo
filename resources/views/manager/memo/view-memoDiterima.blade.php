@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kirim Memo</title>
+    <title>Memo Masuk</title>
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
@@ -16,14 +16,22 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('memo.diterima')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{url()->previous()}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
-            <h1>Memo Diterima</h1>
+        @if ($memo->memo->status == 'pending')
+            <h1>Memo Keluar</h1>
+        @else
+            <h1>Memo Masuk</h1>
+        @endif
         </div>        
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="{{route ('memo.diterima')}}">Memo Diterima</a>/<a href="#" style="color: #565656;">Detail Memo</a>
+                    @if ($memo->memo->status == 'pending')
+                        <a href="#">Beranda</a>/<a href="{{route ('memo.terkirim')}}">Memo Keluar</a>/<a href="#" style="color: #565656;">Detail Memo</a>
+                    @else
+                        <a href="#">Beranda</a>/<a href="{{route ('memo.diterima')}}">Memo Masuk</a>/<a href="#" style="color: #565656;">Detail Memo</a>
+                    @endif
                 </div>
             </div>
         </div>

@@ -134,9 +134,15 @@
                         @endif
                     </td>
                     <td>
-                        <a class="btn btn-sm3" href="{{ route('view.memo-terkirim', $kirim->id_document) }}">
+                        @if($kirim->memo->status == 'pending')
+                        <a class="btn btn-sm3" href="{{ route('view.memo-diterima', $kirim->id_document) }}">
                             <img src="/img/memo-supervisor/viewBlue.png" alt="view">
                         </a>
+                        @else
+                         <a class="btn btn-sm3" href="{{ route('view.memo-terkirim', $kirim->id_document) }}">
+                            <img src="/img/memo-supervisor/viewBlue.png" alt="view">
+                        </a>
+                        @endif
                     </td>
                 </tr>
                 @endforeach
