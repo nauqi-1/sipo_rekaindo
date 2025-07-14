@@ -47,11 +47,9 @@ class MemoController extends Controller
         // 2. own: memo divisi sendiri saja
         // 3. received: memo divisi lain saja
         $filterType = $request->get('divisi_filter', 'both');
-        if ($filterType === 'own') {
-            // Only memos made by own division
+        if ($filterType === 'own') { //memo divisi sendiri dengan status pending
             $query->where('divisi_id_divisi', $userDivisiId);
-        } elseif ($filterType === 'received' || $filterType === 'other') {
-            // Only memos from other divisions sent to own division (via kirim_document)
+        } elseif ($filterType === 'received' || $filterType === 'other') { //memo dari divisi lain saja
             $query->where('divisi_id_divisi', '!=', $userDivisiId)
                 ->whereHas('kirimDocument', function ($q) use ($userId, $userDivisiId) {
                     $q->where('jenis_document', 'memo')
@@ -60,12 +58,9 @@ class MemoController extends Controller
                             $subQuery->where('divisi_id_divisi', $userDivisiId);
                         });
                 });
-        } else {
-            // Default: show both own and received memos
+        } else { //default filter: memo dari divisi sendiri dan divisi lain
             $query->where(function ($q) use ($userDivisiId, $userId) {
-                // Memo yang dibuat oleh divisi user sendiri
                 $q->where('divisi_id_divisi', $userDivisiId)
-                // Memo yang dikirim ke user dari divisi lain melalui tabel kirim_document
                 ->orWhere(function ($subQ) use ($userDivisiId, $userId) {
                     $subQ->where('divisi_id_divisi', '!=', $userDivisiId)
                           ->whereHas('kirimDocument', function ($query) use ($userId, $userDivisiId) {
@@ -77,14 +72,15 @@ class MemoController extends Controller
                           });
                 });
             });
+            
         }
-       
+        
     
 
         // Filter berdasarkan status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
-        }
+        } 
 
         // Filter berdasarkan tanggal dibuat
         if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
@@ -111,7 +107,6 @@ class MemoController extends Controller
             });
         }
          
-
         // Pagination
         $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
         $memos = $query->paginate($perPage);

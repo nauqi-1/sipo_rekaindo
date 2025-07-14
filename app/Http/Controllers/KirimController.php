@@ -180,14 +180,15 @@ class KirimController extends Controller
                 $query->where('id_pengirim', $userId)
                       ->orWhere('id_penerima', $userId);
             })
-            ->where('kirim_document.status', '!=', 'pending')
+           // ->where('kirim_document.status', '!=', 'pending')
             ->whereHas('penerima', function ($query) use ($divisiId) {
                 $query->where('divisi_id_divisi', $divisiId);
                       
             })
             ->whereHas('memo', function ($query) use ($request, $divisiId) {
-                $query->where('memo.status', '!=', 'pending')
-                    ->where('memo.divisi_id_divisi', $divisiId);
+                $query->where('memo.divisi_id_divisi', $divisiId)
+                //->where('memo.status', '!=', 'pending')
+                ;
 
                 if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
                     $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
@@ -248,24 +249,26 @@ class KirimController extends Controller
         ->where('id_penerima', $userId)
         ->whereIn('kirim_document.status',  ['pending','approve'])
         ->whereHas('memo', function ($query) use ($request, $divisiId) {
-            if ($request->filled('divisi_filter')) {
-        if ($request->divisi_filter === 'own') {
-            $query->where('divisi_id_divisi', $divisiId);
-        } elseif ($request->divisi_filter === 'other') {
-            $query->where('divisi_id_divisi', '!=', $divisiId)
-                  ->where('status', 'approve'); // only approved from other divisions
-        }
-    } else {
-        // Default: show same division OR approved from other division
-        $query->where(function ($q) use ($divisiId) {
-            $q->where('divisi_id_divisi', $divisiId)
-              ->where('status', 'pending')
-              ;
-        })->orWhere(function ($q) use ($divisiId) {
-            $q->where('divisi_id_divisi', '!=', $divisiId)
-              ->where('status', 'approve');
-        });
-    }
+            $query->where('memo.divisi_id_divisi','!=', $divisiId);
+
+//            if ($request->filled('divisi_filter')) {
+//        if ($request->divisi_filter === 'own') {
+//            $query->where('divisi_id_divisi', $divisiId);
+//        } elseif ($request->divisi_filter === 'other') {
+//            $query->where('divisi_id_divisi', '!=', $divisiId)
+//                  ->where('status', 'approve');
+//        }
+//    } else {
+//        // Default: show same division OR approved from other division
+//        $query->where(function ($q) use ($divisiId) {
+//            $q->where('divisi_id_divisi', $divisiId)
+//              ->where('status', 'pending')
+//              ;
+//        })->orWhere(function ($q) use ($divisiId) {
+//            $q->where('divisi_id_divisi', '!=', $divisiId)
+//              ->where('status', 'approve');
+//        });
+//    }
 
             // Additional filters
             if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
