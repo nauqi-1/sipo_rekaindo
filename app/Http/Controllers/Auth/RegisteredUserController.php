@@ -4,6 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Director;
+use App\Models\Divisi;
+use App\Models\Department;
+use App\Models\Section;
+use App\Models\Unit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -85,28 +90,28 @@ class RegisteredUserController extends Controller
             $section = NULL;
             $unit = NULL;
         } elseif ($jabatan == 2 || $jabatan == 3 || $jabatan == 4) {
-            $direktur = NULL;
+            $director = Divisi::where('id_divisi', $bagian)->value('director_id_director');
             $divisi = $bagian;
             $department = NULL;
             $section = NULL;
             $unit = NULL;
         } elseif ($jabatan == 2 || $jabatan == 3 || $jabatan == 4 || $jabatan == 5 || $jabatan == 6 || $jabatan == 7 || $jabatan == 8) {
-            $direktur = NULL;
-            $divisi = NULL;
+            $direktur = Department::where('id_department', $bagian)->value('director_id_director');
+            $divisi = Department::where('id_department', $bagian)->value('divisi_id_divisi') ?? NULL;
             $department = $bagian;
             $section = NULL;
             $unit = NULL;
         } elseif ($jabatan == 5 || $jabatan == 6 || $jabatan == 7 || $jabatan == 8) {
-            $direktur = NULL;
-            $divisi = NULL;
-            $department = NULL;
+            $department = Section::where('id_section', $bagian)->value('department_id_department');
+            $direktur = Department::where('id_department', $department)->value('director_id_director');
+            $divisi = Department::where('id_department', $department)->value('divisi_id_divisi') ?? NULL;
             $section = $bagian;
             $unit = NULL;
         } elseif ($jabatan == 9) {
-            $direktur = NULL;
-            $divisi = NULL;
-            $department = NULL;
-            $section = NULL;
+            $department = Unit::where('id_unit', $bagian)->value('department_id_department') ?? NULL;
+            $section = Unit::where('id_unit', $bagian)->value('section_id_section') ?? NULL;
+            $direktur = Department::where('id_department', $department)->value('director_id_director');
+            $divisi = Department::where('id_department', $department)->value('divisi_id_divisi') ?? NULL;
             $unit = $bagian;
         }
         
