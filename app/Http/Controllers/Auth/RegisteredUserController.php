@@ -32,7 +32,6 @@ class RegisteredUserController extends Controller
         // }
         // dd($request->all());
         $request->validate([
-            'id'=>'required|integer|unique:users',
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             'username' => 'required|string|max:25',
@@ -41,7 +40,7 @@ class RegisteredUserController extends Controller
             'phone_number' => 'required|numeric',
             'role_id_role' => 'required|exists:role,id_role',
             'position_id_position' => 'required|exists:position,id_position',
-            'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
+            'parent_id' => 'required',
         ],[
             'firstname.required' => 'Nama depan wajib diisi.',
             'firstname.max' => 'Nama depan tidak boleh lebih dari 50 karakter.',
@@ -72,15 +71,51 @@ class RegisteredUserController extends Controller
             'position_id_position.required' => 'Posisi wajib dipilih.',
             'position_id_position.exists' => 'Posisi yang dipilih tidak valid.',
     
-            'divisi_id_divisi.required' => 'Divisi wajib dipilih.',
-            'divisi_id_divisi.exists' => 'Divisi yang dipilih tidak valid.',
+            'parent_id.required' => 'Bagian wajib dipilih.',
         ]);
     
+        $jabatan = $request->position_id_position;
+        $bagian = $request->parent_id;
+        // dd($jabatan);
         
+        if($jabatan == 1){
+            $direktur = $bagian;
+            $divisi = NULL;
+            $department = NULL;
+            $section = NULL;
+            $unit = NULL;
+        } elseif ($jabatan == 2 || $jabatan == 3 || $jabatan == 4) {
+            $direktur = NULL;
+            $divisi = $bagian;
+            $department = NULL;
+            $section = NULL;
+            $unit = NULL;
+        } elseif ($jabatan == 2 || $jabatan == 3 || $jabatan == 4 || $jabatan == 5 || $jabatan == 6 || $jabatan == 7 || $jabatan == 8) {
+            $direktur = NULL;
+            $divisi = NULL;
+            $department = $bagian;
+            $section = NULL;
+            $unit = NULL;
+        } elseif ($jabatan == 5 || $jabatan == 6 || $jabatan == 7 || $jabatan == 8) {
+            $direktur = NULL;
+            $divisi = NULL;
+            $department = NULL;
+            $section = $bagian;
+            $unit = NULL;
+        } elseif ($jabatan == 9) {
+            $direktur = NULL;
+            $divisi = NULL;
+            $department = NULL;
+            $section = NULL;
+            $unit = $bagian;
+        }
         
-
+        // dd($direktur);
+        // dd($divisi);
+        // dd($department);
+        // dd($section);
+        // dd($unit);
         $user = User::create([
-            'id' => $request->id,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'username' => $request->username,
@@ -88,8 +123,12 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'phone_number' => $request->phone_number,
             'role_id_role' => $request->role_id_role,
-            'position_id_position' => $request->position_id_position,
-            'divisi_id_divisi' => $request->divisi_id_divisi,
+            'position_id_position' => $jabatan,
+            'director_id_director' => $direktur,
+            'divisi_id_divisi' => $divisi,
+            'department_id_department' => $department,
+            'section_id_section' => $section,
+            'unit_id_unit' => $unit,
         ]);
         
 

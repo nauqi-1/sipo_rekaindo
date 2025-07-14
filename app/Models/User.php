@@ -29,7 +29,11 @@ class User extends Authenticatable
         'phone_number',
         'role_id_role',
         'position_id_position',
+        'director_id_director',
         'divisi_id_divisi',
+        'department_id_department',
+        'section_id_section',
+        'unit_id_unit',
         'profile_image',
     ];
     
