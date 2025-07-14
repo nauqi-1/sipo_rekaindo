@@ -201,6 +201,8 @@ Route::get('/view-memoDiterima/{id_memo}', [MemoController::class, 'showDiterima
 
 Route::get('/add-undanganAdmin', function() {
     return view('admin.undangan.add-undangan'); })->name('add-undangan.admin');
+Route::get('/add-undanganManager', function() {
+    return view('manager.undangan.add-undangan'); })->name('add-undangan.manager');
 Route::get('/edit-undanganAdmin', function() {
     return view('admin.undangan.edit-undangan'); })->name('edit-undangan.admin');
 Route::get('/kirim-undanganAdmin/{id}', [KirimController::class, 'index'])->name('kirim-undanganAdmin.admin');
@@ -240,7 +242,6 @@ Route::get('/superadmin/undangan', [UndanganController::class, 'superadmin'])->n
 Route::get('/superadmin/risalah', [RisalahController::class, 'superadmin'])->name('risalah.superadmin');
 Route::get('/memo-admin',[MemoController::class, 'index'])->name('memo.admin');
 Route::get('/admin/undangan', [UndanganController::class, 'index'])->name('undangan.admin');
-
 Route::get('/manager/undangan', [UndanganController::class, 'index'])->name('undangan.manager');
 Route::get('/risalah/Admin', [RisalahController::class, 'index'])->name('risalah.admin');
 Route::get('/manager/undangan', [KirimController::class, 'undangan'])->name('undangan.manager');

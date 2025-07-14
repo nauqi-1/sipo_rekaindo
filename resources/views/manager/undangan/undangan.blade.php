@@ -1,6 +1,6 @@
 @extends('layouts.manager')
 
-@section('title', 'undangan Manager')
+@section('title', 'Undangan Rapat')
 
 @section('content')
     <div class="container">
@@ -46,10 +46,10 @@
                         </select>
                     </div>
                     <div class="dropdown" style="gap: 5px; position: relative; width: 180px;">
-                    <select name="divisi_filter" class="form-select" onchange="this.form.submit()">
+                    <select name="userid_filter" class="form-select" onchange="this.form.submit()">
                         <option value="">Semua Undangan</option>
-                        <option value="own" {{ request('divisi_filter') == 'own' ? 'selected' : '' }}>Undangan Keluar</option>
-                        <option value="other" {{ request('divisi_filter') == 'other' ? 'selected' : '' }}>Undangan Masuk</option>
+                        <option value="own" {{ request('userid_filter') == 'own' ? 'selected' : '' }}>Undangan Keluar</option>
+                        <option value="other" {{ request('userid_filter') == 'other' ? 'selected' : '' }}>Undangan Masuk</option>
                     </select>
                     </div>
                     <div class="input-icon-wrapper" style="position: relative; width: 150px;">
@@ -80,9 +80,9 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Dokumen</th>
-                    <th>Tanggal Undangan
+                    <th>Tanggal Rapat
                         <button class="data-md">
-                            <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'undangan.tgl_dibuat','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                             <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_rapat_diff','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
                             style="color:rgb(135, 135, 148); text-decoration: none;">
                             <span class="bi-arrow-down-up"></span>
                         </a>
@@ -116,7 +116,7 @@
                         {{ $finalStatus == 'reject' ? 'text-danger' : ($finalStatus == 'pending' ? 'text-warning' : ($finalStatus == 'correction' ? 'text-danger' : 'text-success')) }}">
                         {{ $undangan->judul ?? '-' }}
                     </td>
-                    <td>{{ isset($undangan->tgl_dibuat) ? \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') : '-' }}</td>
+                    <td>{{ isset($undangan->tgl_rapat) ? \Carbon\Carbon::parse($undangan->tgl_rapat)->format('d-m-Y') : '-' }}</td>
                     <td>{{ $undangan->seri_surat ?? '-' }}</td>
                     <td>{{ $undangan->nomor_undangan ?? '-' }}</td>
                     <td>{{ isset($undangan->tgl_disahkan) ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
@@ -156,6 +156,6 @@
                 @endforeach
             </tbody>
         </table>
-        {{ $undangans->links('pagination::bootstrap-5') }}
+        {{ $undangans->appends(request()->query())->links('pagination::bootstrap-5') }}
     </div>
 @endsection
