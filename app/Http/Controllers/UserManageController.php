@@ -44,8 +44,19 @@ class UserManageController extends Controller
         $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
         $users = $users->paginate($perPage);
 
+        $mainDirector = Director::with([
+            'subDirectors.divisi.department.section.unit',
+            'subDirectors.divisi.department.unit',
+            'subDirectors.department.section.unit',
+            'subDirectors.department.unit',
+            'divisi.department.section.unit',
+            'divisi.department.unit',
+            'department.section.unit',
+            'department.unit'
+        ])->where('is_main', 1)->first();
+
         // Kirim data ke view user-manage
-        return view('superadmin.user-manage', compact('divisi', 'roles', 'positions', 'users', 'sortOrder'));
+        return view('superadmin.user-manage', compact('divisi', 'roles', 'positions', 'users', 'sortOrder', 'mainDirector'));
     }
 
 

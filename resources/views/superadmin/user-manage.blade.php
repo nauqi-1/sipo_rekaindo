@@ -104,6 +104,8 @@
                     <td>
                         @if ($user->role->nm_role == 'superadmin')
                             <span class="badge role-superadmin">superadmin</span>
+                        @elseif ($user->role->nm_role == 'direktur')
+                            <span class="badge role-manager">direktur</span>
                         @elseif ($user->role->nm_role == 'admin')
                             <span class="badge role-admin">admin</span>
                         @else
@@ -156,12 +158,12 @@
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="id" class="form-label">ID Pengguna :<span style="color : red;"> *</span></label>
-                            <input type="text" name="id" id="id" class="form-control"  required autocomplete="id">
+                            <label for="id" class="form-label">ID Pengguna :</label>
+                            <input type="text" name="id" id="id" class="form-control" disabled autocomplete="id">
                         </div>
                         <div class="col-md-6">
                             <label for="email" class="form-label">Email :<span style="color : red;"> *</span></label>
-                            <input type="text" name="email" id="email" class="form-control"  required autocomplete="email">
+                            <input type="email" name="email" id="email" class="form-control"  required autocomplete="email">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -201,15 +203,97 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="divisi_id_divisi" class="form-label">Pilih Divisi<span style="color : red;"> *</span></label>
-                            <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-control" required autofocus autocomplete="divisi_id_divisi">
-                            @foreach($divisi as $d)
-                                <option value="{{ $d->id_divisi }}">{{ $d->nm_divisi }}</option>
-                            @endforeach
-                            </select>
+                            @php
+                            function renderOrgRecursive($node) {
+                                if(isset($node->name_director)) {
+                                    $label = "Direktur: ".htmlspecialchars($node->name_director);
+                                    $margin = 0; $border = 'primary'; $bg = 'primary';
+                                    $type = 'director'; $id = $node->id_director; $name = $node->name_director;
+                                } elseif(isset($node->nm_divisi)) {
+                                    $label = "Divisi: ".htmlspecialchars($node->nm_divisi);
+                                    $margin = 20; $border = 'secondary'; $bg = 'secondary';
+                                    $type = 'divisi'; $id = $node->id_divisi; $name = $node->nm_divisi;
+                                } elseif(isset($node->name_department)) {
+                                    $label = "Departemen: ".htmlspecialchars($node->name_department);
+                                    $margin = 40; $border = 'info'; $bg = 'info';
+                                    $type = 'department'; $id = $node->id_department; $name = $node->name_department;
+                                } elseif(isset($node->name_section)) {
+                                    $label = "Bagian: ".htmlspecialchars($node->name_section);
+                                    $margin = 60; $border = 'success'; $bg = 'success';
+                                    $type = 'section'; $id = $node->id_section; $name = $node->name_section;
+                                } elseif(isset($node->name_unit)) {
+                                    $label = "Unit: ".htmlspecialchars($node->name_unit);
+                                    $margin = 80; $border = 'warning'; $bg = 'warning';
+                                    $type = 'unit'; $id = $node->id_unit; $name = $node->name_unit;
+                                } else {
+                                    return;
+                                }
+
+                                $idUnique = uniqid('accordion_');
+                                $deleteUrl = route('organization.delete', ['type' => $type, 'id' => $id]);
+
+                                $hasChildren = 
+                                    (!empty($node->subDirectors)) || 
+                                    (!empty($node->divisi)) || 
+                                    (!empty($node->department)) || 
+                                    (!empty($node->section)) || 
+                                    (!empty($node->unit));
+                            }
+                            
+                            @endphp
+
+                            @if($mainDirector)
+                                @php renderOrgRecursive($mainDirector); @endphp
+                            @endif
+                            <label for="divisi_id_divisi" class="form-label">Pilih Posisi<span style="color : red;"> *</span></label>
+                            <select class="form-select" id="parent_id" name="parent_id">
+                                <option value="">-- Pilih Posisi --</option>
+                                @php
+                                function renderOrgOptions($node, $level = 0) {
+                                    $indent = str_repeat('&nbsp;', $level * 4);
+                                    if(isset($node->name_director))
+                                        echo "<option value='{$node->id_director}' data-type='director'>{$indent}Direktur: {$node->name_director}</option>";
+                                    elseif(isset($node->nm_divisi))
+                                        echo "<option value='{$node->id_divisi}' data-type='divisi'>{$indent}--> Divisi: {$node->nm_divisi}</option>";
+                                    elseif(isset($node->name_department))
+                                        echo "<option value='{$node->id_department}' data-type='department'>{$indent}-----> Departemen: {$node->name_department}</option>";
+                                    elseif(isset($node->name_section))
+                                        echo "<option value='{$node->id_section}' data-type='section'>{$indent}--------> Bagian: {$node->name_section}</option>";
+                                    elseif(isset($node->name_unit))
+                                        echo "<option value='{$node->id_unit}' data-type='unit'>{$indent}-----------> Unit: {$node->name_unit}</option>";
+
+                                    if(isset($node->subDirectors))
+                                        foreach ($node->subDirectors as $subDir)
+                                            renderOrgOptions($subDir, $level+1);
+                                    if(isset($node->divisi))
+                                        foreach ($node->divisi as $div)
+                                            renderOrgOptions($div, $level+1);
+                                    if(isset($node->department)) {
+                                        if(isset($node->name_director))
+                                            foreach ($node->department->whereNull('divisi_id_divisi') as $dept)
+                                                renderOrgOptions($dept, $level+1);
+                                        if(isset($node->nm_divisi))
+                                            foreach ($node->department as $dept)
+                                                renderOrgOptions($dept, $level+1);
+                                    }
+                                    if(isset($node->section))
+                                        foreach ($node->section as $sec)
+                                            renderOrgOptions($sec, $level+1);
+                                    if(isset($node->unit)) {
+                                        if(isset($node->name_department) && $node->unit->whereNull('section_id_section'))
+                                            foreach ($node->unit->whereNull('section_id_section') as $unit)
+                                                renderOrgOptions($unit, $level+1);
+                                        if(isset($node->name_section))
+                                            foreach ($node->unit as $unit)
+                                                renderOrgOptions($unit, $level+1);
+                                    }
+                                }
+                                if($mainDirector) renderOrgOptions($mainDirector);
+                                @endphp
+                                </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="position_id_position" class="form-label">Pilih Posisi<span style="color : red;"> *</span></label>
+                            <label for="position_id_position" class="form-label">Pilih Jabatan<span style="color : red;"> *</span></label>
                             <select name="position_id_position" id="position_id_position" class="form-control" required autofocus autocomplete="position_id_position">
                             @foreach($positions as $position)
                                 <option value="{{ $position->id_position }}">{{ $position->nm_position }}</option>
@@ -319,6 +403,56 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const parentSelect = document.getElementById('parent_id');
+        const positionSelect = document.getElementById('position_id_position');
+        const allPositions = @json($positions);
+
+        // Mapping tipe induk -> array id_position
+        const positionMap = {
+            'director': [1], // Direktur
+            'divisi': [2, 3, 4], // GM, SM, PJ SM
+            'department': [2, 3, 4, 5, 6, 7, 8], // GM, SM, PJ SM, Manajer, SPV, PJ M, PJ SPV
+            'section': [5, 6, 7, 8], // GM, SM, PJ SM, Manajer, SPV, PJ M, PJ SPV
+            'unit': [9] // Staff
+        };
+
+        function updatePositions() {
+            const selectedOption = parentSelect.options[parentSelect.selectedIndex];
+            const type = selectedOption ? selectedOption.getAttribute('data-type') : null;
+
+            // Kosongkan posisi
+            positionSelect.innerHTML = '';
+
+            if (type && positionMap[type]) {
+                // Enable select
+                positionSelect.disabled = false;
+
+                // Tampilkan hanya posisi yang sesuai mapping
+                let filtered = allPositions.filter(pos => positionMap[type].includes(pos.id_position));
+                filtered.forEach(pos => {
+                    let opt = document.createElement('option');
+                    opt.value = pos.id_position;
+                    opt.textContent = pos.nm_position;
+                    positionSelect.appendChild(opt);
+                });
+            } else {
+                // Kalau belum pilih parent, disable
+                positionSelect.disabled = true;
+                // Tampilkan placeholder
+                let opt = document.createElement('option');
+                opt.textContent = '-- Pilih posisi setelah pilih induk --';
+                positionSelect.appendChild(opt);
+            }
+        }
+
+        // Saat load halaman langsung disable dulu
+        updatePositions();
+
+        // Saat induk diubah
+        parentSelect.addEventListener('change', updatePositions);
+    });
+
     // Event Listener Overlay delete
     document.addEventListener("DOMContentLoaded", function () {
         let deleteUserModal = document.getElementById("deleteUserModal");
