@@ -6,6 +6,8 @@ use App\Models\Memo;
 use App\Models\Risalah;
 use App\Models\Undangan;
 use App\Models\Kirim_Document;
+use App\Models\Divisi;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,6 +45,5 @@ class DashboardController extends Controller
 
         // Kirim data ke view
         return view(Auth::user()->role->nm_role.'.dashboard', compact('jumlahMemo','jumlahRisalah','jumlahUndangan','Memo','Undangan','Risalah'));  
-        
     }
 }   

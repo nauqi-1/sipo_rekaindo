@@ -167,7 +167,8 @@ class RisalahController extends Controller
         $user = User::where('id', $idUser->id)->first();
         // dd($user);
         if($user->divisi_id_divisi == $divisiId->id_divisi){
-            $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->get();
+            $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+            $divisiName = $divisiName->nm_divisi;
         } else if($user->divisi_id_divisi != $divisiId->id_divisi){
             if($user->unit_id_unit != NULL || $user->section_id_section != NULL || $user->department_id_department != NULL){ //Struktur dibawah / setara Departemen
                 $divisiName = Department::where('id_department', $user->department_id_department)->first();

@@ -51,6 +51,20 @@
             <span class="pc-mtext">Risalah Rapat</span>
           </a>
         </li>
+
+        @if(Auth::user()->role->nm_role == 'manager' || Auth::user()->role->nm_role == 'admin')
+        <li class="pc-item pc-hasmenu">
+          <a href="#!" class="pc-link"
+            ><span class="pc-micon"><img src="/assets/images/ikon3.png" alt="" srcset=""></span><span class="pc-mtext">DCR</span
+            ><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+          </a>
+          <ul class="pc-submenu">
+            <li class="pc-item"><a class="pc-link" href="{{ route('memo.terkirim',Auth::user()->id) }}">DCR Keluar</a></li>
+            <li class="pc-item pc-hasmenu"><a href="{{ route('DCR.diterima',Auth::user()->id) }}" class="pc-link">Memo Masuk</span></a></li>
+          </ul>
+        </li>
+        @endif
+
         @if(Auth::user()->role->nm_role != 'manager')
         <li class="pc-item pc-hasmenu">
           <a href="#!" class="pc-link"
