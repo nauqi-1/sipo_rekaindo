@@ -34,16 +34,16 @@
 
         <!-- Filter & Search Bar -->
         <div class="surat">
-            <div class="header-tools">
+            <div class="header-tools" style="display: flex; ">
                 <div class="search-filter">
                     <form method="GET" action="{{ route('memo.diterima', Auth::user()->id) }}" class="d-flex align-items-center gap-3 flex-wrap">
-                        <div class="dropdown d-flex gap-3" style="position:relative; width: 300px;">
+                       <!-- <div class="dropdown d-flex gap-3" style="position:relative; width: 300px;">
                     <select name="divisi_filter" class="form-select" onchange="this.form.submit()">
                         <option value="">Semua Memo</option>
                         <option value="own" {{ request('divisi_filter') == 'own' ? 'selected' : '' }}>Memo Keluar</option>
                         <option value="other" {{ request('divisi_filter') == 'other' ? 'selected' : '' }}>Memo Masuk</option>
                     </select>
-                </div>
+                </div>-->
                     <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                             <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                         </div>
