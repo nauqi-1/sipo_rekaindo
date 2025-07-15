@@ -18,6 +18,8 @@ use App\Models\BackupRisalah;
 use App\Models\User;
 use App\Models\Divisi;
 use App\Models\Undangan;
+use App\Models\Department;
+use App\Models\Director;
 
 class RisalahController extends Controller
 {
@@ -25,43 +27,35 @@ class RisalahController extends Controller
     {
         $divisi = Divisi::all();
         $seri = Seri::all(); 
-        $userDivisiId = Auth::user()->divisi_id_divisi;
         $userId = Auth::id(); 
 
-        // Ambil ID memo yang sudah diarsipkan oleh user saat ini
-        $risalahDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
-        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
-        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        // Ambil ID memo yang sudah diarsipkan oleh user ini
+        $risalahDiarsipkan = Arsip::where('user_id', $userId)->pluck('document_id')->toArray();
 
         $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_risalah', 'judul'];
-         if (!in_array($sortBy, $allowedSortColumns)) {
-            $sortBy = 'created_at'; // fallback default
-        }
+        $sortBy = in_array($request->get('sort_by'), $allowedSortColumns) ? $request->get('sort_by') : 'created_at';
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
 
-        // Ambil memo yang belum diarsipkan oleh user saat ini
-        $query = Risalah::with('divisi')
-        ->whereNotIn('id_risalah', $risalahDiarsipkan) // Filter memo yang belum diarsipkan
-        ->where(function ($q) use ($userDivisiId, $userId) {
-            // Memo yang dibuat oleh divisi user sendiri
-            $q->where('divisi_id_divisi', $userDivisiId)
-            
-            // Memo yang dikirim ke user dari divisi lain melalui tabel kirim_document
-            ->orWhereHas('kirimDocument', function ($query) use ($userId, $userDivisiId) {
-                $query->where('jenis_document', 'risalah')
-                      ->where('id_penerima', $userId)
-                      ->whereHas('penerima', function ($subQuery) use ($userDivisiId) {
-                          $subQuery->where('divisi_id_divisi', $userDivisiId);
-                      });
+        // Query awal: risalah belum diarsipkan
+        $query = Risalah::query()
+            ->whereNotIn('id_risalah', $risalahDiarsipkan)
+            ->where(function ($q) use ($userId) {
+                // Jika user terlibat dalam kirimDocument jenis risalah
+                $q->orWhereHas('kirimDocument', function ($query) use ($userId) {
+                    $query->where('jenis_document', 'risalah')
+                        ->where(function ($query) use ($userId) {
+                            $query->where('id_pengirim', $userId)
+                                ->orWhere('id_penerima', $userId);
+                        });
+                });
             });
-        });
-        
-        
-        // Filter berdasarkan status
-        if ($request->has('status') && $request->status != '') {
+
+        // Filter status
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Filter berdasarkan tanggal dibuat
+        // Filter tanggal dibuat
         if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
             $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
         } elseif ($request->filled('tgl_dibuat_awal')) {
@@ -70,52 +64,40 @@ class RisalahController extends Controller
             $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
         }
 
-        // Pencarian berdasarkan nama dokumen atau nomor undangans
-        if ($request->has('search') && $request->search != '') {
+        // Filter search
+        if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('judul', 'like', '%' . $request->search . '%')
-                  ->orWhere('nomor_risalah', 'like', '%' . $request->search . '%');
+                $q->where('judul', 'like', '%'.$request->search.'%')
+                ->orWhere('nomor_risalah', 'like', '%'.$request->search.'%');
             });
         }
 
-        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-        $query->orderBy($sortBy, $sortDirection);
+        // Sorting & pagination
+        $perPage = $request->get('per_page', 10);
+        $risalahs = $query->with('divisi')
+                    ->orderBy($sortBy, $sortDirection)
+                    ->paginate($perPage);
 
-        // Mengambil daftar memo dengan relasi divisi
-        $risalahs = $query->with('divisi')->orderBy('tgl_dibuat', 'desc')->paginate(10);
-
-        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
-        $risalahs = $query->paginate($perPage);
-
+        // Tambah final_status
         $risalahs->getCollection()->transform(function ($risalah) use ($userId) {
-            if ($risalah->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
-                $risalah->final_status = $risalah->status; // Memo dari divisi sendiri
-            } else {
-                $statusKirim= Kirim_Document::where('id_document', $risalah->id_risalah)
-                    ->where('jenis_document', 'risalah')
-                    ->where('id_penerima', $userId)
-                    ->first();
-                $risalah->final_status = $statusKirim ? $statusKirim->status : '-';
-                // Cari status kiriman untuk user login
-            }
+            $statusKirim = Kirim_Document::where('id_document', $risalah->id_risalah)
+                ->where('jenis_document', 'risalah')
+                ->where('id_penerima', $userId)
+                ->first();
+            $risalah->final_status = $statusKirim ? $statusKirim->status : '-';
             return $risalah;
         });
-          $kirimDocuments = Kirim_Document::where('jenis_document', 'risalah')
-        ->whereHas('risalah') // Memastikan dokumen adalah risalah
-        ->get();
 
-    // Ambil divisi penerima dan pengirim melalui relasi user
-    $kirimDocuments->each(function ($kirim) {
-        $pengirim = User::find($kirim->id_pengirim);
-        $penerima = User::find($kirim->id_penerima);
-        $user = Auth::user();
+        // (Opsional) Ambil semua kirimDocuments user ini
+        $kirimDocuments = Kirim_Document::where('jenis_document', 'risalah')
+            ->where(function($query) use ($userId) {
+                $query->where('id_pengirim', $userId)
+                    ->orWhere('id_penerima', $userId);
+            })
+            ->get();
 
-        $kirim->divisi_pengirim = $pengirim ? $pengirim->divisi->nm_divisi : 'Tidak Diketahui';
-        $kirim->divisi_penerima = $penerima ? $penerima->divisi->nm_divisi : 'Tidak Diketahui';
-        $kirim->divisi_user = $user->divisi->nm_divisi ?? 'Tidak Diketahui';
-    });
-
-        return view(Auth::user()->role->nm_role.'.risalah.risalah-'.Auth::user()->role->nm_role, compact('risalahs', 'divisi', 'seri', 'sortDirection', 'kirimDocuments'));
+        return view(Auth::user()->role->nm_role.'.risalah.risalah-'.Auth::user()->role->nm_role, 
+            compact('risalahs', 'divisi', 'seri', 'sortDirection', 'kirimDocuments'));
     }
 
     public function superadmin(Request $request){
@@ -177,20 +159,38 @@ class RisalahController extends Controller
     }
 
     public function create()
-    {
-        $divisiId = auth()->user()->divisi_id_divisi;
-        $divisiName = auth()->user()->divisi->nm_divisi;
+    {    
+        $idUser = Auth::user();
+        $divisiId = Divisi::where('nm_divisi', 'like', '%Keuangan%')
+                    ->orWhere('nm_divisi', 'like', '%HR%')
+                    ->first();
+        $user = User::where('id', $idUser->id)->first();
+        // dd($user);
+        if($user->divisi_id_divisi == $divisiId->id_divisi){
+            $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->get();
+        } else if($user->divisi_id_divisi != $divisiId->id_divisi){
+            if($user->unit_id_unit != NULL || $user->section_id_section != NULL || $user->department_id_department != NULL){ //Struktur dibawah / setara Departemen
+                $divisiName = Department::where('id_department', $user->department_id_department)->first();
+                $divisiName = $divisiName->name_department;
+            } else if ($user->divisi_id_divisi != NULL) {
+                $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+                $divisiName = $divisiName->nm_divisi;
+            } else if ($user->director_id_director != NULL) {
+                $divisiName = Director::where('id_director', $user->director_id_director)->first();
+                $divisiName = $divisiName->name_director;
+            }
+        }
         $undangan = Undangan::whereNotIn('judul', function($query) {
                         $query->select('judul')->from('risalah');
                     })
-                    ->where('divisi_id_divisi', $divisiId)
+                    // ->where('department_id_department', $divisiId)
                     ->get();
 
         $risalah = new Risalah(); // atau ambil dari data risalah terakhir, terserah kebutuhanmu
         
         // Ambil nomor seri berikutnya
         $nextSeri = Seri::getNextSeri(false);
-        
+
         // Konversi bulan ke angka Romawi
         $bulanRomawi = $this->convertToRoman(now()->month);
     
