@@ -89,4 +89,8 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Unit::class, 'unit_id_unit', 'id_unit');
     }
+    public function director()
+    {
+        return $this->belongsTo(Director::class, 'director_id_director', 'id_director');
+    }
 }

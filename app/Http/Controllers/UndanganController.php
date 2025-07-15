@@ -9,6 +9,8 @@ use App\Models\Divisi;
 use App\Models\Arsip;
 use App\Models\Notifikasi; 
 use App\Models\Undangan;
+use App\Models\Department;
+use App\Models\Director;
 use App\Models\Backup_Document;
 use App\Models\Kirim_Document;
 use Illuminate\Support\Facades\Validator;
@@ -220,10 +222,39 @@ public function index(Request $request)
    
     public function create()
     {
-    $divisiId = Auth::user()->divisi_id_divisi;
-    $divisiName = Auth::user()->divisi->nm_divisi;
+        $mainDirector = Director::with([
+        'subDirectors.divisi.department.section.unit.users',
+        'divisi.department.section.unit.users',
+        'department.section.unit.users',
+        'section.unit.users',
+        'unit.users'
+    ])->where('is_main', 1)->first();
+    //$divisiId = Auth::user()->divisi_id_divisi;
+    // $divisiName = Auth::user()->divisi->nm_divisi;
     $divisiList = Divisi::all(); 
-    
+
+    $idUser = Auth::user();
+        $divisiId = Divisi::where('nm_divisi', 'like', '%Keuangan%')
+                    ->orWhere('nm_divisi', 'like', '%HR%')
+                    ->first();
+        $user = User::where('id', $idUser->id)->first();
+        // dd($user);
+        if($user->divisi_id_divisi == $divisiId->id_divisi){
+            $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->get();
+        } else if($user->divisi_id_divisi !== $divisiId->id_divisi){
+            if($user->unit_id_unit != NULL || $user->section_id_section != NULL || $user->department_id_department != NULL){ //Struktur dibawah / setara Departemen
+                $divisiName = Department::where('id_department', $user->department_id_department)->first();
+                $divisiName = $divisiName->name_department;
+            } else if ($user->divisi_id_divisi != NULL) {
+                $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+                $divisiName = $divisiName->nm_divisi;
+            } else if ($user->director_id_director != NULL) {
+                $divisiName = Director::where('id_director', $user->director_id_director)->first();
+                $divisiName = $divisiName->name_director;
+            }
+        }
+
+
     // Ambil nomor seri berikutnya
     $nextSeri = Seri::getNextSeri(false);
     
@@ -251,7 +282,8 @@ public function index(Request $request)
         'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
         'nomorDokumen' => $nomorDokumen,
         'managers' => $managers,
-        'divisiList' => $divisiList
+        'divisiList' => $divisiList,
+        'mainDirector' => $mainDirector, // Struktur direktur dan divisi
     ]);  
     }
     public function store(Request $request)

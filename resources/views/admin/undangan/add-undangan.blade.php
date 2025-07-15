@@ -77,19 +77,76 @@
                             <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
                             <label for="tujuan" class="label-kepada">Centang lebih dari satu jika diperlukan</label>
                         </label>
-                        <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
-                            @foreach($divisiList as $d)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" 
-                                        name="tujuan[]" 
-                                        value="{{ $d->id_divisi }}" 
-                                        id="divisi_{{ $d->id_divisi }}">
-                                    <label class="form-check-label" for="divisi_{{ $d->id_divisi }}">
-                                        {{ $d->nm_divisi }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
+                        @php
+function renderCheckboxRecursive($node) {
+    if(isset($node->name_director)) {
+        $label = "Direktur: ".htmlspecialchars($node->name_director);
+        $margin = 0;
+        $users = $node->users ?? collect();
+        $child = $node->subDirectors ?? [];
+    } elseif(isset($node->nm_divisi)) {
+        $label = "Divisi: ".htmlspecialchars($node->nm_divisi);
+        $margin = 20;
+        $users = $node->users ?? collect();
+        $child = $node->department ?? [];
+    } elseif(isset($node->name_department)) {
+        $label = "Departemen: ".htmlspecialchars($node->name_department);
+        $margin = 40;
+        $users = $node->users ?? collect();
+        $child = $node->section ?? [];
+    } elseif(isset($node->name_section)) {
+        $label = "Bagian: ".htmlspecialchars($node->name_section);
+        $margin = 60;
+        $users = $node->users ?? collect();
+        $child = $node->unit ?? [];
+    } elseif(isset($node->name_unit)) {
+        $label = "Unit: ".htmlspecialchars($node->name_unit);
+        $margin = 80;
+        $users = $node->users ?? collect();
+        $child = [];
+    } else {
+        return;
+    }
+
+    echo "<li style='margin-left: {$margin}px; list-style-type: none;'>";
+    echo "<strong>{$label}</strong>";
+
+    // List user (checkbox penerima)
+    if(count($users) > 0){
+        echo "<ul style='margin-top: 5px;'>";
+        foreach($users as $user){
+            echo "<li style='margin-left: 15px;'>
+                    <input type='checkbox' name='tujuan[]' value='{$user->id}'>
+                    {$user->firstname} {$user->lastname}
+                  </li>";
+        }
+        echo "</ul>";
+    }
+
+    // Children node
+    if(count($child) > 0){
+        echo "<ul>";
+        foreach($child as $c){
+            renderCheckboxRecursive($c);
+        }
+        echo "</ul>";
+    }
+
+    echo "</li>";
+}
+@endphp
+<div class="dropdown-checklist dropdown">
+    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+        Pilih Penerima
+    </button>
+    <ul class="dropdown-menu p-2" style="max-height: 400px; overflow-y: auto;">
+        @if($mainDirector)
+            @php renderCheckboxRecursive($mainDirector); @endphp
+        @endif
+    </ul>
+</div>
+
+
                         <!-- <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" value="{{ old('tujuan') }}" > -->
                         @error('tujuan[]')
                             <div class="form-control text-danger">{{ $message }}</div>       

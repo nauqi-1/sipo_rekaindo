@@ -31,4 +31,8 @@ class Director extends Model
     {
         return $this->hasMany(Department::class, 'director_id_director', 'id_director');
     }
+    public function users()
+    {
+        return $this->hasMany(User::class, 'director_id_director', 'id_director');
+    }
 }
