@@ -23,6 +23,10 @@ class Section extends Model
         return $this->hasMany(Unit::class, 'section_id_section', 'id_section');
     }
     
+    public function users()
+    {
+        return $this->hasMany(User::class, 'section_id_section', 'id_section');
+    }
 }
 
 ?>

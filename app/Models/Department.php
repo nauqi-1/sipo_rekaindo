@@ -17,7 +17,7 @@ class Department extends Model
         return $this->belongsTo(Divisi::class);
     }
 
-    public function user()
+    public function users()
     {
         return $this->hasMany(User::class, 'department_id_department', 'id_department');
     }
