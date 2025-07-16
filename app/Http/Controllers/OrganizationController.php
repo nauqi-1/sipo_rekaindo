@@ -120,18 +120,26 @@ class OrganizationController extends Controller
     public function update(Request $request, $type, $id)
     {
         $name = $request->input('name');
+        if(!empty($request->input('kode'))){
+            $kode = $request->input('kode');
+        } else {
+            $kode = NULL;
+        }
         switch ($type) {
             case 'director':
                 $model = Director::findOrFail($id);
                 $model->name_director = $name;
+                $model->kode_director = $kode;
                 break;
             case 'divisi':
                 $model = Divisi::findOrFail($id);
                 $model->nm_divisi = $name;
+                $model->kode_divisi = $kode;
                 break;
             case 'department':
                 $model = Department::findOrFail($id);
                 $model->name_department = $name;
+                $model->kode_department = $kode;
                 break;
             case 'section':
                 $model = Section::findOrFail($id);
