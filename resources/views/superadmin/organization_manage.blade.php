@@ -73,24 +73,33 @@
             function renderOrgRecursive($node) {
                 if(isset($node->name_director)) {
                     $label = "Direktur: ".htmlspecialchars($node->name_director);
+                    if(!empty($node->kode_director)) {
+                        $label .= " (".htmlspecialchars($node->kode_director).")";
+                    }
                     $margin = 0; $border = 'primary'; $bg = 'primary';
-                    $type = 'director'; $id = $node->id_director; $name = $node->name_director;
+                    $type = 'director'; $id = $node->id_director; $name = $node->name_director; $kode = $node->kode_director ?? '';
                 } elseif(isset($node->nm_divisi)) {
                     $label = "Divisi: ".htmlspecialchars($node->nm_divisi);
+                    if(!empty($node->kode_divisi)) {
+                        $label .= " (".htmlspecialchars($node->kode_divisi).")";
+                    }
                     $margin = 20; $border = 'secondary'; $bg = 'secondary';
-                    $type = 'divisi'; $id = $node->id_divisi; $name = $node->nm_divisi;
+                    $type = 'divisi'; $id = $node->id_divisi; $name = $node->nm_divisi; $kode = $node->kode_divisi ?? '';
                 } elseif(isset($node->name_department)) {
                     $label = "Departemen: ".htmlspecialchars($node->name_department);
+                    if(!empty($node->kode_department)) {
+                        $label .= " (".htmlspecialchars($node->kode_department).")";
+                    }
                     $margin = 40; $border = 'info'; $bg = 'info';
-                    $type = 'department'; $id = $node->id_department; $name = $node->name_department;
+                    $type = 'department'; $id = $node->id_department; $name = $node->name_department; $kode = $node->kode_department ?? '';
                 } elseif(isset($node->name_section)) {
                     $label = "Bagian: ".htmlspecialchars($node->name_section);
                     $margin = 60; $border = 'success'; $bg = 'success';
-                    $type = 'section'; $id = $node->id_section; $name = $node->name_section;
+                    $type = 'section'; $id = $node->id_section; $name = $node->name_section; $kode = $node->kode_section ?? '';
                 } elseif(isset($node->name_unit)) {
                     $label = "Unit: ".htmlspecialchars($node->name_unit);
                     $margin = 80; $border = 'warning'; $bg = 'warning';
-                    $type = 'unit'; $id = $node->id_unit; $name = $node->name_unit;
+                    $type = 'unit'; $id = $node->id_unit; $name = $node->name_unit; $kode = $node->kode_unit ?? '';
                 } else {
                     return;
                 }
@@ -117,7 +126,7 @@
                                 
                                 <span>
                                     <button class='btn btn-edit' data-bs-toggle='modal' data-bs-target='#editModal'
-                                        data-type='{$type}' data-id='{$id}' data-name=\"".htmlspecialchars($name, ENT_QUOTES)."\">
+                                        data-type='{$type}' data-id='{$id}' data-name=\"".htmlspecialchars($name, ENT_QUOTES)."\" data-kode=\"".htmlspecialchars($kode, ENT_QUOTES)."\">
                                         <img src='/img/user-manage/Edit1.png' alt='edit'>
                                     </button>
                                     <button type='button' class='btn btn-delete' onclick=\"confirmDelete('{$deleteUrl}')\">
@@ -173,7 +182,7 @@
                             <span>{$label}</span>
                             <span>
                                 <button class='btn btn-sm btn-light me-1' data-bs-toggle='modal' data-bs-target='#editModal'
-                                    data-type='{$type}' data-id='{$id}' data-name=\"".htmlspecialchars($name, ENT_QUOTES)."\">
+                                    data-type='{$type}' data-id='{$id}' data-name=\"".htmlspecialchars($name, ENT_QUOTES)."\" data-kode=\"".htmlspecialchars($kode, ENT_QUOTES)."\">
                                     Edit
                                 </button>
                                 <button type='button' class='btn btn-sm btn-danger' onclick=\"confirmDelete('{$deleteUrl}')\">
@@ -270,6 +279,11 @@
             <input type="text" class="form-control" id="name" name="name" required placeholder="Masukkan nama struktur...">
           </div>
 
+          <div class="mb-3">
+            <label for="kode" class="form-label">Kode Struktur</label>
+            <input type="text" class="form-control" id="kode" name="kode" required placeholder="Masukkan kode struktur...">
+          </div>
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -298,6 +312,10 @@
                         <label for="editName" class="form-label">Nama</label>
                         <input type="text" class="form-control" id="editName" name="name" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="editKode" class="form-label">Kode</label>
+                        <input type="text" class="form-control" id="editKode" name="kode" required>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Simpan</button>
@@ -316,10 +334,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const type = button.getAttribute('data-type');
         const id = button.getAttribute('data-id');
         const name = button.getAttribute('data-name');
+        const kode = button.getAttribute('data-kode');
 
         editModal.querySelector('#editType').value = type;
         editModal.querySelector('#editId').value = id;
         editModal.querySelector('#editName').value = name;
+        editModal.querySelector('#editKode').value = kode;
 
         editModal.querySelector('#editForm').action = `/organization/${type}/${id}`;
     });
