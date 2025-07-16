@@ -69,140 +69,95 @@
 
         <!-- Table -->
         <table class="table-light">
-        <thead>
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Nama Dokumen</th>
+            <th>Verif</th>
+            <th>Tgl. Risalah
+                <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'created_at', 'sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}" style="color:rgb(135,135,148); text-decoration:none;">
+                    <span class="bi-arrow-down-up"></span>
+                </a>
+            </th>
+            <th>Seri</th>
+            <th>Dokumen</th>
+            <th>Tgl. Disahkan
+                <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan', 'sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}" style="color:rgb(135,135,148); text-decoration:none;">
+                    <span class="bi-arrow-down-up"></span>
+                </a>
+            </th>
+            <th>Divisi</th>
+            <th>Status</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($risalahs as $risalah)
             <tr>
-                <th>No</th>
-                <th>Nama Dokumen</th>
-                <th>Verif</th>
-                <th>Tgl. Risalah
-                    <button class="data-md">
-                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'created_at','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
-                            style="color:rgb(135, 135, 148); text-decoration: none;">
-                            <span class="bi-arrow-down-up"></span>
-                        </a>
-                    </button>
-                </th>
-                <th>Seri</th>
-                <th>Dokumen</th>
-                <th>Tgl. Disahkan
-                    <button class="data-md">
-                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
-                            style="color:rgb(135, 135, 148); text-decoration: none;">
-                            <span class="bi-arrow-down-up"></span>
-                        </a>
-                    </button>
-                </th>
-                <th>Divisi</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($risalahs as $index => $risalah)
-            <tr>
-                <td class="nomor">{{ $index + 1 }}</td>
-                @if (Auth::user()->divisi->id_divisi == $risalah->divisi->id_divisi)
-                    <td class="nama-dokumen 
-                        {{ $risalah->status == 'reject' || $risalah->status == 'correction' ? 'text-danger' : ($risalah->status == 'pending' ? 'text-warning' : 'text-success') }}">
-                        {{ $risalah->judul }}
-                    </td>
-                @elseif(Auth::user()->divisi->id_divisi != $risalah->divisi->id_divisi)
-                    <td class="nama-dokumen 
-                        {{ $risalah->final_status == 'reject' ? 'text-danger' : ($risalah->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
-                        {{ $risalah->judul }}
-                    </td>
-                @endif
+                <td class="nomor">{{ $loop->iteration }}</td>
+                <td class="nama-dokumen 
+                    {{ $risalah->status == 'reject' || $risalah->status == 'correction' ? 'text-danger' : ($risalah->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                    {{ $risalah->judul }}
+                </td>
                 <td>
-                        @php
-                            // Cari dokumen kiriman yang sesuai dengan ID risalah
-                            $kirimDocument = $kirimDocuments->firstWhere('id_document', $risalah->id_risalah);
-                        @endphp
 
-                        @if($kirimDocument)
-                            @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'pending')
-                                <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
-                            @elseif($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $risalah->final_status == 'approve')
-                                <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
-                            @else
-                                <p>-</p>
-                            @endif
-                        @else
-                            <p>-</p>
-                        @endif
-                    </td>
+                    @if($risalah->status == 'pending')
+                        <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
+                    @elseif($risalah->status == 'approve')
+                        <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
+                    @else
+                        <p>-</p>
+                    @endif
+                </td>
                 <td>{{ \Carbon\Carbon::parse($risalah->tgl_dibuat)->format('d-m-Y') }}</td>
                 <td>{{ $risalah->seri_surat }}</td>
                 <td>{{ $risalah->nomor_risalah }}</td>
                 <td>{{ $risalah->tgl_disahkan ? \Carbon\Carbon::parse($risalah->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                <td>{{ $risalah->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                <td>{{ $risalah->divisi->nm_divisi ?? '-' }}</td>
                 <td>
-                        @if ($risalah->final_status == 'reject')
-                            <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($risalah->final_status == 'pending')
-                            <span class="badge bg-warning">Diproses</span>
-                        @elseif ($risalah->final_status == 'correction')
-                            <span class="badge bg-danger">Dikoreksi</span>
-                        @else
-                            <span class="badge bg-success">Diterima</span>
-                        @endif
+                    @if ($risalah->status == 'reject')
+                        <span class="badge bg-danger">Ditolak</span>
+                    @elseif ($risalah->status == 'pending')
+                        <span class="badge bg-warning">Diproses</span>
+                    @elseif ($risalah->status == 'correction')
+                        <span class="badge bg-danger">Dikoreksi</span>
+                    @else
+                        <span class="badge bg-success">Diterima</span>
+                    @endif
                 </td>
                 <td>
-                    @if (Auth::user()->divisi->id_divisi == $risalah->divisi->id_divisi)
-                            @if ($risalah->status == 'approve' || $risalah->status == 'reject' )
-                                <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('POST') 
-                                    <button type="submit" class="btn btn-sm3 submitArsipRisalah">
-                                        <img src="/img/memo-superadmin/arsip.png" alt="arsip">
-                                    </button>
-                                </form>
-                            @else
-                                <a href="{{ route('risalah.edit', $risalah->id_risalah) }}" class="btn btn-sm3">
-                                    <img src="/img/risalah/edit.png" alt="edit">
-                                </a>
-                            @endif
-                            @elseif (Auth::user()->divisi->id_divisi != $risalah->divisi->id_divisi)
-                            @if ($risalah->final_status == 'approve' || $risalah->final_status == 'reject')
-                                <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('POST') 
-                                    <button type="submit" class="btn btn-sm3">
-                                        <img src="/img/memo-superadmin/arsip.png" alt="arsip">
-                                    </button>
-                                </form>
-                            @else
-                                <a href="{{ route('risalah.edit', $risalah->id_risalah) }}" class="btn btn-sm3">
-                                    <img src="/img/risalah/edit.png" alt="edit">
-                                </a>
-                            @endif
-                        @endif
-                    <!-- @if ($risalah->status != 'reject' && ($risalah->status != 'approve' || Auth::user()->divisi->id_divisi == $risalah->divisi->id_divisi)) 
-                    <a href="{{ route('kirim-risalahAdmin.admin',['id' => $risalah->id_risalah]) }}" class="btn btn-sm1">
-                        <img src="/img/memo-admin/share.png" alt="share">
-                    </a>               
-                    @endif
-                    <!-- Status Approve 
-                    @if ($risalah->status == 'approve') 
-                    <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display: inline;">
-                    @csrf
-                    @method('POST') 
-                        <button type="submit" class="btn btn-sm3">
-                            <img src="/img/memo-superadmin/arsip.png" alt="arsip">
-                        </button>
-                    </form>
+                    {{-- Edit / Arsip --}}
+                    @if ($risalah->status == 'approve' || $risalah->status == 'reject')
+                        <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-sm3 submitArsipRisalah">
+                                <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                            </button>
+                        </form>
                     @else
                         <a href="{{ route('risalah.edit', $risalah->id_risalah) }}" class="btn btn-sm3">
-                            <img src="/img/memo-admin/edit.png" alt="edit">
+                            <img src="/img/risalah/edit.png" alt="edit">
                         </a>
-                    @endif -->
+                        {{-- Jika sudah approve/reject untuk diarsipkan juga --}}
+                        @if ($risalah->final_status == 'approve' || $risalah->final_status == 'reject')
+                            <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display:inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-sm3">
+                                    <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                                </button>
+                            </form>
+                        @endif
+                    @endif
+                    {{-- View --}}
                     <a href="{{ route('view.risalahAdmin', ['id' => $risalah->id_risalah]) }}" class="btn btn-sm1">
                         <img src="/img/memo-admin/viewBlue.png" alt="view">
                     </a>
                 </td>
             </tr>
-            @endforeach
-            </tbody>
-        </table>
+        @endforeach
+    </tbody>
+</table>
+
         {{ $risalahs->links('pagination::bootstrap-5') }}
     </div>
 </div>
