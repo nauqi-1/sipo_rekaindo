@@ -301,38 +301,41 @@ public function index(Request $request)
     }
     private function getOrgTreeWithUsers()
     {
-        $directors = Director::with(['divisi.department.section.unit', 'users'])->get();
+       $directors = Director::with([
+            'users',
+            'divisi.users',
+            'divisi.department.users',
+            'divisi.department.section.users',
+            'divisi.department.section.unit.users',
+            'department.users',
+            'department.section.users',
+            'department.section.unit.users'
+        ])->get();
+
         $tree = [];
 
         foreach ($directors as $director) {
             $dir = $director->toArray();
             $dir['users'] = $director->users->toArray();
-
-            foreach ($dir['divisi'] ?? [] as &$div) {
-                $divModel = Divisi::find($div['id_divisi']);
-                $div['users'] = $divModel?->users?->toArray() ?? [];
-
-                foreach ($div['department'] ?? [] as &$dept) {
-                    $deptModel = Department::find($dept['id_department']);
-                    $dept['users'] = $deptModel?->users?->toArray() ?? [];
-
-                    foreach ($dept['section'] ?? [] as &$section) {
-                        $sectionModel = Section::find($section['id_section']);
-                        $section['users'] = $sectionModel?->users?->toArray() ?? [];
-
-                        foreach ($section['unit'] ?? [] as &$unit) {
-                            $unitModel = Unit::find($unit['id_unit']);
-                            $unit['users'] = $unitModel?->users?->toArray() ?? [];
-                        }
-                    }
-                }
-            }
             $tree[] = $dir;
         }
         return $tree;
         }
         
-        private function convertToJsTree($tree)
+        private function filterUsersAtLevel($users, $level)
+    {
+        return array_values(array_filter($users, function($user) use ($level) {
+            return (
+                ($level === 'director' && is_null($user['divisi_id_divisi']) && is_null($user['department_id_department']) && is_null($user['section_id_section']) && is_null($user['unit_id_unit'])) ||
+                ($level === 'divisi' && !is_null($user['divisi_id_divisi']) && is_null($user['department_id_department']) && is_null($user['section_id_section']) && is_null($user['unit_id_unit'])) ||
+                ($level === 'department' && !is_null($user['department_id_department']) && is_null($user['section_id_section']) && is_null($user['unit_id_unit'])) ||
+                ($level === 'section' && !is_null($user['section_id_section']) && is_null($user['unit_id_unit'])) ||
+                ($level === 'unit' && !is_null($user['unit_id_unit']))
+            );
+        }));
+    }
+
+    private function convertToJsTree($tree)
     {
         $result = [];
         foreach ($tree as $director) {
@@ -342,7 +345,10 @@ public function index(Request $request)
                 'children' => []
             ];
 
-            foreach ($director['users'] ?? [] as $user) {
+            // Filter user hanya yang di level director saja
+            $dirNode['children'] = [];
+            $usersAtDirector = $this->filterUsersAtLevel($director['users'], 'director');
+            foreach ($usersAtDirector as $user) {
                 $dirNode['children'][] = [
                     'id' => 'user-'.$user['id'],
                     'text' => $user['firstname'].' '.$user['lastname'],
@@ -350,78 +356,95 @@ public function index(Request $request)
                 ];
             }
 
-            foreach ($director['divisi'] ?? [] as $divisi) {
-                $divNode = [
-                    'id' => 'divisi-'.$divisi['id_divisi'],
-                    'text' => $divisi['nm_divisi'],
-                    'children' => []
-                ];
-
-                foreach ($divisi['users'] ?? [] as $user) {
-                    $divNode['children'][] = [
-                        'id' => 'user-'.$user['id'],
-                        'text' => $user['firstname'].' '.$user['lastname'],
-                        'icon' => 'fa fa-user'
-                    ];
-                }
-
-                foreach ($divisi['department'] ?? [] as $dept) {
-                    $deptNode = [
-                        'id' => 'dept-'.$dept['id_department'],
-                        'text' => $dept['name_department'],
-                        'children' => []
-                    ];
-
-                    foreach ($dept['users'] ?? [] as $user) {
+            // Tanpa Divisi (langsung Department)
+            if (empty($director['divisi'])) {
+                foreach ($director['department'] ?? [] as $dept) {
+                    $deptNode = [ 'id' => 'dept-'.$dept['id_department'], 'text' => $dept['name_department'], 'children' => [] ];
+                    $usersAtDepartment = $this->filterUsersAtLevel($dept['users'] ?? [], 'department');
+                    foreach ($usersAtDepartment as $user) {
                         $deptNode['children'][] = [
                             'id' => 'user-'.$user['id'],
                             'text' => $user['firstname'].' '.$user['lastname'],
                             'icon' => 'fa fa-user'
                         ];
                     }
-
                     foreach ($dept['section'] ?? [] as $section) {
-                        $sectionNode = [
-                            'id' => 'section-'.$section['id_section'],
-                            'text' => $section['name_section'],
-                            'children' => []
-                        ];
-
-                        foreach ($section['users'] ?? [] as $user) {
+                        $sectionNode = [ 'id' => 'section-'.$section['id_section'], 'text' => $section['name_section'], 'children' => [] ];
+                        $usersAtSection = $this->filterUsersAtLevel($section['users'] ?? [], 'section');
+                        foreach ($usersAtSection as $user) {
                             $sectionNode['children'][] = [
                                 'id' => 'user-'.$user['id'],
                                 'text' => $user['firstname'].' '.$user['lastname'],
                                 'icon' => 'fa fa-user'
                             ];
                         }
-
                         foreach ($section['unit'] ?? [] as $unit) {
-                            $unitNode = [
-                                'id' => 'unit-'.$unit['id_unit'],
-                                'text' => $unit['name_unit'],
-                                'children' => []
-                            ];
-
-                            foreach ($unit['users'] ?? [] as $user) {
+                            $unitNode = [ 'id' => 'unit-'.$unit['id_unit'], 'text' => $unit['name_unit'], 'children' => [] ];
+                            $usersAtUnit = $this->filterUsersAtLevel($unit['users'] ?? [], 'unit');
+                            foreach ($usersAtUnit as $user) {
                                 $unitNode['children'][] = [
                                     'id' => 'user-'.$user['id'],
                                     'text' => $user['firstname'].' '.$user['lastname'],
                                     'icon' => 'fa fa-user'
                                 ];
                             }
-
                             $sectionNode['children'][] = $unitNode;
                         }
-
                         $deptNode['children'][] = $sectionNode;
                     }
-
-                    $divNode['children'][] = $deptNode;
+                    $dirNode['children'][] = $deptNode;
                 }
-
-                $dirNode['children'][] = $divNode;
+            } else {
+                // Dengan Divisi
+                foreach ($director['divisi'] ?? [] as $divisi) {
+                    $divNode = [ 'id' => 'divisi-'.$divisi['id_divisi'], 'text' => $divisi['nm_divisi'], 'children' => [] ];
+                    $usersAtDivisi = $this->filterUsersAtLevel($divisi['users'] ?? [], 'divisi');
+                    foreach ($usersAtDivisi as $user) {
+                        $divNode['children'][] = [
+                            'id' => 'user-'.$user['id'],
+                            'text' => $user['firstname'].' '.$user['lastname'],
+                            'icon' => 'fa fa-user'
+                        ];
+                    }
+                    foreach ($divisi['department'] ?? [] as $dept) {
+                        $deptNode = [ 'id' => 'dept-'.$dept['id_department'], 'text' => $dept['name_department'], 'children' => [] ];
+                        $usersAtDepartment = $this->filterUsersAtLevel($dept['users'] ?? [], 'department');
+                        foreach ($usersAtDepartment as $user) {
+                            $deptNode['children'][] = [
+                                'id' => 'user-'.$user['id'],
+                                'text' => $user['firstname'].' '.$user['lastname'],
+                                'icon' => 'fa fa-user'
+                            ];
+                        }
+                        foreach ($dept['section'] ?? [] as $section) {
+                            $sectionNode = [ 'id' => 'section-'.$section['id_section'], 'text' => $section['name_section'], 'children' => [] ];
+                            $usersAtSection = $this->filterUsersAtLevel($section['users'] ?? [], 'section');
+                            foreach ($usersAtSection as $user) {
+                                $sectionNode['children'][] = [
+                                    'id' => 'user-'.$user['id'],
+                                    'text' => $user['firstname'].' '.$user['lastname'],
+                                    'icon' => 'fa fa-user'
+                                ];
+                            }
+                            foreach ($section['unit'] ?? [] as $unit) {
+                                $unitNode = [ 'id' => 'unit-'.$unit['id_unit'], 'text' => $unit['name_unit'], 'children' => [] ];
+                                $usersAtUnit = $this->filterUsersAtLevel($unit['users'] ?? [], 'unit');
+                                foreach ($usersAtUnit as $user) {
+                                    $unitNode['children'][] = [
+                                        'id' => 'user-'.$user['id'],
+                                        'text' => $user['firstname'].' '.$user['lastname'],
+                                        'icon' => 'fa fa-user'
+                                    ];
+                                }
+                                $sectionNode['children'][] = $unitNode;
+                            }
+                            $deptNode['children'][] = $sectionNode;
+                        }
+                        $divNode['children'][] = $deptNode;
+                    }
+                    $dirNode['children'][] = $divNode;
+                }
             }
-
             $result[] = $dirNode;
         }
         return json_encode($result);
