@@ -13,6 +13,8 @@ use App\Models\Department;
 use App\Models\Director;
 use App\Models\Backup_Document;
 use App\Models\Kirim_Document;
+use App\Models\Section;
+use App\Models\Unit;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Log;
@@ -222,6 +224,11 @@ public function index(Request $request)
    
     public function create()
     {
+
+        $orgTree = $this->getOrgTreeWithUsers();
+        $jsTreeData = $this->convertToJsTree($orgTree);
+
+        
         $divisiList = Divisi::all(); 
 
         $idUser = Auth::user();
@@ -279,6 +286,7 @@ public function index(Request $request)
         // Struktur organisasi tree (harus dibuat di backend, contoh dummy di bawah)
         $orgTree = $this->getOrgTreeWithUsers();
         $mainDirector = $orgTree[0] ?? null; // assuming the first node is the main director
+                //dd($jsTreeData);
 
         return view(Auth::user()->role->nm_role.'.undangan.add-undangan', [
             'nomorSeriTahunan' => $nextSeri['seri_tahunan'],
@@ -287,59 +295,136 @@ public function index(Request $request)
             'divisiList' => $divisiList,
             'users' => $users,
             'orgTree' => $orgTree,
-            'mainDirector' => $mainDirector,
+            'jsTreeData' => $jsTreeData,
+            'mainDirector' => $mainDirector
         ]);
     }
     private function getOrgTreeWithUsers()
     {
-        $directors = \App\Models\Director::with(['divisi.department.section.unit', 'users'])->get();
+        $directors = Director::with(['divisi.department.section.unit', 'users'])->get();
         $tree = [];
-    
+
         foreach ($directors as $director) {
             $dir = $director->toArray();
             $dir['users'] = $director->users->toArray();
-        
-            if (!empty($dir['divisi'])) {
-                foreach ($dir['divisi'] as &$div) {
-                    if (empty($div['id_divisi'])) continue;
-                
-                    $divModel = \App\Models\Divisi::find($div['id_divisi']);
-                    $div['users'] = $divModel ? $divModel->users->toArray() : [];
-                
-                    if (!empty($div['department'])) {
-                        foreach ($div['department'] as &$dept) {
-                            if (empty($dept['id_department'])) continue;
-                            
-                            $deptModel = \App\Models\Department::find($dept['id_department']);
-                            
-                            $dept['users'] = $deptModel ? $deptModel->users->toArray() : [];
-                        
-                            if (!empty($dept['section'])) {
-                                foreach ($dept['section'] as &$sec) {
-                                    if (empty($sec['id_section'])) continue;
-                                
-                                    $secModel = \App\Models\Section::find($sec['id_section']);
-                                    $sec['users'] = $secModel ? $secModel->users->toArray() : [];
-                                
-                                    if (!empty($sec['unit'])) {
-                                        foreach ($sec['unit'] as &$unit) {
-                                            if (empty($unit['id_unit'])) continue;
-                                        
-                                            $unitModel = \App\Models\Unit::find($unit['id_unit']);
-                                            $unit['users'] = $unitModel ? $unitModel->users->toArray() : [];
-                                        }
-                                    }
-                                }
-                            }
+
+            foreach ($dir['divisi'] ?? [] as &$div) {
+                $divModel = Divisi::find($div['id_divisi']);
+                $div['users'] = $divModel?->users?->toArray() ?? [];
+
+                foreach ($div['department'] ?? [] as &$dept) {
+                    $deptModel = Department::find($dept['id_department']);
+                    $dept['users'] = $deptModel?->users?->toArray() ?? [];
+
+                    foreach ($dept['section'] ?? [] as &$section) {
+                        $sectionModel = Section::find($section['id_section']);
+                        $section['users'] = $sectionModel?->users?->toArray() ?? [];
+
+                        foreach ($section['unit'] ?? [] as &$unit) {
+                            $unitModel = Unit::find($unit['id_unit']);
+                            $unit['users'] = $unitModel?->users?->toArray() ?? [];
                         }
                     }
                 }
             }
             $tree[] = $dir;
         }
-    
-        //dd($tree); // remove when done
         return $tree;
+        }
+        
+        private function convertToJsTree($tree)
+    {
+        $result = [];
+        foreach ($tree as $director) {
+            $dirNode = [
+                'id' => 'director-'.$director['id_director'],
+                'text' => $director['name_director'],
+                'children' => []
+            ];
+
+            foreach ($director['users'] ?? [] as $user) {
+                $dirNode['children'][] = [
+                    'id' => 'user-'.$user['id'],
+                    'text' => $user['firstname'].' '.$user['lastname'],
+                    'icon' => 'fa fa-user'
+                ];
+            }
+
+            foreach ($director['divisi'] ?? [] as $divisi) {
+                $divNode = [
+                    'id' => 'divisi-'.$divisi['id_divisi'],
+                    'text' => $divisi['nm_divisi'],
+                    'children' => []
+                ];
+
+                foreach ($divisi['users'] ?? [] as $user) {
+                    $divNode['children'][] = [
+                        'id' => 'user-'.$user['id'],
+                        'text' => $user['firstname'].' '.$user['lastname'],
+                        'icon' => 'fa fa-user'
+                    ];
+                }
+
+                foreach ($divisi['department'] ?? [] as $dept) {
+                    $deptNode = [
+                        'id' => 'dept-'.$dept['id_department'],
+                        'text' => $dept['name_department'],
+                        'children' => []
+                    ];
+
+                    foreach ($dept['users'] ?? [] as $user) {
+                        $deptNode['children'][] = [
+                            'id' => 'user-'.$user['id'],
+                            'text' => $user['firstname'].' '.$user['lastname'],
+                            'icon' => 'fa fa-user'
+                        ];
+                    }
+
+                    foreach ($dept['section'] ?? [] as $section) {
+                        $sectionNode = [
+                            'id' => 'section-'.$section['id_section'],
+                            'text' => $section['name_section'],
+                            'children' => []
+                        ];
+
+                        foreach ($section['users'] ?? [] as $user) {
+                            $sectionNode['children'][] = [
+                                'id' => 'user-'.$user['id'],
+                                'text' => $user['firstname'].' '.$user['lastname'],
+                                'icon' => 'fa fa-user'
+                            ];
+                        }
+
+                        foreach ($section['unit'] ?? [] as $unit) {
+                            $unitNode = [
+                                'id' => 'unit-'.$unit['id_unit'],
+                                'text' => $unit['name_unit'],
+                                'children' => []
+                            ];
+
+                            foreach ($unit['users'] ?? [] as $user) {
+                                $unitNode['children'][] = [
+                                    'id' => 'user-'.$user['id'],
+                                    'text' => $user['firstname'].' '.$user['lastname'],
+                                    'icon' => 'fa fa-user'
+                                ];
+                            }
+
+                            $sectionNode['children'][] = $unitNode;
+                        }
+
+                        $deptNode['children'][] = $sectionNode;
+                    }
+
+                    $divNode['children'][] = $deptNode;
+                }
+
+                $dirNode['children'][] = $divNode;
+            }
+
+            $result[] = $dirNode;
+        }
+        return json_encode($result);
     }
     public function store(Request $request)
 {

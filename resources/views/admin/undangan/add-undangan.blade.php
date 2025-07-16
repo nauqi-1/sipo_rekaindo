@@ -9,6 +9,11 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" rel="stylesheet">    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+
     <link rel="stylesheet" href="{{ asset('css/admin/edit-memo.css') }}">
 </head>
 <body>
@@ -72,134 +77,31 @@
                 </div>
                 <div class="row mb-4">
                     <!--Checkboxes kepada (tujuan)-->
-                    {{-- <div class="col-md-6">
-                        <label for="kepada" class="form-label">
-                            <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                            <label for="tujuan" class="label-kepada">Centang lebih dari satu jika diperlukan</label>
-                        </label>
-                        <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
-                            @foreach($divisiList as $d)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" 
-                                        name="tujuan[]" 
-                                        value="{{ $d->id_divisi }}" 
-                                        id="divisi_{{ $d->id_divisi }}">
-                                    <label class="form-check-label" for="divisi_{{ $d->id_divisi }}">
-                                        {{ $d->nm_divisi }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
-                        
-                        @error('tujuan')
-                            <div class="form-control text-danger">{{ $message }}</div>       
-                        @enderror
-                    </div> --}}
                     <div class="col-md-6">
-                    <div class="row mb-4">
-                <div class="col-md-12">
-                    <label for="kepada" class="form-label">
-                        <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                        <span class="label-kepada">Pilih user atau struktur, semua user di bawah struktur akan otomatis terpilih</span>
-                    </label>
-                    <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
-                        <ul id="orgTree" class="list-unstyled" style="margin-bottom:0;"></ul>
+                                    <div class="row mb-4">
+                                    <div class="col-md-12">
+                                    <label for="kepada" class="form-label">
+                                        <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
+                                        <span class="label-kepada">Pilih user atau struktur, semua user di bawah struktur akan otomatis terpilih</span>
+                                    </label>
+                                    <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                                        <div id="org-tree"></div>
+                                    </div>
+                                    <input type="hidden" name="tujuan[]" id="tujuanInput">
+                                </div>
+                            </div>
+                        <script>
+                            $(function() {
+                                $('#org-tree').jstree({
+                                    'core' : {
+                                        'data' : @json(json_decode($jsTreeData))
+                                    },
+                                    "plugins" : [ "checkbox", "search" ]
+                                });
+                            });
+                        </script>
                     </div>
-                    <input type="hidden" name="tujuan[]" id="tujuanInput">
-                    <div id="orgTreeError" class="form-control text-danger" style="display:none;"></div>
-                </div>
-            </div>
-                            @php
-                            function renderOrgRecursive($node) {
-                                if(isset($node->name_director)) {
-                                    $label = "Direktur: ".htmlspecialchars($node->name_director);
-                                    $margin = 0; $border = 'primary'; $bg = 'primary';
-                                    $type = 'director'; $id = $node->id_director; $name = $node->name_director;
-                                } elseif(isset($node->nm_divisi)) {
-                                    $label = "Divisi: ".htmlspecialchars($node->nm_divisi);
-                                    $margin = 20; $border = 'secondary'; $bg = 'secondary';
-                                    $type = 'divisi'; $id = $node->id_divisi; $name = $node->nm_divisi;
-                                } elseif(isset($node->name_department)) {
-                                    $label = "Departemen: ".htmlspecialchars($node->name_department);
-                                    $margin = 40; $border = 'info'; $bg = 'info';
-                                    $type = 'department'; $id = $node->id_department; $name = $node->name_department;
-                                } elseif(isset($node->name_section)) {
-                                    $label = "Bagian: ".htmlspecialchars($node->name_section);
-                                    $margin = 60; $border = 'success'; $bg = 'success';
-                                    $type = 'section'; $id = $node->id_section; $name = $node->name_section;
-                                } elseif(isset($node->name_unit)) {
-                                    $label = "Unit: ".htmlspecialchars($node->name_unit);
-                                    $margin = 80; $border = 'warning'; $bg = 'warning';
-                                    $type = 'unit'; $id = $node->id_unit; $name = $node->name_unit;
-                                } else {
-                                    return;
-                                }
 
-                                $idUnique = uniqid('accordion_');
-                                $deleteUrl = route('organization.delete', ['type' => $type, 'id' => $id]);
-
-                                $hasChildren = 
-                                    (!empty($node->subDirectors)) || 
-                                    (!empty($node->divisi)) || 
-                                    (!empty($node->department)) || 
-                                    (!empty($node->section)) || 
-                                    (!empty($node->unit));
-                            }
-                            
-                            @endphp
-                            
-                            @if($mainDirector)
-                                @php renderOrgRecursive($mainDirector); @endphp
-                            @endif
-                            <label for="divisi_id_divisi" class="form-label">Pilih Posisi<span style="color : red;"> *</span></label>
-                            <select class="form-select" id="parent_id" name="parent_id">
-                                <option value="">-- Pilih Posisi --</option>
-                                @php
-                                function renderOrgOptions($node, $level = 0) {
-                                    $indent = str_repeat('&nbsp;', $level * 4);
-                                    if(isset($node['name_director']))
-                                        echo "<option value='{$node['id_director']}' data-type='director'>{$indent}Direktur: {$node['name_director']}</option>";
-                                    elseif(isset($node['nm_divisi']))
-                                        echo "<option value='{$node['id_divisi']}' data-type='divisi'>{$indent}--> Divisi: {$node['nm_divisi']}</option>";
-                                    elseif(isset($node['name_department']))
-                                        echo "<option value='{$node['id_department']}' data-type='department'>{$indent}-----> Departemen: {$node['name_department']}</option>";
-                                    elseif(isset($node['name_section']))
-                                        echo "<option value='{$node['id_section']}' data-type='section'>{$indent}--------> Bagian: {$node['name_section']}</option>";
-                                    elseif(isset($node['name_unit']))
-                                        echo "<option value='{$node['id_unit']}' data-type='unit'>{$indent}-----------> Unit: {$node['name_unit']}</option>";
-
-                                    if(isset($node['subDirectors']))
-                                        foreach ($node['subDirectors'] as $subDir)
-                                            renderOrgOptions($subDir, $level+1);
-                                    if(isset($node['divisi']))
-                                        foreach ($node['divisi'] as $div)
-                                            renderOrgOptions($div, $level+1);
-                                    if(isset($node['department'])) {
-                                        if(isset($node['name_director']) && is_array($node['department']))
-                                            foreach ($node['department'] as $dept)
-                                                if(!isset($node['nm_divisi']) || (isset($dept['divisi_id_divisi']) && $dept['divisi_id_divisi'] === null))
-                                                    renderOrgOptions($dept, $level+1);
-                                        if(isset($node['nm_divisi']) && is_array($node['department']))
-                                            foreach ($node['department'] as $dept)
-                                                renderOrgOptions($dept, $level+1);
-                                    }
-                                    if(isset($node['section']))
-                                        foreach ($node['section'] as $sec)
-                                            renderOrgOptions($sec, $level+1);
-                                    if(isset($node['unit'])) {
-                                        if(isset($node['name_department']) && is_array($node['unit']))
-                                            foreach ($node['unit'] as $unit)
-                                                if(!isset($unit['section_id_section']) || $unit['section_id_section'] === null)
-                                                    renderOrgOptions($unit, $level+1);
-                                        if(isset($node['name_section']) && is_array($node['unit']))
-                                            foreach ($node['unit'] as $unit)
-                                                renderOrgOptions($unit, $level+1);
-                                    }
-                                }
-                                if($mainDirector) renderOrgOptions($mainDirector);
-                                @endphp
-                                </select>
-                        </div>
 
                     <div class="col-md-6">
                         <label for="tgl_rapat" class="form-label">
@@ -210,6 +112,9 @@
                             <div class="form-control text-danger">{{ $message }}</div>
                         @enderror
                     </div>
+               
+
+
                     <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
@@ -535,117 +440,7 @@
             });
         });
     </script>
-    <script>
-        // Data struktur organisasi dan user, diisi dari backend (contoh dummy, ganti dengan data asli dari controller)
-        const orgData = @json($orgTree ?? []);
-        const users = @json($users ?? []);
 
-        // Helper: cari semua user id di bawah node struktur tertentu
-        function collectUserIds(node) {
-            let ids = [];
-            if (node.users) {
-                ids = ids.concat(node.users.map(u => u.id));
-            }
-            ['subDirectors','divisi','department','section','unit'].forEach(childKey => {
-                if (node[childKey]) {
-                    node[childKey].forEach(child => {
-                        ids = ids.concat(collectUserIds(child));
-                    });
-                }
-            });
-            return ids;
-        }
-
-        function renderOrgTree(node, parentUl) {
-            const li = document.createElement('li');
-            let label = '';
-            let nodeId = '';
-            if (node.name_director) {
-                label = 'Direktur: ' + node.name_director;
-                nodeId = 'director-' + node.id_director;
-            } else if (node.nm_divisi) {
-                label = 'Divisi: ' + node.nm_divisi;
-                nodeId = 'divisi-' + node.id_divisi;
-            } else if (node.name_department) {
-                label = 'Departemen: ' + node.name_department;
-                nodeId = 'department-' + node.id_department;
-            } else if (node.name_section) {
-                label = 'Bagian: ' + node.name_section;
-                nodeId = 'section-' + node.id_section;
-            } else if (node.name_unit) {
-                label = 'Unit: ' + node.name_unit;
-                nodeId = 'unit-' + node.id_unit;
-            }
-            if (label) {
-                const cb = document.createElement('input');
-                cb.type = 'checkbox';
-                cb.className = 'form-check-input';
-                cb.dataset.nodeId = nodeId;
-                cb.addEventListener('change', function() {
-                    // Pilih semua user di bawah node ini
-                    const userIds = collectUserIds(node);
-                    document.querySelectorAll('input[data-parent^="'+nodeId+'-"]')
-                        .forEach(childCb => { childCb.checked = this.checked; });
-                    document.querySelectorAll('input[data-nodeid^="'+nodeId+'-"]')
-                        .forEach(childCb => { childCb.checked = this.checked; });
-                    // Pilih semua user id di bawah node
-                    if (this.checked) {
-                        selectedUserIds = Array.from(new Set(selectedUserIds.concat(userIds)));
-                    } else {
-                        selectedUserIds = selectedUserIds.filter(id => !userIds.includes(id));
-                    }
-                    updateTujuanInput();
-                });
-                li.appendChild(cb);
-                li.appendChild(document.createTextNode(' ' + label));
-            }
-            // Render users di bawah node
-            if (node.users) {
-                node.users.forEach(user => {
-                    const userLi = document.createElement('li');
-                    const userCb = document.createElement('input');
-                    userCb.type = 'checkbox';
-                    userCb.className = 'form-check-input';
-                    userCb.value = user.id;
-                    userCb.dataset.parent = nodeId;
-                    userCb.addEventListener('change', function() {
-                        if (this.checked) {
-                            selectedUserIds.push(user.id);
-                        } else {
-                            selectedUserIds = selectedUserIds.filter(id => id !== user.id);
-                        }
-                        updateTujuanInput();
-                    });
-                    userLi.appendChild(userCb);
-                    userLi.appendChild(document.createTextNode(' ' + user.firstname + ' ' + user.lastname));
-                    li.appendChild(userLi);
-                });
-            }
-            // Render children
-            ['subDirectors','divisi','department','section','unit'].forEach(childKey => {
-                if (node[childKey]) {
-                    const ul = document.createElement('ul');
-                    node[childKey].forEach(child => renderOrgTree(child, ul));
-                    li.appendChild(ul);
-                }
-            });
-            parentUl.appendChild(li);
-        }
-
-        let selectedUserIds = [];
-        function updateTujuanInput() {
-            document.getElementById('tujuanInput').value = selectedUserIds.join(',');
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const orgTree = document.getElementById('orgTree');
-            orgTree.innerHTML = '';
-            if (orgData && orgData.length) {
-                orgData.forEach(node => renderOrgTree(node, orgTree));
-            }
-            updateTujuanInput();
-        });
-        </script>
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
