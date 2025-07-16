@@ -222,18 +222,9 @@ public function index(Request $request)
    
     public function create()
     {
-        $mainDirector = Director::with([
-        'subDirectors.divisi.department.section.unit.users',
-        'divisi.department.section.unit.users',
-        'department.section.unit.users',
-        'section.unit.users',
-        'unit.users'
-    ])->where('is_main', 1)->first();
-    //$divisiId = Auth::user()->divisi_id_divisi;
-    // $divisiName = Auth::user()->divisi->nm_divisi;
-    $divisiList = Divisi::all(); 
+        $divisiList = Divisi::all(); 
 
-    $idUser = Auth::user();
+        $idUser = Auth::user();
         $divisiId = Divisi::where('nm_divisi', 'like', '%Keuangan%')
                     ->orWhere('nm_divisi', 'like', '%HR%')
                     ->first();
@@ -241,7 +232,7 @@ public function index(Request $request)
         // dd($user);
         if($user->divisi_id_divisi == $divisiId->id_divisi){
             $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->get();
-        } else if($user->divisi_id_divisi !== $divisiId->id_divisi){
+        } else if($user->divisi_id_divisi != $divisiId->id_divisi){
             if($user->unit_id_unit != NULL || $user->section_id_section != NULL || $user->department_id_department != NULL){ //Struktur dibawah / setara Departemen
                 $divisiName = Department::where('id_department', $user->department_id_department)->first();
                 $divisiName = $divisiName->name_department;
@@ -254,37 +245,101 @@ public function index(Request $request)
             }
         }
 
+        // Ambil nomor seri berikutnya
+        $nextSeri = Seri::getNextSeri(false);
+        // Konversi bulan ke angka Romawi
+        $bulanRomawi = $this->convertToRoman(now()->month);
+        // Format nomor dokumen
+        $nomorDokumen = sprintf(
+            "%d.%d/REKA/GEN/%s/%s/%d",
+            $nextSeri['seri_tahunan'],
+            $nextSeri['seri_bulanan'],
+            strtoupper($divisiName),
+            $bulanRomawi,
+            now()->year
+        );
 
-    // Ambil nomor seri berikutnya
-    $nextSeri = Seri::getNextSeri(false);
+        // Ambil daftar manager sesuai role dan divisi
+        $user = Auth::user();
+            $managers = User::where('role_id_role', 3)
+                ->where(function ($q) use ($user) {
+                    $q->where('divisi_id_divisi', $user->divisi_id_divisi)
+                    ->orWhere('department_id_department', $user->department_id_department);
+                    // ->orWhere('section_id_section', $user->section_id_section);
+                })
+                ->get(['id', 'firstname', 'lastname']);
+
+
+        // $managers = User::where('divisi_id_divisi', $divisiId)
+        // ->where('position_id_position', '2')
+        // ->get(['id', 'firstname', 'lastname']);
+
+        // Ambil seluruh user dan struktur organisasi (untuk dropdown tree)
+        $users = User::select('id', 'firstname', 'lastname', 'divisi_id_divisi', 'department_id_department', 'section_id_section', 'unit_id_unit')->get();
+        // Struktur organisasi tree (harus dibuat di backend, contoh dummy di bawah)
+        $orgTree = $this->getOrgTreeWithUsers();
+        $mainDirector = $orgTree[0] ?? null; // assuming the first node is the main director
+
+        return view(Auth::user()->role->nm_role.'.undangan.add-undangan', [
+            'nomorSeriTahunan' => $nextSeri['seri_tahunan'],
+            'nomorDokumen' => $nomorDokumen,
+            'managers' => $managers,
+            'divisiList' => $divisiList,
+            'users' => $users,
+            'orgTree' => $orgTree,
+            'mainDirector' => $mainDirector,
+        ]);
+    }
+    private function getOrgTreeWithUsers()
+    {
+        $directors = \App\Models\Director::with(['divisi.department.section.unit', 'users'])->get();
+        $tree = [];
     
-
-    // Konversi bulan ke angka Romawi
-    $bulanRomawi = $this->convertToRoman(now()->month);
-
-    // Format nomor dokumen
-    $nomorDokumen = sprintf(
-        "%d.%d/REKA/GEN/%s/%s/%d",
-        $nextSeri['seri_tahunan'],
-        $nextSeri['seri_bulanan'],
-        strtoupper($divisiName),
-        $bulanRomawi,
-        now()->year
-    );
-
-    $managers = User::where('divisi_id_divisi', $divisiId)
-        ->where('position_id_position', '2')
-        ->get(['id', 'firstname', 'lastname']);
-
-       
-
-    return view(Auth::user()->role->nm_role.'.undangan.add-undangan', [
-        'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
-        'nomorDokumen' => $nomorDokumen,
-        'managers' => $managers,
-        'divisiList' => $divisiList,
-        'mainDirector' => $mainDirector, // Struktur direktur dan divisi
-    ]);  
+        foreach ($directors as $director) {
+            $dir = $director->toArray();
+            $dir['users'] = $director->users->toArray();
+        
+            if (!empty($dir['divisi'])) {
+                foreach ($dir['divisi'] as &$div) {
+                    if (empty($div['id_divisi'])) continue;
+                
+                    $divModel = \App\Models\Divisi::find($div['id_divisi']);
+                    $div['users'] = $divModel ? $divModel->users->toArray() : [];
+                
+                    if (!empty($div['department'])) {
+                        foreach ($div['department'] as &$dept) {
+                            if (empty($dept['id_department'])) continue;
+                            
+                            $deptModel = \App\Models\Department::find($dept['id_department']);
+                            
+                            $dept['users'] = $deptModel ? $deptModel->users->toArray() : [];
+                        
+                            if (!empty($dept['section'])) {
+                                foreach ($dept['section'] as &$sec) {
+                                    if (empty($sec['id_section'])) continue;
+                                
+                                    $secModel = \App\Models\Section::find($sec['id_section']);
+                                    $sec['users'] = $secModel ? $secModel->users->toArray() : [];
+                                
+                                    if (!empty($sec['unit'])) {
+                                        foreach ($sec['unit'] as &$unit) {
+                                            if (empty($unit['id_unit'])) continue;
+                                        
+                                            $unitModel = \App\Models\Unit::find($unit['id_unit']);
+                                            $unit['users'] = $unitModel ? $unitModel->users->toArray() : [];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            $tree[] = $dir;
+        }
+    
+        //dd($tree); // remove when done
+        return $tree;
     }
     public function store(Request $request)
 {
