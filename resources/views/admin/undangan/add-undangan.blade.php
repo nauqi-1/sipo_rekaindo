@@ -9,6 +9,11 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" rel="stylesheet">    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+
     <link rel="stylesheet" href="{{ asset('css/admin/edit-memo.css') }}">
 </head>
 <body>
@@ -73,85 +78,31 @@
                 <div class="row mb-4">
                     <!--Checkboxes kepada (tujuan)-->
                     <div class="col-md-6">
-                        <label for="kepada" class="form-label">
-                            <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                            <label for="tujuan" class="label-kepada">Centang lebih dari satu jika diperlukan</label>
-                        </label>
-                        @php
-function renderCheckboxRecursive($node) {
-    if(isset($node->name_director)) {
-        $label = "Direktur: ".htmlspecialchars($node->name_director);
-        $margin = 0;
-        $users = $node->users ?? collect();
-        $child = $node->subDirectors ?? [];
-    } elseif(isset($node->nm_divisi)) {
-        $label = "Divisi: ".htmlspecialchars($node->nm_divisi);
-        $margin = 20;
-        $users = $node->users ?? collect();
-        $child = $node->department ?? [];
-    } elseif(isset($node->name_department)) {
-        $label = "Departemen: ".htmlspecialchars($node->name_department);
-        $margin = 40;
-        $users = $node->users ?? collect();
-        $child = $node->section ?? [];
-    } elseif(isset($node->name_section)) {
-        $label = "Bagian: ".htmlspecialchars($node->name_section);
-        $margin = 60;
-        $users = $node->users ?? collect();
-        $child = $node->unit ?? [];
-    } elseif(isset($node->name_unit)) {
-        $label = "Unit: ".htmlspecialchars($node->name_unit);
-        $margin = 80;
-        $users = $node->users ?? collect();
-        $child = [];
-    } else {
-        return;
-    }
-
-    echo "<li style='margin-left: {$margin}px; list-style-type: none;'>";
-    echo "<strong>{$label}</strong>";
-
-    // List user (checkbox penerima)
-    if(count($users) > 0){
-        echo "<ul style='margin-top: 5px;'>";
-        foreach($users as $user){
-            echo "<li style='margin-left: 15px;'>
-                    <input type='checkbox' name='tujuan[]' value='{$user->id}'>
-                    {$user->firstname} {$user->lastname}
-                  </li>";
-        }
-        echo "</ul>";
-    }
-
-    // Children node
-    if(count($child) > 0){
-        echo "<ul>";
-        foreach($child as $c){
-            renderCheckboxRecursive($c);
-        }
-        echo "</ul>";
-    }
-
-    echo "</li>";
-}
-@endphp
-<div class="dropdown-checklist dropdown">
-    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-        Pilih Penerima
-    </button>
-    <ul class="dropdown-menu p-2" style="max-height: 400px; overflow-y: auto;">
-        @if($mainDirector)
-            @php renderCheckboxRecursive($mainDirector); @endphp
-        @endif
-    </ul>
-</div>
-
-
-                        <!-- <input type="text" name="tujuan" id="tujuan" class="form-control" placeholder="1. Kepada Satu; 2. Kepada Dua; 3. Kepada Tiga" value="{{ old('tujuan') }}" > -->
-                        @error('tujuan[]')
-                            <div class="form-control text-danger">{{ $message }}</div>       
-                        @enderror
+                                    <div class="row mb-4">
+                                    <div class="col-md-12">
+                                    <label for="kepada" class="form-label">
+                                        <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
+                                        <span class="label-kepada">Pilih user atau struktur, semua user di bawah struktur akan otomatis terpilih</span>
+                                    </label>
+                                    <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                                        <div id="org-tree"></div>
+                                    </div>
+                                    <input type="hidden" name="tujuan[]" id="tujuanInput">
+                                </div>
+                            </div>
+                        <script>
+                            $(function() {
+                                $('#org-tree').jstree({
+                                    'core' : {
+                                        'data' : @json(json_decode($jsTreeData))
+                                    },
+                                    "plugins" : [ "checkbox", "search" ]
+                                });
+                            });
+                        </script>
                     </div>
+
+
                     <div class="col-md-6">
                         <label for="tgl_rapat" class="form-label">
                             <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Rapat<span class="text-danger">*</span>
@@ -161,6 +112,9 @@ function renderCheckboxRecursive($node) {
                             <div class="form-control text-danger">{{ $message }}</div>
                         @enderror
                     </div>
+               
+
+
                     <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
@@ -486,6 +440,7 @@ function renderCheckboxRecursive($node) {
             });
         });
     </script>
+
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
