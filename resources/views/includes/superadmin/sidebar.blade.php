@@ -60,7 +60,7 @@
           </a>
           <ul class="pc-submenu">
             <li class="pc-item"><a class="pc-link" href="{{ route('memo.terkirim',Auth::user()->id) }}">DCR Keluar</a></li>
-            <li class="pc-item pc-hasmenu"><a href="{{ route('DCR.diterima',Auth::user()->id) }}" class="pc-link">Memo Masuk</span></a></li>
+            <li class="pc-item pc-hasmenu"><a href="{{ route('memo.diterima',Auth::user()->id) }}" class="pc-link">Memo Masuk</span></a></li>
           </ul>
         </li>
         @endif

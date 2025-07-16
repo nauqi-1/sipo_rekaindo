@@ -269,23 +269,37 @@ class MemoController extends Controller
             $bulanRomawi,
             now()->year
         );
-        $managers = User::where('divisi_id_divisi', $divisiId)
-            ->where('position_id_position', '2')
+
+        $managers = User::where('role_id_role', 3)
+            ->where(function($q) use ($user) {
+                $q->where('divisi_id_divisi', $user->divisi_id_divisi)
+                    ->orWhere('unit_id_unit', $user->unit_id_unit)
+                    ->orWhere('department_id_department', $user->department_id_department);
+            })
             ->get(['id', 'firstname', 'lastname']);
 
         // Ambil seluruh user dan struktur organisasi (untuk dropdown tree)
         $users = User::select('id', 'firstname', 'lastname', 'divisi_id_divisi', 'department_id_department', 'section_id_section', 'unit_id_unit')->get();
-        // Struktur organisasi tree (harus dibuat di backend, contoh dummy di bawah)
-        $orgTree = $this->getOrgTreeWithUsers();
-        $mainDirector = $orgTree[0] ?? null; // assuming the first node is the main director
-
+        //$orgTree = $this->getOrgTreeWithUsers();
+        //$mainDirector = $orgTree[0] ?? null; // assuming the first node is the main director
+        $mainDirector = Director::with([
+                    'subDirectors.divisi.department.section.unit',
+                    'subDirectors.divisi.department.unit',
+                    'subDirectors.department.section.unit',
+                    'subDirectors.department.unit',
+                    'divisi.department.section.unit',
+                    'divisi.department.unit',
+                    'department.section.unit',
+                    'department.unit'
+                ])->where('is_main', 1)->first();
+        
         return view(Auth::user()->role->nm_role.'.memo.add-memo', [
             'nomorSeriTahunan' => $nextSeri['seri_tahunan'],
             'nomorDokumen' => $nomorDokumen,
             'managers' => $managers,
             'divisiList' => $divisiList,
             'users' => $users,
-            'orgTree' => $orgTree,
+            //'orgTree' => $orgTree,
             'mainDirector' => $mainDirector,
         ]);
     }
@@ -293,39 +307,35 @@ class MemoController extends Controller
     // Helper: generate org tree with users for dropdown
     private function getOrgTreeWithUsers()
     {
-        $directors = \App\Models\Director::with(['divisi.department.section.unit', 'users'])->get();
+        $directors = \App\Models\Director::with(['divisi.department.section.unit'])->get();
         $tree = [];
-    
+
         foreach ($directors as $director) {
             $dir = $director->toArray();
+            // Only add users directly under director
             $dir['users'] = $director->users->toArray();
-        
+
             if (!empty($dir['divisi'])) {
                 foreach ($dir['divisi'] as &$div) {
                     if (empty($div['id_divisi'])) continue;
-                
                     $divModel = \App\Models\Divisi::find($div['id_divisi']);
                     $div['users'] = $divModel ? $divModel->users->toArray() : [];
-                
+
                     if (!empty($div['department'])) {
                         foreach ($div['department'] as &$dept) {
                             if (empty($dept['id_department'])) continue;
-                            
                             $deptModel = \App\Models\Department::find($dept['id_department']);
-                            
                             $dept['users'] = $deptModel ? $deptModel->users->toArray() : [];
-                        
+
                             if (!empty($dept['section'])) {
                                 foreach ($dept['section'] as &$sec) {
                                     if (empty($sec['id_section'])) continue;
-                                
                                     $secModel = \App\Models\Section::find($sec['id_section']);
                                     $sec['users'] = $secModel ? $secModel->users->toArray() : [];
-                                
+
                                     if (!empty($sec['unit'])) {
                                         foreach ($sec['unit'] as &$unit) {
                                             if (empty($unit['id_unit'])) continue;
-                                        
                                             $unitModel = \App\Models\Unit::find($unit['id_unit']);
                                             $unit['users'] = $unitModel ? $unitModel->users->toArray() : [];
                                         }
@@ -338,8 +348,27 @@ class MemoController extends Controller
             }
             $tree[] = $dir;
         }
-    
-        //dd($tree); // remove when done
+
+        // Now, remove users from parent if they exist in children
+        $removeNestedUsers = function (&$node) use (&$removeNestedUsers) {
+            // Remove users from this node if children have users
+            $childKeys = ['divisi', 'department', 'section', 'unit'];
+            foreach ($childKeys as $key) {
+                if (!empty($node[$key])) {
+                    foreach ($node[$key] as &$child) {
+                        $removeNestedUsers($child);
+                        if (!empty($child['users'])) {
+                            // Remove users from this node if child has users
+                            $node['users'] = [];
+                        }
+                    }
+                }
+            }
+        };
+        foreach ($tree as &$dir) {
+            $removeNestedUsers($dir);
+        }
+
         return $tree;
     }
 

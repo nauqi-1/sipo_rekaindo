@@ -87,15 +87,19 @@
                 <div class="col-md-12">
                     <label for="kepada" class="form-label">
                         <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                        <span class="label-kepada">Pilih user atau struktur, semua user di bawah struktur akan otomatis terpilih</span>
+                        <!--<span class="label-kepada">Pilih user atau struktur, semua user di bawah struktur akan otomatis terpilih</span>-->
                     </label>
-                    <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                    <!--<div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
                         <ul id="orgTree" class="list-unstyled" style="margin-bottom:0;"></ul>
-                    </div>
+                    </div>-->
                     <input type="hidden" name="tujuan[]" id="tujuanInput">
                     <div id="orgTreeError" class="form-control text-danger" style="display:none;"></div>
                 </div>
             </div>
+                           
+                            
+                           
+                            
                             @php
                             function renderOrgRecursive($node) {
                                 if(isset($node->name_director)) {
@@ -134,58 +138,161 @@
                             }
                             
                             @endphp
-                            
+
                             @if($mainDirector)
                                 @php renderOrgRecursive($mainDirector); @endphp
                             @endif
                             <label for="divisi_id_divisi" class="form-label">Pilih Posisi<span style="color : red;"> *</span></label>
-                            <select class="form-select" id="parent_id" name="parent_id">
+                            <select class="form-select" id="parent_id" name="parent_id[]" multiple size="8">
                                 <option value="">-- Pilih Posisi --</option>
                                 @php
                                 function renderOrgOptions($node, $level = 0) {
                                     $indent = str_repeat('&nbsp;', $level * 4);
-                                    if(isset($node['name_director']))
-                                        echo "<option value='{$node['id_director']}' data-type='director'>{$indent}Direktur: {$node['name_director']}</option>";
-                                    elseif(isset($node['nm_divisi']))
-                                        echo "<option value='{$node['id_divisi']}' data-type='divisi'>{$indent}--> Divisi: {$node['nm_divisi']}</option>";
-                                    elseif(isset($node['name_department']))
-                                        echo "<option value='{$node['id_department']}' data-type='department'>{$indent}-----> Departemen: {$node['name_department']}</option>";
-                                    elseif(isset($node['name_section']))
-                                        echo "<option value='{$node['id_section']}' data-type='section'>{$indent}--------> Bagian: {$node['name_section']}</option>";
-                                    elseif(isset($node['name_unit']))
-                                        echo "<option value='{$node['id_unit']}' data-type='unit'>{$indent}-----------> Unit: {$node['name_unit']}</option>";
+                                    if(isset($node->name_director))
+                                        echo "<option value='{$node->id_director}' data-type='director'>{$indent}Direktur: {$node->name_director}</option>";
+                                    elseif(isset($node->nm_divisi))
+                                        echo "<option value='{$node->id_divisi}' data-type='divisi'>{$indent}--> Divisi: {$node->nm_divisi}</option>";
+                                    elseif(isset($node->name_department))
+                                        echo "<option value='{$node->id_department}' data-type='department'>{$indent}-----> Departemen: {$node->name_department}</option>";
+                                    elseif(isset($node->name_section))
+                                        echo "<option value='{$node->id_section}' data-type='section'>{$indent}--------> Bagian: {$node->name_section}</option>";
+                                    elseif(isset($node->name_unit))
+                                        echo "<option value='{$node->id_unit}' data-type='unit'>{$indent}-----------> Unit: {$node->name_unit}</option>";
 
-                                    if(isset($node['subDirectors']))
-                                        foreach ($node['subDirectors'] as $subDir)
+                                    if(isset($node->subDirectors))
+                                        foreach ($node->subDirectors as $subDir)
                                             renderOrgOptions($subDir, $level+1);
-                                    if(isset($node['divisi']))
-                                        foreach ($node['divisi'] as $div)
+                                    if(isset($node->divisi))
+                                        foreach ($node->divisi as $div)
                                             renderOrgOptions($div, $level+1);
-                                    if(isset($node['department'])) {
-                                        if(isset($node['name_director']) && is_array($node['department']))
-                                            foreach ($node['department'] as $dept)
-                                                if(!isset($node['nm_divisi']) || (isset($dept['divisi_id_divisi']) && $dept['divisi_id_divisi'] === null))
-                                                    renderOrgOptions($dept, $level+1);
-                                        if(isset($node['nm_divisi']) && is_array($node['department']))
-                                            foreach ($node['department'] as $dept)
+                                    if(isset($node->department)) {
+                                        if(isset($node->name_director))
+                                            foreach ($node->department->whereNull('divisi_id_divisi') as $dept)
+                                                renderOrgOptions($dept, $level+1);
+                                        if(isset($node->nm_divisi))
+                                            foreach ($node->department as $dept)
                                                 renderOrgOptions($dept, $level+1);
                                     }
-                                    if(isset($node['section']))
-                                        foreach ($node['section'] as $sec)
+                                    if(isset($node->section))
+                                        foreach ($node->section as $sec)
                                             renderOrgOptions($sec, $level+1);
-                                    if(isset($node['unit'])) {
-                                        if(isset($node['name_department']) && is_array($node['unit']))
-                                            foreach ($node['unit'] as $unit)
-                                                if(!isset($unit['section_id_section']) || $unit['section_id_section'] === null)
-                                                    renderOrgOptions($unit, $level+1);
-                                        if(isset($node['name_section']) && is_array($node['unit']))
-                                            foreach ($node['unit'] as $unit)
+                                    if(isset($node->unit)) {
+                                        if(isset($node->name_department) && $node->unit->whereNull('section_id_section'))
+                                            foreach ($node->unit->whereNull('section_id_section') as $unit)
+                                                renderOrgOptions($unit, $level+1);
+                                        if(isset($node->name_section))
+                                            foreach ($node->unit as $unit)
                                                 renderOrgOptions($unit, $level+1);
                                     }
                                 }
                                 if($mainDirector) renderOrgOptions($mainDirector);
                                 @endphp
                                 </select>
+                                <input type="hidden" name="parent_type" id="parent_type">
+                        
+                           
+                           
+                           
+                           
+                           
+                           
+                           <!--Versi 2-->
+                           @php
+                            function renderOrgRecursive2($node) {
+                                if(isset($node->name_director)) {
+                                    $label = "Direktur: ".htmlspecialchars($node->name_director);
+                                    $margin = 0; $border = 'primary'; $bg = 'primary';
+                                    $type = 'director'; $id = $node->id_director; $name = $node->name_director;
+                                } elseif(isset($node->nm_divisi)) {
+                                    $label = "Divisi: ".htmlspecialchars($node->nm_divisi);
+                                    $margin = 20; $border = 'secondary'; $bg = 'secondary';
+                                    $type = 'divisi'; $id = $node->id_divisi; $name = $node->nm_divisi;
+                                } elseif(isset($node->name_department)) {
+                                    $label = "Departemen: ".htmlspecialchars($node->name_department);
+                                    $margin = 40; $border = 'info'; $bg = 'info';
+                                    $type = 'department'; $id = $node->id_department; $name = $node->name_department;
+                                } elseif(isset($node->name_section)) {
+                                    $label = "Bagian: ".htmlspecialchars($node->name_section);
+                                    $margin = 60; $border = 'success'; $bg = 'success';
+                                    $type = 'section'; $id = $node->id_section; $name = $node->name_section;
+                                } elseif(isset($node->name_unit)) {
+                                    $label = "Unit: ".htmlspecialchars($node->name_unit);
+                                    $margin = 80; $border = 'warning'; $bg = 'warning';
+                                    $type = 'unit'; $id = $node->id_unit; $name = $node->name_unit;
+                                } else {
+                                    return;
+                                }
+                                 // Display label
+                                    echo "<li style='margin-left: {$margin}px;'>
+                                            <label>
+                                                <input type='checkbox' class='org-checkbox' data-id='{$id}' data-type='{$type}'>
+                                                {$label}
+                                            </label>
+                                        </li>";
+
+                                    // Recurse children
+                                     if (isset($node['subDirectors'])) {
+                                        foreach ($node['subDirectors'] as $child) {
+                                            renderOrgRecursive2($child);
+                                        }
+                                    }
+                                    if (isset($node['divisi'])) {
+                                        foreach ($node['divisi'] as $child) {
+                                            renderOrgRecursive2($child);
+                                        }
+                                    }
+                                    if (isset($node['department'])) {
+                                        foreach ($node['department'] as $child) {
+                                            renderOrgRecursive($child);
+                                        }
+                                    }
+                                    if (isset($node['section'])) {
+                                        foreach ($node['section'] as $child) {
+                                            renderOrgRecursive2($child);
+                                        }
+                                    }
+                                    if (isset($node['unit'])) {
+                                        foreach ($node['unit'] as $child) {
+                                            renderOrgRecursive2($child);
+                                        }
+                                    }
+                                $idUnique = uniqid('accordion_');
+                                $deleteUrl = route('organization.delete', ['type' => $type, 'id' => $id]);
+
+                                $hasChildren = 
+                                    (!empty($node->subDirectors)) || 
+                                    (!empty($node->divisi)) || 
+                                    (!empty($node->department)) || 
+                                    (!empty($node->section)) || 
+                                    (!empty($node->unit));
+                            }
+                            
+                            @endphp
+
+                                <div class="form-group">
+                                    <!-- Fake dropdown trigger -->
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-primary w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            -- Pilih Posisi --
+                                        </button>
+
+                                        <!-- The custom dropdown content -->
+                                        <div class="dropdown-menu p-3" style="width: 100%; max-height: 300px; overflow-y: auto;">
+                                            <ul class="list-unstyled" id="orgTree">
+                                                
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- This hidden input holds the selected values -->
+                                    <input type="hidden" name="tujuan[]" id="tujuanInput">
+                                    <div id="orgTreeError" class="form-control text-danger" style="display:none;"></div>
+                                </div>
+                            <!--<label for="divisi_id_divisi" class="form-label">Pilih Posisi<span style="color : red;"> *</span></label>
+                            <select class="form-select" id="parent_id" name="parent_id">
+                                <option value="">-- Pilih Posisi --</option>
+                               
+                                </select>-->
                         </div>
                 <div class="col-md-6">
                     <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
@@ -332,7 +439,22 @@
                 </div>
             </div>
         </div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const checkboxes = document.querySelectorAll('.org-checkbox');
+    const tujuanInput = document.getElementById('tujuanInput');
 
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            const selected = [];
+            document.querySelectorAll('.org-checkbox:checked').forEach(cb => {
+                selected.push(cb.dataset.type + ':' + cb.dataset.id);
+            });
+            tujuanInput.value = selected.join(',');
+        });
+    });
+});
+</script>
 <script>
 // Data struktur organisasi dan user, diisi dari backend (contoh dummy, ganti dengan data asli dari controller)
 const orgData = @json($orgTree ?? []);
