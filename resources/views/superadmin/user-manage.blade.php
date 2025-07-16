@@ -291,6 +291,7 @@
                                 if($mainDirector) renderOrgOptions($mainDirector);
                                 @endphp
                                 </select>
+                                <input type="hidden" name="parent_type" id="parent_type">
                         </div>
                         <div class="col-md-6">
                             <label for="position_id_position" class="form-label">Pilih Jabatan<span style="color : red;"> *</span></label>
@@ -405,6 +406,17 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const parentSelect = document.getElementById('parent_id');
+        const parentTypeInput = document.getElementById('parent_type');
+
+        parentSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const type = selectedOption.getAttribute('data-type') || '';
+            parentTypeInput.value = type;
+        });
+    });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const parentSelect = document.getElementById('parent_id');
         const positionSelect = document.getElementById('position_id_position');
         const allPositions = @json($positions);
 
@@ -412,8 +424,8 @@
         const positionMap = {
             'director': [1], // Direktur
             'divisi': [2, 3, 4], // GM, SM, PJ SM
-            'department': [2, 3, 4, 5, 6, 7, 8], // GM, SM, PJ SM, Manajer, SPV, PJ M, PJ SPV
-            'section': [5, 6, 7, 8], // GM, SM, PJ SM, Manajer, SPV, PJ M, PJ SPV
+            'department': [3, 4, 5, 6, 7, 8], // SM, PJ SM, Manajer, SPV, PJ M, PJ SPV
+            'section': [5, 6, 7, 8, 9], // Manajer, SPV, PJ M, PJ SPV, Staff
             'unit': [9] // Staff
         };
 

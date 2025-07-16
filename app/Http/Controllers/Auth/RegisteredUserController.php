@@ -46,6 +46,7 @@ class RegisteredUserController extends Controller
             'role_id_role' => 'required|exists:role,id_role',
             'position_id_position' => 'required|exists:position,id_position',
             'parent_id' => 'required',
+            'parent_type' => 'required',
         ],[
             'firstname.required' => 'Nama depan wajib diisi.',
             'firstname.max' => 'Nama depan tidak boleh lebih dari 50 karakter.',
@@ -79,35 +80,35 @@ class RegisteredUserController extends Controller
             'parent_id.required' => 'Bagian wajib dipilih.',
         ]);
     
-        $jabatan = $request->position_id_position;
         $bagian = $request->parent_id;
+        $type = $request->parent_type;
         // dd($jabatan);
         
-        if($jabatan == 1){
+        if($type == "director"){ // Direktur
             $direktur = $bagian;
             $divisi = NULL;
             $department = NULL;
             $section = NULL;
             $unit = NULL;
-        } elseif ($jabatan == 2 || $jabatan == 3 || $jabatan == 4) {
+        } elseif ($type == "divisi") { // Divisi
             $director = Divisi::where('id_divisi', $bagian)->value('director_id_director');
             $divisi = $bagian;
             $department = NULL;
             $section = NULL;
             $unit = NULL;
-        } elseif ($jabatan == 2 || $jabatan == 3 || $jabatan == 4 || $jabatan == 5 || $jabatan == 6 || $jabatan == 7 || $jabatan == 8) {
+        } elseif ($type == "department") { // Department
             $direktur = Department::where('id_department', $bagian)->value('director_id_director');
             $divisi = Department::where('id_department', $bagian)->value('divisi_id_divisi') ?? NULL;
             $department = $bagian;
             $section = NULL;
             $unit = NULL;
-        } elseif ($jabatan == 5 || $jabatan == 6 || $jabatan == 7 || $jabatan == 8) {
+        } elseif ($type == "section") { // Section
             $department = Section::where('id_section', $bagian)->value('department_id_department');
             $direktur = Department::where('id_department', $department)->value('director_id_director');
             $divisi = Department::where('id_department', $department)->value('divisi_id_divisi') ?? NULL;
             $section = $bagian;
             $unit = NULL;
-        } elseif ($jabatan == 9) {
+        } elseif ($type == "unit") { //Unit
             $department = Unit::where('id_unit', $bagian)->value('department_id_department') ?? NULL;
             $section = Unit::where('id_unit', $bagian)->value('section_id_section') ?? NULL;
             $direktur = Department::where('id_department', $department)->value('director_id_director');
@@ -128,7 +129,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'phone_number' => $request->phone_number,
             'role_id_role' => $request->role_id_role,
-            'position_id_position' => $jabatan,
+            'position_id_position' => $request->position_id_position,
             'director_id_director' => $direktur,
             'divisi_id_divisi' => $divisi,
             'department_id_department' => $department,
