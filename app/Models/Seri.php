@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,7 @@ class Seri extends Model
     protected $table = 'seri_berkas';
     protected $primaryKey = 'id_seri';
 
+    protected $fillable = ['kode', 'bulan', 'tahun', 'seri_bulanan', 'seri_tahunan'];
     protected $fillable = ['kode', 'bulan', 'tahun', 'seri_bulanan', 'seri_tahunan'];
 
     public static function getNextSeri($save = false)
