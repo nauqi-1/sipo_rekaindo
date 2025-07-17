@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,247 +10,280 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" rel="stylesheet">    
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
 
     <link rel="stylesheet" href="{{ asset('css/admin/edit-memo.css') }}">
 </head>
+
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('undangan.'. Auth::user()->role->nm_role)}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route('undangan.' . Auth::user()->role->nm_role)}}"><img
+                        src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Tambah Undangan Rapat</h1>
-        </div>        
+        </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="{{ route(Auth::user()->role->nm_role .'.dashboard') }}">Beranda</a>/<a href="{{ route('undangan.admin') }}">Undangan Rapat</a>/<a href="#" style="color: #565656;">Tambah Undangan Rapat</a>
+                    <a href="{{ route(Auth::user()->role->nm_role . '.dashboard') }}">Beranda</a>/<a
+                        href="{{ route('undangan.admin') }}">Undangan Rapat</a>/<a href="#"
+                        style="color: #565656;">Tambah Undangan Rapat</a>
                 </div>
             </div>
         </div>
 
         <!-- form add undangan -->
         <form method="POST" action="{{ route('undangan-superadmin.store') }}" enctype="multipart/form-data">
-        @csrf 
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title" style="font-size: 18px;"><b>Formulir Tambah Undangan</b></h5>
-            </div>
-            <div class="card-body">
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="tgl_surat" class="form-label">
-                            <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
-                        </label>
-                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control"  value="{{ old('tgl_dibuat') }}">
-                        @error('tgl_dibuat')
-                            <div class="form-control text-danger">{{ $message }}</div>
-                        @enderror
-                        <input type="hidden" name="tgl_disahkan" >
-                        <input type="hidden" name="catatan" >
-                        <input type="hidden" name="pembuat" value="{{ auth()->user()->firstname . auth()->user()->lastname }}">
-                    </div>
-                    <div class="col-md-6">
-                    <label for="seri_surat" class="form-label">Seri Surat</label>
-                    <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan ?? '' }}" readonly>
-                    <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
-                    <input type="hidden" name="pembuat" value="{{ auth()->user()->firstname .' '. auth()->user()->lastname }}">
+            @csrf
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title" style="font-size: 18px;"><b>Formulir Tambah Undangan</b></h5>
                 </div>
-                </div>
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="nomor_undangan" class="form-label">Nomor Surat</label>
-                        <input type="text" name="nomor_undangan" id="nomor_undangan" class="form-control" value="{{ $nomorDokumen }}" readonly>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="tgl_surat" class="form-label">
+                                <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control"
+                                value="{{ old('tgl_dibuat') }}">
+                            @error('tgl_dibuat')
+                                <div class="form-control text-danger">{{ $message }}</div>
+                            @enderror
+                            <input type="hidden" name="tgl_disahkan">
+                            <input type="hidden" name="catatan">
+                            <input type="hidden" name="pembuat"
+                                value="{{ auth()->user()->firstname . auth()->user()->lastname }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="seri_surat" class="form-label">Seri Surat</label>
+                            <input type="text" name="seri_surat" id="seri_surat" class="form-control"
+                                value="{{ $nomorSeriTahunan ?? '' }}" readonly>
+                            
+                            <input type="hidden" name="pembuat"
+                                value="{{ auth()->user()->firstname . ' ' . auth()->user()->lastname }}">
+                        </div>
                     </div>
-                    <div class="col-md-6" >
-                        <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
-                        <input type="text" name="judul" id="judul" class="form-control" placeholder="Masukkan Perihal / Judul Surat" value="{{ old('judul') }}" >
-                        @error('judul')
-                            <div class="form-control text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="nomor_undangan" class="form-label">Nomor Surat</label>
+                            <input type="text" name="nomor_undangan" id="nomor_undangan" class="form-control"
+                                value="{{ $nomorDokumen }}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
+                            <input type="text" name="judul" id="judul" class="form-control"
+                                placeholder="Masukkan Perihal / Judul Surat" value="{{ old('judul') }}">
+                            @error('judul')
+                                <div class="form-control text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                </div>
-                <div class="row mb-4">
-                    <!--Checkboxes kepada (tujuan)-->
-                    <div class="col-md-6">
-                                    <div class="row mb-4">
-                                    <div class="col-md-12">
+                    </div>
+                    {{-- <div class="row mb-4"> --}}
+                        <!--Checkboxes kepada (tujuan)-->
+                        <div class="row mb-4">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <div style="width: 95%">
                                     <label for="kepada" class="form-label">
-                                        <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                                        <span class="label-kepada">Pilih user atau struktur, semua user di bawah struktur akan otomatis terpilih</span>
+                                        <img src="/img/undangan/kepada.png" alt="kepada" class="form-label"
+                                            style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
+                                        <span class="label-kepada">Pilih user atau struktur, semua user di bawah
+                                            struktur akan otomatis terpilih</span>
                                     </label>
                                     <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
-                                        <div id="org-tree"></div>
+                                        <div style="font-size: small" id="org-tree"></div>
                                     </div>
-                                    <input type="hidden" name="tujuan[]" id="tujuanInput">
                                 </div>
-                            </div>
-                        <script>
-                            $(function() {
-                                $('#org-tree').jstree({
-                                    'core' : {
-                                        'data' : @json(json_decode($jsTreeData))
-                                    },
-                                    "plugins" : [ "checkbox", "search" ]
-                                });
-                            });
-                        </script>
-                    </div>
-
-
-                    <div class="col-md-6">
-                        <label for="tgl_rapat" class="form-label">
-                            <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Rapat<span class="text-danger">*</span>
-                        </label>
-                        <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"  value="{{ old('tgl_rapat') }}" placeholder="Tanggal Rapat">
-                        @error('tgl_rapat')
-                            <div class="form-control text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-               
-
-
-                    <div class="mb-3 row">
-                        <div class="col-md-6">
-                            <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
-                            <input type="text" name="tempat" id="tempat" class="form-control" placeholder="Ruang Rapat" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="waktu" class="form-label">Waktu Rapat</label> <span class="text-danger">*</span>
-                            <div class="d-flex align-items-center">
-                                <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2" placeholder="09.00" required>
-                                <span class="fw-bold">s/d</span>
-                                <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2" placeholder="Selesai" required>
+                                <script>
+                                    $(function () {
+                                        $('#org-tree').jstree({
+                                            'core': {
+                                                'data': @json(json_decode($jsTreeData))
+                                            },
+                                            "plugins": ["checkbox", "search"]
+                                        });
+                                    });
+                                </script>
+                                <input type="hidden" name="tujuan[]" id="tujuanInput">
                             </div>
                         </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <!--TTD yang bertanda tangan-->
-                    <div class="col-md-6">
-                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                        <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" >
-                            <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                            @foreach($managers as $manager)
-                                <option value="{{  $manager->id  }}">
-                                    {{ $manager->firstname . ' ' . $manager->lastname }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('nama_bertandatangan')
-                            <div class="form-control text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-md-6 lampiran">
-                        <label for="lampiran" class="form-label">Lampiran</label>
-                        <div class="separator"></div>
-                            <div class="upload-wrapper">
-                                <button type="button" class="btn btn-primary upload-button" id="openUploadModal" style="margin-left: 30px;">Pilih File</button>
-                                <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
-                                <div id="filePreview" style="display: none; text-align: center">
-                                    <img id="previewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
-                                    <span id="fileName"></span>
-                                    <button type="button" id="removeFile" class="bi bi-x remove-btn" style="border: none; color:red; background-color: white;"></button>
+
+
+
+
+
+
+                        <div class="mb-3 row">
+                            <div class="col-md-6">
+                                <label for="tgl_rapat" class="form-label">
+                                    <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal
+                                    Rapat<span class="text-danger">*</span>
+                                </label>
+                                <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"
+                                    value="{{ old('tgl_rapat') }}" placeholder="Tanggal Rapat">
+                                @error('tgl_rapat')
+                                    <div class="form-control text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="waktu" class="form-label">Waktu Rapat</label> <span
+                                    class="text-danger">*</span>
+                                <div class="d-flex align-items-center">
+                                    <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2"
+                                        placeholder="09.00" required>
+                                    <span class="fw-bold">s/d</span>
+                                    <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2"
+                                        placeholder="Selesai" required>
                                 </div>
                             </div>
-                        </div> 
+                            <div class="col-md-6">
+                                <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
+                                <input type="text" name="tempat" id="tempat" class="form-control"
+                                    placeholder="Ruang Rapat" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <!--TTD yang bertanda tangan-->
+                            <div class="col-md-6">
+                                <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span
+                                        class="text-danger">*</span></label>
+                                <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control">
+                                    <option value="" disabled selected style="text-align: left;">--Pilih--</option>
+                                    @foreach($managers as $manager)
+                                        <option value="{{  $manager->id  }}">
+                                            {{ $manager->firstname . ' ' . $manager->lastname }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('nama_bertandatangan')
+                                    <div class="form-control text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6 lampiran">
+                                <label for="lampiran" class="form-label">Lampiran</label>
+                                <div class="separator"></div>
+                                <div class="upload-wrapper">
+                                    <button type="button" class="btn btn-primary upload-button" id="openUploadModal"
+                                        style="margin-left: 30px;">Pilih File</button>
+                                    <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png"
+                                        style="display: none;">
+                                    <div id="filePreview" style="display: none; text-align: center">
+                                        <img id="previewIcon" src="" alt="Preview"
+                                            style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
+                                        <span id="fileName"></span>
+                                        <button type="button" id="removeFile" class="bi bi-x remove-btn"
+                                            style="border: none; color:red; background-color: white;"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                    
-                </div>
-                <div class="row mb-4 isi-surat-row">
-                    <div class="col-md-12">
-                        <img src="\img\undangan\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
-                        <label for="isi_undangan">Agenda <span class="text-danger">*</span></label>
-                    </div>
-                    <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
+                    <div class="row mb-4 isi-surat-row">
+                        <div class="col-md-12">
+                            <img src="\img\undangan\isi-surat.png" alt="isiSurat" style=" margin-left: 10px;">
+                            <label for="isi_undangan">Agenda <span class="text-danger">*</span></label>
+                        </div>
+                        <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_undangan" value="{{ old('isi_undangan') }}"></textarea>
                             @error('isi_undangan')
                                 <div class="text-danger">{{ $message }}</div>
-                            @enderror   
+                            @enderror
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!--Permohonan Approval disini yah-->
-            {{-- <div class="row mb-4" style="gap: 20px;">
-                <div class="col">
-                    <div class="card-blue1">
-                        <label for="tindakan">Undangan Akan Diajukan untuk Proses Approval</label>
-                        <label for="isi" style="color: #FF000080; font-size: 10px; margin-left: 5px;">
-                            *Undangan akan diapprove oleh :
-                        </label>
-                    </div>
+                <!--Permohonan Approval disini yah-->
+                {{-- <div class="row mb-4" style="gap: 20px;">
+                    <div class="col">
+                        <div class="card-blue1">
+                            <label for="tindakan">Undangan Akan Diajukan untuk Proses Approval</label>
+                            <label for="isi" style="color: #FF000080; font-size: 10px; margin-left: 5px;">
+                                *Undangan akan diapprove oleh :
+                            </label>
+                        </div>
                         <div class="separator"></div>
                         @foreach($managers as $manager)
-                                <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname . ' ' . $manager->lastname }}</option>
-                            @endforeach
-                        
-                 
-                    <!---->
+                        <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname .
+                            ' ' . $manager->lastname }}</option>
+                        @endforeach
+
+
+                        <!---->
+                    </div>
+                </div> --}}
+                <div class="card-footer">
+                    <button type="button" class="btn btn-cancel"><a
+                            href="{{route('undangan.superadmin')}}">Batal</a></button>
+                    <button type="submit" class="btn btn-save">Ajukan</button>
                 </div>
-            </div> --}}
-            <div class="card-footer">
-                <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.superadmin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save">Ajukan</button>
             </div>
-        </div>
         </form>
     </div>
-        <!-- Modal Berhasil -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content text-center p-4">
-                    <div class="modal-body">
-                        <img src="/img/memo-admin/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
-                        <!-- Success Message -->
-                        <h5 class="modal-title"><b>Sukses</b></h5>
-                        <p class="mt-2">Menunggu Approval dari Manager</p>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('undangan.admin')}}" style="color: white; text-decoration: none">Kembali ke Halaman Undangan</a></button>
-                    </div>
+    <!-- Modal Berhasil -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <img src="/img/memo-admin/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
+                    <!-- Success Message -->
+                    <h5 class="modal-title"><b>Sukses</b></h5>
+                    <p class="mt-2">Menunggu Approval dari Manager</p>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a
+                            href="{{route('undangan.admin')}}" style="color: white; text-decoration: none">Kembali ke
+                            Halaman Undangan</a></button>
                 </div>
             </div>
         </div>
-    
-        <!-- Modal Upload File -->
-        <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="uploadModalLabel">
-                            <img src="/img/memo-superadmin/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
-                            Unggah file
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p class="modal-subtitle">Pilih dan unggah file pilihan Anda</p>
-                        <div class="upload-container">
-                            <div class="upload-box" id="uploadBox">
-                                <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
-                                <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
-                                <p class="upload-note">Ukuran file PDF tidak lebih dari 2MB</p>
-                                <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
-                                <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
-                                <div id="fileInfo" style="display: none; text-align: center ">
-                                    <div id="fileInfoWrapper" style="display: flex; align-items: center; justify-content: center">
-                                        <img id="modalPreviewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; margin-right: 5px; display: none;">
-                                        <span id="modalFileName"></span>
-                                    </div>
+    </div>
+
+    <!-- Modal Upload File -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">
+                        <img src="/img/memo-superadmin/cloud-add.png" alt="Icon"
+                            style="width: 24px; margin-right: 10px;">
+                        Unggah file
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-subtitle">Pilih dan unggah file pilihan Anda</p>
+                    <div class="upload-container">
+                        <div class="upload-box" id="uploadBox">
+                            <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon"
+                                style="width: 40px; margin-bottom: 10px;">
+                            <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
+                            <p class="upload-note">Ukuran file PDF tidak lebih dari 2MB</p>
+                            <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
+                            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                            <div id="fileInfo" style="display: none; text-align: center ">
+                                <div id="fileInfoWrapper"
+                                    style="display: flex; align-items: center; justify-content: center">
+                                    <img id="modalPreviewIcon" src="" alt="Preview"
+                                        style="max-width: 18px; max-height: 18px; object-fit: contain; margin-right: 5px; display: none;">
+                                    <span id="modalFileName"></span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-primary" id="uploadBtn" >Unggah</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="uploadBtn">Unggah</button>
                 </div>
             </div>
         </div>
-        <script>
+    </div>
+    <script>
         // Modal Upload File - Menampilkan Modal
         document.getElementById('openUploadModal').addEventListener('click', function () {
             var uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
@@ -298,7 +332,7 @@
                 uploadText.style.display = 'none';
                 uploadNote.style.display = 'none';
                 selectFileBtn.style.display = 'none';
-                
+
                 if (file.type.startsWith('image/')) {
                     modalPreviewIcon.src = '/img/image.png'; // Ikon gambar
                 } else if (file.type === 'application/pdf') {
@@ -321,13 +355,13 @@
             // Menampilkan file info di input lampiran setelah file dipilih
             document.getElementById('fileInfoWrapper').style.display = 'flex';
             document.getElementById('fileInfoWrapper').style.alignItems = 'center';
-            
+
             if (file) {
                 lampiran.files = fileInput.files;
                 fileNameDisplay.textContent = file.name;
                 filePreview.style.display = 'block';
                 uploadButton.style.display = 'none';
-                
+
                 if (file.type.startsWith('image/')) {
                     previewIcon.src = '/img/image.png'; // Ikon gambar
                 } else if (file.type === 'application/pdf') {
@@ -399,15 +433,15 @@
             document.getElementById('selectFileBtn').style.justifyContent = 'center';
             document.getElementById('selectFileBtn').style.alignItems = 'center';
         });
-    
+
         // Raroh iki opo
-        $(document).ready(function() {
-            $('#dropdownMenuButton').on('change', function() {
+        $(document).ready(function () {
+            $('#dropdownMenuButton').on('change', function () {
                 // Saat opsi dipilih, teks akan ke kiri
                 $(this).css('text-align', 'left');
 
                 // Jika kembali ke opsi default (Pilih), teks akan kembali ke center
-                if($(this).val() === null || $(this).val() === "") {
+                if ($(this).val() === null || $(this).val() === "") {
                     $(this).css('text-align', 'center');
                 }
             });
@@ -421,20 +455,20 @@
                 fields.style.display = 'none'; // Hide additional fields
             }
         }
-        </script>
-        <script>
+    </script>
+    <script>
 
-            $(document).ready(function() {
+        $(document).ready(function () {
             $('#summernote').summernote({
                 height: 200,
                 toolbar: [
-                // ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'color']],
-                // ['para', ['ul', 'ol', 'paragraph']],
-                // ['insert', ['link', 'picture', 'video']],
-                // ['view', ['fullscreen', 'codeview', 'help']],
+                    // ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'color']],
+                    // ['para', ['ul', 'ol', 'paragraph']],
+                    // ['insert', ['link', 'picture', 'video']],
+                    // ['view', ['fullscreen', 'codeview', 'help']],
                 ],
-                fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
+                fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'],
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']
             });
         });
@@ -444,4 +478,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
+
 </html>

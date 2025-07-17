@@ -126,7 +126,7 @@
 
                     @if ($kirimDocument)
                         @if (
-                            $kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim &&
+                            $kirimDocument->id_penerima == $kirimDocument->id_pengirim &&
                             in_array($undangan->status, ['pending'])
                         )
                             <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
