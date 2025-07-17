@@ -14,7 +14,7 @@ class Risalah extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'tgl_dibuat', 'tgl_disahkan', 'qr_approved_by','seri_surat', 'divisi_id_divisi',
+        'tgl_dibuat', 'tgl_disahkan', 'qr_approved_by','seri_surat', 'kode',
         'nomor_risalah', 'agenda', 'tempat', 'waktu_mulai', 'status',
         'waktu_selesai', 'tujuan', 'judul', 'pembuat', 'topik', 
         'pembahasan', 'tindak_lanjut', 'target', 'pic', 'nama_bertandatangan',
@@ -25,12 +25,6 @@ class Risalah extends Model
         'tgl_dibuat' => 'datetime',
         'tgl_disahkan' => 'datetime',
     ];
-
-    // Relasi ke tabel Divisi
-    public function divisi()
-    {
-        return $this->belongsTo(Divisi::class, 'divisi_id_divisi', 'id_divisi');
-    }
 
     // Relasi ke tabel RisalahDetail
     public function risalahDetails()
