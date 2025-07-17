@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -13,21 +14,51 @@ class Seri extends Model
     protected $table = 'seri_berkas'; 
     protected $primaryKey = 'id_seri';
 
-    protected $fillable = ['divisi_id_divisi', 'bulan', 'tahun', 'seri_bulanan', 'seri_tahunan'];
+    protected $fillable = ['kode', 'bulan', 'tahun', 'seri_bulanan', 'seri_tahunan'];
 
     public static function getNextSeri($save = false)
     {
         $currentMonth = now()->month;
         $currentYear = now()->year;
-        $divisiId = auth()->user()->divisi_id_divisi;
+
+        $idUser = Auth::user();
+        $user = User::where('id', $idUser->id)->first();
+
+        if($user->department_id_department != NULL){
+            $divisiId = Department::where('id_department', $user->department_id_department)->first();
+            if($divisiId->kode_department != NULL){
+                $divisiId = $divisiId->kode_department;
+            } else if($divisiId->kode_department == NULL){
+                if($user->divisi_id_divisi == NULL){
+                    $divisiId = $divisiId->name_department;
+                } else {
+                    $divisiId = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+                    if($divisiId->kode_divisi != NULL){
+                        $divisiId = $divisiId->kode_divisi;
+                    }else if($divisiId->kode_divisi == NULL){
+                        $divisiId = $divisiId->nm_divisi;
+                    }
+                }
+            }
+        } else if($user->divisi_id_divisi != NULL){
+            $divisiId = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+            if($divisiId->kode_divisi != NULL){
+                $divisiId = $divisiId->kode_divisi;
+            }else if($divisiId->kode_divisi == NULL){
+                $divisiId = $divisiId->nm_divisi;
+            }
+        } else if($user->director_id_director != NULL){
+            $divisiId = Director::where('id_director', $user->director_id_director)->first();
+            $divisiId = $divisiId->kode_director;
+        }
 
         // Cek apakah ada memo untuk divisi ini
         $memoCount = DB::table('memo')
-            ->where('divisi_id_divisi', $divisiId)
+            ->where('kode', $divisiId)
             ->count();
         // Cek apakah ada undangan untuk divisi ini
         $undanganCount = DB::table('undangan')
-            ->where('divisi_id_divisi', $divisiId)
+            ->where('kode', $divisiId)
             ->count();
 
         if ($memoCount === 0 && $undanganCount === 0) {
@@ -36,7 +67,7 @@ class Seri extends Model
             $seriTahunan = 1;
         } else {
             // Ambil nomor seri terakhir berdasarkan tahun & divisi
-            $lastSeri = self::where('divisi_id_divisi', $divisiId)
+            $lastSeri = self::where('kode', $divisiId)
                 ->where('tahun', $currentYear)
                 ->latest()
                 ->first();
@@ -72,7 +103,7 @@ class Seri extends Model
         if ($save) {
             // Simpan ke database hanya jika parameter $save = true
             $newSeri = self::create([
-                'divisi_id_divisi' => $divisiId,
+                'kode' => $divisiId,
                 'bulan' => $currentMonth,
                 'tahun' => $currentYear,
                 'seri_bulanan' => $seriBulanan,
@@ -90,8 +121,4 @@ class Seri extends Model
             'seri_tahunan' => $seriTahunan
         ];
     }
-        public function divisi()
-        {
-            return $this->belongsTo(Divisi::class, 'divisi_id_divisi', 'id_divisi');
-        }
 }

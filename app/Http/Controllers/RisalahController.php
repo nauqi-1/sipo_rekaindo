@@ -161,53 +161,70 @@ class RisalahController extends Controller
     public function create()
     {    
         $idUser = Auth::user();
-        $divisiId = Divisi::where('nm_divisi', 'like', '%Keuangan%')
-                    ->orWhere('nm_divisi', 'like', '%HR%')
-                    ->first();
         $user = User::where('id', $idUser->id)->first();
-        // dd($user);
-        if($user->divisi_id_divisi == $divisiId->id_divisi){
-            $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
-            $divisiName = $divisiName->nm_divisi;
-        } else if($user->divisi_id_divisi != $divisiId->id_divisi){
-            if($user->unit_id_unit != NULL || $user->section_id_section != NULL || $user->department_id_department != NULL){ //Struktur dibawah / setara Departemen
-                $divisiName = Department::where('id_department', $user->department_id_department)->first();
-                $divisiName = $divisiName->name_department;
-            } else if ($user->divisi_id_divisi != NULL) {
-                $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
-                $divisiName = $divisiName->nm_divisi;
-            } else if ($user->director_id_director != NULL) {
-                $divisiName = Director::where('id_director', $user->director_id_director)->first();
-                $divisiName = $divisiName->name_director;
-            }
+
+        if($user->position_id_position==1){
+            $idDirektur = Director::where('id_director', $user->director_id_director)->first();
+            $kodeDirektur = $idDirektur->kode_director;
+        } else {
+            $kodeDirektur = '';
         }
+        // dd($user);
+        if($user->department_id_department != NULL){
+            $divisiName = Department::where('id_department', $user->department_id_department)->first();
+            if($divisiName->kode_department != NULL){
+                $divisiName = $divisiName->kode_department;
+            } else if($divisiName->kode_department == NULL){
+                if($user->divisi_id_divisi == NULL){
+                    $divisiName = $divisiName->name_department;
+                } else {
+                    $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+                    if($divisiName->kode_divisi != NULL){
+                        $divisiName = $divisiName->kode_divisi;
+                    }else if($divisiName->kode_divisi == NULL){
+                        $divisiName = $divisiName->nm_divisi;
+                    }
+                }
+            }
+        } else if($user->divisi_id_divisi != NULL){
+            $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+            if($divisiName->kode_divisi != NULL){
+                $divisiName = $divisiName->kode_divisi;
+            }else if($divisiName->kode_divisi == NULL){
+                $divisiName = $divisiName->nm_divisi;
+            }
+        } else if($user->director_id_director != NULL){
+            $divisiName = Director::where('id_director', $user->director_id_director)->first();
+            $divisiName = $divisiName->kode_director;
+        }
+
         $undangan = Undangan::whereNotIn('judul', function($query) {
                         $query->select('judul')->from('risalah');
                     })
-                    // ->where('department_id_department', $divisiId)
+                    // ->where('department_id_department', $user->department_id_department)
                     ->get();
+        
+        $allUser = User::all();
 
         $risalah = new Risalah(); // atau ambil dari data risalah terakhir, terserah kebutuhanmu
         
         // Ambil nomor seri berikutnya
         $nextSeri = Seri::getNextSeri(false);
-
         // Konversi bulan ke angka Romawi
         $bulanRomawi = $this->convertToRoman(now()->month);
     
         // Format nomor dokumen sesuai contoh pada gambar
         $nomorDokumen = sprintf(
-            "RIS-%d.%d/REKA/%s/%s/%d",
+            "RIS-%d.%d/REKA%s/%s/%s/%d",
             $nextSeri['seri_tahunan'],
             $nextSeri['seri_bulanan'],
+            strtoupper($kodeDirektur),
             strtoupper($divisiName),
             $bulanRomawi,
             now()->year
         );
         
-        $managers = User::where('divisi_id_divisi', $divisiId)
-            ->where('position_id_position', '2')
-            ->get(['id', 'firstname', 'lastname']);
+        $managers = User::all();
     
         return view(Auth::user()->role->nm_role.'.risalah.add-risalah', [
             'risalah' => $risalah,
