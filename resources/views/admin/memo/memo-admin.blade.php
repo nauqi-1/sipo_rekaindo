@@ -108,12 +108,12 @@
                 @foreach ($memos as $index => $memo)
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
-                    @if (Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)
+                    @if (Auth::user()->firstname . ' ' . Auth::user()->lastname == $memo->pembuat)
                     <td class="nama-dokumen 
                         {{ ($memo->status == 'reject' || $memo->status == 'correction') ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $memo->judul }}
                     </td>
-                    @elseif(Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
+                    @else
                     <td class="nama-dokumen 
                         {{ ($memo->final_status == 'reject' || $memo->final_status == 'correction') ? 'text-danger' : ($memo->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $memo->judul }}
@@ -124,13 +124,7 @@
                             // Cari dokumen kiriman yang sesuai dengan ID memo
                             $kirimDocument = $kirimDocuments->firstWhere('id_document', $memo->id_memo);
                         @endphp
-                        <!-- @if($kirimDocument)
-                            <p>Divisi Pengirim: {{ $kirimDocument->divisi_pengirim }}</p>
-                            <p>Divisi Penerima: {{ $kirimDocument->divisi_penerima }}</p>
-                            <p>Status: {{ $memo->status }}</p>
-                            <p>ID Pengirim: {{ $kirimDocument->id_pengirim }}</p>
-                            <p>ID User Login: {{ Auth::user()->id }}</p>
-                        @endif -->
+                        
 
                         @if($kirimDocument)
                             @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $memo->final_status == 'pending')
@@ -166,13 +160,13 @@
                     </td>
 
                     <td>
-                        @if (Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)
+                        @if (Auth::user()->firstname . ' ' . Auth::user()->lastname == $memo->pembuat)
                             @if($memo->final_status == 'pending' || $memo->final_status == 'approve' )
                             <!--<a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
                                 <img src="/img/memo-admin/share.png" alt="share">
                             </a>-->
                             @endif
-                        @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
+                        @else
                             @if($memo->final_status == 'pending' )
                             <a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
                                 <img src="/img/memo-admin/share.png" alt="share">
@@ -182,7 +176,7 @@
             
 
                         <!-- Status Approve -->
-                        @if (Auth::user()->divisi->id_divisi == $memo->divisi->id_divisi)
+                        @if (Auth::user()->firstname . ' ' . Auth::user()->lastname == $memo->pembuat)
                             @if ($memo->status == 'approve' || $memo->status == 'reject' )
                                 <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                                     @csrf
@@ -196,7 +190,7 @@
                                     <img src="/img/memo-admin/edit.png" alt="edit">
                                 </a>
                             @endif
-                        @elseif (Auth::user()->divisi->id_divisi != $memo->divisi->id_divisi)
+                        @else
                             @if ($memo->final_status == 'approve' || $memo->final_status == 'reject')
                                 <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                                     @csrf
