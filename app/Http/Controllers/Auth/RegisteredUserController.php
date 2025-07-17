@@ -91,7 +91,7 @@ class RegisteredUserController extends Controller
             $section = NULL;
             $unit = NULL;
         } elseif ($type == "divisi") { // Divisi
-            $director = Divisi::where('id_divisi', $bagian)->value('director_id_director');
+            $direktur = Divisi::where('id_divisi', $bagian)->value('director_id_director');
             $divisi = $bagian;
             $department = NULL;
             $section = NULL;
