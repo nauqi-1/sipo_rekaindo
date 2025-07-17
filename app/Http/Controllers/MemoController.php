@@ -132,15 +132,15 @@ class MemoController extends Controller
         ->get();
 
     // Ambil id penerima dan pengirim melalui relasi user
-    $kirimDocuments->each(function ($kirim) {
-        $pengirim = User::find($kirim->id_pengirim);
-        $penerima = User::find($kirim->id_penerima);
-        $user = Auth::user();
-
-        $kirim->divisi_pengirim = $pengirim ? $pengirim->divisi->nm_divisi : 'Tidak Diketahui';
-        $kirim->divisi_penerima = $penerima ? $penerima->divisi->nm_divisi : 'Tidak Diketahui';
-        $kirim->divisi_user = $user->divisi->nm_divisi ?? 'Tidak Diketahui';
-    });
+    //$kirimDocuments->each(function ($kirim) {
+    //    $pengirim = User::find($kirim->id_pengirim);
+    //    $penerima = User::find($kirim->id_penerima);
+    //    $user = Auth::user();
+//
+    //    $kirim->divisi_pengirim = $pengirim ? $pengirim->divisi->nm_divisi : 'Tidak Diketahui';
+    //    $kirim->divisi_penerima = $penerima ? $penerima->divisi->nm_divisi : 'Tidak Diketahui';
+    //    $kirim->divisi_user = $user->divisi->nm_divisi ?? 'Tidak Diketahui';
+    //});
         return view(Auth::user()->role->nm_role . '.memo.memo-' . Auth::user()->role->nm_role, compact('memos', 'divisi', 'seri','sortDirection', 'kirimDocuments'));
     }
 
@@ -235,21 +235,20 @@ class MemoController extends Controller
         //$divisiName = auth()->user()->divisi->nm_divisi;
         $divisiList = Divisi::all(); 
 
-        $idUser = Auth::user();
+        $user = Auth::user();
         $divisiId = Divisi::where('nm_divisi', 'like', '%Keuangan%')
                     ->orWhere('nm_divisi', 'like', '%HR%')
                     ->first();
-        $user = User::where('id', $idUser->id)->first();
         // dd($user);
         if($user->divisi_id_divisi == $divisiId->id_divisi){
             $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->get();
         } else if($user->divisi_id_divisi != $divisiId->id_divisi){
             if($user->unit_id_unit != NULL || $user->section_id_section != NULL || $user->department_id_department != NULL){ //Struktur dibawah / setara Departemen
                 $divisiName = Department::where('id_department', $user->department_id_department)->first();
-                $divisiName = $divisiName->name_department;
+                $divisiName = $divisiName->kode_department;
             } else if ($user->divisi_id_divisi != NULL) {
                 $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
-                $divisiName = $divisiName->nm_divisi;
+                $divisiName = $divisiName->kode_divisi;
             } else if ($user->director_id_director != NULL) {
                 $divisiName = Director::where('id_director', $user->director_id_director)->first();
                 $divisiName = $divisiName->name_director;
@@ -273,25 +272,16 @@ class MemoController extends Controller
         $managers = User::where('role_id_role', 3)
             ->where(function($q) use ($user) {
                 $q->where('divisi_id_divisi', $user->divisi_id_divisi)
-                    ->orWhere('unit_id_unit', $user->unit_id_unit)
                     ->orWhere('department_id_department', $user->department_id_department);
+                    
             })
             ->get(['id', 'firstname', 'lastname']);
-
+           
         // Ambil seluruh user dan struktur organisasi (untuk dropdown tree)
         $users = User::select('id', 'firstname', 'lastname', 'divisi_id_divisi', 'department_id_department', 'section_id_section', 'unit_id_unit')->get();
-        //$orgTree = $this->getOrgTreeWithUsers();
-        //$mainDirector = $orgTree[0] ?? null; // assuming the first node is the main director
-        $mainDirector = Director::with([
-                    'subDirectors.divisi.department.section.unit',
-                    'subDirectors.divisi.department.unit',
-                    'subDirectors.department.section.unit',
-                    'subDirectors.department.unit',
-                    'divisi.department.section.unit',
-                    'divisi.department.unit',
-                    'department.section.unit',
-                    'department.unit'
-                ])->where('is_main', 1)->first();
+        $orgTree = $this->getOrgTreeWithUsers();
+        $jsTreeData = $this->convertToJsTree($orgTree);
+        $mainDirector = $orgTree[0] ?? null; // assuming the first node is the main director
         
         return view(Auth::user()->role->nm_role.'.memo.add-memo', [
             'nomorSeriTahunan' => $nextSeri['seri_tahunan'],
@@ -299,13 +289,35 @@ class MemoController extends Controller
             'managers' => $managers,
             'divisiList' => $divisiList,
             'users' => $users,
-            //'orgTree' => $orgTree,
+            'orgTree' => $orgTree,
+            'jsTreeData' => $jsTreeData,
             'mainDirector' => $mainDirector,
         ]);
     }
-
-    // Helper: generate org tree with users for dropdown
     private function getOrgTreeWithUsers()
+    {
+       $directors = Director::with([
+            'users',
+            'divisi.users',
+            'divisi.department.users',
+            'divisi.department.section.users',
+            'divisi.department.section.unit.users',
+            'department.users',
+            'department.section.users',
+            'department.section.unit.users'
+        ])->get();
+
+        $tree = [];
+
+        foreach ($directors as $director) {
+            $dir = $director->toArray();
+            $dir['users'] = $director->users->toArray();
+            $tree[] = $dir;
+        }
+        return $tree;
+        }
+    // Helper: generate org tree with users for dropdown
+    private function getOrgTreeWithUsersOLD()
     {
         $directors = \App\Models\Director::with(['divisi.department.section.unit'])->get();
         $tree = [];
@@ -371,11 +383,142 @@ class MemoController extends Controller
 
         return $tree;
     }
+    private function filterUsersAtLevel($users, $level)
+    {
+        return array_values(array_filter($users, function($user) use ($level) {
+            return (
+                ($level === 'director' && is_null($user['divisi_id_divisi']) && is_null($user['department_id_department']) && is_null($user['section_id_section']) && is_null($user['unit_id_unit'])) ||
+                ($level === 'divisi' && !is_null($user['divisi_id_divisi']) && is_null($user['department_id_department']) && is_null($user['section_id_section']) && is_null($user['unit_id_unit'])) ||
+                ($level === 'department' && !is_null($user['department_id_department']) && is_null($user['section_id_section']) && is_null($user['unit_id_unit'])) ||
+                ($level === 'section' && !is_null($user['section_id_section']) && is_null($user['unit_id_unit'])) ||
+                ($level === 'unit' && !is_null($user['unit_id_unit']))
+            );
+        }));
+    }
+
+    private function convertToJsTree($tree)
+    {
+        $result = [];
+        foreach ($tree as $director) {
+            $dirNode = [
+                'id' => 'director-'.$director['id_director'],
+                'text' => $director['name_director'],
+                'children' => []
+            ];
+
+            // Filter user hanya yang di level director saja
+            $dirNode['children'] = [];
+            $usersAtDirector = $this->filterUsersAtLevel($director['users'], 'director');
+            foreach ($usersAtDirector as $user) {
+                $dirNode['children'][] = [
+                    'id' => 'user-'.$user['id'],
+                    'text' => $user['firstname'].' '.$user['lastname'],
+                    'icon' => 'fa fa-user'
+                ];
+            }
+
+            // Tanpa Divisi (langsung Department)
+            if (empty($director['divisi'])) {
+                foreach ($director['department'] ?? [] as $dept) {
+                    $deptNode = [ 'id' => 'dept-'.$dept['id_department'], 'text' => $dept['name_department'], 'children' => [] ];
+                    $usersAtDepartment = $this->filterUsersAtLevel($dept['users'] ?? [], 'department');
+                    foreach ($usersAtDepartment as $user) {
+                        $deptNode['children'][] = [
+                            'id' => 'user-'.$user['id'],
+                            'text' => $user['firstname'].' '.$user['lastname'],
+                            'icon' => 'fa fa-user'
+                        ];
+                    }
+                    foreach ($dept['section'] ?? [] as $section) {
+                        $sectionNode = [ 'id' => 'section-'.$section['id_section'], 'text' => $section['name_section'], 'children' => [] ];
+                        $usersAtSection = $this->filterUsersAtLevel($section['users'] ?? [], 'section');
+                        foreach ($usersAtSection as $user) {
+                            $sectionNode['children'][] = [
+                                'id' => 'user-'.$user['id'],
+                                'text' => $user['firstname'].' '.$user['lastname'],
+                                'icon' => 'fa fa-user'
+                            ];
+                        }
+                        foreach ($section['unit'] ?? [] as $unit) {
+                            $unitNode = [ 'id' => 'unit-'.$unit['id_unit'], 'text' => $unit['name_unit'], 'children' => [] ];
+                            $usersAtUnit = $this->filterUsersAtLevel($unit['users'] ?? [], 'unit');
+                            foreach ($usersAtUnit as $user) {
+                                $unitNode['children'][] = [
+                                    'id' => 'user-'.$user['id'],
+                                    'text' => $user['firstname'].' '.$user['lastname'],
+                                    'icon' => 'fa fa-user'
+                                ];
+                            }
+                            $sectionNode['children'][] = $unitNode;
+                        }
+                        $deptNode['children'][] = $sectionNode;
+                    }
+                    $dirNode['children'][] = $deptNode;
+                }
+            } else {
+                // Dengan Divisi
+                foreach ($director['divisi'] ?? [] as $divisi) {
+                    $divNode = [ 'id' => 'divisi-'.$divisi['id_divisi'], 'text' => $divisi['nm_divisi'], 'children' => [] ];
+                    $usersAtDivisi = $this->filterUsersAtLevel($divisi['users'] ?? [], 'divisi');
+                    foreach ($usersAtDivisi as $user) {
+                        $divNode['children'][] = [
+                            'id' => 'user-'.$user['id'],
+                            'text' => $user['firstname'].' '.$user['lastname'],
+                            'icon' => 'fa fa-user'
+                        ];
+                    }
+                    foreach ($divisi['department'] ?? [] as $dept) {
+                        $deptNode = [ 'id' => 'dept-'.$dept['id_department'], 'text' => $dept['name_department'], 'children' => [] ];
+                        $usersAtDepartment = $this->filterUsersAtLevel($dept['users'] ?? [], 'department');
+                        foreach ($usersAtDepartment as $user) {
+                            $deptNode['children'][] = [
+                                'id' => 'user-'.$user['id'],
+                                'text' => $user['firstname'].' '.$user['lastname'],
+                                'icon' => 'fa fa-user'
+                            ];
+                        }
+                        foreach ($dept['section'] ?? [] as $section) {
+                            $sectionNode = [ 'id' => 'section-'.$section['id_section'], 'text' => $section['name_section'], 'children' => [] ];
+                            $usersAtSection = $this->filterUsersAtLevel($section['users'] ?? [], 'section');
+                            foreach ($usersAtSection as $user) {
+                                $sectionNode['children'][] = [
+                                    'id' => 'user-'.$user['id'],
+                                    'text' => $user['firstname'].' '.$user['lastname'],
+                                    'icon' => 'fa fa-user'
+                                ];
+                            }
+                            foreach ($section['unit'] ?? [] as $unit) {
+                                $unitNode = [ 'id' => 'unit-'.$unit['id_unit'], 'text' => $unit['name_unit'], 'children' => [] ];
+                                $usersAtUnit = $this->filterUsersAtLevel($unit['users'] ?? [], 'unit');
+                                foreach ($usersAtUnit as $user) {
+                                    $unitNode['children'][] = [
+                                        'id' => 'user-'.$user['id'],
+                                        'text' => $user['firstname'].' '.$user['lastname'],
+                                        'icon' => 'fa fa-user'
+                                    ];
+                                }
+                                $sectionNode['children'][] = $unitNode;
+                            }
+                            $deptNode['children'][] = $sectionNode;
+                        }
+                        $divNode['children'][] = $deptNode;
+                    }
+                    $dirNode['children'][] = $divNode;
+                }
+            }
+            $result[] = $dirNode;
+        }
+        return json_encode($result);
+    }
 
 
     
     public function store(Request $request)
     {   
+        dd($request->all());
+        $tujuanUserIds = $request->input('tujuan');
+        dd($tujuanUserIds);
+                
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
@@ -400,7 +543,7 @@ class MemoController extends Controller
         }
     
         
-        
+       
 
         $filePath = null;
         if ($request->hasFile('lampiran')) {
