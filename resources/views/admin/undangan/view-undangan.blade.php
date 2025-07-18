@@ -76,7 +76,7 @@
                         <label for="status">Status</label>
                         <div class="separator"></div>
                         
-                            @if($undangan->divisi->id_divisi != Auth::user()->divisi->id_divisi)
+                            @if($undangan->pembuat != Auth::user()->id)
                             @if ($undangan->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($undangan->status == 'pending')

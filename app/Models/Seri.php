@@ -11,7 +11,7 @@ class Seri extends Model
 {
     use HasFactory;
 
-    protected $table = 'seri_berkas'; 
+    protected $table = 'seri_berkas';
     protected $primaryKey = 'id_seri';
 
     protected $fillable = ['kode', 'bulan', 'tahun', 'seri_bulanan', 'seri_tahunan'];
@@ -24,30 +24,30 @@ class Seri extends Model
         $idUser = Auth::user();
         $user = User::where('id', $idUser->id)->first();
 
-        if($user->department_id_department != NULL){
+        if ($user->department_id_department != NULL) {
             $divisiId = Department::where('id_department', $user->department_id_department)->first();
-            if($divisiId->kode_department != NULL){
+            if ($divisiId->kode_department != NULL) {
                 $divisiId = $divisiId->kode_department;
-            } else if($divisiId->kode_department == NULL){
-                if($user->divisi_id_divisi == NULL){
+            } else if ($divisiId->kode_department == NULL) {
+                if ($user->divisi_id_divisi == NULL) {
                     $divisiId = $divisiId->name_department;
                 } else {
                     $divisiId = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
-                    if($divisiId->kode_divisi != NULL){
+                    if ($divisiId->kode_divisi != NULL) {
                         $divisiId = $divisiId->kode_divisi;
-                    }else if($divisiId->kode_divisi == NULL){
+                    } else if ($divisiId->kode_divisi == NULL) {
                         $divisiId = $divisiId->nm_divisi;
                     }
                 }
             }
-        } else if($user->divisi_id_divisi != NULL){
+        } else if ($user->divisi_id_divisi != NULL) {
             $divisiId = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
-            if($divisiId->kode_divisi != NULL){
+            if ($divisiId->kode_divisi != NULL) {
                 $divisiId = $divisiId->kode_divisi;
-            }else if($divisiId->kode_divisi == NULL){
+            } else if ($divisiId->kode_divisi == NULL) {
                 $divisiId = $divisiId->nm_divisi;
             }
-        } else if($user->director_id_director != NULL){
+        } else if ($user->director_id_director != NULL) {
             $divisiId = Director::where('id_director', $user->director_id_director)->first();
             $divisiId = $divisiId->kode_director;
         }

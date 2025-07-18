@@ -15,7 +15,7 @@ class Undangan extends Model
 
     protected $fillable = [
         'judul', 'tujuan', 'isi_undangan', 'tgl_dibuat', 'tgl_disahkan', 'qr_approved_by', 'status','pembuat','catatan','lampiran',
-        'nomor_undangan', 'nama_bertandatangan', 'divisi_id_divisi', 'seri_surat','tgl_rapat', 'tempat', 'waktu_mulai', 'waktu_selesai'
+        'nomor_undangan', 'nama_bertandatangan', 'kode', 'seri_surat','tgl_rapat', 'tempat', 'waktu_mulai', 'waktu_selesai'
     ];
 
     protected $casts = [
@@ -38,5 +38,9 @@ class Undangan extends Model
     {
         return $this->hasMany(Kirim_Document::class, 'id_document','id_undangan');
 
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'pembuat','id');
     }
 }

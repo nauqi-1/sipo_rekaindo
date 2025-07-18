@@ -98,7 +98,7 @@
                         </a>
                             </button>
                         </th>
-                    <th>Divisi Pengirim</th>
+                    <th>Pengirim</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
@@ -120,9 +120,9 @@
                     <td>{{ $undangan->seri_surat ?? '-' }}</td>
                     <td>{{ $undangan->nomor_undangan ?? '-' }}</td>
                     <td>{{ isset($undangan->tgl_disahkan) ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $undangan->divisi->nm_divisi ?? '-' }}</td>
+                    <td>{{ $undangan->kode ?? '-' }}</td>
                     <td>
-                        @if($undangan->divisi->id_divisi != Auth::user()->divisi->id_divisi)
+                        @if($undangan->pembuat != Auth::user()->id)
                             @if ($undangan->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($undangan->status == 'pending')
