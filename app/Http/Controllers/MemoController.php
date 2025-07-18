@@ -574,22 +574,30 @@ class MemoController extends Controller
         
         
 
-        $divisiId = auth()->user()->divisi_id_divisi;
-        $seri = Seri::getNextSeri(true);
-        $seri = Seri::where('divisi_id_divisi', $divisiId)
+        $user = Auth::user();
+
+        if ($user->divisi_id_divisi) {
+            $divisi = \App\Models\Divisi::find($user->divisi_id_divisi);
+            $divDeptKode = $divisi?->kode_divisi;
+        } elseif ($user->id_department) {
+            $department = \App\Models\Department::find($user->id_department);
+            $divDeptKode = $department?->kode_department;
+        } else {
+            $divDeptKode = null; 
+        }
+
+        $seri = Seri::where('kode', $divDeptKode)
                 ->where('tahun', now()->year)
                 ->latest()
                 ->first();
-        
+        $seri = Seri::getNextSeri(true);
         if (!$seri) {
             return back()->with('error', 'Nomor seri tidak ditemukan.');
         }
-        
         // Simpan dokumen
         $memo = Memo::create([
-            'divisi_id_divisi' => $request->input('divisi_id_divisi'),
             'judul' => $request->input('judul'),
-            'tujuan' => implode('; ', $request->tujuan),
+            'tujuan' => implode(';', $request->tujuan),
             'isi_memo' => $request->input('isi_memo'),
             'nomor_memo' => $request->input('nomor_memo'),
             'tgl_dibuat' => $request->input('tgl_dibuat'),
@@ -606,7 +614,6 @@ class MemoController extends Controller
             foreach ($request->nomor as $key => $nomor) {
                 kategori_barang::create([
                     'memo_id_memo' => $memo->id_memo,
-                    'memo_divisi_id_divisi' => $memo->divisi_id_divisi, // Gunakan dari memo
                     'nomor' => $nomor, // Ambil dari array
                     'barang' => $request->barang[$key] ?? null,
                     'qty' => $request->qty[$key] ?? null,
@@ -662,9 +669,8 @@ class MemoController extends Controller
             $memo->save();
 
         $tujuanUserIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
-        dd($tujuanUserIds);
+        //dd($tujuanUserIds);
         foreach ($tujuanUserIds as $userId) {
-            $userId = trim($userId);
             if ($userId == $creator->id) continue;
             $recipients = User::where('id', $userId)->get();
             foreach ($recipients as $recipient) {
