@@ -108,7 +108,7 @@
                 @foreach ($memos as $index => $memo)
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
-                    @if (Auth::user()->firstname . ' ' . Auth::user()->lastname == $memo->pembuat)
+                    @if (Auth::user()->id == $memo->pembuat)
                     <td class="nama-dokumen 
                         {{ ($memo->status == 'reject' || $memo->status == 'correction') ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $memo->judul }}
@@ -160,7 +160,7 @@
                     </td>
 
                     <td>
-                        @if (Auth::user()->firstname . ' ' . Auth::user()->lastname == $memo->pembuat)
+                        @if (Auth::user()->id == $memo->pembuat)
                             @if($memo->final_status == 'pending' || $memo->final_status == 'approve' )
                             <!--<a href="{{ route('kirim-memoAdmin.admin',['id' => $memo->id_memo]) }}" class="btn btn-sm1">
                                 <img src="/img/memo-admin/share.png" alt="share">
@@ -176,7 +176,7 @@
             
 
                         <!-- Status Approve -->
-                        @if (Auth::user()->firstname . ' ' . Auth::user()->lastname == $memo->pembuat)
+                        @if (Auth::user()->id == $memo->pembuat)
                             @if ($memo->status == 'approve' || $memo->status == 'reject' )
                                 <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                                     @csrf

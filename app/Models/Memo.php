@@ -30,7 +30,7 @@ class Memo extends Model
      */
     protected $fillable = [
         'judul', 'tujuan', 'isi_memo', 'tgl_dibuat', 'tgl_disahkan', 'qr_approved_by', 'status','pembuat','catatan',
-        'nomor_memo', 'nama_bertandatangan', 'lampiran', 'divisi_id_divisi', 'seri_surat'
+        'nomor_memo', 'nama_bertandatangan', 'lampiran', 'divisi_id_divisi', 'seri_surat', 'kode'
 
     ];
 
@@ -62,6 +62,10 @@ class Memo extends Model
     public function arsip()
     {
         return $this->morphMany(Arsip::class, 'document');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'pembuat', 'id');
     }
 
 

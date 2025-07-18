@@ -9,8 +9,13 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin/edit-memo.css') }}">
+
+    <!--DEPENDENCY UNTUK JSTREE-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" rel="stylesheet">    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
 </head>
 <body>
     <div class="pc-container">
@@ -32,7 +37,7 @@
         </div>
 
         <!-- form add memo -->
-        <form method="POST" action="{{ route('memo/update', $memo->id_memo) }}">
+        <form id="editMemoForm" method="POST" action="{{ route('memo/update', $memo->id_memo) }}">
         @csrf
         @method('PUT')
         <div class="card">
@@ -66,44 +71,42 @@
 
                 </div>
                 <div class="row mb-4">
-                   <div class="col-md-6">
-    <label for="kepada" class="form-label">
-        <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">
-        Kepada <span class="text-danger">*</span>
-        <label for="tujuan" class="label-kepada">Centang lebih dari satu jika diperlukan</label>
-    </label>
+                   <div class="d-flex justify-content-center">
+                    <div style="width: 95%;">
+                    <label style="font-size: small;" for="kepada" class="form-label">
+                        <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
+                    </label>
+                    
+                    <div id="orgTreeError" class="form-control text-danger" style="display:none;"></div>
+              
+                    <div class="col-md-12">
+                                    <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                                        <div style=" font-size: small;" id="org-tree"></div>
+                                    </div>
+                        <script>   
 
-    @php
-        $selectedTujuan = is_array(old('tujuan')) ? old('tujuan') : explode(';', $memo->tujuan ?? '');
-    @endphp
+                            const tujuanIDArray = @json($tujuanArray);
+                            const tujuanUserIDArray = tujuanIDArray.map(id => 'user-' + id); 
+                            $(function() {
+                                $('#org-tree').jstree({
+                                    'core' : {
+                                        'data' : @json(json_decode($jsTreeData))
+                                    },
+                                    "plugins" : [ "checkbox", "search" ]
+                                });
+                                 $('#org-tree').on('ready.jstree', function () {
+                                    tujuanUserIDArray.forEach(id => {
+                                        $('#org-tree').jstree('check_node', id);
+                                    });
+                                });
+                                
+                            });
+                        </script>
+                           
+                    </div>
+                    </div>
+                </div>
 
-    <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
-        @foreach($divisi as $d)
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" 
-                    name="tujuan[]" 
-                    value="{{ $d->id_divisi }}" 
-                    id="divisi_{{ $d->id_divisi }}"
-                    {{ in_array($d->id_divisi, $selectedTujuan) ? 'checked' : '' }}>
-                <label class="form-check-label" for="divisi_{{ $d->id_divisi }}">
-                    {{ $d->nm_divisi }}
-                </label>
-            </div>
-        @endforeach
-    </div>
-
-    @error('tujuan')
-        <div class="form-control text-danger">{{ $message }}</div>
-    @enderror
-</div>
-
-                    <!-- <div class="col-md-6 lampiran">
-                        <label for="upload_file" class="form-label">Lampiran <span class="text-danger">*</span></label>
-                        <div class="upload-wrapper">
-                            <button type="button" class="btn btn-primary upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Pilih File</button>
-                            <input type="file" id="upload_file" name="upload_file" class="form-control-file" value="{{ $memo->tanda_identitas }}" hidden>
-                        </div>
-                    </div> -->
                     <div class="col-md-6">
                         <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger"></span></label>
                         <input type="hidden" name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" value="{{ $memo->nama_bertandatangan }}" required>
@@ -116,6 +119,7 @@
                         @endforeach
                         </select>
                     </div>
+                    <div class="col-md-6"></div>
                 </div>
 
                 <div class="row mb-4 isi-surat-row">
@@ -160,6 +164,7 @@
                 <button type="button" class="btn btn-cancel"><a href="{{route ('memo.admin')}}">Batal</a></button>
                 <button type="submit" class="btn btn-save">Simpan</button>
             </div>
+            <div id="tujuan-container"></div>
         </div>
         </form>
             </div>
@@ -198,6 +203,25 @@
     </div>
 
     <script>
+        $('#editMemoForm').on('submit', function (e) {
+
+            // Get selected nodes
+            const selectedNodes = $('#org-tree').jstree('get_selected', true);
+            const tujuan = selectedNodes
+            .filter(node => node.id.startsWith('user-')) // adjust prefix if needed
+            .map(node => ({
+              id: parseInt(node.id.replace('user-', '')), // Extract user ID from node ID
+            }));
+          console.log(tujuan);
+            // Append hidden inputs
+            tujuan.forEach(user => {
+                $('#tujuan-container').append(
+                    `<input type="hidden" name="tujuan[]" value="${user.id}">`
+                );
+            });
+        
+            console.log("Submitting form with tujuan:", tujuan); // <--- debug
+        });
         $(document).ready(function() {
             $('#dropdownMenuButton').on('change', function() {
                 // Saat opsi dipilih, teks akan ke kiri

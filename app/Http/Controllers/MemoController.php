@@ -109,12 +109,8 @@ class MemoController extends Controller
         
 
         $memos->getCollection()->transform(function ($memo) use ($userId) {
-            $nama = explode(' ', $memo->pembuat, 2);
-            $firstname = $nama[0] ?? null;
-            $lastname = $nama[1] ?? null;
-
-            $creator = \App\Models\User::where('firstname', $firstname)
-            ->where('lastname', $lastname)
+            
+            $creator = \App\Models\User::where('id', $userId)
             ->first();
             if ($creator && $creator->id === $userId) {
                 $memo->final_status = $memo->status; // Memo diri sendiri
@@ -475,7 +471,7 @@ class MemoController extends Controller
     public function store(Request $request)
     {   
         
-                
+        
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
@@ -483,7 +479,7 @@ class MemoController extends Controller
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
             'manager_user_id' => 'required|exists:users,id',
-            'pembuat'=>'required|string|max:255',
+            'pembuat'=>'required|int|max:255',
             'catatan'=>'nullable|string|max:255',
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|numeric',
@@ -508,22 +504,8 @@ class MemoController extends Controller
             $fileData = base64_encode(file_get_contents($file->getRealPath()));
             $filePath = $fileData;
         }
-        
-        
-        
-        
 
-        $user = Auth::user();
-
-        if ($user->divisi_id_divisi) {
-            $divisi = \App\Models\Divisi::find($user->divisi_id_divisi);
-            $divDeptKode = $divisi?->kode_divisi;
-        } elseif ($user->id_department) {
-            $department = \App\Models\Department::find($user->id_department);
-            $divDeptKode = $department?->kode_department;
-        } else {
-            $divDeptKode = null; 
-        }
+        $divDeptKode = $this->getDivDeptKode(Auth::user());
 
         $seri = Seri::where('kode', $divDeptKode)
                 ->where('tahun', now()->year)
@@ -533,7 +515,6 @@ class MemoController extends Controller
         if (!$seri) {
             return back()->with('error', 'Nomor seri tidak ditemukan.');
         }
-
         // Simpan dokumen
         $memo = Memo::create([
             'judul' => $request->input('judul'),
@@ -845,17 +826,23 @@ class MemoController extends Controller
          $memo = Memo::findOrFail($id);
          $divisi = Divisi::all();
          $divisiId = auth()->user()->divisi_id_divisi;
-         $seri = Seri::all();  
-         $managers = User::where('divisi_id_divisi', $divisiId)
-        ->where('position_id_position', '2')
+         $seri = Seri::all(); 
+         
+         
+         $managers = User::where('role_id_role', 3)
         ->get(['id', 'firstname', 'lastname']);
          
-         return view(Auth::user()->role->nm_role. '.memo.edit-memo', compact('memo', 'divisi', 'seri', 'managers'));
+        $orgTree = $this->getOrgTreeWithUsers();
+        $jsTreeData = $this->convertToJsTree($orgTree);
+        $mainDirector = $orgTree[0] ?? null;
+
+        $tujuanArray = $memo->tujuan ? explode(';', $memo->tujuan) : [];
+
+         return view(Auth::user()->role->nm_role. '.memo.edit-memo', compact('memo', 'divisi', 'seri', 'managers', 'orgTree', 'jsTreeData', 'mainDirector', 'tujuanArray'));
      }
      public function update(Request $request, $id)
      {
         $memo = Memo::findOrFail($id);
-
 
         $request->validate([
             'judul' => 'required|string|max:255',
@@ -866,7 +853,6 @@ class MemoController extends Controller
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
-            'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
         ]);
 
         if ($request->filled('judul')) {
@@ -892,9 +878,6 @@ class MemoController extends Controller
         }
         if ($request->filled('tgl_disahkan')) {
             $memo->tgl_disahkan = $request->tgl_disahkan;
-        }
-        if ($request->filled('divisi_id_divisi')) {
-            $memo->divisi_id_divisi = $request->divisi_id_divisi;
         }
         if ($request->hasFile('lampiran')) {
             $file = $request->file('lampiran');
