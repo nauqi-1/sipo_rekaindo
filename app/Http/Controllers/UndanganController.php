@@ -208,33 +208,8 @@ class UndanganController extends Controller
             $kodeDirektur = '';
         }
         // dd($user);
-        if ($user->department_id_department != NULL) {
-            $divisiName = Department::where('id_department', $user->department_id_department)->first();
-            if ($divisiName->kode_department != NULL) {
-                $divisiName = $divisiName->kode_department;
-            } else if ($divisiName->kode_department == NULL) {
-                if ($user->divisi_id_divisi == NULL) {
-                    $divisiName = $divisiName->name_department;
-                } else {
-                    $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
-                    if ($divisiName->kode_divisi != NULL) {
-                        $divisiName = $divisiName->kode_divisi;
-                    } else if ($divisiName->kode_divisi == NULL) {
-                        $divisiName = $divisiName->nm_divisi;
-                    }
-                }
-            }
-        } else if ($user->divisi_id_divisi != NULL) {
-            $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
-            if ($divisiName->kode_divisi != NULL) {
-                $divisiName = $divisiName->kode_divisi;
-            } else if ($divisiName->kode_divisi == NULL) {
-                $divisiName = $divisiName->nm_divisi;
-            }
-        } else if ($user->director_id_director != NULL) {
-            $divisiName = Director::where('id_director', $user->director_id_director)->first();
-            $divisiName = $divisiName->kode_director;
-        }
+
+        $divDeptKode = $this->getDivDeptKode($user);
 
         // Ambil nomor seri berikutnya
         $nextSeri = Seri::getNextSeri(false);
@@ -245,7 +220,8 @@ class UndanganController extends Controller
             "%d.%d/REKA/GEN/%s/%s/%d",
             $nextSeri['seri_tahunan'],
             $nextSeri['seri_bulanan'],
-            strtoupper($divisiName),
+            strtoupper($kodeDirektur),
+            strtoupper($divDeptKode),
             $bulanRomawi,
             now()->year
         );
@@ -270,6 +246,7 @@ class UndanganController extends Controller
         return view(Auth::user()->role->nm_role . '.undangan.add-undangan', [
             'nomorSeriTahunan' => $nextSeri['seri_tahunan'],
             'nomorDokumen' => $nomorDokumen,
+            'kode' => $divDeptKode,
             'managers' => $managers,
             'divisiList' => $divisiList,
             'users' => $users,
@@ -476,6 +453,38 @@ class UndanganController extends Controller
         }
         return json_encode($result);
     }
+    private function getDivDeptKode($user)
+    {
+        if ($user->department_id_department != NULL) {
+            $divisiName = Department::where('id_department', $user->department_id_department)->first();
+            if ($divisiName->kode_department != NULL) {
+                $divisiName = $divisiName->kode_department;
+            } else if ($divisiName->kode_department == NULL) {
+                if ($user->divisi_id_divisi == NULL) {
+                    $divisiName = $divisiName->name_department;
+                } else {
+                    $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+                    if ($divisiName->kode_divisi != NULL) {
+                        $divisiName = $divisiName->kode_divisi;
+                    } else if ($divisiName->kode_divisi == NULL) {
+                        $divisiName = $divisiName->nm_divisi;
+                    }
+                }
+            }
+        } else if ($user->divisi_id_divisi != NULL) {
+            $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+            if ($divisiName->kode_divisi != NULL) {
+                $divisiName = $divisiName->kode_divisi;
+            } else if ($divisiName->kode_divisi == NULL) {
+                $divisiName = $divisiName->nm_divisi;
+            }
+        } else if ($user->director_id_director != NULL) {
+            $divisiName = Director::where('id_director', $user->director_id_director)->first();
+            $divisiName = $divisiName->kode_director;
+        }
+
+        return ($divisiName);
+    }
     public function store(Request $request)
     {
         //dd($request->all());
@@ -484,13 +493,13 @@ class UndanganController extends Controller
             'judul' => 'required|string|max:70',
             'isi_undangan' => 'required|string',
             'tujuan' => 'required|array|min:1',
-            'tujuan.*' => 'exists:divisi,id_divisi',
             'nomor_undangan' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|exists:users,id', // harus user id
-            'pembuat' => 'required|string|max:255',
+            'pembuat' => 'required|int|max:255',
             'catatan' => 'nullable|string|max:255',
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|numeric',
+            'kode' => 'required|string|max:10',
             'tgl_disahkan' => 'nullable|date',
             'tgl_rapat' => 'required|date',
             'tempat' => 'required|string',
@@ -499,7 +508,7 @@ class UndanganController extends Controller
             'lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ], [
             'tgl_dibuat.required' => 'Tanggal dibuat wajib diisi.',
-            'tujuan.required' => 'Minimal satu divisi tujuan harus dipilih.',
+            'tujuan.required' => 'Minimal satu tujuan harus dipilih.',
             'lampiran.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
             'lampiran.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
         ]);
@@ -516,26 +525,40 @@ class UndanganController extends Controller
             $fileData = base64_encode(file_get_contents($file->getRealPath()));
             $filePath = $fileData;
         }
+
+
+
+
         //SIMPAN NOMER SERI
-        $divisiId = Auth::user()->divisi_id_divisi;
-        $seri = Seri::getNextSeri(true);
-        $seri = Seri::where('divisi_id_divisi', $divisiId)
+        $user = Auth::user();
+
+        if ($user->divisi_id_divisi) {
+            $divisi = \App\Models\Divisi::find($user->divisi_id_divisi);
+            $divDeptKode = $divisi?->kode_divisi;
+        } elseif ($user->id_department) {
+            $department = \App\Models\Department::find($user->id_department);
+            $divDeptKode = $department?->kode_department;
+        } else {
+            $divDeptKode = null;
+        }
+        $seri = Seri::where('kode', $divDeptKode)
             ->where('tahun', now()->year)
             ->latest()
             ->first();
-
+        $seri = Seri::getNextSeri(true);
         if (!$seri) {
             return back()->with('error', 'Nomor seri tidak ditemukan.');
         }
 
-        //PROSES AMBIL ID DAN NAMA DIVISI TUJUAN UNDANGAN (KEPADA)
 
-        $tujuanArray = $request->input('tujuan'); // contoh: [2,3] // Ambil array ID divisi tujuan dari form (checkbox tujuan[])
-        $tujuanString = implode(';', $tujuanArray); // Simpan sebagai string "2;3" jika ingin
-        // Ambil nama divisi tujuan (IT, SDM, dst) dan simpan sebagai string
-        $namaDivisiArray = \App\Models\Divisi::whereIn('id_divisi', $tujuanArray)->pluck('nm_divisi')->toArray();
-        $namaDivisiString = implode('; ', $namaDivisiArray);
 
+
+        //PROSES PECAH ID DARI 'tujuan'
+        $tujuanArray = is_array($request->tujuan) ? $request->tujuan : explode(';', $request->tujuan);
+        $tujuanString = implode(';', $tujuanArray);
+
+
+        //dd($request->all());
         // PROSES UNTUK Simpan undangan KE DATABASE
         $manager = User::findOrFail($request->input('nama_bertandatangan')); // Ambil user manager yang dipilih
         //dd($request->all());
@@ -549,6 +572,7 @@ class UndanganController extends Controller
             'pembuat' => $request->input('pembuat'),
             'catatan' => $request->input('catatan'),
             'seri_surat' => $request->input('seri_surat'),
+            'kode' => $request->input('kode'),
             'status' => 'pending',
             'tgl_rapat' => $request->input('tgl_rapat'),
             'tempat' => $request->input('tempat'),
@@ -573,48 +597,39 @@ class UndanganController extends Controller
             $undangan->tgl_disahkan = now();
             $undangan->save();
 
-            $tujuanString = is_array($undangan->tujuan) ? $undangan->tujuan : explode(';', $undangan->tujuan);
-            foreach ($tujuanString as $divisiId) {
-                $divisiId = trim($divisiId);
-                if ($divisiId == Auth::user()->divisi_id_divisi) continue;
-                $userTujuan = User::where('divisi_id_divisi', $divisiId)->get();
+            $tujuanUserId = is_array($undangan->tujuan) ? $undangan->tujuan : explode(';', $undangan->tujuan);
 
-                // Kirim ke semua user divisi tujuan kecuali pengirim sendiri
-                // $namaDivisiArray = array_map('trim', explode(';', $undangan->tujuan));
-                // $divisiIds = \App\Models\Divisi::whereIn('nm_divisi', $namaDivisiArray)->pluck('id_divisi');
-                // $userTujuan = \App\Models\User::whereIn('divisi_id_divisi', $divisiIds)
-                //     ->where('id', '!=', Auth::id())
-                //     ->get();
 
-                foreach ($userTujuan as $user) {
-                    $sudahDikirim = Kirim_Document::where([
-                        ['id_document', $undangan->id_undangan],
-                        ['jenis_document', 'undangan'],
-                        ['id_pengirim', Auth::user()->id],
-                        ['id_penerima', $user->id],
-                        ['status', 'approve'],
-                        ['updated_at', now()] // Cek apakah sudah dikirim dalam 5 menit terakhir
-                    ])->exists();
 
-                    if (!$sudahDikirim) {
-                        Kirim_Document::create([
-                            'id_document' => $undangan->id_undangan,
-                            'jenis_document' => 'undangan',
-                            'id_pengirim' => Auth::user()->id,
-                            'id_penerima' => $user->id,
-                            'status' => 'approve',
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]);
-                    }
+            foreach ($tujuanUserId as $user) {
+                $sudahDikirim = Kirim_Document::where([
+                    ['id_document', $undangan->id_undangan],
+                    ['jenis_document', 'undangan'],
+                    ['id_pengirim', Auth::user()->id],
+                    ['id_penerima', $user->id],
+                    ['status', 'approve'],
+                    ['updated_at', now()] // Cek apakah sudah dikirim dalam 5 menit terakhir
+                ])->exists();
+
+                if (!$sudahDikirim) {
+                    Kirim_Document::create([
+                        'id_document' => $undangan->id_undangan,
+                        'jenis_document' => 'undangan',
+                        'id_pengirim' => Auth::user()->id,
+                        'id_penerima' => $user->id,
+                        'status' => 'approve',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
                 }
             }
+
 
             // Notifikasi
             Notifikasi::create([
                 'judul' => "Undangan Disetujui",
                 'judul_document' => $undangan->judul,
-                'id_divisi' => $undangan->divisi_id_divisi,
+                'id_divisi' => $undangan->pembuat,
                 'updated_at' => now()
             ]);
         } else {
@@ -694,57 +709,63 @@ class UndanganController extends Controller
         }
 
         if ($request->status == 'approve') {
-            // QR dan notifikasi
+            // PROSES TTD OLEH MANAGER
             $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
             $qrImage = QrCode::format('svg')->generate($qrText);
             $qrBase64 = base64_encode($qrImage);
+
             $undangan->qr_approved_by = $qrBase64;
+            $undangan->status = 'approve';
+            $undangan->tgl_disahkan = now();
             $undangan->save();
 
-            Notifikasi::create([
-                'judul' => "Undangan Disetujui",
-                'judul_document' => $undangan->judul,
-                'id_divisi' => $undangan->divisi_id_divisi,
-                'updated_at' => now()
-            ]);
+            $tujuanUserId = is_array($undangan->tujuan) ? $undangan->tujuan : explode(';', $undangan->tujuan);
 
-            // Kirim dokumen ke semua user di divisi tujuan (kecuali pengirim sendiri)
-            $namaDivisiArray = array_map('trim', explode(';', $undangan->tujuan));
-            $divisiIds = \App\Models\Divisi::whereIn('nm_divisi', $namaDivisiArray)->pluck('id_divisi');
-            $userTujuan = \App\Models\User::whereIn('divisi_id_divisi', $divisiIds)
-                ->where('id', '!=', Auth::id())
-                ->get();
-            foreach ($userTujuan as $user) {
-                $sudahDikirim = Kirim_Document::where('id_document', $undangan->id_undangan)
-                    ->where('jenis_document', 'undangan')
-                    ->where('id_pengirim', Auth::id())
-                    ->where('id_penerima', $user->id)
-                    ->exists();
+
+
+            foreach ($tujuanUserId as $user) {
+                $sudahDikirim = Kirim_Document::where([
+                    ['id_document', $undangan->id_undangan],
+                    ['jenis_document', 'undangan'],
+                    ['id_pengirim', $undangan->pembuat],
+                    ['id_penerima', $user],
+                    ['status', 'approve'],
+                    ['updated_at', now()] // Cek apakah sudah dikirim dalam 5 menit terakhir
+                ])->exists();
+
                 if (!$sudahDikirim) {
-                    //ID_PENGIRIM
                     Kirim_Document::create([
                         'id_document' => $undangan->id_undangan,
                         'jenis_document' => 'undangan',
-                        'id_pengirim' => $currentKirim->id_pengirim, // Pengirim yang sudah ada
-                        'id_penerima' => $user->id,
+                        'id_pengirim' => $undangan->pembuat,
+                        'id_penerima' => $user,
                         'status' => 'approve',
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
                 }
             }
+
+
+            // Notifikasi
+            Notifikasi::create([
+                'judul' => "Undangan Disetujui",
+                'judul_document' => $undangan->judul,
+                'id_divisi' => $undangan->pembuat,
+                'updated_at' => now()
+            ]);
         } elseif ($request->status == 'reject') {
             Notifikasi::create([
                 'judul' => "Undangan Tidak Disetujui",
                 'judul_document' => $undangan->judul,
-                'id_divisi' => $undangan->divisi_id_divisi,
+                'id_divisi' => $undangan->pembuat,
                 'updated_at' => now()
             ]);
         } elseif ($request->status == 'correction') {
             Notifikasi::create([
                 'judul' => "Undangan Perlu Dikoreksi",
                 'judul_document' => $undangan->judul,
-                'id_divisi' => $undangan->divisi_id_divisi,
+                'id_divisi' => $undangan->pembuat,
                 'updated_at' => now()
             ]);
         }
@@ -910,12 +931,28 @@ class UndanganController extends Controller
     {
         $userId = Auth::id(); // Ambil ID user yang sedang login
         $undangan = Undangan::where('id_undangan', $id)->firstOrFail();
+        $divDeptKode = $this->getDivDeptKode(Auth::user());
 
-        // Pastikan tujuan selalu string nama divisi (untuk data lama)
-        if (is_array($undangan->tujuan)) {
-            $namaDivisiArray = \App\Models\Divisi::whereIn('id_divisi', $undangan->tujuan)->pluck('nm_divisi')->toArray();
-            $undangan->tujuan = implode('; ', $namaDivisiArray);
+        $undangan = Undangan::findOrFail($id);
+
+        // Konversi tujuan ID menjadi array
+        $idArray = is_array($undangan->tujuan)
+            ? $undangan->tujuan
+            : explode(';', $undangan->tujuan);
+
+        $users = User::whereIn('id', $idArray)->get();
+
+        // Simpan langsung hasil ke $undangan->tujuan
+        $listNama = [];
+        foreach ($users as $i => $user) {
+            $listNama[] = ($i + 1) . '. ' . $user->firstname . ' ' . $user->lastname;
         }
+
+
+        // Simpan daftar nama bernomor sebagai string (dipisah baris baru)
+        $undangan->tujuan = implode("\n", $listNama);
+
+
 
         $undanganCollection = collect([$undangan]); // Bungkus dalam collection
 

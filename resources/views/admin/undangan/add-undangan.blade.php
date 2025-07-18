@@ -38,7 +38,8 @@
         </div>
 
         <!-- form add undangan -->
-        <form method="POST" action="{{ route('undangan-superadmin.store') }}" enctype="multipart/form-data">
+        <form id="addUndanganForm" method="POST" action="{{ route('undangan-superadmin.store') }}"
+            enctype="multipart/form-data">
             @csrf
             <div class="card">
                 <div class="card-header">
@@ -51,23 +52,24 @@
                                 <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat
                                 <span class="text-danger">*</span>
                             </label>
+
                             <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control"
-                                value="{{ old('tgl_dibuat') }}">
+                                value="{{ now()->format('Y-m-d') }}" readonly>
+
                             @error('tgl_dibuat')
                                 <div class="form-control text-danger">{{ $message }}</div>
                             @enderror
                             <input type="hidden" name="tgl_disahkan">
                             <input type="hidden" name="catatan">
-                            <input type="hidden" name="pembuat"
-                                value="{{ auth()->user()->firstname . auth()->user()->lastname }}">
+
+
                         </div>
                         <div class="col-md-6">
                             <label for="seri_surat" class="form-label">Seri Surat</label>
                             <input type="text" name="seri_surat" id="seri_surat" class="form-control"
                                 value="{{ $nomorSeriTahunan ?? '' }}" readonly>
-                            
-                            <input type="hidden" name="pembuat"
-                                value="{{ auth()->user()->firstname . ' ' . auth()->user()->lastname }}">
+                            <input type="hidden" name="kode" value="{{ $kode }}">
+                            <input type="hidden" name="pembuat" value="{{ auth()->user()->id }}">
                         </div>
                     </div>
                     <div class="row mb-4">
@@ -99,6 +101,7 @@
                                     </label>
                                     <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
                                         <div style="font-size: small" id="org-tree"></div>
+
                                     </div>
                                 </div>
                                 <script>
@@ -109,15 +112,12 @@
                                             },
                                             "plugins": ["checkbox", "search"]
                                         });
+                                        // Listen for changes and update tujuanInput as array of user IDs
+
                                     });
                                 </script>
-                                <input type="hidden" name="tujuan[]" id="tujuanInput">
                             </div>
                         </div>
-
-
-
-
 
 
                         <div class="mb-3 row">
@@ -222,6 +222,7 @@
                     <button type="button" class="btn btn-cancel"><a
                             href="{{route('undangan.superadmin')}}">Batal</a></button>
                     <button type="submit" class="btn btn-save">Ajukan</button>
+                    <div id="tujuan-container"></div> <!--Manggil script dibawah-->
                 </div>
             </div>
         </form>
@@ -284,6 +285,26 @@
         </div>
     </div>
     <script>
+        $('#addUndanganForm').on('submit', function (e) {
+            const tujuanContainer = $('#tujuan-container');
+            tujuanContainer.html(''); // bersihkan sebelum nambah
+
+            const selected = $('#org-tree').jstree('get_selected', true);
+
+            const userIds = selected
+                .filter(node => node.id.startsWith('user-'))
+                .map(node => node.id.replace('user-', ''));
+
+            userIds.forEach(userId => {
+                tujuanContainer.append(`<input type="hidden" name="tujuan[]" value="${userId}">`);
+            });
+
+            if (userIds.length === 0) {
+                alert("Minimal pilih satu tujuan!");
+                e.preventDefault();
+                return false;
+            }
+        });
         // Modal Upload File - Menampilkan Modal
         document.getElementById('openUploadModal').addEventListener('click', function () {
             var uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
@@ -455,18 +476,15 @@
                 fields.style.display = 'none'; // Hide additional fields
             }
         }
+
     </script>
     <script>
-
-        $(document).ready(function () {
+        $(function () {
+            // Summernote inisialisasi
             $('#summernote').summernote({
                 height: 200,
                 toolbar: [
-                    // ['style', ['style']],
                     ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'color']],
-                    // ['para', ['ul', 'ol', 'paragraph']],
-                    // ['insert', ['link', 'picture', 'video']],
-                    // ['view', ['fullscreen', 'codeview', 'help']],
                 ],
                 fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'],
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']

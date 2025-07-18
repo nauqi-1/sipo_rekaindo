@@ -106,28 +106,31 @@
                         </a>
                     </button>
                 </th>
-                <th>Divisi Pengirim</th>
+                <th>Pengirim</th>
                 <th>Status</th>
                 <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($undangans as $index => $undangan)
+             @foreach ($undangans as $index =>$undangan)
+                
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
-                <td class="nama-dokumen
-                    {{ ($undangan->final_status ?? $undangan->status) == 'reject'  || ($undangan->final_status ?? $undangan->status) == 'correction') ? 'text-danger' : ((($undangan->final_status ?? $undangan->status) == 'pending'  ? 'text-warning': 'text-success') }}">
-                    {{ $undangan->judul }}
-                </td>
+                <td class="nama-dokumen 
+                        {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'pending' ? 'text-warning' : ($undangan->status == 'correction' ? 'text-danger' : 'text-success')) }}">
+                        {{ $undangan->judul ?? '-' }}
+                    </td>
                 <td>
                     @php
                         $kirimDocument = $kirimDocuments->firstWhere('id_document', $undangan->id_undangan);
                     @endphp
 
                     @if ($kirimDocument)
-                        @if (
-                            $kirimDocument->id_penerima == $kirimDocument->id_pengirim &&
-                            in_array($undangan->status, ['pending'])
+                        @if ( $undangan->status == 'pending' &&
+                            //$kirimDocument->id_pengirim == Auth::user()->id &&
+                            $kirimDocument->status == 'pending'
+                            // $kirimDocument->id_penerima == $kirimDocument->id_pengirim &&
+                            // in_array($undangan->status, ['pending'])
                         )
                             <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
                         @elseif (
@@ -148,28 +151,39 @@
                 <td >{{ $undangan->seri_surat }}</td>
                 <td>{{ $undangan->nomor_undangan }}</td>
                 <td>{{ $undangan->tgl_disahkan ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                <td>{{ $undangan->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                <td>{{ $undangan->kode ?? 'No Divisi Assigned' }}</td>
                 </td>
                 <td>
-                    @php $status = $undangan->final_status ?? $undangan->status; @endphp
-                    @if ($status == 'reject')
-                        <span class="badge bg-danger">Ditolak</span>
-                    @elseif ($status == 'pending')
-                        <span class="badge bg-warning">Diproses</span>
-                    @elseif ($status == 'correction')
-                        <span class="badge bg-danger">Dikoreksi</span>
-                    @else
-                        <span class="badge bg-success">Diterima</span>
-                    @endif
+                    @if($undangan->pembuat != Auth::user()->id)
+                            @if ($undangan->status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($undangan->status == 'pending')
+                            <span class="badge bg-warning">Diproses</span>
+                        @elseif ($undangan->status == 'correction')
+                            <span class="badge bg-danger">Dikoreksi</span>
+                        @else 
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
+                        @else
+                            @if ($undangan->status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($undangan->status == 'pending')
+                            <span class="badge bg-warning">Diproses</span>
+                        @elseif ($undangan->status == 'correction')
+                            <span class="badge bg-danger">Dikoreksi</span>
+                        @else 
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
+                        @endif
                 </td>
                 <td>
-                    @if (Auth::user()->divisi->id_divisi == $undangan->divisi->id_divisi)
+                    @if (Auth::user()->id== $undangan->pembuat)
                         {{-- @if($undangan->status == 'pending' || $undangan->status == 'approve' )
                         <a href="{{ route('kirim-undanganAdmin.admin',['id' => $undangan->id_undangan]) }}" class="btn btn-sm1">
                             <img src="/img/undangan/share.png" alt="share">
                         </a>
                         @endif --}}
-                    @elseif (Auth::user()->divisi->id_divisi != $undangan->divisi->id_divisi)
+                    @elseif (Auth::user()->id != $undangan->pembuat)
                         {{-- @if($undangan->final_status == 'pending' )
                         <a href="{{ route('kirim-undanganAdmin.admin',['id' => $undangan->id_undangan]) }}" class="btn btn-sm1">
                             <img src="/img/undangan/share.png" alt="share">
@@ -177,7 +191,7 @@
                         @endif                --}}
                     @endif
 
-                        @if (Auth::user()->divisi->id_divisi == $undangan->divisi->id_divisi)
+                        @if (Auth::user()->id == $undangan->pembuat)
                             @if ($undangan->status == 'approve' || $undangan->status == 'reject')
                                 <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
                                     @csrf
@@ -191,7 +205,7 @@
                                     <img src="/img/undangan/edit.png" alt="edit">
                                 </a>
                             @endif
-                        @elseif (Auth::user()->divisi->id_divisi != $undangan->divisi->id_divisi)
+                        @elseif (Auth::user()->id != $undangan->pembuat)
                             @if ($undangan->status == 'approve')
                                 <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'undangan']) }}" method="POST" style="display: inline;">
                                     @csrf
