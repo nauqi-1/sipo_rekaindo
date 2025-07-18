@@ -93,7 +93,7 @@
                     <div class="card-white">
                         <label for="pembuat">Pembuat</label>
                         <div class="separator"></div>
-                        <input type="text" id="pembuat" value="{{$memo->pembuat}}" readonly>
+                        <input type="text" id="pembuat" value="{{$memo->user->username}}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="status">Status</label>

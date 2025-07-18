@@ -10,10 +10,10 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin/add-memo.css') }}">
     <!--DEPENDENCY UNTUK JSTREE-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" rel="stylesheet">    
-    <!-- Only one jQuery version is loaded above -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
 </head>
 <body>
@@ -56,8 +56,7 @@
                 <div class="col-md-6">
                     <label for="seri_surat" class="form-label">Seri Surat</label>
                     <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan ?? '' }}" readonly>
-                    <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
-                    <input type="hidden" name="pembuat" value="{{ auth()->user()->firstname .' '. auth()->user()->lastname }}">
+                    <input type="hidden" name="pembuat" value="{{ auth()->user()->id }}">
                 </div>
             </div>
             <div class="row mb-4">
@@ -258,26 +257,26 @@
 
 <script>
     $('#addMemoForm').on('submit', function (e) {
-    // Clear existing tujuan[] inputs
-    $('#tujuan-container').empty();
+        // Clear existing tujuan[] inputs
+        $('#tujuan-container').empty();
 
-    // Get selected nodes
-    const selectedNodes = $('#org-tree').jstree('get_selected', true);
-    const tujuan = selectedNodes
-    .filter(node => node.id.startsWith('user-')) // adjust prefix if needed
-    .map(node => ({
-      id: parseInt(node.id.replace('user-', '')), // Extract user ID from node ID
-    }));
-  console.log(tujuan);
-    // Append hidden inputs
-    tujuan.forEach(user => {
-        $('#tujuan-container').append(
-            `<input type="hidden" name="tujuan[]" value="${user.id}">`
-        );
+        // Get selected nodes
+        const selectedNodes = $('#org-tree').jstree('get_selected', true);
+        const tujuan = selectedNodes
+        .filter(node => node.id.startsWith('user-')) // adjust prefix if needed
+        .map(node => ({
+          id: parseInt(node.id.replace('user-', '')), // Extract user ID from node ID
+        }));
+      console.log(tujuan);
+        // Append hidden inputs
+        tujuan.forEach(user => {
+            $('#tujuan-container').append(
+                `<input type="hidden" name="tujuan[]" value="${user.id}">`
+            );
+        });
+
+        console.log("Submitting form with tujuan:", userIds); // <--- debug
     });
-
-    console.log("Submitting form with tujuan:", userIds); // <--- debug
-});
 
     document.addEventListener('DOMContentLoaded', function () {
         const dropdown = document.getElementById('managerDropdown');
