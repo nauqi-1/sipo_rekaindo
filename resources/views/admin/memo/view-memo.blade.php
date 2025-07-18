@@ -60,14 +60,14 @@
                         <div class="separator"></div>
 
                         @php
-                        use App\Models\Divisi;
+                        use App\Models\User;
 
-                            $divisiIds = explode(';', $memo->tujuan); 
-                            $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi');
+                            $tujuanIds = explode(';', $memo->tujuan); 
+                            $tujuanNames = User::whereIn('id', $tujuanIds)->pluck('username');
                         @endphp
 
-                        @if (count($divisiNames) === 1)
-                            <input type="text" id="kepada" value="{{ trim($divisiNames[0]) }}" readonly>
+                        @if (count($tujuanNames) === 1)
+                            <input type="text" id="kepada" value="{{ trim($tujuanNames[0]) }}" readonly>
                         @else
                          <div 
                         style="border-radius: 8px; 
@@ -76,7 +76,7 @@
                                font-size: 14px;
                                height: auto;">
                             <ol style="padding-left: 20px;">
-                                @foreach ($divisiNames as $tujuan)
+                                @foreach ($tujuanNames as $tujuan)
                                     <li>{{ trim($tujuan) }}</li>
                                 @endforeach
                             </ol>
@@ -98,7 +98,7 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        @if($memo->divisi->id_divisi != Auth::user()->divisi->id_divisi)
+                        @if($memo->kode != $divDeptKode)
                             @if ($memo->final_status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
                             @elseif ($memo->final_status  == 'pending')
@@ -130,13 +130,7 @@
                         <a style="text-decoration: none;" class="down" onclick="window.location.href='{{ route('cetakmemo',['id' => $memo->id_memo]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
                         @endif
                     </div>
-                   <!-- @if ($memo->divisi->id_divisi != Auth::user()->divisi->id_divisi)
-                    <div class="card-white">
-                        <label for="lampiran">Lampiran</label>
-                        <div class="separator"></div>
-                        <button class="view" onclick="window.location.href='{{ route('memo.preview', $memo->id_memo) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
-                    </div>
-                    @endif-->
+                   
                 </div>
             </div>
             @if ($memo->catatan !== null)

@@ -142,7 +142,7 @@
                     <td>{{ $memo->seri_surat }}</td>
                     <td>{{ $memo->nomor_memo }}</td>
                     <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $memo->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                    <td>{{ $memo->kode ?? 'No Divisi Assigned' }}</td>
                     </td>
                     <td>
                         
