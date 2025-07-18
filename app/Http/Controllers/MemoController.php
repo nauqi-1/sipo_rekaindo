@@ -246,33 +246,8 @@ class MemoController extends Controller
             $kodeDirektur = '';
         }
         // dd($user);
-        if($user->department_id_department != NULL){
-            $divisiName = Department::where('id_department', $user->department_id_department)->first();
-            if($divisiName->kode_department != NULL){
-                $divisiName = $divisiName->kode_department;
-            } else if($divisiName->kode_department == NULL){
-                if($user->divisi_id_divisi == NULL){
-                    $divisiName = $divisiName->name_department;
-                } else {
-                    $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
-                    if($divisiName->kode_divisi != NULL){
-                        $divisiName = $divisiName->kode_divisi;
-                    }else if($divisiName->kode_divisi == NULL){
-                        $divisiName = $divisiName->nm_divisi;
-                    }
-                }
-            }
-        } else if($user->divisi_id_divisi != NULL){
-            $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
-            if($divisiName->kode_divisi != NULL){
-                $divisiName = $divisiName->kode_divisi;
-            }else if($divisiName->kode_divisi == NULL){
-                $divisiName = $divisiName->nm_divisi;
-            }
-        } else if($user->director_id_director != NULL){
-            $divisiName = Director::where('id_director', $user->director_id_director)->first();
-            $divisiName = $divisiName->kode_director;
-        }
+        
+        $divDeptKode = $this->getDivDeptKode($user);
 
         // Ambil nomor seri berikutnya
         $nextSeri = Seri::getNextSeri(false);
@@ -284,7 +259,7 @@ class MemoController extends Controller
             $nextSeri['seri_tahunan'],
             $nextSeri['seri_bulanan'],
             strtoupper($kodeDirektur),
-            strtoupper($divisiName),
+            strtoupper($divDeptKode),
             $bulanRomawi,
             now()->year
         );
@@ -336,73 +311,7 @@ class MemoController extends Controller
         }
         return $tree;
         }
-    // Helper: generate org tree with users for dropdown
-    private function getOrgTreeWithUsersOLD()
-    {
-        $directors = \App\Models\Director::with(['divisi.department.section.unit'])->get();
-        $tree = [];
-
-        foreach ($directors as $director) {
-            $dir = $director->toArray();
-            // Only add users directly under director
-            $dir['users'] = $director->users->toArray();
-
-            if (!empty($dir['divisi'])) {
-                foreach ($dir['divisi'] as &$div) {
-                    if (empty($div['id_divisi'])) continue;
-                    $divModel = \App\Models\Divisi::find($div['id_divisi']);
-                    $div['users'] = $divModel ? $divModel->users->toArray() : [];
-
-                    if (!empty($div['department'])) {
-                        foreach ($div['department'] as &$dept) {
-                            if (empty($dept['id_department'])) continue;
-                            $deptModel = \App\Models\Department::find($dept['id_department']);
-                            $dept['users'] = $deptModel ? $deptModel->users->toArray() : [];
-
-                            if (!empty($dept['section'])) {
-                                foreach ($dept['section'] as &$sec) {
-                                    if (empty($sec['id_section'])) continue;
-                                    $secModel = \App\Models\Section::find($sec['id_section']);
-                                    $sec['users'] = $secModel ? $secModel->users->toArray() : [];
-
-                                    if (!empty($sec['unit'])) {
-                                        foreach ($sec['unit'] as &$unit) {
-                                            if (empty($unit['id_unit'])) continue;
-                                            $unitModel = \App\Models\Unit::find($unit['id_unit']);
-                                            $unit['users'] = $unitModel ? $unitModel->users->toArray() : [];
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            $tree[] = $dir;
-        }
-
-        // Now, remove users from parent if they exist in children
-        $removeNestedUsers = function (&$node) use (&$removeNestedUsers) {
-            // Remove users from this node if children have users
-            $childKeys = ['divisi', 'department', 'section', 'unit'];
-            foreach ($childKeys as $key) {
-                if (!empty($node[$key])) {
-                    foreach ($node[$key] as &$child) {
-                        $removeNestedUsers($child);
-                        if (!empty($child['users'])) {
-                            // Remove users from this node if child has users
-                            $node['users'] = [];
-                        }
-                    }
-                }
-            }
-        };
-        foreach ($tree as &$dir) {
-            $removeNestedUsers($dir);
-        }
-
-        return $tree;
-    }
+    
     private function filterUsersAtLevel($users, $level)
     {
         return array_values(array_filter($users, function($user) use ($level) {
@@ -531,7 +440,37 @@ class MemoController extends Controller
         return json_encode($result);
     }
 
-
+    private function getDivDeptKode($user) {
+        if($user->department_id_department != NULL){
+            $divisiName = Department::where('id_department', $user->department_id_department)->first();
+            if($divisiName->kode_department != NULL){
+                $divisiName = $divisiName->kode_department;
+            } else if($divisiName->kode_department == NULL){
+                if($user->divisi_id_divisi == NULL){
+                    $divisiName = $divisiName->name_department;
+                } else {
+                    $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+                    if($divisiName->kode_divisi != NULL){
+                        $divisiName = $divisiName->kode_divisi;
+                    }else if($divisiName->kode_divisi == NULL){
+                        $divisiName = $divisiName->nm_divisi;
+                    }
+                }
+            }
+        } else if($user->divisi_id_divisi != NULL){
+            $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+            if($divisiName->kode_divisi != NULL){
+                $divisiName = $divisiName->kode_divisi;
+            }else if($divisiName->kode_divisi == NULL){
+                $divisiName = $divisiName->nm_divisi;
+            }
+        } else if($user->director_id_director != NULL){
+            $divisiName = Director::where('id_director', $user->director_id_director)->first();
+            $divisiName = $divisiName->kode_director;
+        }
+        
+    return($divisiName);
+    }
     
     public function store(Request $request)
     {   
@@ -594,6 +533,7 @@ class MemoController extends Controller
         if (!$seri) {
             return back()->with('error', 'Nomor seri tidak ditemukan.');
         }
+
         // Simpan dokumen
         $memo = Memo::create([
             'judul' => $request->input('judul'),
@@ -602,6 +542,7 @@ class MemoController extends Controller
             'nomor_memo' => $request->input('nomor_memo'),
             'tgl_dibuat' => $request->input('tgl_dibuat'),
             'tgl_disahkan' => $request->input('tgl_disahkan'),
+            'kode' => $divDeptKode,
             'pembuat' => $request->input('pembuat'),
             'catatan' => $request->input('catatan'),
             'seri_surat' => $request->input('seri_surat'),
@@ -1133,7 +1074,8 @@ class MemoController extends Controller
     {
         $userId = auth()->id(); // Ambil ID user yang sedang login
         $memo = Memo::where('id_memo', $id)->firstOrFail();
-
+        // get kode divisi/ department
+        $divDeptKode = $this->getDivDeptKode(Auth::user());
         // Ubah menjadi Collection manual
         $memoCollection = collect([$memo]); // Bungkus dalam collection
 
@@ -1153,7 +1095,7 @@ class MemoController extends Controller
         // Karena hanya satu memo, kita bisa mengambil dari collection lagi
         $memo = $memoCollection->first();
 
-        return view(Auth::user()->role->nm_role . '.memo.view-memo', compact('memo'));
+        return view(Auth::user()->role->nm_role . '.memo.view-memo', compact('memo', 'divDeptKode'));
     }
 
 
