@@ -126,67 +126,45 @@ class UndanganController extends Controller
     }
 
     public function superadmin(Request $request)
-    {
-        $undangan = null;
-        $divisi = Divisi::all();
-        $seri = Seri::all();
-        $userDivisiId = Auth::user()->divisi_id_divisi;
-        $userId = Auth::id();
+{
+    $seri = Seri::all();
+    $userId = Auth::id();
 
+    // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
+    $undanganDiarsipkan = Arsip::where('user_id', $userId)->pluck('document_id')->toArray();
 
-        // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
-        $undanganDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
-        $sortBy = $request->get('sort_by', 'tgl_rapat_diff'); // default ke tgl_rapat_diff
-        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-        $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_undangan', 'judul', 'tgl_rapat_diff'];
+    // Variabel sortDirection tetap dikirim, walaupun tidak dipakai
+    $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
 
+    $query = Undangan::query()
+        ->whereNotIn('id_undangan', $undanganDiarsipkan)
+        ->orderBy('tgl_dibuat', 'desc');
 
-
-
-        // Sorting default menggunakan tgl_dibuat
-        $query = Undangan::query()
-            ->whereNotIn('id_undangan', $undanganDiarsipkan)
-            ->orderBy($sortBy, $sortDirection);
-
-        if ($request->has('status') && $request->status != '') {
-            $query->where('status', $request->status);
-        }
-
-        if ($sortBy === 'tgl_rapat_diff') {
-            // Order by selisih tgl_rapat dengan hari ini, yang paling kecil di atas
-            $query->orderByRaw('ABS(DATEDIFF(tgl_rapat, CURDATE())) ' . $sortDirection);
-        } elseif (in_array($sortBy, $allowedSortColumns)) {
-            $query->orderBy($sortBy, $sortDirection);
-        } else {
-            $query->orderBy('created_at', $sortDirection); // fallback default
-        }
-        // Filter berdasarkan tanggal dibuat
-        if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
-            $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
-        } elseif ($request->filled('tgl_dibuat_awal')) {
-            $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
-        } elseif ($request->filled('tgl_dibuat_akhir')) {
-            $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
-        }
-
-        if ($request->filled('divisi_id_divisi') && $request->divisi_id_divisi != 'pilih') {
-            $query->where('divisi_id_divisi', $request->divisi_id_divisi);
-        }
-
-
-        // Pencarian berdasarkan nama dokumen atau nomor undangans
-        if ($request->has('search') && $request->search != '') {
-            $query->where(function ($q) use ($request) {
-                $q->where('judul', 'like', '%' . $request->search . '%')
-                    ->orWhere('nomor_undangan', 'like', '%' . $request->search . '%');
-            });
-        }
-
-        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
-        $undangans = $query->paginate($perPage);
-
-        return view(Auth::user()->role->nm_role . '.undangan.undangan', compact('undangans', 'divisi', 'seri', 'sortDirection'));
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
     }
+
+    if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
+        $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
+    } elseif ($request->filled('tgl_dibuat_awal')) {
+        $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
+    } elseif ($request->filled('tgl_dibuat_akhir')) {
+        $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
+    }
+
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('judul', 'like', '%' . $request->search . '%')
+              ->orWhere('nomor_undangan', 'like', '%' . $request->search . '%');
+        });
+    }
+
+    $perPage = $request->get('per_page', 10);
+    $undangans = $query->paginate($perPage);
+
+    return view(Auth::user()->role->nm_role . '.undangan.undangan', compact('undangans', 'seri', 'sortDirection'));
+}
+
 
 
     public function create()
