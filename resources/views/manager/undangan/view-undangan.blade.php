@@ -95,7 +95,7 @@
                     <div class="card-white">
                         <label for="divisi">Pengirim</label>
                         <div class="separator"></div>
-                        <input type="text" id="divisi" value="{{$undangan->kode }}" readonly>
+                        <input type="text" id="divisi" value="{{$undangan->kode}}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
@@ -106,7 +106,7 @@
                         <label for="tgl_rapat">Hari, tanggal</label>
                         <div class="separator"></div>
                         <input type="text" id="tgl_rapat"
-                            value="{{\Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l ,d F Y')}}"
+                            value="{{\Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l, d F Y')}}"
                             readonly>
                     </div>
                     <div class="card-white">
@@ -115,6 +115,9 @@
                         <button class="btn-file"
                             onclick="window.location.href='{{ route('view-undanganPDF', $undangan->id_undangan) }}'"><img
                                 src="/img/mata.png" alt="view">Lihat</button>
+                        @if ($undangan->status=='approve')
+                        <a style="text-decoration: none;" class="btn-file" onclick="window.location.href='{{ route('cetakundangan',['id' => $undangan->id_undangan]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
+                        @endif
                     </div>
                 </div>
             </div>
