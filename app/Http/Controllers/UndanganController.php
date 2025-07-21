@@ -805,13 +805,19 @@ class UndanganController extends Controller
         $divisi = Divisi::all();
         $seri = Seri::all();
         $divisiId = auth()->user()->divisi_id_divisi;
-        $managers = User::where('divisi_id_divisi', $divisiId)
-            ->where('position_id_position', '2')
+        $user = Auth::user();
+        $managers = User::where('role_id_role', 3)
+            ->where(function ($q) use ($user) {
+                $q->where('divisi_id_divisi', $user->divisi_id_divisi)
+                    ->orWhere('department_id_department', $user->department_id_department);
+                // ->orWhere('section_id_section', $user->section_id_section);
+            })
             ->get(['id', 'firstname', 'lastname']);
 
         $orgTree = $this->getOrgTreeWithUsers();
         $jsTreeDataJson = $this->convertToJsTree($orgTree); // hasilnya string JSON
         $jsTreeData = json_decode($jsTreeDataJson, true);   // decode khusus edit()
+        $mainDirector = $orgTree[0] ?? null;
 
         $tujuanArray = [];
         if (!empty($undangan->tujuan)) {
@@ -824,7 +830,7 @@ class UndanganController extends Controller
     }
     public function update(Request $request, $id)
     {
-
+        //dd($request->all());
         $undangan = Undangan::findOrFail($id);
         //dd('Update function masuk');
         //dd($request->all()); 
@@ -838,13 +844,12 @@ class UndanganController extends Controller
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
-            'divisi_id_divisi' => 'required|exists:divisi,id_divisi',
             'tgl_rapat' => 'required|date',
             'tempat' => 'required|string',
             'waktu_mulai' => 'required|string',
             'waktu_selesai' => 'required|string',
         ]);
-
+        //dd($request->errors());
 
 
         if ($request->filled('judul')) {
@@ -854,9 +859,7 @@ class UndanganController extends Controller
             $undangan->isi_undangan = $request->isi_undangan;
         }
         if ($request->filled('tujuan')) {
-            $tujuanIds = $request->tujuan; // array of id_divisi yang dikirim dari checkbox
-            $namaDivisi = \App\Models\Divisi::whereIn('id_divisi', $tujuanIds)->pluck('nm_divisi')->toArray();
-            $undangan->tujuan = implode('; ', $namaDivisi); // simpan nama divisinya
+            $undangan->tujuan = implode(';', $request->tujuan);
         }
         // Set status ke pending saat update (opsional, seperti memo)
         $undangan->status = 'pending';
@@ -876,9 +879,6 @@ class UndanganController extends Controller
         if ($request->filled('tgl_disahkan')) {
             $undangan->tgl_disahkan = $request->tgl_disahkan;
         }
-        if ($request->filled('divisi_id_divisi')) {
-            $undangan->divisi_id_divisi = $request->divisi_id_divisi;
-        }
         if ($request->filled('tgl_rapat')) {
             $undangan->tgl_rapat = $request->tgl_rapat;
         }
@@ -892,6 +892,7 @@ class UndanganController extends Controller
             $undangan->waktu_selesai = $request->waktu_selesai;
         }
 
+        
         $undangan->save();
         \Log::info('Update undangan berhasil', $undangan->toArray());
 
