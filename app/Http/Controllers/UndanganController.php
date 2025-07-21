@@ -584,7 +584,7 @@ class UndanganController extends Controller
         ]);
 
         //PROSES PENGIRIMAN DOKUMEN
-
+         $creator = Auth::user();
         if (Auth::user()->role_id_role == 3) { // Manager 
 
             // PROSES TTD OLEH MANAGER
@@ -602,11 +602,14 @@ class UndanganController extends Controller
 
 
             foreach ($tujuanUserId as $user) {
+                if ($user == $creator->id) continue;
+            $recipients = User::where('id', $user)->get();
+                foreach ($recipients as $recipient) {
                 $sudahDikirim = Kirim_Document::where([
                     ['id_document', $undangan->id_undangan],
                     ['jenis_document', 'undangan'],
-                    ['id_pengirim', Auth::user()->id],
-                    ['id_penerima', $user->id],
+                    ['id_pengirim', $creator->id],
+                    ['id_penerima', $recipient->id],
                     ['status', 'approve'],
                     ['updated_at', now()] // Cek apakah sudah dikirim dalam 5 menit terakhir
                 ])->exists();
@@ -615,14 +618,14 @@ class UndanganController extends Controller
                     Kirim_Document::create([
                         'id_document' => $undangan->id_undangan,
                         'jenis_document' => 'undangan',
-                        'id_pengirim' => Auth::user()->id,
-                        'id_penerima' => $user->id,
+                        'id_pengirim' => $creator->id,
+                        'id_penerima' => $recipient->id,
                         'status' => 'approve',
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
                 }
-            }
+            }}
 
 
             // Notifikasi

@@ -53,7 +53,7 @@
                     <div class="card-white">
                         <label for="tgl_rapat">Hari, tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl_rapat" value="{{\Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l ,d F Y')}}" readonly>
+                        <input type="text" id="tgl_rapat" value="{{\Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l, d F Y')}}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="kepada">Kepada</label>

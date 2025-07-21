@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan rapat</title>
-    
-    <style>        
+
+    <style>
         @page {
             margin-top: 20px;
             margin-bottom: 0;
@@ -36,7 +37,7 @@
         }
 
         main {
-            margin-top: 5px; 
+            margin-top: 5px;
             margin-bottom: 10px;
             text-align: center;
         }
@@ -64,8 +65,10 @@
             margin-top: 15px;
             border-collapse: collapse;
             width: 100%;
-            table-layout: auto; /* Ini biarkan auto jika tidak ingin fixed untuk tabel header2 */
+            table-layout: auto;
+            /* Ini biarkan auto jika tidak ingin fixed untuk tabel header2 */
         }
+
         .header2 th {
             width: 50%;
             border-top: 3px solid black;
@@ -76,14 +79,17 @@
             word-wrap: break-word;
             overflow: hidden;
         }
-        .header2 th + th {
+
+        .header2 th+th {
             border-left: 3px solid black;
         }
+
         .header2 td {
             padding: 0;
             margin: 0;
             text-align: left;
-            white-space: nowrap; /* Cegah teks turun ke bawah */
+            white-space: nowrap;
+            /* Cegah teks turun ke bawah */
         }
 
         .header2 td:first-child {
@@ -94,39 +100,45 @@
 
         .fill {
             margin-top: 5px;
-            width: 95%; /* Atau bisa 100% jika ingin full lebar `letter` */
+            width: 95%;
+            /* Atau bisa 100% jika ingin full lebar `letter` */
             margin: 0 auto;
         }
+
         .fill p {
             text-align: left;
         }
+
         /* ---- Mulai Perubahan Penting untuk Tabel Detail Undangan ---- */
         .fill table {
             border-collapse: collapse;
-            width: 100%; 
-            table-layout: fixed; 
-            background-color: white; 
-            margin-left: 20px; 
+            width: 100%;
+            table-layout: fixed;
+            background-color: white;
+            margin-left: 20px;
         }
-        .fill table td { 
-            border: none; 
+
+        .fill table td {
+            border: none;
             text-align: left;
-            padding: 0; 
-            vertical-align: top; 
+            padding: 0;
+            vertical-align: top;
         }
-        
+
         .fill table tr td:first-child {
             width: 15%;
-            
+
         }
+
         .fill table tr td:nth-child(2) {
-            width: 3%; 
-            text-align: center; 
+            width: 3%;
+            text-align: center;
         }
-        .fill table tr td:nth-child(3) { 
-            width: 82%; 
+
+        .fill table tr td:nth-child(3) {
+            width: 82%;
         }
-       
+
 
         .contents {
             text-align: justify;
@@ -150,38 +162,40 @@
         .view-mode footer img,
         .view-mode .content {
             width: 50%;
-            margin: auto; 
+            margin: auto;
         }
-        .view-mode header, 
+
+        .view-mode header,
         .view-mode footer {
             display: flex;
-            justify-content: center; 
+            justify-content: center;
             align-items: center;
             width: 100%;
             position: fixed;
             left: 0;
-            z-index: 100; 
+            z-index: 100;
         }
+
         .view-mode {
-            overflow: hidden; 
+            overflow: hidden;
         }
 
         .view-mode header img {
             display: block;
             margin: 0 auto;
-            width: 50%; 
+            width: 50%;
         }
 
-        .view-mode .header1{
-            position: fixed; 
-            top: 150px; 
+        .view-mode .header1 {
+            position: fixed;
+            top: 150px;
             left: 50%;
-            transform: translateX(-50%); 
+            transform: translateX(-50%);
             width: 40%;
             background-color: white;
             padding: 0;
             text-align: left;
-            z-index: 1000; 
+            z-index: 1000;
         }
 
         .view-mode .header2 {
@@ -193,7 +207,8 @@
 
         .view-mode .fill {
             position: relative;
-            width: 100%; /* Sesuaikan dengan kebutuhan layout utama Diva */
+            width: 100%;
+            /* Sesuaikan dengan kebutuhan layout utama Diva */
             margin-left: auto;
             margin-right: auto;
             text-align: justify;
@@ -202,13 +217,13 @@
 
         .view-mode .collab {
             position: relative;
-            margin-top: 1cm; 
+            margin-top: 1cm;
             width: 100%;
             margin-left: auto;
             margin-right: auto;
             text-align: justify;
-            overflow-y: auto; 
-            max-height: calc(100vh - 9cm); 
+            overflow-y: auto;
+            max-height: calc(100vh - 9cm);
 
         }
 
@@ -217,18 +232,22 @@
         .pdf-mode .content {
             width: 100%;
         }
+
         .pdf-mode .date {
             text-align: right;
             width: 89%;
         }
+
         .pdf-mode .header2 {
             margin-left: 2.5px;
         }
+
         .pdf-mode .header2 h4,
         .pdf-mode .header2 p {
             text-align: left;
             margin-left: 0;
         }
+
         .pdf-mode .fill {
             position: relative;
             width: 100%;
@@ -245,8 +264,8 @@
             margin-left: 2.5px;
             margin-right: auto;
             text-align: justify;
-            overflow-y: auto; 
-            max-height: calc(100vh - 12cm); 
+            overflow-y: auto;
+            max-height: calc(100vh - 12cm);
             padding: 0;
             margin-top: 0;
 
@@ -259,16 +278,17 @@
         }
 
         .header1 tr td {
-            line-height: 1.2; 
+            line-height: 1.2;
         }
-        .header2 h4, 
-        .header2 p, 
+
+        .header2 h4,
+        .header2 p,
         .header2 table td {
-            line-height: 1.5; 
+            line-height: 1.5;
         }
-        
     </style>
 </head>
+
 <body class="{{ isset($isPdf) && $isPdf ? 'pdf-mode' : 'view-mode' }}">
     <header>
         @if(isset($headerImage))
@@ -302,23 +322,27 @@
                     </tr>
                 </table>
                 <div class="collab">
-                <div class="header2">
-                    <h4 style="margin-bottom: 0;"><b>Kepada Yth. :</b></h4>
-                    <table style="margin-top: 3px;">
-                        @foreach (explode(';', $undangan->tujuan) as $index => $tujuan)
-                        <tr>
-                            <td>{{ $index + 1 }}.</td>
-                            <td>{{ trim($tujuan) }}</td> 
-                        </tr>
-                        @endforeach
-                    </table>
-                    <p style="margin-top: 3px;">Di Tempat</p>
-                </div>
-                
-                <div class="fill">
-                    <p>Dengan hormat,</p>
-                    <p class="contents">Bersama ini kami mengharapkan kehadiran Bapak / Ibu pada:</p>
-                    <table style="
+                    <div class="header2">
+                        <h4 style="margin-bottom: 0;"><b>Kepada Yth. :</b></h4>
+                        <table style="margin-top: 3px;">
+                            @foreach($tujuanUsers as $index => $user)
+                                <tr>
+                                    <td>{{ $index + 1 }}.</td>
+                                    <td>{{ $user->position->nm_position ?? '-' }}
+                                        {{ $user->unit->nm_unit ?? $user->section->nm_section ?? $user->department->nm_department ?? $user->divisi->nm_divisi ?? $user->director->nm_director ?? '-' }}
+                                        ({{  $user->firstname }} {{ $user->lastname }})
+                                    </td>
+                                </tr>
+                            @endforeach
+
+                        </table>
+                        <p style="margin-top: 3px;">Di Tempat</p>
+                    </div>
+
+                    <div class="fill">
+                        <p>Dengan hormat,</p>
+                        <p class="contents">Bersama ini kami mengharapkan kehadiran Bapak / Ibu pada:</p>
+                        <table style="
                         width: 100%;
                         margin-top: 10px;
                         line-height: 1.5;
@@ -327,52 +351,66 @@
                         margin-left: 20px; 
                         table-layout: fixed; 
                     ">
+                            <tr>
+                                <td style="width: 15%;">Hari/Tanggal</td>
+                                <td style="width: 3%; text-align: center;">:</td>
+                                <td style="width: 82%;">
+                                    {{ \Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l / d F Y') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Pukul</td>
+                                <td style="text-align: center;">:</td>
+                                <td>
+                                    {{ $undangan->waktu_mulai }} s.d {{ $undangan->waktu_selesai ?? 'selesai'  }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tempat</td>
+                                <td style="text-align: center;">:</td>
+                                <td>
+                                    {!! nl2br(e($undangan->tempat)) !!}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Agenda</td>
+                                <td style="text-align: center;">:</td>
+                                <td>{!! $undangan->isi_undangan !!}</td>
+                            </tr>
+                        </table>
+                        <p style="margin-top: 10px; text-align: justify;">
+                            Demikian undangan ini kami sampaikan, atas perhatian dan kehadiran Bapak/Ibu kami ucapkan
+                            terima kasih.
+                        </p>
+                    </div>
+
+                    <table class="signature">
                         <tr>
-                            <td style="width: 15%;">Hari/Tanggal</td> <td style="width: 3%; text-align: center;">:</td> <td style="width: 82%;">
-                                {{ \Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l / d F Y') }}
-                            </td> </tr>
-                        <tr>
-                            <td>Pukul</td>
-                            <td style="text-align: center;">:</td>
                             <td>
-                                {{ $undangan->waktu_mulai }} s.d {{ $undangan->waktu_selesai ?? 'selesai'  }} 
+
+
+                                <p><b>Hormat kami,</b></p>
+
+                                <b>{{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }}
+                                   {{ 
+                                        optional($manager->department)->name_department
+                                    ?? optional($manager->divisi)->nm_divisi 
+                                    }}</b>
+
+                                @if(!empty($undangan->qr_approved_by))
+                                    <div style="text-align: center; margin-top: 10px;">
+                                        <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" width="100">
+                                    </div>
+                                @endif
+                                <p><b><u>{{ $manager->firstname }} {{ $manager->lastname }}</u></b></p>
+                                
                             </td>
-                        </tr>
-                        <tr>
-                            <td>Tempat</td>
-                            <td style="text-align: center;">:</td>
-                            <td>
-                                {!! nl2br(e($undangan->tempat)) !!}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Agenda</td>
-                            <td style="text-align: center;">:</td>
-                            <td>{!! $undangan->isi_undangan !!}</td>
                         </tr>
                     </table>
-                    <p style="margin-top: 10px; text-align: justify;">
-                        Demikian undangan ini kami sampaikan, atas perhatian dan kehadiran Bapak/Ibu kami ucapkan terima kasih.
-                    </p>
-                </div>
-
-                <table class="signature">
-                    <tr>
-                        <td>
-                            <p><b>Hormat kami,</b></p>
-                            <b>Manajer {{ $undangan->divisi->nm_divisi }}</b> 
-                            @if(!empty($undangan->qr_approved_by))
-                                <div style="text-align: center; margin-top: 10px;">
-                                    <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" width="100" alt="QR Code">
-                                </div>
-                            @endif
-                            <p><b><u>{{ $undangan->nama_bertandatangan }}</u></b></p>
-                        </td>
-                    </tr>
-                </table>
                 </div> {{-- Close collab --}}
             </div> {{-- Close letter --}}
         </div> {{-- Close content --}}
     </main>
 </body>
+
 </html>
