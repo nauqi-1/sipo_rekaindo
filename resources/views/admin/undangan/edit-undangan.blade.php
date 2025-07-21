@@ -7,9 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/admin/edit-memo.css') }}">
 </head>
 <body>
@@ -43,10 +45,10 @@
                         <label for="tgl_dibuat" class="form-label">
                             <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                         </label>
-                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ $undangan->tgl_dibuat->format('Y-m-d') }}" required>
+                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ old('tgl_dibuat',$undangan->tgl_dibuat->format('Y-m-d')) }}"  disabled>
+                        <input type="hidden" name="tgl_dibuat" value="{{ $undangan->tgl_dibuat->format('Y-m-d') }}">
                         <input type="hidden" name="tgl_disahkan" >
-                        <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
-
+                        
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
@@ -109,8 +111,9 @@
                         <label for="tgl_rapat" class="form-label">
                             <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Rapat <span class="text-danger">*</span>
                         </label>
-                        <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"  
-                            value="{{ old('tgl_rapat', optional($undangan->tgl_rapat)->format('Y-m-d')) }}" required>
+                       <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"  
+                        value="{{ old('tgl_rapat', optional(\Carbon\Carbon::parse($undangan->tgl_rapat))->format('Y-m-d')) }}" required>
+
                         @error('tgl_rapat')
                             <div class="form-control text-danger">{{ $message }}</div>
                         @enderror
