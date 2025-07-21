@@ -87,7 +87,7 @@
                     <div class="card-white">
                         <label for="divisi">Divisi</label>
                         <div class="separator"></div>
-                        <input type="text" id="divisi" value="{{ $risalah->divisi->nm_divisi }}" readonly>
+                        
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>

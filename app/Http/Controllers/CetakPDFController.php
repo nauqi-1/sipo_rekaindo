@@ -11,10 +11,6 @@ use App\Models\Risalah;
 use App\Models\Divisi;
 use Illuminate\Support\Str;
 
-
-
-
-
 class CetakPDFController extends Controller
 {
     public function cetakmemoPDF($id)

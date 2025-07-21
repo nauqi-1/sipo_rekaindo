@@ -25,7 +25,7 @@ class RisalahController extends Controller
 {
     public function index(Request $request)
     {
-        $divisi = Divisi::all();
+        // $divisi = Divisi::all();
         $seri = Seri::all(); 
         $userId = Auth::id(); 
 
@@ -74,7 +74,7 @@ class RisalahController extends Controller
 
         // Sorting & pagination
         $perPage = $request->get('per_page', 10);
-        $risalahs = $query->with('divisi')
+        $risalahs = $query->with('kirimDocument')
                     ->orderBy($sortBy, $sortDirection)
                     ->paginate($perPage);
 
@@ -97,7 +97,7 @@ class RisalahController extends Controller
             ->get();
 
         return view(Auth::user()->role->nm_role.'.risalah.risalah-'.Auth::user()->role->nm_role, 
-            compact('risalahs', 'divisi', 'seri', 'sortDirection', 'kirimDocuments'));
+            compact('risalahs', 'seri', 'sortDirection', 'kirimDocuments'));
     }
 
     public function superadmin(Request $request){
@@ -198,14 +198,28 @@ class RisalahController extends Controller
             $divisiName = $divisiName->kode_director;
         }
 
-        $undangan = Undangan::whereNotIn('judul', function($query) {
-                        $query->select('judul')->from('risalah');
-                    })
-                    // ->where('department_id_department', $user->department_id_department)
-                    ->get();
-        
-        $allUser = User::all();
+        $departmentId = $user->department_id_department;
+        $divisiId = $user->divisi_id_divisi;
 
+        $undangan = DB::select("
+            SELECT *
+            FROM undangan
+            WHERE judul NOT IN (
+                SELECT judul FROM risalah
+            )
+            AND EXISTS (
+                SELECT 1
+                FROM users
+                WHERE 
+                    users.id   = undangan.pembuat
+                    AND (
+                        (users.department_id_department IS NOT NULL AND users.department_id_department = ?)
+                        OR
+                        (users.department_id_department IS NULL AND users.divisi_id_divisi = ?)
+                    )
+            )
+        ", [$departmentId, $divisiId]);
+        
         $risalah = new Risalah(); // atau ambil dari data risalah terakhir, terserah kebutuhanmu
         
         // Ambil nomor seri berikutnya
@@ -224,13 +238,13 @@ class RisalahController extends Controller
             now()->year
         );
         
-        $managers = User::all();
+        // $managers = User::all();
     
         return view(Auth::user()->role->nm_role.'.risalah.add-risalah', [
             'risalah' => $risalah,
             'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
             'nomorDokumen' => $nomorDokumen,
-            'managers' => $managers,
+            // 'managers' => $managers,
             'undangan' => $undangan
         ]);  
     }
@@ -246,8 +260,7 @@ class RisalahController extends Controller
         'tempat' => 'required|string',
         'waktu_mulai' => 'required|string',
         'waktu_selesai' => 'required|string',
-        'judul' => $judul,
-        'divisi_id_divisi' => 'required|integer|exists:divisi,id_divisi', 
+        'judul' => 'required|string',
         'nama_bertandatangan' => 'required|string',
         'pembuat'=>'required|string',
         'nomor' => 'nullable|array',
@@ -271,8 +284,7 @@ class RisalahController extends Controller
 
     $divisiId = auth()->user()->divisi_id_divisi;
     $seri = Seri::getNextSeri(true);
-    $seri = Seri::where('divisi_id_divisi', $divisiId)
-            ->where('tahun', now()->year)
+    $seri = Seri::where('tahun', now()->year)
             ->latest()
             ->first();
 
@@ -281,7 +293,6 @@ class RisalahController extends Controller
     }
     // Simpan risalah utama
     $risalah = Risalah::create([
-        'divisi_id_divisi' => auth()->user()->divisi_id_divisi,
         'tgl_dibuat' => $request->tgl_dibuat,
         'seri_surat' => $request->seri_surat,
         'nomor_risalah' => $request->nomor_risalah,
@@ -290,7 +301,7 @@ class RisalahController extends Controller
         'waktu_mulai' => $request->waktu_mulai,
         'waktu_selesai' => $request->waktu_selesai,
         'status' => 'pending',
-        'judul' => $judul,
+        'judul' => $request->judul,
         'pembuat' => $request->pembuat,
         'lampiran' => $filePath,
         'nama_bertandatangan' => $request->nama_bertandatangan,
@@ -381,22 +392,34 @@ public function edit($id)
 {
     // Ambil data risalah beserta detailnya
     $divisi = Divisi::all();
-    $seri = Seri::all(); 
+    $seri = Seri::all();
+    $user = Auth::User();
     $risalah = Risalah::with('risalahDetails')->findOrFail($id);
-    $divisiId = auth()->user()->divisi_id_divisi;
-    $divisiName = auth()->user()->divisi->nm_divisi;
-    $undangan = Undangan::whereNotIn('judul', function($query) {
-                        $query->select('judul')->from('risalah');
-                    })
-                    ->where('divisi_id_divisi', $divisiId)
-                    ->get();
+    $departmentId = $user->department_id_department;
+    $divisiId = $user->divisi_id_divisi;
+
+    $undangan = DB::select("
+        SELECT *
+        FROM undangan
+        WHERE judul NOT IN (
+            SELECT judul FROM risalah
+        )
+        AND EXISTS (
+            SELECT 1
+            FROM users
+            WHERE 
+                users.id   = undangan.pembuat
+                AND (
+                    (users.department_id_department IS NOT NULL AND users.department_id_department = ?)
+                    OR
+                    (users.department_id_department IS NULL AND users.divisi_id_divisi = ?)
+                )
+        )
+    ", [$departmentId, $divisiId]);
 
     // Ambil daftar manajer berdasarkan divisi yang sama
-    $managers = User::where('divisi_id_divisi', $risalah->divisi_id_divisi)
-        ->where('position_id_position', '2')
-        ->get(['id', 'firstname', 'lastname']);
 
-    return view(Auth::user()->role->nm_role.'.risalah.edit-risalah', compact('risalah', 'divisi', 'seri', 'managers', 'undangan'));
+    return view(Auth::user()->role->nm_role.'.risalah.edit-risalah', compact('risalah', 'divisi', 'seri', 'undangan'));
 }
     
 public function update(Request $request, $id)
@@ -404,7 +427,7 @@ public function update(Request $request, $id)
         // dd($request->all());
         // Validasi data
         $request->validate([
-            'judul' => $judul,
+            'judul' => 'required',
             'agenda' => 'required',
             'tempat' => 'required',
             'waktu_mulai' => 'required',
@@ -420,7 +443,7 @@ public function update(Request $request, $id)
         $risalah = Risalah::findOrFail($id);
         $risalah->update([
             'tgl_dibuat' => $request->tgl_dibuat,
-            'judul' => $judul,
+            'judul' => $request->judul,
             'agenda' => $request->agenda,
             'tempat' => $request->tempat,
             'waktu_mulai' => $request->waktu_mulai,
@@ -538,7 +561,21 @@ public function update(Request $request, $id)
         // Karena hanya satu memo, kita bisa mengambil dari collection lagi
         $risalah = $risalahCollection->first();
 
-        return view(Auth::user()->role->nm_role.'.risalah.view-risalah', compact('risalah', 'undangan'));
+        // Ubah tujuan dari string jadi array
+        $userIds = explode(';', $undangan->tujuan);
+
+        // Ambil firstname + lastname
+        $namaUserList = User::whereIn('id', $userIds)
+            ->get()
+            ->map(function ($user) {
+                return $user->firstname . ' ' . $user->lastname;
+            })
+            ->toArray();
+
+        // Gabungkan jadi satu string untuk ditampilkan
+        $tujuanUsernames = implode(', ', $namaUserList);
+
+        return view(Auth::user()->role->nm_role.'.risalah.view-risalah', compact('risalah', 'undangan','tujuanUsernames'));
     }
 
     public function updateStatus(Request $request, $id)
