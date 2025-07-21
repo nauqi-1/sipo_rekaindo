@@ -145,9 +145,28 @@
                         @endif
                     </td>
                     <td>
-                        {{-- <a href="{{route ('persetujuan.undangan',['id'=>$undangan->id_undangan])}}" class="btn btn-sm1">
-                            <img src="/img/undangan/share.png" alt="share">
-                        </a> --}}
+                        @if (Auth::user()->id == $undangan->pembuat)
+                            @if ($undangan->status == 'approve' || $undangan->status == 'reject')
+                                <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'undangan']) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('POST')
+                                    <button type="submit" class="btn btn-sm3 submitArsipUndangan">
+                                        <img src="/img/undangan/arsip.png" alt="arsip">
+                                    </button>
+                                </form>
+                           
+                            @endif
+                        @elseif (Auth::user()->id != $undangan->pembuat)
+                            @if ($undangan->status == 'approve')
+                                <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'undangan']) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
+                                    <button type="submit" class="btn btn-sm3">
+                                        <img src="/img/undangan/arsip.png" alt="arsip">
+                                    </button>
+                                </form>
+                            @endif
+                        @endif
                         <a class="btn btn-sm3" href="{{route ('view.undangan',['id'=>$undangan->id_undangan])}}">
                             <img src="/img/undangan/viewBlue.png" alt="view">
                         </a>

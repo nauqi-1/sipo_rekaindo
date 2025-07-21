@@ -193,7 +193,7 @@
 
                         @if (Auth::user()->id == $undangan->pembuat)
                             @if ($undangan->status == 'approve' || $undangan->status == 'reject')
-                                <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
+                                <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'undangan']) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('POST')
                                     <button type="submit" class="btn btn-sm3 submitArsipUndangan">
