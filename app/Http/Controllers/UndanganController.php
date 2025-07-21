@@ -220,7 +220,7 @@ class UndanganController extends Controller
             "%d.%d/REKA/GEN/%s/%s/%d",
             $nextSeri['seri_tahunan'],
             $nextSeri['seri_bulanan'],
-            strtoupper($kodeDirektur),
+            // strtoupper($kodeDirektur),
             strtoupper($divDeptKode),
             $bulanRomawi,
             now()->year
@@ -626,12 +626,12 @@ class UndanganController extends Controller
 
 
             // Notifikasi
-            Notifikasi::create([
-                'judul' => "Undangan Disetujui",
-                'judul_document' => $undangan->judul,
-                'id_divisi' => $undangan->pembuat,
-                'updated_at' => now()
-            ]);
+            // Notifikasi::create([
+            //     'judul' => "Undangan Disetujui",
+            //     'judul_document' => $undangan->judul,
+            //     'id_divisi' => $undangan->pembuat,
+            //     'updated_at' => now()
+            // ]);
         } else {
             // Kirim ke manager yang dipilih (approval masih pending)
             Kirim_Document::create([
@@ -748,26 +748,26 @@ class UndanganController extends Controller
 
 
             // Notifikasi
-            Notifikasi::create([
-                'judul' => "Undangan Disetujui",
-                'judul_document' => $undangan->judul,
-                'id_divisi' => $undangan->pembuat,
-                'updated_at' => now()
-            ]);
+            // Notifikasi::create([
+            //     'judul' => "Undangan Disetujui",
+            //     'judul_document' => $undangan->judul,
+            //     'id_divisi' => $undangan->pembuat,
+            //     'updated_at' => now()
+            // ]);
         } elseif ($request->status == 'reject') {
-            Notifikasi::create([
-                'judul' => "Undangan Tidak Disetujui",
-                'judul_document' => $undangan->judul,
-                'id_divisi' => $undangan->pembuat,
-                'updated_at' => now()
-            ]);
+            // Notifikasi::create([
+            //     'judul' => "Undangan Tidak Disetujui",
+            //     'judul_document' => $undangan->judul,
+            //     'id_divisi' => $undangan->pembuat,
+            //     'updated_at' => now()
+            // ]);
         } elseif ($request->status == 'correction') {
-            Notifikasi::create([
-                'judul' => "Undangan Perlu Dikoreksi",
-                'judul_document' => $undangan->judul,
-                'id_divisi' => $undangan->pembuat,
-                'updated_at' => now()
-            ]);
+            // Notifikasi::create([
+            //     'judul' => "Undangan Perlu Dikoreksi",
+            //     'judul_document' => $undangan->judul,
+            //     'id_divisi' => $undangan->pembuat,
+            //     'updated_at' => now()
+            // ]);
         }
         return redirect()->route('undangan.' . Auth::user()->role->nm_role)
             ->with('success', 'Dokumen berhasil dibuat.');
@@ -801,8 +801,7 @@ class UndanganController extends Controller
     }
     public function edit($id)
     {
-
-        $undangan = Undangan::findOrFail($id);
+       $undangan = Undangan::findOrFail($id);
         $divisi = Divisi::all();
         $seri = Seri::all();
         $divisiId = auth()->user()->divisi_id_divisi;
@@ -810,16 +809,18 @@ class UndanganController extends Controller
             ->where('position_id_position', '2')
             ->get(['id', 'firstname', 'lastname']);
 
-        // Pastikan field tujuan diubah ke array id divisi untuk form edit
-        if (empty($undangan->tujuan)) {
-            $undangan->tujuan = [];
-        } elseif (!is_array($undangan->tujuan)) {
-            $namaDivisiArray = array_map('trim', explode(';', $undangan->tujuan));
-            $idDivisiArray = \App\Models\Divisi::whereIn('nm_divisi', $namaDivisiArray)->pluck('id_divisi')->toArray();
-            $undangan->tujuan = $idDivisiArray;
+        $orgTree = $this->getOrgTreeWithUsers();
+        $jsTreeDataJson = $this->convertToJsTree($orgTree); // hasilnya string JSON
+        $jsTreeData = json_decode($jsTreeDataJson, true);   // decode khusus edit()
+
+        $tujuanArray = [];
+        if (!empty($undangan->tujuan)) {
+            $tujuanArray = explode(';', $undangan->tujuan);
         }
 
-        return view(Auth::user()->role->nm_role . '.undangan.edit-undangan', compact('undangan', 'divisi', 'seri', 'managers'));
+        return view(Auth::user()->role->nm_role . '.undangan.edit-undangan', compact(
+            'undangan', 'divisi', 'seri', 'managers', 'tujuanArray', 'jsTreeData'
+        ));
     }
     public function update(Request $request, $id)
     {
@@ -1014,12 +1015,12 @@ class UndanganController extends Controller
         $undangan->save();
 
         // Simpan notifikasi
-        Notifikasi::create([
-            'judul' => "Undangan {$request->status}",
-            'judul_document' => $undangan->judul,
-            'id_divisi' => $undangan->divisi_id,
-            'updated_at' => now()
-        ]);
+        // Notifikasi::create([
+        //     'judul' => "Undangan {$request->status}",
+        //     'judul_document' => $undangan->judul,
+        //     'id_divisi' => $undangan->divisi_id,
+        //     'updated_at' => now()
+        // ]);
 
         return redirect()->back()->with('success', 'Status undangan berhasil diperbarui.');
     }
