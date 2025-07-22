@@ -148,16 +148,35 @@ class CetakPDFController extends Controller
         $tujuanIds = explode(';', $undangan->tujuan);  // [id_user1;id_user2;...]
         $tujuanUsers = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereIn('id', $tujuanIds)
-            ->get();
+            ->get()
+            ->map(function ($user) {
+                $level = $this->detectLevel($user);
+                $user->level_kerja = $level;
+                $user->bagian_text = $this->getBagianText($user, $level);
+                return $user;
+            })
+            ->sortBy(function ($user) {
+                return optional($user->position)->id_position; // urutkan by ID posisi
+            })
+            ->values(); // reset index array
+
+
 
         $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$undangan->nama_bertandatangan])
             ->first();
 
+        if ($manager) {
+            $level = $this->detectLevel($manager);
+            $manager->level_kerja = $level;
+            $manager->bagian_text = $this->getBagianText($manager, $level);
+        }
 
+        $cleanTag = strip_tags($undangan->isi_undangan);
         $formatUndanganPdf = PDF::loadView('format-surat.format-undangan', [
             'undangan' => $undangan,
             'tujuanUsers' => $tujuanUsers,
+            'cleanTag' => $cleanTag,
             'manager' => $manager,
             'headerImage' => $headerBase64,
             'footerImage' => $footerBase64,
