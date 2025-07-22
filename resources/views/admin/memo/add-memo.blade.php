@@ -267,7 +267,7 @@
         
         // Get selected nodes
         const selectedNodes = $('#org-tree').jstree('get_selected', true);
-        const tujuan = selectedNodes
+        const tujuan = selectedNodes;
         //.filter(node => node.id.startsWith('user-')) // adjust prefix if needed
         //.map(node => ({
         //  id: parseInt(node.id.replace('user-', '')), // Extract user ID from node ID

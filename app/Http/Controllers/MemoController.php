@@ -1185,8 +1185,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
         $jsTreeData = $this->convertToJsTree($orgTree);
         $mainDirector = $orgTree[0] ?? null;
 
-        $tujuanArray = $memo->tujuan ? explode(';', $memo->tujuan) : [];
-
+        $tujuanArray = $memo->tujuan_string ? explode(';', $memo->tujuan_string) : [];
          return view(Auth::user()->role->nm_role. '.memo.edit-memo', compact('memo', 'divisi', 'seri', 'managers', 'orgTree', 'jsTreeData', 'mainDirector', 'tujuanArray'));
      }
      public function update(Request $request, $id)
@@ -1197,6 +1196,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
             'tujuan' => 'required|array|min:1',
+            'tujuanString' => 'required|array|min:1',
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
             'tgl_dibuat' => 'required|date',
@@ -1212,6 +1212,9 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
         }
         if ($request->filled('tujuan')) {
             $memo->tujuan = implode(';', $request->tujuan);
+        }
+        if ($request->filled('tujuanString')) {
+            $memo->tujuan_string = implode(';', $request->tujuanString);
         }
         if ($request->filled('nomor_memo')) {
             $memo->nomor_memo = $request->nomor_memo    ;
@@ -1249,7 +1252,6 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
                     if ($barang) {
                         $barang->update([
                             'memo_id_memo' => $memo->id_memo,
-                            'memo_divisi_id_divisi' => $memo->divisi_id_divisi,
                             'nomor' => $dataBarang['nomor'],
                             'barang' => $dataBarang['barang'],
                             'qty' => $dataBarang['qty'],
