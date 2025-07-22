@@ -397,32 +397,41 @@
                             terima kasih.
                         </p>
                     </div>
+                    {{-- PENGECEKAN APAKAH DIA DIREKTUR --}}
+                    @php
+                        $bagian = optional($manager->unit)->nm_unit
+                            ?? optional($manager->section)->nm_section
+                            ?? optional($manager->department)->name_department
+                            ?? optional($manager->divisi)->nm_divisi
+                            ?? optional($manager->director)->nm_director;
+
+                        $isDirektur = is_null($manager->divisi_id_divisi)
+                            && is_null($manager->department_id_department)
+                            && is_null($manager->section_id_section)
+                            && is_null($manager->unit_id_unit);
+                    @endphp
                     <div
                         style="width: 40%; float: right; text-align: left; margin-right: 3%; line-height: 1.3; margin-top: 20px;">
                         <p style="text-align: center; margin-bottom: 5px;"><b>Hormat kami,</b></p>
-                        @if($manager != "Direktur")
+                        {{-- MENAMPILKAN POSISI DARI TABEL POSITION --}}
+                        @if($isDirektur)
                             <p style="text-align: center; margin: 0; font-weight: bold;">
-                                {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }}
+                                {{ optional($manager->director)->nm_director }}
                             </p>
                         @else
+                        {{-- MENAMPILKAN POSISI DARI TABEL POSITION SERTA ASAL UNIT/SECTION/DEPARTMENT/DIVISI--}}
                             <p style="text-align: center; margin: 0; font-weight: bold;">
-                                {{ preg_replace($manager->position->nm_position) }}
+                                {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }} {{ $bagian }}
                             </p>
                         @endif
-                        <p style="text-align: center;margin: 0; font-weight: bold;">
-                            {{ optional($manager->unit)->nm_unit
-                                ?? optional($manager->section)->nm_section
-                                ?? optional($manager->department)->name_department
-                                ?? optional($manager->divisi)->nm_divisi
-                                ?? optional($manager->director)->nm_director }}
-                        </p>
-
+                        
+                        {{-- QR CODE --}}
                         @if(!empty($undangan->qr_approved_by))
                             <div style="margin: 10px 0; text-align: center;">
                                 <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" width="100">
                             </div>
                         @endif
-
+                        {{-- NAMA BERTANDA TANGAN --}}
                         <p style="margin: 0; text-align: center;"><b><u>{{ $manager->firstname }}
                                     {{ $manager->lastname }}</u></b></p>
                     </div>
