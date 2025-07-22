@@ -581,7 +581,6 @@ public function update(Request $request, $id)
     public function updateStatus(Request $request, $id)
     {
         $risalah = Risalah::findOrFail($id);
-        $userDivisiId = Auth::user()->divisi_id_divisi;
         $userId = Auth::id();
 
         $rules = [
@@ -595,143 +594,87 @@ public function update(Request $request, $id)
 
         $validated = $request->validate($rules);
         
-        if ($userDivisiId == $risalah->divisi_id_divisi) {
         // Update status
-            $risalah->status = $request->status;
-            $currentKirim = Kirim_document::where('id_document', $id)
-                ->where('jenis_document', 'risalah')
-                ->where('id_penerima', $userId)
-                ->first();
-                
-            if ($currentKirim) {
-                $currentKirim->status = $request->status;
-                $currentKirim->updated_at = now();
-                $currentKirim->save();
-            }
+        $risalah->status = $request->status;
+        $currentKirim = Kirim_document::where('id_document', $id)
+            ->where('jenis_document', 'risalah')
+            ->where('id_penerima', $userId)
+            ->first();
             
-            // Jika status 'approve', simpan tanggal pengesahan
-            if ($request->status == 'approve') {
-                $risalah->tgl_disahkan = now();
+        if ($currentKirim) {
+            $currentKirim->status = $request->status;
+            $currentKirim->updated_at = now();
+            $currentKirim->save();
+        }
+        
+        // Jika status 'approve', simpan tanggal pengesahan
+        if ($request->status == 'approve') {
+            $risalah->tgl_disahkan = now();
 
-                $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
-                $qrImage = QrCode::format('svg')->generate($qrText);
-                $qrBase64 = base64_encode($qrImage);
-                $risalah->qr_approved_by = $qrBase64;
-                $undangan = Undangan::where('judul', $risalah->judul)->first();
-                
-                if ($undangan) {
-                    $currentUserDivisiId = Auth::user()->divisi_id_divisi;
-                    $currentDivisi = Divisi::where('id_divisi', $currentUserDivisiId)->first();
-                    $tujuanString = $undangan->tujuan; // misalnya: "General Affair; QMSHE;"
-                    $tujuanArray = explode(';', $tujuanString);
+            $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
+            $qrImage = QrCode::format('svg')->generate($qrText);
+            $qrBase64 = base64_encode($qrImage);
+            $risalah->qr_approved_by = $qrBase64;
+            $undangan = Undangan::where('judul', $risalah->judul)->first();
+            
+            if ($undangan) {
+                $currentUserDivisiId = Auth::user()->divisi_id_divisi;
+                $currentDivisi = Divisi::where('id_divisi', $currentUserDivisiId)->first();
+                $tujuanString = $undangan->tujuan; // misalnya: "General Affair; QMSHE;"
+                $tujuanArray = explode(';', $tujuanString);
 
-                    foreach ($tujuanArray as $namaDivisi) {
-                        $namaDivisi = trim($namaDivisi); // hilangkan spasi di pinggir
-                        if (!$namaDivisi) continue; // skip kalau kosong
+                foreach ($tujuanArray as $idTujuan) {
+                    $idTujuan = trim($idTujuan); // hilangkan spasi di pinggir
+                    if (!$idTujuan) continue; // skip kalau kosong
 
-                        // cari divisi
-                        $divisi = \App\Models\Divisi::where('nm_divisi', $namaDivisi)->first();
+                    $users = \App\Models\User::where('id', $idTujuan)->get();
 
-                        if ($divisi) {
-                            if ($currentDivisi->nm_divisi == $divisi->nm_divisi) {
-                                continue; // skip kirim ke divisi user sendiri
-                            }
-                            $users = \App\Models\User::where('divisi_id_divisi', $divisi->id_divisi)->get();
-
-                            foreach ($users as $user) {
-                                \App\Models\Kirim_Document::firstOrCreate([
-                                    'id_document' => $risalah->id_risalah,
-                                    'jenis_document' => 'risalah',
-                                    'id_pengirim' => $currentKirim->id_pengirim,
-                                    'id_penerima' => $user->id,
-                                ], [
-                                    'status' => 'approve'
-                                ]);
-                            }
-                        }
+                    foreach ($users as $user) {
+                        \App\Models\Kirim_Document::firstOrCreate([
+                            'id_document' => $risalah->id_risalah,
+                            'jenis_document' => 'risalah',
+                            'id_pengirim' => $currentKirim->id_pengirim,
+                            'id_penerima' => $user->id,
+                        ], [
+                            'status' => 'approve'
+                        ]);
                     }
                 }
-
-                Notifikasi::create([
-                    'judul' => "Risalah Disetujui",
-                    'judul_document' => $risalah->judul,
-                    'id_divisi' => $risalah->divisi_id_divisi,
-                    'updated_at' => now()
-                ]);
-            } elseif ($request->status == 'reject') {
-                $risalah->tgl_disahkan = now();
-                Notifikasi::create([
-                    'judul' => "Risalah Ditolak",
-                    'judul_document' => $risalah->judul,
-                    'id_divisi' => $risalah->divisi_id_divisi,
-                    'updated_at' => now()
-                ]);
-            } elseif ($request->status == 'correction') {
-                $risalah->tgl_disahkan = now();
-                Notifikasi::create([
-                    'judul' => "Risalah Dikoreksi",
-                    'judul_document' => $risalah->judul,
-                    'id_divisi' => $risalah->divisi_id_divisi,
-                    'updated_at' => now()
-                ]);
-            }else{
-                $risalah->tgl_disahkan = null;
             }
-            
 
-            // Simpan catatan jika ada
-            $risalah->catatan = $request->catatan;
-
-            // Simpan perubahan
-            $risalah->save();
-            
-        } else {
-                // Jika user dari divisi lain, update status di tabel kirim_document
-                $currentKirim = Kirim_document::where('id_document', $id)
-                ->where('jenis_document', 'risalah')
-                ->where('id_penerima', $userId)
-                ->first();
-
-            if ($currentKirim) {
-                $currentKirim->status = $request->status;
-                $currentKirim->updated_at = now();
-                $currentKirim->save();
-
-                // Update juga status record kiriman sebelumnya (pengirim sebelumnya)
-                Kirim_document::where('id_document', $id)
-                    ->where('jenis_document', 'risalah')
-                    ->where('id_penerima', $currentKirim->id_pengirim)
-                    ->update([
-                        'status' => $request->status,
-                        'updated_at' => now()
-                    ]);
-                    if(($request->status == 'approve')){
-                        Notifikasi::create([
-                            'judul' => "Risalah Ditindak Lanjuti",
-                            'judul_document' => $risalah->judul,
-                            'id_divisi' => $risalah->divisi_id_divisi,
-                            'updated_at' => now()
-                        ]);
-                    }
-                
-                    if ($request->status == 'reject') {
-                        $risalah->status = 'reject';
-                        $risalah->tgl_disahkan = now();
-                        $risalah->catatan = $request->catatan ?? $risalah->catatan;
-                        $risalah->save();
-                        
-                        Notifikasi::create([
-                            'judul' => "Risalah Tidak Ditindak Lanjuti",
-                            'judul_document' => $risalah->judul,
-                            'id_divisi' => $risalah->divisi_id_divisi,
-                            'updated_at' => now()
-                        ]);
-                    }
-            }
+            Notifikasi::create([
+                'judul' => "Risalah Disetujui",
+                'judul_document' => $risalah->judul,
+                'id_user' => $risalah->pembuat,
+                'updated_at' => now()
+            ]);
+        } elseif ($request->status == 'reject') {
+            $risalah->tgl_disahkan = now();
+            Notifikasi::create([
+                'judul' => "Risalah Ditolak",
+                'judul_document' => $risalah->judul,
+                'id_user' => $risalah->pembuat,
+                'updated_at' => now()
+            ]);
+        } elseif ($request->status == 'correction') {
+            $risalah->tgl_disahkan = now();
+            Notifikasi::create([
+                'judul' => "Risalah Dikoreksi",
+                'judul_document' => $risalah->judul,
+                'id_user' => $risalah->pembuat,
+                'updated_at' => now()
+            ]);
+        }else{
+            $risalah->tgl_disahkan = null;
         }
-
         
 
+        // Simpan catatan jika ada
+        $risalah->catatan = $request->catatan;
+
+        // Simpan perubahan
+        $risalah->save();
+            
         return redirect()->back()->with('success', 'Status risalah berhasil diperbarui.');
     }
 
@@ -824,7 +767,7 @@ public function update(Request $request, $id)
         Notifikasi::create([
             'judul' => "Risalah {$request->status}",
             'jenis_document' => 'risalah',
-            'id_divisi' => $risalah->divisi_id,
+            'id_user' => $risalah->pembuat,
             'dibaca'         => false,
             'updated_at' => now()
         ]);

@@ -159,9 +159,10 @@
                     <p>Madiun, {{ $risalah->tgl_dibuat->translatedFormat('d F Y') }}</p>
                     @php
                         $userBertandatangan = \App\Models\User::whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$risalah->nama_bertandatangan])->first();
+                        $namaJabatan = $userBertandatangan?->position?->nm_position;
+                        $namaJabatanBersih = preg_replace('/\([^)]+\)\s*/', '', $namaJabatan);
                     @endphp
-
-                    <p>Manager 
+                    <p>{{ $namaJabatanBersih }}
                         {{ $userBertandatangan?->department?->kode_department 
                             ?? $userBertandatangan?->divisi?->kode_divisi 
                             ?? '-' }}
