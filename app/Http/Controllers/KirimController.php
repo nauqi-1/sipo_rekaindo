@@ -237,7 +237,6 @@ class KirimController extends Controller
     public function memoDiterima(Request $request)
     {
         $userId = auth()->id();
-        $divisiId = auth()->user()->divisi_id_divisi;
         session(['previous_url' => url()->previous()]);
         $sortBy = $request->get('sort_by', 'kirim_document.id_kirim_document');
         $sortDirection = $request->get('sort_direction', 'desc');
@@ -257,28 +256,7 @@ class KirimController extends Controller
          $memoDiterima = Kirim_Document::where('jenis_document', 'memo')
         ->where('id_penerima', $userId)
         ->whereIn('kirim_document.status',  ['pending','approve'])
-        ->whereHas('memo', function ($query) use ($request, $divisiId) {
-            $query->where('memo.divisi_id_divisi','!=', $divisiId);
-
-//            if ($request->filled('divisi_filter')) {
-//        if ($request->divisi_filter === 'own') {
-//            $query->where('divisi_id_divisi', $divisiId);
-//        } elseif ($request->divisi_filter === 'other') {
-//            $query->where('divisi_id_divisi', '!=', $divisiId)
-//                  ->where('status', 'approve');
-//        }
-//    } else {
-//        // Default: show same division OR approved from other division
-//        $query->where(function ($q) use ($divisiId) {
-//            $q->where('divisi_id_divisi', $divisiId)
-//              ->where('status', 'pending')
-//              ;
-//        })->orWhere(function ($q) use ($divisiId) {
-//            $q->where('divisi_id_divisi', '!=', $divisiId)
-//              ->where('status', 'approve');
-//        });
-//    }
-
+        ->whereHas('memo', function ($query) use ($request) {
             // Additional filters
             if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
                 $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);

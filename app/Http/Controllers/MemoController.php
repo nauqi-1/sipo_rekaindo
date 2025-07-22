@@ -550,50 +550,7 @@ class MemoController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-
-    $rawTujuan = $request->input('tujuan', []);
-
-    $departments = [];
-    $sections = [];
-    $divisions = [];
-    $units = [];
-
-    foreach ($rawTujuan as $item) {
-        if (Str::startsWith($item, 'dept-')) {
-            $departments[] = (int) Str::after($item, 'dept-');
-        } elseif (Str::startsWith($item, 'section-')) {
-            $sections[] = (int) Str::after($item, 'section-');
-        } elseif (Str::startsWith($item, 'divisi-')) {
-            $divisions[] = (int) Str::after($item, 'divisi-');
-        } elseif (Str::startsWith($item, 'unit-')) {
-            $units[] = (int) Str::after($item, 'unit-');
-        }
-    }
-
-    // Now query the users who match any of the IDs
-    $users = User::where(function ($query) use ($departments, $sections, $divisions, $units) {
-        if (!empty($departments)) {
-            $query->orWhereIn('department_id_department', $departments);
-        }
-        if (!empty($sections)) {
-            $query->orWhereIn('section_id_section', $sections);
-        }
-        if (!empty($divisions)) {
-            $query->orWhereIn('divisi_id_divisi', $divisions);
-        }
-        if (!empty($units)) {
-            $query->orWhereIn('unit_id_unit', $units);
-        }
-    })->pluck('id')->toArray();
-
-    // Final tujuan result:
-    $tujuanId = $users;
-    //dd($finalTujuan);
-        
-        
-        //dd($request->tujuan);
-        //$hierarkiTujuan = $this->collapseHierarchies($request->tujuan);
-       //
+        $tujuanId = $this->convertTujuanToUserId($request->tujuan);
 
         $filePath = null;
         if ($request->hasFile('lampiran')) {
@@ -604,7 +561,7 @@ class MemoController extends Controller
 
         $divDeptKode = $this->getDivDeptKode(Auth::user());
 
-        dd($request->tujuanString);
+        
         
         $seri = Seri::where('kode', $divDeptKode)
                 ->where('tahun', now()->year)
@@ -717,6 +674,46 @@ class MemoController extends Controller
     }
     }
 
+    public function convertTujuanToUserId (array $rawTujuan) {
+
+    $departments = [];
+    $sections = [];
+    $divisions = [];
+    $units = [];
+
+    foreach ($rawTujuan as $item) {
+        if (Str::startsWith($item, 'dept-')) {
+            $departments[] = (int) Str::after($item, 'dept-');
+        } elseif (Str::startsWith($item, 'section-')) {
+            $sections[] = (int) Str::after($item, 'section-');
+        } elseif (Str::startsWith($item, 'divisi-')) {
+            $divisions[] = (int) Str::after($item, 'divisi-');
+        } elseif (Str::startsWith($item, 'unit-')) {
+            $units[] = (int) Str::after($item, 'unit-');
+        }
+    }
+
+    // Now query the users who match any of the IDs
+    $users = User::where(function ($query) use ($departments, $sections, $divisions, $units) {
+        if (!empty($departments)) {
+            $query->orWhereIn('department_id_department', $departments);
+        }
+        if (!empty($sections)) {
+            $query->orWhereIn('section_id_section', $sections);
+        }
+        if (!empty($divisions)) {
+            $query->orWhereIn('divisi_id_divisi', $divisions);
+        }
+        if (!empty($units)) {
+            $query->orWhereIn('unit_id_unit', $units);
+        }
+    })->pluck('id')->toArray();
+
+    // Final tujuan result:
+    $tujuanId = $users;
+
+    return $tujuanId;
+    }
 
     //fungsi untuk ngubah daftar penerima dari per-user jadi per hierarki, public supaya bisa dipake di controller CetakMemoPDF juga
     public function simplifyRecipients($tujuanString)
@@ -1036,18 +1033,18 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
                 $memo->qr_approved_by = $qrBase64;
 
                 // Kirim otomatis ke tujuan jika status approve
-                $tujuanDivisiIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
-                
-            foreach ($tujuanDivisiIds as $divisiId) {
-                $divisiId = trim($divisiId);
+                $tujuanUserIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
+
+            foreach ($tujuanUserIds as $userId) {
+                $userId = trim($userId);
 
                 // Lewati jika sama dengan divisi pengirim
-                if ($divisiId == Auth::user()->divisi_id_divisi) {
+                if ($userId == Auth::user()->id) {
                     continue;
                 }
-               // SETELAH DI APPROVE MANAGER DIVISI SENDIRI, LANGSUNG KIRIM KE SEMUA USER DI DIVISI TUJUAN DENGAN STATUS APPROVE
+               // SETELAH DI APPROVE MANAGER DIVISI SENDIRI, LANGSUNG KIRIM KE SEMUA USER DI TUJUAN DENGAN STATUS APPROVE
                 // Ambil semua user di divisi terkait
-                $penerima = \App\Models\User::where('divisi_id_divisi', $divisiId)
+                $penerima = \App\Models\User::where('id', $userId)
                     ->get();
             
                 foreach ($penerima as $penerima) {
@@ -1069,7 +1066,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
                 Notifikasi::create([
                     'judul' => "Memo Disetujui",
                     'judul_document' => $memo->judul,
-                    'id_divisi' => $memo->divisi_id_divisi,
+                    'id_user' => $memo->pembuat,
                     'updated_at' => now()
                 ]);
             } elseif ($request->status == 'reject') {
@@ -1077,14 +1074,14 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
                 Notifikasi::create([
                     'judul' => "Memo Ditolak",
                     'judul_document' => $memo->judul,
-                    'id_divisi' => $memo->divisi_id_divisi,
+                    'id_user' => $memo->pembuat,
                     'updated_at' => now()
                 ]);
             } elseif ($request->status == 'correction') {
                 Notifikasi::create([
                     'judul' => "Memo Perlu Revisi",
                     'judul_document' => $memo->judul,
-                    'id_divisi' => $memo->divisi_id_divisi,
+                    'id_user' => $memo->pembuat,
                     'updated_at' => now()
                 ]);
             }else{
@@ -1188,8 +1185,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
         $jsTreeData = $this->convertToJsTree($orgTree);
         $mainDirector = $orgTree[0] ?? null;
 
-        $tujuanArray = $memo->tujuan ? explode(';', $memo->tujuan) : [];
-
+        $tujuanArray = $memo->tujuan_string ? explode(';', $memo->tujuan_string) : [];
          return view(Auth::user()->role->nm_role. '.memo.edit-memo', compact('memo', 'divisi', 'seri', 'managers', 'orgTree', 'jsTreeData', 'mainDirector', 'tujuanArray'));
      }
      public function update(Request $request, $id)
@@ -1200,6 +1196,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
             'tujuan' => 'required|array|min:1',
+            'tujuanString' => 'required|array|min:1',
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
             'tgl_dibuat' => 'required|date',
@@ -1215,6 +1212,9 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
         }
         if ($request->filled('tujuan')) {
             $memo->tujuan = implode(';', $request->tujuan);
+        }
+        if ($request->filled('tujuanString')) {
+            $memo->tujuan_string = implode(';', $request->tujuanString);
         }
         if ($request->filled('nomor_memo')) {
             $memo->nomor_memo = $request->nomor_memo    ;
@@ -1252,7 +1252,6 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
                     if ($barang) {
                         $barang->update([
                             'memo_id_memo' => $memo->id_memo,
-                            'memo_divisi_id_divisi' => $memo->divisi_id_divisi,
                             'nomor' => $dataBarang['nomor'],
                             'barang' => $dataBarang['barang'],
                             'qty' => $dataBarang['qty'],

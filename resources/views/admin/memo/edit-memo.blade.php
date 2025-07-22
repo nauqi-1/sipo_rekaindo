@@ -85,18 +85,30 @@
                                     </div>
                         <script>   
 
-                            const tujuanIDArray = @json($tujuanArray);
-                            const tujuanUserIDArray = tujuanIDArray.map(id => 'user-' + id); 
+                            const tujuanNameArray = @json($tujuanArray);
                             $(function() {
                                 $('#org-tree').jstree({
                                     'core' : {
                                         'data' : @json(json_decode($jsTreeData))
                                     },
-                                    "plugins" : [ "checkbox", "search" ]
+                                    "plugins" : [ "checkbox", "search" ],
+                                    "checkbox" : {
+                                        "keep_selected_style" : false,
+                                        "three_state" : false,
+                                        "cascade" : 'none',
+                                    },
                                 });
+                                
                                  $('#org-tree').on('ready.jstree', function () {
-                                    tujuanUserIDArray.forEach(id => {
-                                        $('#org-tree').jstree('check_node', id);
+                                    const treeInstance = $('#org-tree').jstree(true); // ✅ get jsTree instance
+                                    const allNodes = treeInstance.get_json('#', { flat: true }); 
+
+                                    tujuanNameArray.forEach(name => {
+                                        const foundNode = allNodes.find(node => node.text === name);
+                                        if (foundNode) {
+                                            treeInstance.check_node(foundNode.id);
+                                        }
+
                                     });
                                 });
                                 
@@ -207,18 +219,17 @@
 
             // Get selected nodes
             const selectedNodes = $('#org-tree').jstree('get_selected', true);
-            const tujuan = selectedNodes
-            .filter(node => node.id.startsWith('user-')) // adjust prefix if needed
-            .map(node => ({
-              id: parseInt(node.id.replace('user-', '')), // Extract user ID from node ID
-            }));
+            const tujuan = selectedNodes;
           console.log(tujuan);
             // Append hidden inputs
-            tujuan.forEach(user => {
-                $('#tujuan-container').append(
-                    `<input type="hidden" name="tujuan[]" value="${user.id}">`
-                );
-            });
+            tujuan.forEach(node => {
+            const nodeId = node.id
+            const nodeText = node.text;
+            $('#tujuan-container').append(
+                `<input type="hidden" name="tujuan[]" value="${node.id}">` +
+                `<input type="hidden" name="tujuanString[]" value="${node.text}">`
+            );
+        });
              if (userIds.length === 0) {
                 alert("Minimal pilih satu tujuan!");
                 e.preventDefault();
