@@ -260,10 +260,11 @@ class CetakPDFController extends Controller
             $manager->bagian_text = $this->getBagianText($manager, $level);
         }
 
-
+        $cleanTag = strip_tags($undangan->isi_undangan);
         $formatUndanganPdf = PDF::loadView('format-surat.format-undangan', [
             'undangan' => $undangan,
             'tujuanUsers' => $tujuanUsers,
+            'cleanTag' => $cleanTag,
             'manager' => $manager,
             'headerImage' => $headerBase64,
             'footerImage' => $footerBase64,
