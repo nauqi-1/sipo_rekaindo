@@ -264,29 +264,33 @@
     $('#addMemoForm').on('submit', function (e) {
         // Clear existing tujuan[] inputs
         $('#tujuan-container').empty();
-
+        
         // Get selected nodes
         const selectedNodes = $('#org-tree').jstree('get_selected', true);
         const tujuan = selectedNodes
-        .filter(node => node.id.startsWith('user-')) // adjust prefix if needed
-        .map(node => ({
-          id: parseInt(node.id.replace('user-', '')), // Extract user ID from node ID
-        }));
-      
-        tujuan.forEach(user => {
+        //.filter(node => node.id.startsWith('user-')) // adjust prefix if needed
+        //.map(node => ({
+        //  id: parseInt(node.id.replace('user-', '')), // Extract user ID from node ID
+        //}));
+        if (selectedNodes.length === 0) {
+                alert("Minimal pilih satu tujuan!");
+                e.preventDefault();
+                return false;
+            }
+
+        tujuan.forEach(node => {
+            const nodeId = node.id
+            const nodeText = node.text;
             $('#tujuan-container').append(
-                `<input type="hidden" name="tujuan[]" value="${user.id}">`
+                `<input type="hidden" name="tujuan[]" value="${node.id}">` +
+                `<input type="hidden" name="tujuanString[]" value="${node.text}">`
             );
         });
 
          
 
-         if (userIds.length === 0) {
-                alert("Minimal pilih satu tujuan!");
-                e.preventDefault();
-                return false;
-            }
-        console.log("Submitting form with tujuan:", userIds); // <--- debug
+        
+        console.log("Submitting form with tujuan:", nodeId); // <--- debug
     });
 
     $('#org-tree').on('select_node.jstree', function (e, data) {
