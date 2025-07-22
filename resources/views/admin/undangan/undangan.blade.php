@@ -177,49 +177,38 @@
                         @endif
                 </td>
                 <td>
-                    @if (Auth::user()->id== $undangan->pembuat)
-                        {{-- @if($undangan->status == 'pending' || $undangan->status == 'approve' )
-                        <a href="{{ route('kirim-undanganAdmin.admin',['id' => $undangan->id_undangan]) }}" class="btn btn-sm1">
-                            <img src="/img/undangan/share.png" alt="share">
-                        </a>
-                        @endif --}}
-                    @elseif (Auth::user()->id != $undangan->pembuat)
-                        {{-- @if($undangan->final_status == 'pending' )
-                        <a href="{{ route('kirim-undanganAdmin.admin',['id' => $undangan->id_undangan]) }}" class="btn btn-sm1">
-                            <img src="/img/undangan/share.png" alt="share">
-                        </a>
-                        @endif                --}}
-                    @endif
+                    
 
                         @if (Auth::user()->id == $undangan->pembuat)
-                            @if ($undangan->status == 'approve' || $undangan->status == 'reject')
-                                <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'undangan']) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('POST')
-                                    <button type="submit" class="btn btn-sm3 submitArsipUndangan">
-                                        <img src="/img/undangan/arsip.png" alt="arsip">
-                                    </button>
-                                </form>
-                            @else
-                                <a href="{{ route('undangan.edit', $undangan->id_undangan) }}" class="btn btn-sm3">
-                                    <img src="/img/undangan/edit.png" alt="edit">
-                                </a>
-                            @endif
-                        @elseif (Auth::user()->id != $undangan->pembuat)
-                            @if ($undangan->status == 'approve')
-                                <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'undangan']) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
-                                    <button type="submit" class="btn btn-sm3">
-                                        <img src="/img/undangan/arsip.png" alt="arsip">
-                                    </button>
-                                </form>
-                            @else
-                                <a href="{{ route('undangan.edit', $undangan->id_undangan) }}" class="btn btn-sm3">
-                                    <img src="/img/undangan/edit.png" alt="edit">
-                                </a>
-                            @endif
-                        @endif
+    @if ($undangan->status == 'approve' || $undangan->status == 'reject')
+        <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
+            @csrf
+            @method('POST')
+            <button type="submit" class="btn btn-sm3 submitArsipUndangan">
+                <img src="/img/undangan/arsip.png" alt="arsip">
+            </button>
+        </form>
+    @elseif ($undangan->status == 'pending' || $undangan->status == 'correction')
+        <a href="{{ route('undangan.edit', $undangan->id_undangan) }}" class="btn btn-sm3">
+            <img src="/img/undangan/edit.png" alt="edit">
+        </a>
+    @endif
+@else
+    @if ($undangan->final_status == 'approve' || $undangan->final_status == 'reject')
+        <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
+            @csrf
+            @method('POST')
+            <button type="submit" class="btn btn-sm3">
+                <img src="/img/undangan/arsip.png" alt="arsip">
+            </button>
+        </form>
+    @elseif ($undangan->final_status == 'pending' || $undangan->final_status == 'correction')
+        <a href="{{ route('undangan.edit', $undangan->id_undangan) }}" class="btn btn-sm3 submitArsipUndangan">
+            <img src="/img/undangan/edit.png" alt="edit">
+        </a>
+    @endif
+@endif
+
                         <a href="{{ route('view.undangan',$undangan->id_undangan) }}" class="btn btn-sm1">
                             <img src="/img/memo-admin/viewBlue.png" alt="view">
                         </a>
