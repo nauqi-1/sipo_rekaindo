@@ -198,37 +198,32 @@ class CetakPDFController extends Controller
 
 
     private function detectLevel($user)
-{
-    if (!empty($user->unit_id_unit)) return 'unit';
-    if (!empty($user->section_id_section)) return 'section';
-    if (!empty($user->department_id_department)) return 'department';
-    if (!empty($user->divisi_id_divisi)) return 'divisi';
-    if (!empty($user->director_id_director)) return 'director';
-    return null;
-}
-
-private function getBagianText($user, $level)
-{
-    switch ($level) {
-        case 'unit':
-            return optional($user->unit)->name_unit;
-        case 'section':
-            return optional($user->section)->name_section;
-        case 'department':
-            return optional($user->department)->name_department;
-        case 'divisi':
-            return optional($user->divisi)->nm_divisi; // khusus nm_divisi
-        case 'director':
-            return optional($user->director)->name_director;
-        default:
-            return '-';
+    {
+        if (!empty($user->unit_id_unit)) return 'unit';
+        if (!empty($user->section_id_section)) return 'section';
+        if (!empty($user->department_id_department)) return 'department';
+        if (!empty($user->divisi_id_divisi)) return 'divisi';
+        if (!empty($user->director_id_director)) return 'director';
+        return null;
     }
-}
 
-
-
-
-
+    private function getBagianText($user, $level)
+    {
+        switch ($level) {
+            case 'unit':
+                return optional($user->unit)->name_unit;
+            case 'section':
+                return optional($user->section)->name_section;
+            case 'department':
+                return optional($user->department)->name_department;
+            case 'divisi':
+                return optional($user->divisi)->nm_divisi; // khusus nm_divisi
+            case 'director':
+                return optional($user->director)->name_director;
+            default:
+                return '-';
+        }
+    }
     public function viewundanganPDF($id_undangan)
     {
         $undangan = Undangan::findOrFail($id_undangan);
@@ -240,14 +235,19 @@ private function getBagianText($user, $level)
 
         $tujuanIds = explode(';', $undangan->tujuan);  // [id_user1;id_user2;...]
         $tujuanUsers = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
-    ->whereIn('id', $tujuanIds)
-    ->get()
-    ->map(function ($user) {
-        $level = $this->detectLevel($user);
-        $user->level_kerja = $level;
-        $user->bagian_text = $this->getBagianText($user, $level);
-        return $user;
-    });
+            ->whereIn('id', $tujuanIds)
+            ->get()
+            ->map(function ($user) {
+                $level = $this->detectLevel($user);
+                $user->level_kerja = $level;
+                $user->bagian_text = $this->getBagianText($user, $level);
+                return $user;
+            })
+            ->sortBy(function ($user) {
+                return optional($user->position)->id_position; // urutkan by ID posisi
+            })
+            ->values(); // reset index array
+
 
 
         $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
@@ -255,10 +255,10 @@ private function getBagianText($user, $level)
             ->first();
 
         if ($manager) {
-    $level = $this->detectLevel($manager);
-    $manager->level_kerja = $level;
-    $manager->bagian_text = $this->getBagianText($manager, $level);
-}
+            $level = $this->detectLevel($manager);
+            $manager->level_kerja = $level;
+            $manager->bagian_text = $this->getBagianText($manager, $level);
+        }
 
 
         $formatUndanganPdf = PDF::loadView('format-surat.format-undangan', [
