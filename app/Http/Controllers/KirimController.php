@@ -5,12 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Memo;
 use App\Models\Divisi;
+use App\Models\Seri;
+use App\Models\Department;
 use App\Models\Position;
 use App\Models\User;
 use App\Models\Undangan;
 use App\Models\Kirim_Document;
 use App\Models\Risalah;
+use App\Models\RisalahDetail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 
 class KirimController extends Controller
@@ -58,8 +63,12 @@ class KirimController extends Controller
             } else {
                 $statusKirim = Kirim_Document::where('id_document', $risalah->id_risalah)
                     ->where('jenis_document', 'risalah')
-                    ->where('id_penerima', $userId)
+                    ->where(function($query) use ($userId) {
+                        $query->where('id_penerima', $userId)
+                            ->orWhere('id_pengirim', $userId);
+                    })
                     ->first();
+
                 $risalah->final_status = $statusKirim ? $statusKirim->status : '-';
             }
             return view('admin.risalah.kirim-risalahAdmin', compact('user', 'divisi', 'risalah', 'position'));
@@ -370,8 +379,9 @@ class KirimController extends Controller
         $userId = auth()->id();
         $sortBy = $request->get('sort_by', 'kirim_document.id_kirim_document');
         $sortDirection = $request->get('sort_direction', 'asc');
+        $perPage = $request->get('per_page', 10);
 
-
+        // Validasi kolom sort yang diperbolehkan
         $allowedSorts = [
             'kirim_document.id_kirim_document',
             'risalah.tgl_dibuat',
@@ -380,13 +390,24 @@ class KirimController extends Controller
             'risalah.nomor_risalah'
         ];
 
-    if (!in_array($sortBy, $allowedSorts)) {
-        $sortBy = 'kirim_document.id_kirim_document';
-    }
+        if (!in_array($sortBy, $allowedSorts)) {
+            $sortBy = 'kirim_document.id_kirim_document';
+        }
 
-        $risalahs = Kirim_Document::where('jenis_document', 'risalah')
-            ->where('id_penerima', $userId)
-            ->whereHas('risalah', function ($query) use ($request, $sortBy, $sortDirection) { 
+        // Subquery untuk ambil kirim_document unik per id_document
+        $subQuery = DB::table('kirim_document')
+            ->selectRaw('MIN(id_kirim_document) as id_kirim_document')
+            ->where('jenis_document', 'risalah')
+            ->where(function ($query) use ($userId) {
+                $query->where('id_penerima', $userId)
+                    ->orWhere('id_pengirim', $userId);
+            })
+            ->groupBy('id_document');
+
+        // Ambil data kirim_document utama berdasarkan hasil subquery
+        $risalahs = Kirim_Document::whereIn('id_kirim_document', $subQuery)
+            ->with(['risalah' => function ($query) use ($request) {
+                // Filter tanggal dibuat
                 if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
                     $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
                 } elseif ($request->filled('tgl_dibuat_awal')) {
@@ -395,32 +416,265 @@ class KirimController extends Controller
                     $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
                 }
 
+                // Filter pencarian
                 if ($request->filled('search')) {
                     $query->where(function ($q) use ($request) {
                         $q->where('judul', 'like', '%' . $request->search . '%')
-                            ->orWhere('nomor_risalah', 'like', '%' . $request->search . '%');
+                        ->orWhere('nomor_risalah', 'like', '%' . $request->search . '%');
                     });
                 }
-            });
+            }]);
 
-            if (Str::startsWith($sortBy, 'risalah.')) {
-            $risalahColumn = Str::after($sortBy, 'risalah.');
-            $risalahs->join('risalah', 'kirim_document.id_document', '=', 'risalah.id_risalah')
-                ->orderBy("risalah.$risalahColumn", $sortDirection)
-                ->select('kirim_document.*'); // agar tetap menghasilkan Kirim_Document model
-            } else {
-                $risalahs->orderBy($sortBy, $sortDirection);
-            }
+        // Sorting
+        if (Str::startsWith($sortBy, 'risalah.')) {
+            // Sorting berdasarkan relasi risalah
+            $risalahs = $risalahs->join('risalah', 'kirim_document.id_document', '=', 'risalah.id_risalah')
+                ->orderBy(Str::after($sortBy, 'risalah.'), $sortDirection)
+                ->select('kirim_document.*'); // pastikan hanya ambil kolom utama
+        } else {
+            $risalahs = $risalahs->orderBy($sortBy, $sortDirection);
+        }
 
-        $perPage = $request->get('per_page', 10);
+        // Paginate
         $risalahs = $risalahs->paginate($perPage);
 
         return view('manager.risalah.risalah', compact('risalahs', 'sortBy', 'sortDirection'));
     }
 
+    public function create()
+    {    
+        $idUser = Auth::user();
+        $user = User::where('id', $idUser->id)->first();
 
+        if($user->position_id_position==1){
+            $idDirektur = Director::where('id_director', $user->director_id_director)->first();
+            $kodeDirektur = $idDirektur->kode_director;
+        } else {
+            $kodeDirektur = '';
+        }
+        // dd($user);
+        if($user->department_id_department != NULL){
+            $divisiName = Department::where('id_department', $user->department_id_department)->first();
+            if($divisiName->kode_department != NULL){
+                $divisiName = $divisiName->kode_department;
+            } else if($divisiName->kode_department == NULL){
+                if($user->divisi_id_divisi == NULL){
+                    $divisiName = $divisiName->name_department;
+                } else {
+                    $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+                    if($divisiName->kode_divisi != NULL){
+                        $divisiName = $divisiName->kode_divisi;
+                    }else if($divisiName->kode_divisi == NULL){
+                        $divisiName = $divisiName->nm_divisi;
+                    }
+                }
+            }
+        } else if($user->divisi_id_divisi != NULL){
+            $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
+            if($divisiName->kode_divisi != NULL){
+                $divisiName = $divisiName->kode_divisi;
+            }else if($divisiName->kode_divisi == NULL){
+                $divisiName = $divisiName->nm_divisi;
+            }
+        } else if($user->director_id_director != NULL){
+            $divisiName = Director::where('id_director', $user->director_id_director)->first();
+            $divisiName = $divisiName->kode_director;
+        }
 
+        $user = Auth::user();
 
+        $unitId       = $user->unit_id_unit;
+        $sectionId    = $user->section_id_section;
+        $departmentId = $user->department_id_department;
+        $divisiId     = $user->divisi_id_divisi;
+        $directorId   = $user->id_director;
+
+        $query = "
+            SELECT *
+            FROM undangan
+            WHERE judul NOT IN (
+                SELECT judul FROM risalah
+            )
+            AND EXISTS (
+                SELECT 1
+                FROM users
+                WHERE users.id = undangan.pembuat
+        ";
+
+        $params = [];
+
+        if ($unitId) {
+            $query .= " AND users.unit_id_unit = ?";
+            $params[] = $unitId;
+        } elseif ($sectionId) {
+            $query .= " AND users.section_id_section = ?";
+            $params[] = $sectionId;
+        } elseif ($departmentId) {
+            $query .= " AND users.department_id_department = ?";
+            $params[] = $departmentId;
+        } elseif ($divisiId) {
+            $query .= " AND users.divisi_id_divisi = ?";
+            $params[] = $divisiId;
+        } elseif ($directorId) {
+            $query .= " AND users.id_director = ?";
+            $params[] = $directorId;
+        } else {
+            // Jika semuanya kosong, tidak perlu query, langsung return null / []
+            return [];
+        }
+
+        $query .= ")";
+        $undangan = DB::select($query, $params);
+        
+        $risalah = new Risalah(); // atau ambil dari data risalah terakhir, terserah kebutuhanmu
+        
+        // Ambil nomor seri berikutnya
+        $nextSeri = Seri::getNextSeri(false);
+        // Konversi bulan ke angka Romawi
+        $bulanRomawi = $this->convertToRoman(now()->month);
+    
+        // Format nomor dokumen sesuai contoh pada gambar
+        $nomorDokumen = sprintf(
+            "RIS-%d.%d/REKA%s/%s/%s/%d",
+            $nextSeri['seri_tahunan'],
+            $nextSeri['seri_bulanan'],
+            strtoupper($kodeDirektur),
+            strtoupper($divisiName),
+            $bulanRomawi,
+            now()->year
+        );
+        
+        // $managers = User::all();
+    
+        return view(Auth::user()->role->nm_role.'.risalah.add-risalah', [
+            'risalah' => $risalah,
+            'nomorSeriTahunan' => $nextSeri['seri_tahunan'], // Tambahkan nomor seri tahunan
+            'nomorDokumen' => $nomorDokumen,
+            // 'managers' => $managers,
+            'undangan' => $undangan
+        ]);  
+    }
+    
+    public function store(Request $request)
+    {
+        // dd($request->all());
+        $request->validate([
+            'tgl_dibuat' => 'required|date',
+            'seri_surat' => 'required|string',
+            'nomor_risalah' => 'required|string',
+            'agenda' => 'required|string',
+            'tempat' => 'required|string',
+            'waktu_mulai' => 'required|string',
+            'waktu_selesai' => 'required|string',
+            'judul' => 'required|string',
+            'nama_bertandatangan' => 'required|string',
+            'pembuat'=>'required|string',
+            'nomor' => 'nullable|array',
+            'topik' => 'nullable|array',
+            'pembahasan' => 'nullable|array',
+            'tindak_lanjut' => 'nullable|array',
+            'target' => 'nullable|array',
+            'pic' => 'nullable|array',
+            'lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ],[
+            'tujuan.required' => 'Minimal satu divisi tujuan harus dipilih.',
+            'lampiran.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
+            'lampiran.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
+        ]);
+
+        $filePath = null;
+            if ($request->hasFile('lampiran')) {
+            $file = $request->file('lampiran');
+            $filePath = base64_encode(file_get_contents($file->getRealPath()));
+        }
+
+        $divisiId = auth()->user()->divisi_id_divisi;
+        $seri = Seri::getNextSeri(true);
+        $seri = Seri::where('tahun', now()->year)
+                ->latest()
+                ->first();
+
+        if (!$seri) {
+            return back()->with('error', 'Nomor seri tidak ditemukan.');
+        }
+        // Simpan risalah utama
+        $risalah = Risalah::create([
+            'tgl_dibuat' => $request->tgl_dibuat,
+            'seri_surat' => $request->seri_surat,
+            'nomor_risalah' => $request->nomor_risalah,
+            'agenda' => $request->agenda,
+            'tempat' => $request->tempat,
+            'waktu_mulai' => $request->waktu_mulai,
+            'waktu_selesai' => $request->waktu_selesai,
+            'status' => 'approve',
+            'judul' => $request->judul,
+            'pembuat' => $request->pembuat,
+            'lampiran' => $filePath,
+            'nama_bertandatangan' => $request->nama_bertandatangan,
+            'risalah_id_risalah' => $request->id_risalah,
+        ]);
+
+        if ($request->has('nomor') && is_array($request->nomor)) {
+            foreach ($request->nomor as $index => $no) {
+                RisalahDetail::create([
+                    'risalah_id_risalah' => $risalah->id_risalah,
+                    'nomor' => $no,
+                    'topik' => $request->topik[$index] ?? '',
+                    'pembahasan' => $request->pembahasan[$index] ?? '',
+                    'tindak_lanjut' => $request->tindak_lanjut[$index] ?? '',
+                    'target' => $request->target[$index] ?? '',
+                    'pic' => $request->pic[$index] ?? '',
+                ]);
+            }
+        }
+
+        $risalah->tgl_disahkan = now();
+
+        $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
+        $qrImage = QrCode::format('svg')->generate($qrText);
+        $qrBase64 = base64_encode($qrImage);
+        $risalah->qr_approved_by = $qrBase64;
+        $undangan = Undangan::where('judul', $risalah->judul)->first();
+        
+        if ($undangan) {
+            $currentUserDivisiId = Auth::user()->divisi_id_divisi;
+            $currentDivisi = Divisi::where('id_divisi', $currentUserDivisiId)->first();
+            $tujuanString = $undangan->tujuan; // misalnya: "General Affair; QMSHE;"
+            $tujuanArray = explode(';', $tujuanString);
+
+            foreach ($tujuanArray as $idTujuan) {
+                $idTujuan = trim($idTujuan); // hilangkan spasi di pinggir
+                if (!$idTujuan) continue; // skip kalau kosong
+
+                $users = \App\Models\User::where('id', $idTujuan)->get();
+
+                foreach ($users as $user) {
+                    \App\Models\Kirim_Document::firstOrCreate([
+                        'id_document' => $risalah->id_risalah,
+                        'jenis_document' => 'risalah',
+                        'id_pengirim' => Auth::user()->id,
+                        'id_penerima' => $user->id,
+                    ], [
+                        'status' => 'approve'
+                    ]);
+                }
+            }
+        }
+
+        $risalah->save();
+        
+        return redirect()->route('risalah.'.Auth::user()->role->nm_role)->with('success', 'Risalah berhasil ditambahkan');
+    }
+
+    private function convertToRoman($number)
+    {
+        $map = [
+            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V',
+            6 => 'VI', 7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X',
+            11 => 'XI', 12 => 'XII'
+        ];
+        return $map[$number] ?? '';
+    }
 
     // Daftar dokumen yang dikirim
     public function sentDocuments()

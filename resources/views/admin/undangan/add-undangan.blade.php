@@ -95,7 +95,8 @@
                                 <div style="width: 95%">
                                     <label for="kepada" class="form-label">
                                         <img src="/img/undangan/kepada.png" alt="kepada" class="form-label"
-                                            style="margin-right: 5px; color: #1f4178;">Kepada <span class="text-danger">*</span>
+                                            style="margin-right: 5px; color: #1f4178;">Kepada <span
+                                            class="text-danger">*</span>
                                         <span class="label-kepada">Pilih user atau struktur, semua user di bawah
                                             struktur akan otomatis terpilih</span>
                                     </label>
@@ -162,10 +163,20 @@
                                 <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control">
                                     <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                                     @foreach($managers as $manager)
-                                        <option value="{{  $manager->id  }}">
-                                            {{ $manager->firstname . ' ' . $manager->lastname }}
+        @php
+            preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
+            $kode_position = $matches[1] ?? '';
+        @endphp
+        <option value="{{ $manager->id }}">
+            ({{ $kode_position }}) {{ $manager->firstname }} {{ $manager->lastname }}
+        </option>
+    @endforeach
+
+
+
+
                                         </option>
-                                    @endforeach
+                                    
                                 </select>
                                 @error('nama_bertandatangan')
                                     <div class="form-control text-danger">{{ $message }}</div>

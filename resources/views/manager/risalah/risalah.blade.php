@@ -64,6 +64,7 @@
                         </div>
                     </div>
                     </form>
+                   <a href="{{route ('add-risalah.manager')}}" class="btn btn-add">+ <span>Tambah Risalah Rapat</span></a>
                 </div>
             </div>
         </div>
@@ -136,4 +137,82 @@
         </table>
         {{ $risalahs->links('pagination::bootstrap-5') }}
     </div>
+
+<!-- Modal Add Risalah Sukses -->
+    <div class="modal fade" id="successAddRisalahModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <!-- Success Icon -->
+                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
+                    <!-- Success Message -->
+                    <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
+                    <p class="mt-2">Berhasil Menambahkan Risalah Rapat</p>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+        // Event listener untuk modal sukses tambah risalah
+        document.addEventListener("DOMContentLoaded", function () {
+            @if(session('success') === 'Risalah berhasil ditambahkan') // merujuk ke parameter controller risalah store
+                var successModal = new bootstrap.Modal(document.getElementById("successAddRisalahModal"));
+                successModal.show();
+                setTimeout(function () {
+                    successModal.hide();
+                }, 1500);
+            @endif
+        });
+
+        // Event listener untuk modal sukses edit risalah
+        document.addEventListener("DOMContentLoaded", function () {
+            @if(session('success') === 'Risalah berhasil diperbarui.') // merujuk ke parameter controller risalah update
+                var successEditRisalahModal = new bootstrap.Modal(document.getElementById("successEditRisalahModal"));
+                successEditRisalahModal.show();
+                setTimeout(function () {
+                    successEditRisalahModal.hide();
+                }, 1500);
+            @endif
+        });
+
+        // Event Listener Arsip risalah
+        document.addEventListener("DOMContentLoaded", function () {
+            const arsipButtons = document.querySelectorAll(".submitArsipRisalah");
+            const confirmArsipButton = document.getElementById("confirmArsipRisalah");
+            const cancelArsipButton = document.querySelector("#arsipRisalahModal .btn-outline-secondary");
+            const arsipRisalahModal = new bootstrap.Modal(document.getElementById("arsipRisalahModal"));
+            const successArsipRisalahModal = new bootstrap.Modal(document.getElementById("successArsipRisalahModal"));
+
+            let currentForm = null;
+
+            // Saat tombol arsip ditekan, simpan form yang akan dikirim
+            arsipButtons.forEach(button => {
+                button.addEventListener("click", function (event) {
+                    event.preventDefault(); // Mencegah submit langsung
+                    currentForm = this.closest("form"); 
+                    arsipRisalahModal.show(); // Tampilkan modal konfirmasi
+                });
+            });
+
+            // Saat tombol "Batal" ditekan, tutup modal konfirmasi
+            cancelArsipButton.addEventListener("click", function () {
+                arsipRisalahModal.hide();
+            });
+
+            // Saat tombol "OK" ditekan, submit form dan tampilkan modal sukses
+            confirmArsipButton.addEventListener("click", function () {
+                if (currentForm) {
+                    arsipRisalahModal.hide(); // Tutup modal konfirmasi
+                    setTimeout(() => {
+                        successArsipRisalahModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
+                    }, 300); 
+
+                    setTimeout(() => {
+                        successArsipRisalahModal.hide();
+                        currentForm.submit(); // Submit form setelah modal sukses ditutup
+                    }, 1500);
+                }
+            });
+        });
+    </script>
 @endsection

@@ -126,44 +126,44 @@ class UndanganController extends Controller
     }
 
     public function superadmin(Request $request)
-{
-    $seri = Seri::all();
-    $userId = Auth::id();
+    {
+        $seri = Seri::all();
+        $userId = Auth::id();
 
-    // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
-    $undanganDiarsipkan = Arsip::where('user_id', $userId)->pluck('document_id')->toArray();
+        // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
+        $undanganDiarsipkan = Arsip::where('user_id', $userId)->pluck('document_id')->toArray();
 
-    // Variabel sortDirection tetap dikirim, walaupun tidak dipakai
-    $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        // Variabel sortDirection tetap dikirim, walaupun tidak dipakai
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
 
-    $query = Undangan::query()
-        ->whereNotIn('id_undangan', $undanganDiarsipkan)
-        ->orderBy('tgl_dibuat', 'desc');
+        $query = Undangan::query()
+            ->whereNotIn('id_undangan', $undanganDiarsipkan)
+            ->orderBy('tgl_dibuat', 'desc');
 
-    if ($request->filled('status')) {
-        $query->where('status', $request->status);
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
+            $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
+        } elseif ($request->filled('tgl_dibuat_awal')) {
+            $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
+        } elseif ($request->filled('tgl_dibuat_akhir')) {
+            $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
+        }
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('judul', 'like', '%' . $request->search . '%')
+                    ->orWhere('nomor_undangan', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $perPage = $request->get('per_page', 10);
+        $undangans = $query->paginate($perPage);
+
+        return view(Auth::user()->role->nm_role . '.undangan.undangan', compact('undangans', 'seri', 'sortDirection'));
     }
-
-    if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
-        $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
-    } elseif ($request->filled('tgl_dibuat_awal')) {
-        $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
-    } elseif ($request->filled('tgl_dibuat_akhir')) {
-        $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
-    }
-
-    if ($request->filled('search')) {
-        $query->where(function ($q) use ($request) {
-            $q->where('judul', 'like', '%' . $request->search . '%')
-              ->orWhere('nomor_undangan', 'like', '%' . $request->search . '%');
-        });
-    }
-
-    $perPage = $request->get('per_page', 10);
-    $undangans = $query->paginate($perPage);
-
-    return view(Auth::user()->role->nm_role . '.undangan.undangan', compact('undangans', 'seri', 'sortDirection'));
-}
 
 
 
@@ -204,15 +204,23 @@ class UndanganController extends Controller
             now()->year
         );
 
-        // Ambil daftar manager sesuai role dan divisi
+        //Mengambil data manager yang bertanda tangan nanti
         $user = Auth::user();
-        $managers = User::where('role_id_role', 3)
-            ->where(function ($q) use ($user) {
-                $q->where('divisi_id_divisi', $user->divisi_id_divisi)
-                    ->orWhere('department_id_department', $user->department_id_department);
-                // ->orWhere('section_id_section', $user->section_id_section);
-            })
-            ->get(['id', 'firstname', 'lastname']);
+        $user = Auth::user();
+
+$managers = User::with('position:id_position,nm_position')
+    ->where('role_id_role', 3)
+    ->where(function ($q) use ($user) {
+        $q->where('divisi_id_divisi', $user->divisi_id_divisi)
+            ->orWhere('department_id_department', $user->department_id_department)
+            ->orWhere('section_id_section', $user->section_id_section)
+            ->orWhere('unit_id_unit', $user->unit_id_unit);
+    })
+    ->get(['id', 'firstname', 'lastname', 'position_id_position']);
+
+
+
+
 
         // Ambil seluruh user dan struktur organisasi (untuk dropdown tree)
         $users = User::select('id', 'firstname', 'lastname', 'divisi_id_divisi', 'department_id_department', 'section_id_section', 'unit_id_unit')->get();
@@ -562,7 +570,7 @@ class UndanganController extends Controller
         ]);
 
         //PROSES PENGIRIMAN DOKUMEN
-         $creator = Auth::user();
+        $creator = Auth::user();
         if (Auth::user()->role_id_role == 3) { // Manager 
 
             // PROSES TTD OLEH MANAGER
@@ -581,29 +589,30 @@ class UndanganController extends Controller
 
             foreach ($tujuanUserId as $user) {
                 if ($user == $creator->id) continue;
-            $recipients = User::where('id', $user)->get();
+                $recipients = User::where('id', $user)->get();
                 foreach ($recipients as $recipient) {
-                $sudahDikirim = Kirim_Document::where([
-                    ['id_document', $undangan->id_undangan],
-                    ['jenis_document', 'undangan'],
-                    ['id_pengirim', $creator->id],
-                    ['id_penerima', $recipient->id],
-                    ['status', 'approve'],
-                    ['updated_at', now()] // Cek apakah sudah dikirim dalam 5 menit terakhir
-                ])->exists();
+                    $sudahDikirim = Kirim_Document::where([
+                        ['id_document', $undangan->id_undangan],
+                        ['jenis_document', 'undangan'],
+                        ['id_pengirim', $creator->id],
+                        ['id_penerima', $recipient->id],
+                        ['status', 'approve'],
+                        ['updated_at', now()] // Cek apakah sudah dikirim dalam 5 menit terakhir
+                    ])->exists();
 
-                if (!$sudahDikirim) {
-                    Kirim_Document::create([
-                        'id_document' => $undangan->id_undangan,
-                        'jenis_document' => 'undangan',
-                        'id_pengirim' => $creator->id,
-                        'id_penerima' => $recipient->id,
-                        'status' => 'approve',
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
+                    if (!$sudahDikirim) {
+                        Kirim_Document::create([
+                            'id_document' => $undangan->id_undangan,
+                            'jenis_document' => 'undangan',
+                            'id_pengirim' => $creator->id,
+                            'id_penerima' => $recipient->id,
+                            'status' => 'approve',
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
                 }
-            }}
+            }
 
 
             //Notifikasi
@@ -788,7 +797,7 @@ class UndanganController extends Controller
     }
     public function edit($id)
     {
-       $undangan = Undangan::findOrFail($id);
+        $undangan = Undangan::findOrFail($id);
         $divisi = Divisi::all();
         $seri = Seri::all();
         $divisiId = auth()->user()->divisi_id_divisi;
@@ -812,7 +821,12 @@ class UndanganController extends Controller
         }
 
         return view(Auth::user()->role->nm_role . '.undangan.edit-undangan', compact(
-            'undangan', 'divisi', 'seri', 'managers', 'tujuanArray', 'jsTreeData'
+            'undangan',
+            'divisi',
+            'seri',
+            'managers',
+            'tujuanArray',
+            'jsTreeData'
         ));
     }
     public function update(Request $request, $id)
@@ -879,7 +893,7 @@ class UndanganController extends Controller
             $undangan->waktu_selesai = $request->waktu_selesai;
         }
 
-        
+
         $undangan->save();
         \Log::info('Update undangan berhasil', $undangan->toArray());
 
