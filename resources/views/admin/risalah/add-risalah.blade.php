@@ -40,14 +40,13 @@
             <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="tgl_dibuat">Tgl. Surat</label>
-                            <input type="date" name="tgl_dibuat" class="form-control" required>
-                            <input type="hidden" name="tgl_disahkan" >
+                            <input type="date" name="tgl_dibuat" class="form-control" value="{{ date('Y-m-d') }}" required>
+                            <input type="hidden" name="tgl_disahkan">
                         </div>
                         <div class="col-md-6">
                             <label for="seri_surat">Seri Surat</label>
                             <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan }}" readonly>
-                            <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
-                            <input type="hidden" name="pembuat" value="{{ auth()->user()->position->nm_position .' '. auth()->user()->role->nm_role }}">
+                            <input type="hidden" name="pembuat" value="{{ auth()->user()->id }}">
                             <input type="hidden" name="risalah_id_risalah" value="{{ $risalah->id_risalah }}">
                         </div>
                     </div>
@@ -61,10 +60,18 @@
                             <select name="judul" id="judul" class="form-control select2" required>
                                 <option value="" disabled selected>Pilih Judul</option>
                                 @foreach ($undangan as $u)
-                                    <option value="{{ $u->judul }}">{{ $u->judul }}</option>
+                                    <option 
+                                        value="{{ $u->judul }}"
+                                        data-tempat="{{ $u->tempat }}"
+                                        data-waktu_mulai="{{ $u->waktu_mulai }}"
+                                        data-waktu_selesai="{{ $u->waktu_selesai }}"
+                                        data-nama_ttd="{{ $u->nama_bertandatangan }}"
+                                    >
+                                        {{ $u->judul }}
+                                    </option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> 
                     </div>
                     <div class="mb-3 row">
                         <div class="col-md-6">
@@ -87,14 +94,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="nama_bertandatangan">Nama yang Bertanda Tangan</label>
-                            <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control select2" required>
-                                <option value="" disabled selected>--Pilih--</option>
-                            @foreach($managers as $manager)
-                                <option value="{{ $manager->firstname . ' ' . $manager->lastname }}">
-                                    {{ $manager->firstname . ' ' . $manager->lastname }}
-                                </option>
-                            @endforeach
-                            </select>
+                            <input type="text" name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required readonly>
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -188,6 +188,21 @@
     </div>
 
     <script>
+        $(document).ready(function () {
+            $('#judul').on('change', function () {
+                const selected = $(this).find('option:selected');
+                const tempat = selected.data('tempat');
+                const waktuMulai = selected.data('waktu_mulai');
+                const waktuSelesai = selected.data('waktu_selesai');
+                const namaTTD = selected.data('nama_ttd');
+
+                $('#tempat').val(tempat);
+                $('#waktu_mulai').val(waktuMulai);
+                $('#waktu_selesai').val(waktuSelesai);
+                $('#nama_bertandatangan').val(namaTTD).trigger('change'); // untuk Select2
+            });
+        });
+
         $(document).ready(function() {
             $('.select2').select2({
                 placeholder: "Pilih Nama",

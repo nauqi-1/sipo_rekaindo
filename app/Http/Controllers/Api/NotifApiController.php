@@ -28,7 +28,7 @@ class NotifApiController extends Controller
         ]);
 
         // Ambil notifikasi berdasarkan divisi user
-        $notifications = Notifikasi::where('id_divisi', $user->divisi_id_divisi)
+        $notifications = Notifikasi::where('id_user', $user->id)
             ->orderBy('updated_at', 'desc')
             ->limit(10)
             ->get()
@@ -37,7 +37,7 @@ class NotifApiController extends Controller
                     'id_notifikasi' => $notif->id_notifikasi,
                     'judul' => $notif->judul,
                     'judul_document' => $notif->judul_document,
-                    'id_divisi' => $notif->id_divisi,
+                    'id_user' => $notif->id_user,
                     'updated_at' => $notif->updated_at,
                     'dibaca' => (bool) $notif->dibaca,
                 ];
@@ -61,7 +61,7 @@ class NotifApiController extends Controller
             ], 401);
         }
 
-        $count = Notifikasi::where('id_divisi', $user->divisi_id_divisi)
+        $count = Notifikasi::where('id_user', $user->id)
             ->where('dibaca', 0)
             ->count();
 
@@ -82,7 +82,7 @@ class NotifApiController extends Controller
             ], 401);
         }
 
-        $updated = Notifikasi::where('id_divisi', $user->divisi_id_divisi)
+        $updated = Notifikasi::where('id_user', $user->id)
             ->where('dibaca', 0)
             ->update(['dibaca' => 1]);
 

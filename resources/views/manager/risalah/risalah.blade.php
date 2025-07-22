@@ -107,7 +107,7 @@
                     <td>{{ $risalah->risalah->seri_surat }}</td>
                     <td>{{ $risalah->risalah->nomor_risalah }}</td>
                     <td>{{ $risalah->risalah->tgl_disahkan ? \Carbon\Carbon::parse($risalah->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $risalah->risalah->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                    <td>{{ $risalah->risalah->user->department->kode_department ?? $risalah->user->divisi->kode_divisi ?? '-' }}</td>
                     </td>
                     <td>
                         @if ($risalah->status == 'reject')
