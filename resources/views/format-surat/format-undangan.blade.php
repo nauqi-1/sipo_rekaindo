@@ -329,8 +329,10 @@
                                 <tr>
                                     <td>{{ $index + 1 }}.</td>
                                     <td>{{ $user->position->nm_position ?? '-' }}
-                                        {{ $user->unit->nm_unit ?? $user->section->nm_section ?? $user->department->nm_department ?? $user->divisi->nm_divisi ?? $user->director->nm_director ?? '-' }}
+                                        {{ $user->bagian_text ?? '-' }}
                                         ({{  $user->firstname }} {{ $user->lastname }})
+
+
                                     </td>
                                 </tr>
                             @endforeach
@@ -359,12 +361,24 @@
                                 </td>
                             </tr>
                             <tr>
+                            <tr>
                                 <td>Pukul</td>
                                 <td style="text-align: center;">:</td>
                                 <td>
-                                    {{ $undangan->waktu_mulai }} s.d {{ $undangan->waktu_selesai ?? 'selesai'  }}
+                                    {{ $undangan->waktu_mulai }}
+                                    @if(preg_match('/^\d{1,2}(\.\d{1,2})?$/', $undangan->waktu_mulai))
+                                        WIB
+                                    @endif
+                                    s.d
+                                    {{ $undangan->waktu_selesai ?? 'selesai' }}
+                                    @if($undangan->waktu_selesai && preg_match('/^\d{1,2}(\.\d{1,2})?$/', $undangan->waktu_selesai))
+                                        WIB
+                                    @endif
                                 </td>
                             </tr>
+
+                            </tr>
+
                             <tr>
                                 <td>Tempat</td>
                                 <td style="text-align: center;">:</td>
@@ -375,7 +389,7 @@
                             <tr>
                                 <td>Agenda</td>
                                 <td style="text-align: center;">:</td>
-                                <td>{!! $undangan->isi_undangan !!}</td>
+                                <td>{{ $cleanTag }}</td>
                             </tr>
                         </table>
                         <p style="margin-top: 10px; text-align: justify;">
@@ -383,30 +397,39 @@
                             terima kasih.
                         </p>
                     </div>
+                    <div
+                        style="width: 40%; float: right; text-align: left; margin-right: 3%; line-height: 1.3; margin-top: 20px;">
+                        <p style="text-align: center; margin-bottom: 5px;"><b>Hormat kami,</b></p>
+                        @if($manager != "Direktur")
+                            <p style="text-align: center; margin: 0; font-weight: bold;">
+                                {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }}
+                            </p>
+                        @else
+                            <p style="text-align: center; margin: 0; font-weight: bold;">
+                                {{ preg_replace($manager->position->nm_position) }}
+                            </p>
+                        @endif
+                        <p style="text-align: center;margin: 0; font-weight: bold;">
+                            {{ optional($manager->unit)->nm_unit
+                                ?? optional($manager->section)->nm_section
+                                ?? optional($manager->department)->name_department
+                                ?? optional($manager->divisi)->nm_divisi
+                                ?? optional($manager->director)->nm_director }}
+                        </p>
 
-                    <table class="signature">
-                        <tr>
-                            <td>
+                        @if(!empty($undangan->qr_approved_by))
+                            <div style="margin: 10px 0; text-align: center;">
+                                <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" width="100">
+                            </div>
+                        @endif
+
+                        <p style="margin: 0; text-align: center;"><b><u>{{ $manager->firstname }}
+                                    {{ $manager->lastname }}</u></b></p>
+                    </div>
+                    <div style="clear: both;"></div>
 
 
-                                <p><b>Hormat kami,</b></p>
 
-                                <b>{{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }}
-                                   {{ 
-                                        optional($manager->department)->name_department
-                                    ?? optional($manager->divisi)->nm_divisi 
-                                    }}</b>
-
-                                @if(!empty($undangan->qr_approved_by))
-                                    <div style="text-align: center; margin-top: 10px;">
-                                        <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" width="100">
-                                    </div>
-                                @endif
-                                <p><b><u>{{ $manager->firstname }} {{ $manager->lastname }}</u></b></p>
-                                
-                            </td>
-                        </tr>
-                    </table>
                 </div> {{-- Close collab --}}
             </div> {{-- Close letter --}}
         </div> {{-- Close content --}}
