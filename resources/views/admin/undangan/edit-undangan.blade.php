@@ -7,9 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/admin/edit-memo.css') }}">
 </head>
 <body>
@@ -30,7 +32,7 @@
         </div>
 
         <!-- form edit undangan -->
-        <form method="POST" action="{{ route('undangan/update', $undangan->id_undangan) }}" onsubmit="console.log('FORM DIKIRIM'); return true;">
+        <form method="POST"  id="addUndanganForm" action="{{ route('undangan/update', $undangan->id_undangan) }}" onsubmit="console.log('FORM DIKIRIM'); return true;">
         @csrf
         @method('PUT')
         <div class="card">
@@ -43,10 +45,10 @@
                         <label for="tgl_dibuat" class="form-label">
                             <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                         </label>
-                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ $undangan->tgl_dibuat->format('Y-m-d') }}" required>
+                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ old('tgl_dibuat',$undangan->tgl_dibuat->format('Y-m-d')) }}"  disabled>
+                        <input type="hidden" name="tgl_dibuat" value="{{ $undangan->tgl_dibuat->format('Y-m-d') }}">
                         <input type="hidden" name="tgl_disahkan" >
-                        <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
-
+                        
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
@@ -65,50 +67,60 @@
                 </div>
                 <!--Checkboxes kepada (tujuan)-->
                 <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label class="form-label">
-                            <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                        </label>
-                        @php
-                            $selectedTujuan = old('tujuan') ?? $undangan->tujuan ?? [];
-                        @endphp
-
-                        <span class="label-kepada" style="font-size: 13px; color: #888; margin-bottom: 4px; display: block;">Centang lebih dari satu jika diperlukan</span>
-                        <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
-                            @foreach($divisi as $d)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" 
-                                        name="tujuan[]" 
-                                        value="{{ $d->id_divisi }}" 
-                                        id="divisi_{{ $d->id_divisi }}"
-                                        {{ in_array($d->id_divisi, $selectedTujuan) ? 'checked' : '' }}>
-                                        {{-- {{ is_array($undangan->tujuan) && in_array($d->id_divisi, $undangan->tujuan) ? 'checked' : '' }}> --}}
-                                    <label class="form-check-label" for="divisi_{{ $d->id_divisi }}">
-                                        {{ $d->nm_divisi }}
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <div style="width: 95%">
+                                    <label for="kepada" class="form-label">
+                                        <img src="/img/undangan/kepada.png" alt="kepada" class="form-label"
+                                            style="margin-right: 5px; color: #1f4178;">Kepada <span class="text-danger">*</span>
+                                        <span class="label-kepada">Pilih user atau struktur, semua user di bawah
+                                            struktur akan otomatis terpilih</span>
                                     </label>
+                                    <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto; font">
+                                        <div style="font-size: small" class="form-label" id="org-tree"></div>
+                                        <style>
+                                            #org-tree .jstree-anchor {
+                                                color: #1f4178;
+                                                font-weight: 500;
+                                            }
+                                        </style>
+                                    </div>
                                 </div>
-                            @endforeach
+                                <script>
+                                    $(function () {
+                                        const selectedTujuan = @json($tujuanArray);
+
+                                        $('#org-tree').jstree({
+                                            'core': {
+                                                'data': @json($jsTreeData)
+                                            },
+                                            'plugins': ['checkbox', 'search']
+                                        });
+
+                                        $('#org-tree').on('ready.jstree', function () {
+                                            selectedTujuan.forEach(id => {
+                                                $('#org-tree').jstree('check_node', '#user-' + id);
+                                            });
+                                        });
+                                    });
+                                </script>
+                            </div>
                         </div>
-                      
-                        @error('tujuan')
-                            <div class="form-control text-danger">{{ $message }}</div>
-                        @enderror
-                                   
-                </div>
+                    <div class="mb-3 row">
                 <!-- Tanggal Rapat -->
                     <div class="col-md-6">
                         <label for="tgl_rapat" class="form-label">
                             <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Rapat <span class="text-danger">*</span>
                         </label>
-                        <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"  
-                            value="{{ old('tgl_rapat', optional($undangan->tgl_rapat)->format('Y-m-d')) }}" required>
+                       <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"  
+                        value="{{ old('tgl_rapat', optional(\Carbon\Carbon::parse($undangan->tgl_rapat))->format('Y-m-d')) }}" required>
+
                         @error('tgl_rapat')
                             <div class="form-control text-danger">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <!-- Tempat Rapat -->
-                    <div class="mb-3 row">
+                    
                         <div class="col-md-6">
                             <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
                             <input type="text" name="tempat" id="tempat" class="form-control" 
@@ -156,6 +168,8 @@
                 </div>    
                 
             </div>
+            <div id="tujuan-container"></div>
+
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.admin')}}">Batal</a></button>
                 <button type="submit" class="btn btn-save">Simpan</button>
@@ -195,6 +209,37 @@
         </div>
     </div>
     <script>
+        $('#addUndanganForm').on('submit', function (e) {
+            const tujuanContainer = $('#tujuan-container');
+            tujuanContainer.html(''); // bersihkan sebelum nambah
+
+            const selected = $('#org-tree').jstree('get_selected', true);
+
+            const userIds = selected
+                .filter(node => node.id.startsWith('user-'))
+                .map(node => node.id.replace('user-', ''));
+
+            userIds.forEach(userId => {
+                tujuanContainer.append(`<input type="hidden" name="tujuan[]" value="${userId}">`);
+            });
+
+            if (userIds.length === 0) {
+                alert("Minimal pilih satu tujuan!");
+                e.preventDefault();
+                return false;
+            }
+        });
+        $(function () {
+            const selectedTujuan = @json($tujuanArray);
+            $('#org-tree').on('ready.jstree', function() {
+                selectedTujuan.forEach(id => {
+                    $('#org-tree').jstree('select_node', 'user-' + id);
+                });
+            });
+        });
+
+        </script>
+        <script>
         $(document).ready(function() {
             $('#summernote').summernote({
                 height: 200,

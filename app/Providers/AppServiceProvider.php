@@ -30,14 +30,16 @@ class AppServiceProvider extends ServiceProvider
         \Carbon\Carbon::setLocale('id');
         View::composer('includes.superadmin.navbar', function ($view) {
             if (Auth::check()) {
-                $userDivisi = Auth::user()->divisi_id_divisi;
-                $notifications = Notifikasi::where('id_divisi', $userDivisi)
+                $user = Auth::user(); // ← pindahkan ke sini
+                $userDivisi = $user->divisi_id_divisi;
+                $notifications = Notifikasi::where('id_user', $user->id)
                     ->orderBy('updated_at', 'desc') 
                     ->limit(5)
                     ->get();
             } else {
                 $notifications = collect([]);
             }
+
             $view->with('notifications', $notifications);
         });
         

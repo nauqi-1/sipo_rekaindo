@@ -15,7 +15,7 @@ class NotifController extends Controller
             return redirect()->route('login');
         }
 
-        $notifications = Notifikasi::where('id_divisi', $user->divisi_id_divisi)
+        $notifications = Notifikasi::where('id_user', $user->id)
             ->orderBy('updated_at', 'desc')
             ->limit(10)
             ->get();
@@ -31,7 +31,7 @@ class NotifController extends Controller
             return response()->json(['count' => 0]);
         }
 
-        $count = Notifikasi::where('id_divisi', $user->divisi_id_divisi)
+        $count = Notifikasi::where('id_user', $user->id)
             ->where('dibaca', 0)
             ->count();
 
@@ -43,7 +43,7 @@ class NotifController extends Controller
     {
         $user = Auth::user();
         if ($user) {
-            Notifikasi::where('id_divisi', $user->divisi_id_divisi)
+            Notifikasi::where('id_user', $user->id)
                 ->where('dibaca', 0)
                 ->update(['dibaca' => 1]);
         }

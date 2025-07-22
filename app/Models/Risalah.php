@@ -41,4 +41,8 @@ class Risalah extends Model
     {
         return $this->morphMany(Arsip::class, 'document');
     }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'pembuat');
+    }
 }

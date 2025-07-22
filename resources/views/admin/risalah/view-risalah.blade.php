@@ -60,8 +60,8 @@
                         <div class="separator"></div>
                         <input type="text"
                             id="kepada"
-                            value="{{ str_replace(';', ', ', $undangan->tujuan) }}"
-                            title="{{ str_replace(';', ', ', $undangan->tujuan) }}"
+                            value="{{ $tujuanUsernames }}"
+                            title="{{ $tujuanUsernames }}"
                             readonly>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
                     <div class="card-white">
                         <label for="pembuat">Pembuat</label>
                         <div class="separator"></div>
-                        <input type="text" id="pembuat" value= "{{ $risalah->pembuat }}" readonly>
+                        <input type="text" id="pembuat" value= "{{ $risalah->user->firstname }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="status">Status</label>
@@ -96,13 +96,11 @@
                         <button class="down" onclick="window.location.href='{{ route('cetakrisalah',['id' => $risalah->id_risalah]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</button>
                         @endif
                     </div>
-                    @if ($risalah->divisi->id_divisi != Auth::user()->divisi->id_divisi)
                     <div class="card-white">
                         <label for="lampiran">Lampiran</label>
                         <div class="separator"></div>
                         <button class="view" onclick="window.location.href='{{ route('risalah.preview', $risalah->id_risalah) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
                     </div>
-                    @endif
                 </div>
             </div>
             @if ($risalah->status != 'approve')

@@ -46,18 +46,6 @@ class Divisi extends Model
     {
         return $this->hasMany(User::class, 'divisi_id_divisi');
     }
-    public function undangan()
-    {
-        return $this->hasMany(Undangan::class, 'divisi_id_divisi');
-    }
-    public function memo()
-    {
-        return $this->hasMany(Memo::class, 'divisi_id_divisi');
-    }
-    public function risalah()
-    {
-        return $this->hasMany(Risalah::class, 'divisi_id_divisi');
-    }
     public function seri()
     {
         return $this->hasMany(Seri::class, 'divisi_id_divisi');

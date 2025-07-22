@@ -13,10 +13,6 @@ use App\Models\Section;
 use App\Models\User;
 use Illuminate\Support\Str;
 
-
-
-
-
 class CetakPDFController extends Controller
 {
     public function cetakmemoPDF($id)
@@ -170,16 +166,22 @@ class CetakPDFController extends Controller
         $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
         $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
     
-        // Load view yang akan digunakan sebagai template PDF
-        // $pdf = PDF::loadView('format-surat.format-undangan', compact('undangan'));
+         $tujuanIds = explode(';', $undangan->tujuan);  // [id_user1;id_user2;...]
+    $tujuanUsers = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        ->whereIn('id', $tujuanIds)
+        ->get();
 
-        // Set ukuran kertas (opsional)
-        // $pdf->setPaper('A4', 'portrait');
+         $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$undangan->nama_bertandatangan])
+        ->first();
+
+
         $formatUndanganPdf = PDF::loadView('format-surat.format-undangan', [
             'undangan' => $undangan,
+            'tujuanUsers' => $tujuanUsers,
+            'manager' => $manager,
             'headerImage' => $headerBase64,
             'footerImage' => $footerBase64,
-            'qrCode' => $qrCode,
             'isPdf' => true
         ])->setPaper('A4', 'portrait');
             
@@ -217,23 +219,48 @@ class CetakPDFController extends Controller
     }
 
     }
+ 
+
+    private function getUserText($user)
+    {
+
+        $position = optional($user->position)->nm_position;
+        $bagian = collect([
+            optional($user->unit)->nm_unit,
+            optional($user->section)->nm_section,
+            optional($user->department)->nm_department,
+            optional($user->divisi)->nm_divisi,
+            optional($user->director)->nm_director
+        ])->filter()->first();
+
+    return trim("{$position} {$bagian} {$user->firstname} {$user->lastname}");
+    }
+
+
 
     public function viewundanganPDF($id_undangan)
     {
-        // Ambil data dari database
-        $undangan = Undangan::findOrFail($id_undangan); // Sesuaikan dengan model yang benar
-        // $tujuanList = explode(';', $undangan->tujuan);
-
+        $undangan = Undangan::findOrFail($id_undangan);
         $headerPath = public_path('img/bheader.png');
         $footerPath = public_path('img/bfooter.png');
 
         $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
         $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
 
-        // Tampilkan langsung dalam browser
-        // return view('format-surat.format-undangan', compact('undangan','tujuanList'));
+        $tujuanIds = explode(';', $undangan->tujuan);  // [id_user1;id_user2;...]
+    $tujuanUsers = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        ->whereIn('id', $tujuanIds)
+        ->get();
+
+         $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$undangan->nama_bertandatangan])
+        ->first();
+
+
         $formatUndanganPdf = PDF::loadView('format-surat.format-undangan', [
             'undangan' => $undangan,
+            'tujuanUsers' => $tujuanUsers,
+            'manager' => $manager,
             'headerImage' => $headerBase64,
             'footerImage' => $footerBase64,
             'isPdf' => true

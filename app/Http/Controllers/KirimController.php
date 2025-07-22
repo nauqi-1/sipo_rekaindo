@@ -471,7 +471,21 @@ class KirimController extends Controller
 
         $undangan = Undangan::where('judul', $risalah->judul)->first();
 
-        return view('manager.risalah.persetujuan-risalah', compact('user', 'divisi', 'risalah', 'position', 'undangan'));
+        // Ubah tujuan dari string jadi array
+        $userIds = explode(';', $undangan->tujuan);
+
+        // Ambil firstname + lastname
+        $namaUserList = User::whereIn('id', $userIds)
+            ->get()
+            ->map(function ($user) {
+                return $user->firstname . ' ' . $user->lastname;
+            })
+            ->toArray();
+
+        // Gabungkan jadi satu string untuk ditampilkan
+        $tujuanUsernames = implode(', ', $namaUserList);
+
+        return view('manager.risalah.persetujuan-risalah', compact('user', 'divisi', 'risalah', 'position', 'undangan', 'tujuanUsernames'));
        
     }
 
