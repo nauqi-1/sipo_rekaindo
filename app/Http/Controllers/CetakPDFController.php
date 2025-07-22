@@ -9,6 +9,7 @@ use App\Models\Memo;
 use App\Models\Undangan;
 use App\Models\Risalah;
 use App\Models\Divisi;
+use App\Models\Section;
 use App\Models\User;
 use Illuminate\Support\Str;
 
@@ -18,9 +19,16 @@ class CetakPDFController extends Controller
     {
         // Ambil data dari database
         $memo = Memo::findOrFail($id); // Sesuaikan dengan model yang benar
+        
+        $tujuanIds = explode(';', $memo->tujuan);
+        $tujuanNames = User::whereIn('id', $tujuanIds)
+            ->get()
+            ->map(function ($user) {
+                return trim($user->firstname . ' ' . $user->lastname);
+            })
+            ->toArray();
 
-        $divisiIds = explode(';', $memo->tujuan);
-        $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi')->toArray();
+
         $headerPath = public_path('img/bheader.png');
         $footerPath = public_path('img/bfooter.png');
         $qrCode = $memo->qr_approved_by;
@@ -37,7 +45,7 @@ class CetakPDFController extends Controller
             'memo' => $memo,
             'headerImage' => $headerBase64,
             'footerImage' => $footerBase64,
-            'divisiNames' => $divisiNames,
+            'tujuanNames' => $tujuanNames,
             'qrCode' => $qrCode,
             'isPdf' => true
         ])->setPaper('A4', 'portrait');
@@ -83,54 +91,66 @@ class CetakPDFController extends Controller
     // }
 
     public function viewmemoPDF($id_memo)
-    {
-        // Ambil data memo berdasarkan ID
-        $memo = Memo::findOrFail($id_memo);
 
-        $divisiIds = explode(';', $memo->tujuan);
-        $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi')->toArray();
-        $headerPath = public_path('img/bheader.png');
-        $footerPath = public_path('img/bfooter.png');
+{
+    // Ambil data memo berdasarkan ID
+    $memo = Memo::findOrFail($id_memo);
 
-        // Konversi gambar ke base64
-        $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
-        $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
+    $tujuanIds = explode(';', $memo->tujuan);
 
-        // Generate PDF halaman pertama (format memo)
-        $formatMemoPdf = PDF::loadView('format-surat.format-memo', [
-            'memo' => $memo,
-            'headerImage' => $headerBase64,
-            'footerImage' => $footerBase64,
-            'divisiNames' => $divisiNames,
-            'isPdf' => true
-        ])->setPaper('A4', 'portrait');
+    $tujuanNames = User::whereIn('id', $tujuanIds)
+            ->get()
+            ->map(function ($user) {
+                return trim($user->unit->name_unit);
+            })
+            ->toArray();
+    
+    
+    
+    $headerPath = public_path('img/bheader.png');
+    $footerPath = public_path('img/bfooter.png');
 
-        // Simpan PDF memo sementara
-        $formatMemoPath = storage_path('app/temp_format_memo_' . $memo->id . '.pdf');
-        $formatMemoPdf->save($formatMemoPath);
 
-        // Jika ada lampiran, gabungkan PDF-nya
-        if (!empty($memo->lampiran)) {
-            $lampiranTempPath = storage_path('app/temp_lampiran_' . $memo->id . '.pdf');
-            file_put_contents($lampiranTempPath, base64_decode($memo->lampiran));
 
-            $pdfMerger = new \Clegginabox\PDFMerger\PDFMerger;
-            $pdfMerger->addPDF($formatMemoPath, 'all');
-            $pdfMerger->addPDF($lampiranTempPath, 'all');
+    // Konversi gambar ke base64
+    $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
+    $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
 
-            $outputPath = storage_path('app/view_memo_' . $memo->id . '.pdf');
-            $pdfMerger->merge('file', $outputPath);
+    // Generate PDF halaman pertama (format memo)
+    $formatMemoPdf = PDF::loadView('format-surat.format-memo', [
+        'memo' => $memo,
+        'headerImage' => $headerBase64,
+        'footerImage' => $footerBase64,
+        'tujuanNames' => $tujuanNames,
+        'isPdf' => true
+    ])->setPaper('A4', 'portrait');
 
-            // Hapus file sementara setelah digabung
-            if (file_exists($formatMemoPath)) unlink($formatMemoPath);
-            if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
+    // Simpan PDF memo sementara
+    $formatMemoPath = storage_path('app/temp_format_memo_' . $memo->id . '.pdf');
+    $formatMemoPdf->save($formatMemoPath);
 
-            // Tampilkan file hasil merge
-            return response()->file($outputPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
-        } else {
-            // Kalau tidak ada lampiran, tampilkan risalah langsung
-            return response()->file($formatMemoPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
-        }
+    // Jika ada lampiran, gabungkan PDF-nya
+    if (!empty($memo->lampiran)) {
+        $lampiranTempPath = storage_path('app/temp_lampiran_' . $memo->id . '.pdf');
+        file_put_contents($lampiranTempPath, base64_decode($memo->lampiran));
+
+        $pdfMerger = new \Clegginabox\PDFMerger\PDFMerger;
+        $pdfMerger->addPDF($formatMemoPath, 'all');
+        $pdfMerger->addPDF($lampiranTempPath, 'all');
+
+        $outputPath = storage_path('app/view_memo_' . $memo->id . '.pdf');
+        $pdfMerger->merge('file', $outputPath);
+
+        // Hapus file sementara setelah digabung
+        if (file_exists($formatMemoPath)) unlink($formatMemoPath);
+        if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
+
+        // Tampilkan file hasil merge
+        return response()->file($outputPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
+    } else {
+        // Kalau tidak ada lampiran, tampilkan risalah langsung
+        return response()->file($formatMemoPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
+
     }
 
     public function cetakundanganPDF($id)

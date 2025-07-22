@@ -219,7 +219,11 @@
                     `<input type="hidden" name="tujuan[]" value="${user.id}">`
                 );
             });
-        
+             if (userIds.length === 0) {
+                alert("Minimal pilih satu tujuan!");
+                e.preventDefault();
+                return false;
+            }
             console.log("Submitting form with tujuan:", tujuan); // <--- debug
         });
         $(document).ready(function() {
