@@ -606,13 +606,13 @@ class UndanganController extends Controller
             }}
 
 
-            // Notifikasi
-            // Notifikasi::create([
-            //     'judul' => "Undangan Disetujui",
-            //     'judul_document' => $undangan->judul,
-            //     'id_divisi' => $undangan->pembuat,
-            //     'updated_at' => now()
-            // ]);
+            //Notifikasi
+            Notifikasi::create([
+                'judul' => "Undangan Terkirim",
+                'judul_document' => $undangan->judul,
+                'id_user' => $undangan->pembuat,
+                'updated_at' => now()
+            ]);
         } else {
             // Kirim ke manager yang dipilih (approval masih pending)
             Kirim_Document::create([
@@ -623,6 +623,12 @@ class UndanganController extends Controller
                 'status' => 'pending',
                 'created_at' => now(),
                 'updated_at' => now(),
+            ]);
+            Notifikasi::create([
+                'judul' => "Undangan Dalam Proses Persetujuan",
+                'judul_document' => $undangan->judul,
+                'id_user' => $undangan->pembuat,
+                'updated_at' => now()
             ]);
         }
 
@@ -729,26 +735,26 @@ class UndanganController extends Controller
 
 
             // Notifikasi
-            // Notifikasi::create([
-            //     'judul' => "Undangan Disetujui",
-            //     'judul_document' => $undangan->judul,
-            //     'id_divisi' => $undangan->pembuat,
-            //     'updated_at' => now()
-            // ]);
+            Notifikasi::create([
+                'judul' => "Undangan Disetujui",
+                'judul_document' => $undangan->judul,
+                'id_user' => $undangan->pembuat,
+                'updated_at' => now()
+            ]);
         } elseif ($request->status == 'reject') {
-            // Notifikasi::create([
-            //     'judul' => "Undangan Tidak Disetujui",
-            //     'judul_document' => $undangan->judul,
-            //     'id_divisi' => $undangan->pembuat,
-            //     'updated_at' => now()
-            // ]);
+            Notifikasi::create([
+                'judul' => "Undangan Tidak Disetujui",
+                'judul_document' => $undangan->judul,
+                'id_user' => $undangan->pembuat,
+                'updated_at' => now()
+            ]);
         } elseif ($request->status == 'correction') {
-            // Notifikasi::create([
-            //     'judul' => "Undangan Perlu Dikoreksi",
-            //     'judul_document' => $undangan->judul,
-            //     'id_divisi' => $undangan->pembuat,
-            //     'updated_at' => now()
-            // ]);
+            Notifikasi::create([
+                'judul' => "Undangan Perlu Dikoreksi",
+                'judul_document' => $undangan->judul,
+                'id_user' => $undangan->pembuat,
+                'updated_at' => now()
+            ]);
         }
         return redirect()->route('undangan.' . Auth::user()->role->nm_role)
             ->with('success', 'Dokumen berhasil dibuat.');
@@ -997,12 +1003,12 @@ class UndanganController extends Controller
         $undangan->save();
 
         // Simpan notifikasi
-        // Notifikasi::create([
-        //     'judul' => "Undangan {$request->status}",
-        //     'judul_document' => $undangan->judul,
-        //     'id_divisi' => $undangan->divisi_id,
-        //     'updated_at' => now()
-        // ]);
+        Notifikasi::create([
+            'judul' => "Undangan {$request->status}",
+            'judul_document' => $undangan->judul,
+            'id_user' => $undangan->pembuat,
+            'updated_at' => now()
+        ]);
 
         return redirect()->back()->with('success', 'Status undangan berhasil diperbarui.');
     }
