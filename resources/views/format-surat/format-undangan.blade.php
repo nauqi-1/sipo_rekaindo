@@ -361,12 +361,24 @@
                                 </td>
                             </tr>
                             <tr>
+                            <tr>
                                 <td>Pukul</td>
                                 <td style="text-align: center;">:</td>
                                 <td>
-                                    {{ $undangan->waktu_mulai }} s.d {{ $undangan->waktu_selesai ?? 'selesai'  }}
+                                    {{ $undangan->waktu_mulai }}
+                                    @if(preg_match('/^\d{1,2}(\.\d{1,2})?$/', $undangan->waktu_mulai))
+                                        WIB
+                                    @endif
+                                    s.d
+                                    {{ $undangan->waktu_selesai ?? 'selesai' }}
+                                    @if($undangan->waktu_selesai && preg_match('/^\d{1,2}(\.\d{1,2})?$/', $undangan->waktu_selesai))
+                                        WIB
+                                    @endif
                                 </td>
                             </tr>
+
+                            </tr>
+
                             <tr>
                                 <td>Tempat</td>
                                 <td style="text-align: center;">:</td>
@@ -377,7 +389,7 @@
                             <tr>
                                 <td>Agenda</td>
                                 <td style="text-align: center;">:</td>
-                                <td>{!! $undangan->isi_undangan !!}</td>
+                                <td>{{ $cleanTag }}</td>
                             </tr>
                         </table>
                         <p style="margin-top: 10px; text-align: justify;">
@@ -388,14 +400,14 @@
                     <div
                         style="width: 40%; float: right; text-align: left; margin-right: 3%; line-height: 1.3; margin-top: 20px;">
                         <p style="text-align: center; margin-bottom: 5px;"><b>Hormat kami,</b></p>
-                        @if($manager!= "Direktur")
-                        <p style="text-align: center; margin: 0; font-weight: bold;">
-                            {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }}
-                        </p>
+                        @if($manager != "Direktur")
+                            <p style="text-align: center; margin: 0; font-weight: bold;">
+                                {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }}
+                            </p>
                         @else
-                        <p style="text-align: center; margin: 0; font-weight: bold;">
-                            {{ preg_replace($manager->position->nm_position) }}
-                        </p>
+                            <p style="text-align: center; margin: 0; font-weight: bold;">
+                                {{ preg_replace($manager->position->nm_position) }}
+                            </p>
                         @endif
                         <p style="text-align: center;margin: 0; font-weight: bold;">
                             {{ optional($manager->unit)->nm_unit
