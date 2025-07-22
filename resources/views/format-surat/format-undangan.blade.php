@@ -329,8 +329,10 @@
                                 <tr>
                                     <td>{{ $index + 1 }}.</td>
                                     <td>{{ $user->position->nm_position ?? '-' }}
-                                        {{ $user->unit->nm_unit ?? $user->section->nm_section ?? $user->department->nm_department ?? $user->divisi->nm_divisi ?? $user->director->nm_director ?? '-' }}
+                                        {{ $user->bagian_text ?? '-' }}
                                         ({{  $user->firstname }} {{ $user->lastname }})
+
+                                        
                                     </td>
                                 </tr>
                             @endforeach
