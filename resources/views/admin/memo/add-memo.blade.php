@@ -78,7 +78,7 @@
                 <div class="d-flex justify-content-center">
                     <div style="width: 95%;">
                     <label style="font-size: small;" for="kepada" class="form-label">
-                        <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
+                        <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span> <span class="text-muted" style="font-size: x-small;">Cukup pilih tujuan saja. Jangan memilih tingkat dibawahnya.</span>
                     </label>
                     
                     <div id="orgTreeError" class="form-control text-danger" style="display:none;"></div>
@@ -93,9 +93,12 @@
                                     'core' : {
                                         'data' : @json(json_decode($jsTreeData))
                                     },
-                                    "plugins" : [ "checkbox", "search" ]
+                                    "plugins" : [ "checkbox", "search" ],
+                                    'checkbox' : {
+                                        'three_state'   : false,
+                                        'cascade'       : 'none'
+                                    }
                                 });
-                                // Listen for changes and update tujuanInput as array of user IDs
                                 
                             });
                         </script>
@@ -256,6 +259,8 @@
         </div>
 
 <script>
+    let clickedNodeIds = [];
+
     $('#addMemoForm').on('submit', function (e) {
         // Clear existing tujuan[] inputs
         $('#tujuan-container').empty();
@@ -267,17 +272,30 @@
         .map(node => ({
           id: parseInt(node.id.replace('user-', '')), // Extract user ID from node ID
         }));
-      console.log(tujuan);
-        // Append hidden inputs
+      
         tujuan.forEach(user => {
             $('#tujuan-container').append(
                 `<input type="hidden" name="tujuan[]" value="${user.id}">`
             );
         });
 
+         
+
+         if (userIds.length === 0) {
+                alert("Minimal pilih satu tujuan!");
+                e.preventDefault();
+                return false;
+            }
         console.log("Submitting form with tujuan:", userIds); // <--- debug
     });
 
+    $('#org-tree').on('select_node.jstree', function (e, data) {
+    const id = data.node.id;
+    // Only add if not already in the list
+    if (!clickedNodeIds.includes(id)) {
+        clickedNodeIds.push(id);
+    }
+});
     document.addEventListener('DOMContentLoaded', function () {
         const dropdown = document.getElementById('managerDropdown');
         const hiddenInput = document.getElementById('namaBertandatangan');

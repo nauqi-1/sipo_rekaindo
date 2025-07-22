@@ -8,6 +8,8 @@ use App\Models\Memo;
 use App\Models\Seri;
 use App\Models\Arsip;
 use App\Models\User;
+use App\Models\Unit;
+use App\Models\Section;
 use App\Models\Divisi;
 use App\Models\Notifikasi;
 use App\Models\Kirim_Document;
@@ -18,6 +20,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+
 class MemoController extends Controller
 {
     public function index(Request $request)
@@ -288,14 +292,14 @@ class MemoController extends Controller
     private function getOrgTreeWithUsers()
     {
        $directors = Director::with([
-            'users',
-            'divisi.users',
-            'divisi.department.users',
-            'divisi.department.section.users',
-            'divisi.department.section.unit.users',
-            'department.users',
-            'department.section.users',
-            'department.section.unit.users'
+            'users.position',
+            'divisi.users.position',
+            'divisi.department.users.position',
+            'divisi.department.section.users.position',
+            'divisi.department.section.unit.users.position',
+            'department.users.position',
+            'department.section.users.position',
+            'department.section.unit.users.position'
         ])->get();
 
         $tree = [];
@@ -321,6 +325,25 @@ class MemoController extends Controller
         }));
     }
 
+    private function getUserText($user, $context)
+    {
+
+        $position = isset($user['position']['nm_position']) ? $user['position']['nm_position'] : '-';
+
+        $hierarki = collect([
+            $context['unit'] ?? null,
+            $context['section'] ?? null,
+            $context['department'] ?? null,
+            $context['divisi'] ?? null,
+            $context['director'] ?? null
+        ])->filter()->first() ?? '-';
+
+        $firstname = $user['firstname'] ?? ($user['nm_user'] ?? '-');
+        $lastname = $user['lastname'] ?? '';
+
+        return "$position $hierarki ($firstname $lastname)";
+    }
+    
     private function convertToJsTree($tree)
     {
         $result = [];
@@ -337,7 +360,7 @@ class MemoController extends Controller
             foreach ($usersAtDirector as $user) {
                 $dirNode['children'][] = [
                     'id' => 'user-'.$user['id'],
-                    'text' => $user['firstname'].' '.$user['lastname'],
+                    'text' => $this->getUserText($user, ['director' => $director['name_director']]),
                     'icon' => 'fa fa-user'
                 ];
             }
@@ -350,7 +373,10 @@ class MemoController extends Controller
                     foreach ($usersAtDepartment as $user) {
                         $deptNode['children'][] = [
                             'id' => 'user-'.$user['id'],
-                            'text' => $user['firstname'].' '.$user['lastname'],
+                            'text' => $this->getUserText($user, [
+                                'director' => $director['name_director'],
+                                'department' => $dept['name_department']
+                            ]),
                             'icon' => 'fa fa-user'
                         ];
                     }
@@ -360,7 +386,11 @@ class MemoController extends Controller
                         foreach ($usersAtSection as $user) {
                             $sectionNode['children'][] = [
                                 'id' => 'user-'.$user['id'],
-                                'text' => $user['firstname'].' '.$user['lastname'],
+                                'text' => $this->getUserText($user, [
+                                    'director' => $director['name_director'],
+                                    'department' => $dept['name_department'],
+                                    'section' => $section['name_section']
+                                ]),
                                 'icon' => 'fa fa-user'
                             ];
                         }
@@ -370,7 +400,12 @@ class MemoController extends Controller
                             foreach ($usersAtUnit as $user) {
                                 $unitNode['children'][] = [
                                     'id' => 'user-'.$user['id'],
-                                    'text' => $user['firstname'].' '.$user['lastname'],
+                                    'text' => $this->getUserText($user, [
+                                    'director' => $director['name_director'],
+                                    'department' => $dept['name_department'],
+                                    'section' => $section['name_section'],
+                                    'unit' => $unit['name_unit']
+                                ]),
                                     'icon' => 'fa fa-user'
                                 ];
                             }
@@ -388,7 +423,10 @@ class MemoController extends Controller
                     foreach ($usersAtDivisi as $user) {
                         $divNode['children'][] = [
                             'id' => 'user-'.$user['id'],
-                            'text' => $user['firstname'].' '.$user['lastname'],
+                            'text' => $this->getUserText($user, [
+                                'director' => $director['name_director'],
+                                'divisi' => $divisi['nm_divisi']
+                            ]),
                             'icon' => 'fa fa-user'
                         ];
                     }
@@ -398,7 +436,11 @@ class MemoController extends Controller
                         foreach ($usersAtDepartment as $user) {
                             $deptNode['children'][] = [
                                 'id' => 'user-'.$user['id'],
-                                'text' => $user['firstname'].' '.$user['lastname'],
+                                'text' => $this->getUserText($user, [
+                                    'director' => $director['name_director'],
+                                    'divisi' => $divisi['nm_divisi'],
+                                    'department' => $dept['name_department']
+                                ]),
                                 'icon' => 'fa fa-user'
                             ];
                         }
@@ -408,7 +450,12 @@ class MemoController extends Controller
                             foreach ($usersAtSection as $user) {
                                 $sectionNode['children'][] = [
                                     'id' => 'user-'.$user['id'],
-                                    'text' => $user['firstname'].' '.$user['lastname'],
+                                    'text' => $this->getUserText($user, [
+                                        'director' => $director['name_director'],
+                                        'divisi' => $divisi['nm_divisi'],
+                                        'department' => $dept['name_department'],
+                                        'section' => $section['name_section']
+                                    ]),
                                     'icon' => 'fa fa-user'
                                 ];
                             }
@@ -418,7 +465,13 @@ class MemoController extends Controller
                                 foreach ($usersAtUnit as $user) {
                                     $unitNode['children'][] = [
                                         'id' => 'user-'.$user['id'],
-                                        'text' => $user['firstname'].' '.$user['lastname'],
+                                        'text' => $this->getUserText($user, [
+                                            'director' => $director['name_director'],
+                                            'divisi' => $divisi['nm_divisi'],
+                                            'department' => $dept['name_department'],
+                                            'section' => $section['name_section'],
+                                            'unit' => $unit['name_unit']
+                                        ]),
                                         'icon' => 'fa fa-user'
                                     ];
                                 }
@@ -470,7 +523,7 @@ class MemoController extends Controller
     
     public function store(Request $request)
     {   
-        
+        dd($request->all());
         
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
@@ -494,9 +547,11 @@ class MemoController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-    
         
+        dd($request->tujuan);
+        $hierarkiTujuan = $this->collapseHierarchies($request->tujuan);
        
+        dd($hierarkiTujuan);
 
         $filePath = null;
         if ($request->hasFile('lampiran')) {
@@ -615,6 +670,257 @@ class MemoController extends Controller
         return redirect()->route('memo.terkirim')->with('success', 'Dokumen berhasil dibuat.');
     }
     }
+
+
+    //fungsi untuk ngubah daftar penerima dari per-user jadi per hierarki, public supaya bisa dipake di controller CetakMemoPDF juga
+    public function simplifyRecipients($tujuanString)
+{
+    $userIds = explode(';', $tujuanString);
+    $userIds = array_filter($userIds); // remove empty
+
+    // Group user IDs by unit
+    $units = DB::table('users')
+        ->whereIn('id', $userIds)
+        ->get()
+        ->groupBy('unit_id');
+
+    $selectedUnitIds = [];
+    $remainingUserIds = [];
+
+    foreach ($units as $unitId => $usersInUnit) {
+        $totalUsersInUnit = DB::table('users')->where('unit_id', $unitId)->count();
+
+        if (count($usersInUnit) == $totalUsersInUnit) {
+            $selectedUnitIds[] = $unitId;
+        } else {
+            $remainingUserIds = array_merge($remainingUserIds, $usersInUnit->pluck('id')->toArray());
+        }
+    }
+
+    // Now group selected unit IDs by section
+    $sections = DB::table('units')
+        ->whereIn('id', $selectedUnitIds)
+        ->get()
+        ->groupBy('section_id');
+
+    $selectedSectionIds = [];
+    $remainingUnitIds = [];
+
+    foreach ($sections as $sectionId => $unitsInSection) {
+        $totalUnitsInSection = DB::table('units')->where('section_id', $sectionId)->count();
+
+        if (count($unitsInSection) == $totalUnitsInSection) {
+            $selectedSectionIds[] = $sectionId;
+        } else {
+            $remainingUnitIds = array_merge($remainingUnitIds, $unitsInSection->pluck('id')->toArray());
+        }
+    }
+
+    // Now group selected section IDs by department
+    $departments = DB::table('section')
+        ->whereIn('id', $selectedSectionIds)
+        ->get()
+        ->groupBy('department_id_department');
+
+    $selectedDepartmentIds = [];
+    $remainingSectionIds = [];
+
+    foreach ($departments as $departmentId => $sectionsInDept) {
+        $totalSectionsInDept = DB::table('section')->where('department_id_department', $departmentId)->count();
+
+        if (count($sectionsInDept) == $totalSectionsInDept) {
+            $selectedDepartmentIds[] = $departmentId;
+        } else {
+            $remainingSectionIds = array_merge($remainingSectionIds, $sectionsInDept->pluck('id')->toArray());
+        }
+    }
+
+    // Now group selected departments by divisi
+    $divisis = DB::table('departments')
+        ->whereIn('id', $selectedDepartmentIds)
+        ->get()
+        ->groupBy('divisi_id');
+
+    $selectedDivisiIds = [];
+    $remainingDepartmentIds = [];
+
+    foreach ($divisis as $divisiId => $departmentsInDiv) {
+        $totalDeptsInDiv = DB::table('department')->where('divisi_id_divisi', $divisiId)->count();
+
+        if (count($departmentsInDiv) == $totalDeptsInDiv) {
+            $selectedDivisiIds[] = $divisiId;
+        } else {
+            $remainingDepartmentIds = array_merge($remainingDepartmentIds, $departmentsInDiv->pluck('id')->toArray());
+        }
+    }
+
+    return [
+        'divisi' => $selectedDivisiIds,
+        'departments' => $remainingDepartmentIds,
+        'sections' => $remainingSectionIds,
+        'units' => $remainingUnitIds,
+        'users' => $remainingUserIds,
+    ];
+}
+public function collapseRecipients2(array $selectedUserIds)
+{
+    $selected = collect($selectedUserIds)->map(fn($id) => (int)$id);
+
+    // Start from users and move up
+    $collapsed = $this->collapseAtLevel($selected, 'unit_id_unit', 'unit');
+    $collapsed = $this->collapseAtLevel($collapsed, 'section_id_section', 'section');
+    $collapsed = $this->collapseAtLevel($collapsed, 'department_id_department', 'department');
+    $collapsed = $this->collapseAtLevel($collapsed, 'divisi_id_divisi', 'divisi');
+
+    return $collapsed->implode(';'); // return string
+}
+
+protected function collapseAtLevel2(Collection $items, string $parentKey, string $table)
+{
+    // Group by parent
+    $grouped = DB::table('users')
+        ->whereIn('id', $items)
+        ->get()
+        ->groupBy($parentKey);
+
+    $collapsed = collect();
+
+    foreach ($grouped as $parentId => $children) {
+        $allUserIds = DB::table('users')
+            ->where($parentKey, $parentId)
+            ->pluck('id');
+
+        $selectedIds = $children->pluck('id');
+
+        if ($selectedIds->sort()->values()->all() === $allUserIds->sort()->values()->all()) {
+            // All children under this parent are selected → collapse
+            $collapsed->push($parentKey . ':' . $parentId);
+        } else {
+            $collapsed = $collapsed->merge($selectedIds);
+        }
+    }
+
+    return $collapsed;
+}
+
+public function collapseRecipients3(array $selectedUserIds)
+{
+    $selected = collect($selectedUserIds)->map(fn($id) => (int)$id);
+
+    // Load all user data with parent info
+    $users = DB::table('users')
+        ->whereIn('id', $selected)
+        ->get(['id', 'unit_id_unit', 'section_id_section', 'department_id_department', 'divisi_id_divisi']);
+
+    // Collapse upward
+    $result = $this->collapseAtLevel($users, 'unit_id_unit', 'users');
+    $result = $this->collapseAtLevel($result, 'section_id_section', 'users');
+    $result = $this->collapseAtLevel($result, 'department_id_department', 'users');
+    $result = $this->collapseAtLevel($result, 'divisi_id_divisi', 'users');
+
+    // Final clean-up: extract IDs or tags like "unit:5"
+    return $result->map(fn($item) => is_array($item) ? "{$item['level']}:{$item['id']}" : $item)->implode(';');
+}
+
+protected function collapseAtLevel3($items, $levelKey, $userTable)
+{ 
+    $grouped = collect();
+
+    foreach ($items as $item) {
+        // item can be user_id (int) or ['level' => ..., 'id' => ...]
+        if (is_int($item)) {
+            $user = DB::table($userTable)->where('id', $item)->first([$levelKey, 'id']);
+            $grouped[$user->$levelKey][] = $user->id;
+        } else {
+            // Already collapsed higher — pass through
+            $grouped[] = $item;
+        }
+    }
+
+    $collapsed = collect();
+
+    foreach ($grouped as $parentId => $userIds) {
+        if (is_numeric($parentId)) {
+            $allUsersUnderParent = DB::table($userTable)->where($levelKey, $parentId)->pluck('id')->all();
+
+            sort($allUsersUnderParent);
+            sort($userIds);
+
+            if ($userIds == $allUsersUnderParent) {
+                // All users selected — collapse
+                $collapsed->push(['level' => str_replace('_id', '', $levelKey), 'id' => $parentId]);
+            } else {
+                $collapsed = $collapsed->merge($userIds);
+            }
+        } else {
+            // This is already collapsed at a higher level
+            $collapsed->push($parentId);
+        }
+    }
+
+    return $collapsed;
+}
+protected function collapseHierarchies($selectedUserIds)
+{
+    $levels = [
+        'unit_id_unit' => 'unit',
+        'section_id_section' => 'section',
+        'department_id_department' => 'department',
+        'divisi_id_divisi' => 'divisi',
+    ];
+
+    $userTable = 'users';
+    $selected = collect($selectedUserIds); // These are user IDs (integers)
+
+    // Step 1: Collapse at each level progressively from bottom to top
+    foreach ($levels as $levelKey => $levelName) {
+        $selected = $this->collapseAtLevel($selected, $levelKey, $userTable);
+    }
+
+    return $selected;
+}
+protected function collapseAtLevel($items, $levelKey, $userTable)
+{
+    $grouped = collect();
+
+    foreach ($items as $item) {
+        if (is_int($item)) {
+            $user = DB::table($userTable)->where('id', $item)->first([$levelKey, 'id']);
+            if ($user && $user->$levelKey !== null) {
+                $grouped[$user->$levelKey][] = $user->id;
+            }
+        } elseif (is_array($item) && isset($item['level'], $item['id'])) {
+            // Already collapsed at higher level, just push as-is
+            $grouped[] = $item;
+        }
+    }
+
+    $collapsed = collect();
+
+    foreach ($grouped as $parentId => $userIds) {
+        if (is_numeric($parentId)) {
+            $allUsersUnderParent = DB::table($userTable)->where($levelKey, $parentId)->pluck('id')->all();
+
+            // Sort both arrays for accurate comparison
+            sort($allUsersUnderParent);
+            sort($userIds);
+
+            if ($userIds == $allUsersUnderParent) {
+                $collapsed->push([
+                    'level' => str_replace(['_id_', '_id'], '', $levelKey), // handles `unit_id_unit` etc.
+                    'id' => $parentId
+                ]);
+            } else {
+                $collapsed = $collapsed->merge($userIds);
+            }
+        } else {
+            $collapsed->push($userIds); // $userIds is actually a collapsed object here
+        }
+    }
+
+    return $collapsed;
+}
+
 
     private function convertToRoman($number) {
         $map = [

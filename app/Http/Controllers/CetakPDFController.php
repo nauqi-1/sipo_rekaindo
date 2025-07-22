@@ -9,6 +9,8 @@ use App\Models\Memo;
 use App\Models\Undangan;
 use App\Models\Risalah;
 use App\Models\Divisi;
+use App\Models\Section;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 
@@ -22,8 +24,14 @@ class CetakPDFController extends Controller
         // Ambil data dari database
         $memo = Memo::findOrFail($id); // Sesuaikan dengan model yang benar
         
-        $divisiIds = explode(';', $memo->tujuan);
-        $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi')->toArray(); 
+        $tujuanIds = explode(';', $memo->tujuan);
+        $tujuanNames = User::whereIn('id', $tujuanIds)
+            ->get()
+            ->map(function ($user) {
+                return trim($user->firstname . ' ' . $user->lastname);
+            })
+            ->toArray();
+
         $headerPath = public_path('img/bheader.png');
         $footerPath = public_path('img/bfooter.png'); 
         $qrCode = $memo->qr_approved_by;   
@@ -40,7 +48,7 @@ class CetakPDFController extends Controller
             'memo' => $memo,
             'headerImage' => $headerBase64,
             'footerImage' => $footerBase64,
-            'divisiNames' => $divisiNames,
+            'tujuanNames' => $tujuanNames,
             'qrCode' => $qrCode,
             'isPdf' => true
         ])->setPaper('A4', 'portrait');
@@ -93,10 +101,21 @@ class CetakPDFController extends Controller
     // Ambil data memo berdasarkan ID
     $memo = Memo::findOrFail($id_memo);
 
-    $divisiIds = explode(';', $memo->tujuan);
-    $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi')->toArray();
+    $tujuanIds = explode(';', $memo->tujuan);
+
+    $tujuanNames = User::whereIn('id', $tujuanIds)
+            ->get()
+            ->map(function ($user) {
+                return trim($user->unit->name_unit);
+            })
+            ->toArray();
+    
+    
+    
     $headerPath = public_path('img/bheader.png');
     $footerPath = public_path('img/bfooter.png');
+
+
 
     // Konversi gambar ke base64
     $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
@@ -107,7 +126,7 @@ class CetakPDFController extends Controller
         'memo' => $memo,
         'headerImage' => $headerBase64,
         'footerImage' => $footerBase64,
-        'divisiNames' => $divisiNames,
+        'tujuanNames' => $tujuanNames,
         'isPdf' => true
     ])->setPaper('A4', 'portrait');
 

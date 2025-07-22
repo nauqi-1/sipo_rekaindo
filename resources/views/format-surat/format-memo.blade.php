@@ -252,14 +252,14 @@
                 <div class="header2">
                     <table>
                         <tr>
-                            <th style="text-align: left; vertical-align: top;">Dari : Unit {{ $memo->divisi->nm_divisi }}</th>
+                            <th style="text-align: left; vertical-align: top;">Dari : {{ $memo->user->unit->name_unit }}</th>
                             <th style="text-align: left; vertical-align: top;">
                                 Kepada :
-                                @if (count($divisiNames) === 1)
-                                       <span style="display: inline;">{{ $divisiNames[0] }}</span>
+                                @if (count($tujuanNames) === 1)
+                                       <span style="display: inline;">{{ $tujuanNames[0] }}</span>
                                 @else
                                     <ol style="margin: 0; padding-left: 20px;">
-                                        @foreach ($divisiNames as $name)
+                                        @foreach ($tujuanNames as $name)
                                             <li>{{ $name }}</li>
                                         @endforeach
                                     </ol>
@@ -298,7 +298,7 @@
                         <tr>
                             <td>
                                 <p><b>Hormat kami,</b></p>
-                                <b>Manajer {{ $memo->divisi->nm_divisi }}</b> 
+                                <b>Manajer {{ $memo->user->unit->name_unit }}</b> 
                                 @if(!empty($memo->qr_approved_by))
                                     <div style="text-align: center; margin-top: 10px;" >
                                         <img src="data:image/png;base64,{{ $memo->qr_approved_by }}" width="100" alt="QR Code">
