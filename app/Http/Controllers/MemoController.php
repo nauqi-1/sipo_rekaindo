@@ -550,50 +550,7 @@ class MemoController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-
-    $rawTujuan = $request->input('tujuan', []);
-
-    $departments = [];
-    $sections = [];
-    $divisions = [];
-    $units = [];
-
-    foreach ($rawTujuan as $item) {
-        if (Str::startsWith($item, 'dept-')) {
-            $departments[] = (int) Str::after($item, 'dept-');
-        } elseif (Str::startsWith($item, 'section-')) {
-            $sections[] = (int) Str::after($item, 'section-');
-        } elseif (Str::startsWith($item, 'divisi-')) {
-            $divisions[] = (int) Str::after($item, 'divisi-');
-        } elseif (Str::startsWith($item, 'unit-')) {
-            $units[] = (int) Str::after($item, 'unit-');
-        }
-    }
-
-    // Now query the users who match any of the IDs
-    $users = User::where(function ($query) use ($departments, $sections, $divisions, $units) {
-        if (!empty($departments)) {
-            $query->orWhereIn('department_id_department', $departments);
-        }
-        if (!empty($sections)) {
-            $query->orWhereIn('section_id_section', $sections);
-        }
-        if (!empty($divisions)) {
-            $query->orWhereIn('divisi_id_divisi', $divisions);
-        }
-        if (!empty($units)) {
-            $query->orWhereIn('unit_id_unit', $units);
-        }
-    })->pluck('id')->toArray();
-
-    // Final tujuan result:
-    $tujuanId = $users;
-    //dd($finalTujuan);
-        
-        
-        //dd($request->tujuan);
-        //$hierarkiTujuan = $this->collapseHierarchies($request->tujuan);
-       //
+        $tujuanId = $this->convertTujuanToUserId($request->tujuan);
 
         $filePath = null;
         if ($request->hasFile('lampiran')) {
@@ -604,7 +561,7 @@ class MemoController extends Controller
 
         $divDeptKode = $this->getDivDeptKode(Auth::user());
 
-        dd($request->tujuanString);
+        
         
         $seri = Seri::where('kode', $divDeptKode)
                 ->where('tahun', now()->year)
@@ -717,6 +674,46 @@ class MemoController extends Controller
     }
     }
 
+    public function convertTujuanToUserId (array $rawTujuan) {
+
+    $departments = [];
+    $sections = [];
+    $divisions = [];
+    $units = [];
+
+    foreach ($rawTujuan as $item) {
+        if (Str::startsWith($item, 'dept-')) {
+            $departments[] = (int) Str::after($item, 'dept-');
+        } elseif (Str::startsWith($item, 'section-')) {
+            $sections[] = (int) Str::after($item, 'section-');
+        } elseif (Str::startsWith($item, 'divisi-')) {
+            $divisions[] = (int) Str::after($item, 'divisi-');
+        } elseif (Str::startsWith($item, 'unit-')) {
+            $units[] = (int) Str::after($item, 'unit-');
+        }
+    }
+
+    // Now query the users who match any of the IDs
+    $users = User::where(function ($query) use ($departments, $sections, $divisions, $units) {
+        if (!empty($departments)) {
+            $query->orWhereIn('department_id_department', $departments);
+        }
+        if (!empty($sections)) {
+            $query->orWhereIn('section_id_section', $sections);
+        }
+        if (!empty($divisions)) {
+            $query->orWhereIn('divisi_id_divisi', $divisions);
+        }
+        if (!empty($units)) {
+            $query->orWhereIn('unit_id_unit', $units);
+        }
+    })->pluck('id')->toArray();
+
+    // Final tujuan result:
+    $tujuanId = $users;
+
+    return $tujuanId;
+    }
 
     //fungsi untuk ngubah daftar penerima dari per-user jadi per hierarki, public supaya bisa dipake di controller CetakMemoPDF juga
     public function simplifyRecipients($tujuanString)

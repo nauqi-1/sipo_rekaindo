@@ -62,8 +62,7 @@
                         @php
                         use App\Models\User;
 
-                            $tujuanIds = explode(';', $memo->tujuan); 
-                            $tujuanNames = User::whereIn('id', $tujuanIds)->pluck('username');
+                            $tujuanNames = explode(';', $memo->tujuan_string); 
                         @endphp
 
                         @if (count($tujuanNames) === 1)

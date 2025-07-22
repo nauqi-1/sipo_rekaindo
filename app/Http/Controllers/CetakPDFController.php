@@ -96,17 +96,18 @@ class CetakPDFController extends Controller
     // Ambil data memo berdasarkan ID
     $memo = Memo::findOrFail($id_memo);
 
-    $tujuanIds = explode(';', $memo->tujuan);
+    $tujuanNames = explode(';', $memo->tujuan_string);
 
-    $tujuanNames = User::whereIn('id', $tujuanIds)
-            ->get()
-            ->map(function ($user) {
-                return trim($user->unit->name_unit);
-            })
-            ->toArray();
-    
-    
-    
+    $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+            ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$memo->nama_bertandatangan])
+            ->first();
+
+        if ($manager) {
+            $level = $this->detectLevel($manager);
+            $manager->level_kerja = $level;
+            $manager->bagian_text = $this->getBagianText($manager, $level);
+        }
+
     $headerPath = public_path('img/bheader.png');
     $footerPath = public_path('img/bfooter.png');
 
@@ -122,6 +123,7 @@ class CetakPDFController extends Controller
         'headerImage' => $headerBase64,
         'footerImage' => $footerBase64,
         'tujuanNames' => $tujuanNames,
+        'manager' => $manager,
         'isPdf' => true
     ])->setPaper('A4', 'portrait');
 
