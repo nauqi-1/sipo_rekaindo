@@ -52,13 +52,12 @@
                        
 
                         @php
-                        use App\Models\Divisi;
+                        use App\Models\Memo;
                     
-                            $divisiIds = array_filter(array_map('trim', explode(';', $memo2->tujuan))); 
-                            $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi');
+                            $tujuanNames = array_filter(array_map('trim', explode(';', $memo2->tujuan_string))); 
                         @endphp
 
-                        @if (count($divisiNames) === 1)
+                        @if (count($tujuanNames) === 1)
                             <input type="text" id="kepada" value="{{ trim($divisiNames[0]) }}" readonly>
                         @else
                          <div 
@@ -68,7 +67,7 @@
                                font-size: 14px;
                                height: auto;">
                             <ol style="padding-left: 20px;">
-                                @foreach ($divisiNames as $tujuan)
+                                @foreach ($tujuanNames as $tujuan)
                                     <li>{{ trim($tujuan) }}</li>
                                 @endforeach
                             </ol>
@@ -81,18 +80,26 @@
                         <label for="tgl_surat" class="form-label">Status Surat</label>
                     </div>
                     <div class="card-white">
+                        @php
+                            $status = $memo->status;
+                            $statusClass = match($status) {
+                                'reject' => 'bg-danger',
+                                'pending' => 'bg-warning',
+                                default => 'bg-success',
+                            };
+                        @endphp
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        <button class="status">
+                        <button class="status {{ $statusClass }}">
                         @if ($memo->status == 'reject')
-                            <!-- <span class="badge bg-danger">Ditolak</span> -->
                             <span>Ditolak</span>
+                           
                         @elseif ($memo->status == 'pending')
-                            <!-- <span class="badge bg-warning">Diproses</span> -->
                             <span>Diproses</span>
+                            
                         @else
-                            <!-- <span class="badge bg-success">Diterima</span> -->
                             <span>Diterima</span>
+                         
                         @endif
                         </button>
                     </div>
@@ -118,7 +125,7 @@
                     <div class="card-white">
                         <label for="divisi">Divisi</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri" value="{{ $memo->memo->divisi->nm_divisi }}">
+                        <input type="text" id="seri" value="{{ $memo->memo->kode }}">
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
@@ -141,7 +148,7 @@
             <form id="approvalForm" method="POST" action="{{ route('memo.updateStatus', $memo->memo->id_memo) }}">
             @csrf
             @method('PUT')
-            @if (Auth::user()->divisi->id_divisi == $memo->memo->divisi_id_divisi)
+            @if (Auth::user()->divisi?->kode_divisi == $memo->memo->kode || Auth::user()->department?->kode_department == $memo->memo->kode && $memo->memo->status == 'pending')
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="label1 card-blue1">
@@ -155,7 +162,7 @@
                             <label class="form-check-label" for="reject">Ditolak</label>
                             <input type="radio" class="form-check-input approval-checkbox" id="reject" name="status" value="reject">
                         </div>
-                        @if (Auth::user()->divisi->id_divisi == $memo->memo->divisi_id_divisi)
+                        @if (Auth::user()->divisi?->kode_divisi == $memo->memo->kode || Auth::user()->department?->kode_department == $memo->memo->kode)
                         <div class="form-check3">
                             <label class="form-check-label" for="correction">Dikoreksi</label>
                             <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="correction">

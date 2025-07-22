@@ -1033,18 +1033,18 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
                 $memo->qr_approved_by = $qrBase64;
 
                 // Kirim otomatis ke tujuan jika status approve
-                $tujuanDivisiIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
-                
-            foreach ($tujuanDivisiIds as $divisiId) {
-                $divisiId = trim($divisiId);
+                $tujuanUserIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
+
+            foreach ($tujuanUserIds as $userId) {
+                $userId = trim($userId);
 
                 // Lewati jika sama dengan divisi pengirim
-                if ($divisiId == Auth::user()->divisi_id_divisi) {
+                if ($userId == Auth::user()->id) {
                     continue;
                 }
-               // SETELAH DI APPROVE MANAGER DIVISI SENDIRI, LANGSUNG KIRIM KE SEMUA USER DI DIVISI TUJUAN DENGAN STATUS APPROVE
+               // SETELAH DI APPROVE MANAGER DIVISI SENDIRI, LANGSUNG KIRIM KE SEMUA USER DI TUJUAN DENGAN STATUS APPROVE
                 // Ambil semua user di divisi terkait
-                $penerima = \App\Models\User::where('divisi_id_divisi', $divisiId)
+                $penerima = \App\Models\User::where('id', $userId)
                     ->get();
             
                 foreach ($penerima as $penerima) {
@@ -1066,7 +1066,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
                 Notifikasi::create([
                     'judul' => "Memo Disetujui",
                     'judul_document' => $memo->judul,
-                    'id_divisi' => $memo->divisi_id_divisi,
+                    'id_user' => $memo->pembuat,
                     'updated_at' => now()
                 ]);
             } elseif ($request->status == 'reject') {
@@ -1074,14 +1074,14 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
                 Notifikasi::create([
                     'judul' => "Memo Ditolak",
                     'judul_document' => $memo->judul,
-                    'id_divisi' => $memo->divisi_id_divisi,
+                    'id_user' => $memo->pembuat,
                     'updated_at' => now()
                 ]);
             } elseif ($request->status == 'correction') {
                 Notifikasi::create([
                     'judul' => "Memo Perlu Revisi",
                     'judul_document' => $memo->judul,
-                    'id_divisi' => $memo->divisi_id_divisi,
+                    'id_user' => $memo->pembuat,
                     'updated_at' => now()
                 ]);
             }else{
