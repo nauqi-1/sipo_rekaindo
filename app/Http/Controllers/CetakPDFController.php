@@ -152,7 +152,7 @@ class CetakPDFController extends Controller
         return response()->file($formatMemoPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
 
     }
-
+}
     public function cetakundanganPDF($id)
     {
         // Ambil data dari database

@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class MemoController extends Controller
 {
@@ -523,16 +524,17 @@ class MemoController extends Controller
     
     public function store(Request $request)
     {   
-        dd($request->all());
+
         
-        $validator = Validator::make($request->all(), [
+    $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
             'tujuan' => 'required|array|min:1',
+            'tujuanString' => 'required|array|min:1',
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
             'manager_user_id' => 'required|exists:users,id',
-            'pembuat'=>'required|int|max:255',
+            'pembuat'=>'required|string|max:255',
             'catatan'=>'nullable|string|max:255',
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|numeric',
@@ -547,11 +549,51 @@ class MemoController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
+
+    $rawTujuan = $request->input('tujuan', []);
+
+    $departments = [];
+    $sections = [];
+    $divisions = [];
+    $units = [];
+
+    foreach ($rawTujuan as $item) {
+        if (Str::startsWith($item, 'dept-')) {
+            $departments[] = (int) Str::after($item, 'dept-');
+        } elseif (Str::startsWith($item, 'section-')) {
+            $sections[] = (int) Str::after($item, 'section-');
+        } elseif (Str::startsWith($item, 'divisi-')) {
+            $divisions[] = (int) Str::after($item, 'divisi-');
+        } elseif (Str::startsWith($item, 'unit-')) {
+            $units[] = (int) Str::after($item, 'unit-');
+        }
+    }
+
+    // Now query the users who match any of the IDs
+    $users = User::where(function ($query) use ($departments, $sections, $divisions, $units) {
+        if (!empty($departments)) {
+            $query->orWhereIn('department_id_department', $departments);
+        }
+        if (!empty($sections)) {
+            $query->orWhereIn('section_id_section', $sections);
+        }
+        if (!empty($divisions)) {
+            $query->orWhereIn('divisi_id_divisi', $divisions);
+        }
+        if (!empty($units)) {
+            $query->orWhereIn('unit_id_unit', $units);
+        }
+    })->pluck('id')->toArray();
+
+    // Final tujuan result:
+    $tujuanId = $users;
+    //dd($finalTujuan);
         
-        dd($request->tujuan);
-        $hierarkiTujuan = $this->collapseHierarchies($request->tujuan);
-       
-        dd($hierarkiTujuan);
+        
+        //dd($request->tujuan);
+        //$hierarkiTujuan = $this->collapseHierarchies($request->tujuan);
+       //
 
         $filePath = null;
         if ($request->hasFile('lampiran')) {
@@ -562,6 +604,8 @@ class MemoController extends Controller
 
         $divDeptKode = $this->getDivDeptKode(Auth::user());
 
+        dd($request->tujuanString);
+        
         $seri = Seri::where('kode', $divDeptKode)
                 ->where('tahun', now()->year)
                 ->latest()
@@ -570,10 +614,12 @@ class MemoController extends Controller
         if (!$seri) {
             return back()->with('error', 'Nomor seri tidak ditemukan.');
         }
+
         // Simpan dokumen
         $memo = Memo::create([
             'judul' => $request->input('judul'),
-            'tujuan' => implode(';', $request->tujuan),
+            'tujuan' => implode(';', $tujuanId),
+            'tujuan_string' => implode(';', $request->input('tujuanString')),
             'isi_memo' => $request->input('isi_memo'),
             'nomor_memo' => $request->input('nomor_memo'),
             'tgl_dibuat' => $request->input('tgl_dibuat'),
