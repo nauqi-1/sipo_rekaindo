@@ -316,6 +316,9 @@ Route::get('/kirim-risalahAdmin/{id}', [KirimController::class, 'index'])->name(
 Route::get('/risalah/view/{id}', [RisalahController::class, 'view'])->name('view.risalahAdmin');
 
 Route::get('/persetujuan-risalah/{id}', [KirimController::class,'viewRisalah'])->name('persetujuan.risalah');
+Route::get('/risalah-tambah', [KirimController::class, 'create'])->name('add-risalah.manager');
+Route::post('/risalah-store', [KirimController::class, 'store'])->name('risalah.store.manager');
+
 
 
 Route::get('/format-risalah', function() {
