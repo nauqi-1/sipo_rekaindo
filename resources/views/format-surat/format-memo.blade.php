@@ -252,7 +252,7 @@
                 <div class="header2">
                     <table>
                         <tr>
-                            <th style="text-align: left; vertical-align: top;">Dari : {{ $memo->user->unit->name_unit }}</th>
+                            <th style="text-align: left; vertical-align: top;">Dari : {{ $memo->user->unit->name_unit ?? $memo->user->section->name_section ??  $memo->user->department->name_department ?? $memo->user->divisi->nm_divisi ?? ' ' }}</th>
                             <th style="text-align: left; vertical-align: top;">
                                 Kepada :
                                 @if (count($tujuanNames) === 1)
@@ -326,9 +326,9 @@
                         @endif
                         
                         {{-- QR CODE --}}
-                        @if(!empty($undangan->qr_approved_by))
+                        @if(!empty($memo->qr_approved_by))
                             <div style="margin: 10px 0; text-align: center;">
-                                <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" width="100">
+                                <img src="data:image/png;base64,{{ $memo->qr_approved_by }}" width="100">
                             </div>
                         @else
                         <br>

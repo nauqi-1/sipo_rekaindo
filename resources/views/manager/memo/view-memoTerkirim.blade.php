@@ -43,7 +43,7 @@
                     <div class="card-white">
                         <label for="divisi">Divisi</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri" value="{{ $memo->memo->divisi->nm_divisi }}" readonly>
+                        <input type="text" id="seri" value="{{ $memo->memo->kode }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
@@ -87,13 +87,12 @@
                      @php
                         use App\Models\Divisi;
                     
-                        $divisiIds = explode(';', $memo->memo->tujuan); 
-                        $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi')->toArray();
+                        $tujuanNames = explode(';', $memo->memo->tujuan_string); 
                     @endphp
                     <div class="card-white">
                         <label for="file">Penerima</label>
                         <div class="separator"></div>
-                        <input type="text" id="penerima" value="{{ implode(', ', $divisiNames) }}" readonly>                  
+                        <input type="text" id="penerima" value="{{ implode(', ', $tujuanNames) }}" readonly>                  
                     </div>
                     @if ($memo->memo->catatan !== null)
                     <div class="card-white">

@@ -490,7 +490,7 @@ class MemoController extends Controller
         return json_encode($result);
     }
 
-    private function getDivDeptKode($user) {
+    public function getDivDeptKode($user) {
         if($user->department_id_department != NULL){
             $divisiName = Department::where('id_department', $user->department_id_department)->first();
             if($divisiName->kode_department != NULL){
@@ -524,8 +524,7 @@ class MemoController extends Controller
     
     public function store(Request $request)
     {   
-
-        
+    
     $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
