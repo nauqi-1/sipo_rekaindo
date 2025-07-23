@@ -399,11 +399,11 @@
                     </div>
                     {{-- PENGECEKAN APAKAH DIA DIREKTUR --}}
                     @php
-                        $bagian = optional($manager->unit)->nm_unit
-                            ?? optional($manager->section)->nm_section
+                        $bagian = optional($manager->unit)->name_unit
+                            ?? optional($manager->section)->name_section
                             ?? optional($manager->department)->name_department
                             ?? optional($manager->divisi)->nm_divisi
-                            ?? optional($manager->director)->nm_director;
+                            ?? optional($manager->director)->name_director;
 
                         $isDirektur = is_null($manager->divisi_id_divisi)
                             && is_null($manager->department_id_department)
@@ -416,7 +416,7 @@
                         {{-- MENAMPILKAN POSISI DARI TABEL POSITION --}}
                         @if($isDirektur)
                             <p style="text-align: center; margin: 0; font-weight: bold;">
-                                {{ optional($manager->director)->nm_director }}
+                                {{ optional($manager->director)->name_director }}
                             </p>
                         @else
                         {{-- MENAMPILKAN POSISI DARI TABEL POSITION SERTA ASAL UNIT/SECTION/DEPARTMENT/DIVISI--}}
