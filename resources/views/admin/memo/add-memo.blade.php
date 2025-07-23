@@ -114,14 +114,21 @@
                 <div class="col-md-6">
                     
                     <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                   <select name="manager_user_id" required id="managerDropdown" class="form-control">
-                        <option value="">-- Pilih Penandatangan --</option>
-                        @foreach($managers as $manager)
-                            <option value="{{ $manager->id }}" data-name="{{ $manager->firstname }} {{ $manager->lastname }}">
-                                {{ $manager->firstname }} {{ $manager->lastname }}
-                            </option>
-                        @endforeach
-                    </select>
+                   <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control">
+                                    <option value="" disabled selected style="text-align: left;">--Pilih--</option>
+                                    @foreach($managers as $manager)
+                                        @php
+                                            preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
+                                            $kode_position = $matches[1] ?? '';
+                                        @endphp
+                                        <option value="{{ $manager->id }}">
+                                            ({{ $kode_position }}) {{ $manager->firstname }} {{ $manager->lastname }}
+                                        </option>
+                                    @endforeach
+
+                                    </option>
+                                    
+                                </select>
 
                     <input type="hidden" name="nama_bertandatangan" id="namaBertandatangan">
 

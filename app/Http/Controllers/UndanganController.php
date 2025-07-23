@@ -211,10 +211,19 @@ class UndanganController extends Controller
         $managers = User::with('position:id_position,nm_position')
             ->where('role_id_role', 3)
             ->where(function ($q) use ($user) {
-                $q->where('divisi_id_divisi', $user->divisi_id_divisi)
-                    ->orWhere('department_id_department', $user->department_id_department)
-                    ->orWhere('section_id_section', $user->section_id_section)
-                    ->orWhere('unit_id_unit', $user->unit_id_unit);
+                $q->where(function ($q2) use ($user) {
+                    $q2->whereNotNull('divisi_id_divisi')
+                        ->where('divisi_id_divisi', $user->divisi_id_divisi);
+                })->orWhere(function ($q2) use ($user) {
+                    $q2->whereNotNull('department_id_department')
+                        ->where('department_id_department', $user->department_id_department);
+                })->orWhere(function ($q2) use ($user) {
+                    $q2->whereNotNull('section_id_section')
+                        ->where('section_id_section', $user->section_id_section);
+                })->orWhere(function ($q2) use ($user) {
+                    $q2->whereNotNull('unit_id_unit')
+                        ->where('unit_id_unit', $user->unit_id_unit);
+                });
             })
             ->get(['id', 'firstname', 'lastname', 'position_id_position']);
 
