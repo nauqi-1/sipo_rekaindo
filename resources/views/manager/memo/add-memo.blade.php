@@ -47,7 +47,7 @@
                     <label for="tgl_surat" class="form-label">
                         <img src="/img/memo-admin/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                     </label>
-                    <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ old('tgl_dibuat') }}">
+                    <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ old('tgl_dibuat', \Carbon\Carbon::now()->format('Y-m-d')) }}">
                     @error('tgl_dibuat')
                         <div class="form-control text-danger">{{ $message }}</div>
                     @enderror
@@ -114,14 +114,23 @@
                 <div class="col-md-6">
                     <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
                    <select name="manager_user_id" required id="managerDropdown" class="form-control" disabled>
-                        <option value="">-- Pilih Penandatangan --</option>
-                        @foreach($managers as $manager)
-                            <option value="{{ $manager->id }}" {{ $manager->id == Auth::id() ? 'selected' : '' }}>
-                                {{ $manager->firstname }} {{ $manager->lastname }}
-                            </option>
-                        @endforeach
-                    </select>
+                                    <option value="">-- Pilih Penandatangan --</option>
+                                    @foreach($managers as $manager)
+                                        <option value="{{ $manager->id }}" {{ $manager->id == Auth::id() ? 'selected' : '' }}>
+                                            @php
+                                                if ($manager->position->id_position !== 1) {
+                                                    preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
+                                                    $kode_position = $matches[1] ?? $manager->position->nm_position;
+                                                } else {
+                                                    $kode_position = $manager->position->nm_position;
+                                                }
+                                            @endphp
 
+                                            ({{ $kode_position }}) {{ $manager->firstname }} {{ $manager->lastname }}
+
+                                        </option>
+                                    @endforeach
+                                </select>
                     <input type="hidden" name="manager_user_id" id="managerUserId" class="form-control" value="{{ Auth::user()->id }}">
 
                     <input type="hidden" name="nama_bertandatangan" id="namaBertandatangan" class="form-control" value="{{ Auth::user()->firstname }} {{ Auth::user()->lastname}}">
