@@ -234,9 +234,6 @@ class MemoController extends Controller
         $divisiList = Divisi::all(); 
 
         $user = Auth::user();
-        $divisiId = Divisi::where('nm_divisi', 'like', '%Keuangan%')
-                    ->orWhere('nm_divisi', 'like', '%HR%')
-                    ->first();
         $idUser = Auth::user();
         $user = User::where('id', $idUser->id)->first();
 
@@ -264,14 +261,25 @@ class MemoController extends Controller
             $bulanRomawi,
             now()->year
         );
-
-        $managers = User::where('role_id_role', 3)
-            ->where(function($q) use ($user) {
-                $q->where('divisi_id_divisi', $user->divisi_id_divisi)
-                    ->orWhere('department_id_department', $user->department_id_department);
-                    
+        // Daftar manager yang satu divisi, department, section, dan unit dengan admin yg membuat suratnya
+        $managers = User::with('position:id_position,nm_position')
+            ->where('role_id_role', 3)
+            ->where(function ($q) use ($user) {
+                $q->where(function ($q2) use ($user) {
+                    $q2->whereNotNull('divisi_id_divisi')
+                        ->where('divisi_id_divisi', $user->divisi_id_divisi);
+                })->orWhere(function ($q2) use ($user) {
+                    $q2->whereNotNull('department_id_department')
+                        ->where('department_id_department', $user->department_id_department);
+                })->orWhere(function ($q2) use ($user) {
+                    $q2->whereNotNull('section_id_section')
+                        ->where('section_id_section', $user->section_id_section);
+                })->orWhere(function ($q2) use ($user) {
+                    $q2->whereNotNull('unit_id_unit')
+                        ->where('unit_id_unit', $user->unit_id_unit);
+                });
             })
-            ->get(['id', 'firstname', 'lastname']);
+            ->get(['id', 'firstname', 'lastname', 'position_id_position']);
            
         // Ambil seluruh user dan struktur organisasi (untuk dropdown tree)
         $users = User::select('id', 'firstname', 'lastname', 'divisi_id_divisi', 'department_id_department', 'section_id_section', 'unit_id_unit')->get();
