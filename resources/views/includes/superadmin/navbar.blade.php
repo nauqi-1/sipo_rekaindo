@@ -50,8 +50,8 @@
           </a>
           <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
             <div class="dropdown-header">
-              <h4 style="text-transform: capitalize;">Selamat Datang, {{ Auth::user()->username }} </h4>
-              <p class="text-muted" style="text-transform: capitalize;">{{ Auth::user()->role->nm_role }} </p>
+              <h4 style="text-transform: capitalize;">Selamat Datang, {{ Auth::user()->firstname }} {{ Auth::user()->lastname }} </h4>
+              <p class="text-muted" style="text-transform: capitalize;">{{ Auth::user()->position->nm_position }} </p>
               <a href="{{ route('edit-profile.superadmin') }}" class="dropdown-item">
                 <i class="ti ti-user"></i> <span>Profil</span>
               </a>
