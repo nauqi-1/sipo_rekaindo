@@ -262,7 +262,8 @@ class MemoController extends Controller
             now()->year
         );
         // Daftar manager yang satu divisi, department, section, dan unit dengan admin yg membuat suratnya
-        $managers = User::with('position:id_position,nm_position')
+        if ($user->position_id_position !== 1) {
+            $managers = User::with('position:id_position,nm_position')
             ->where('role_id_role', 3)
             ->where(function ($q) use ($user) {
                 $q->where(function ($q2) use ($user) {
@@ -280,7 +281,13 @@ class MemoController extends Controller
                 });
             })
             ->get(['id', 'firstname', 'lastname', 'position_id_position']);
-           
+        } else {
+             $managers = User::with('position:id_position,nm_position')
+             ->where('role_id_role', 3)
+             ->where('director_id_director', $user->director_id_director)
+             ->get(['id', 'firstname', 'lastname', 'position_id_position']);
+        }
+
         // Ambil seluruh user dan struktur organisasi (untuk dropdown tree)
         $users = User::select('id', 'firstname', 'lastname', 'divisi_id_divisi', 'department_id_department', 'section_id_section', 'unit_id_unit')->get();
         $orgTree = $this->getOrgTreeWithUsers();
@@ -532,7 +539,6 @@ class MemoController extends Controller
     
     public function store(Request $request)
     {   
-    
     $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',

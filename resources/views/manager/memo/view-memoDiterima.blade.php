@@ -58,7 +58,7 @@
                         @endphp
 
                         @if (count($tujuanNames) === 1)
-                            <input type="text" id="kepada" value="{{ trim($divisiNames[0]) }}" readonly>
+                            <input type="text" id="kepada" value="{{ trim($tujuanNames[0]) }}" readonly>
                         @else
                          <div 
                         style="border-radius: 8px; 

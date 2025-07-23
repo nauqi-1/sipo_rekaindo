@@ -47,7 +47,7 @@
                     <label for="tgl_surat" class="form-label">
                         <img src="/img/memo-admin/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                     </label>
-                    <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ old('tgl_dibuat') }}">
+                    <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ old('tgl_dibuat', \Carbon\Carbon::now()->format('Y-m-d')) }}">
                     @error('tgl_dibuat')
                         <div class="form-control text-danger">{{ $message }}</div>
                     @enderror
@@ -114,7 +114,7 @@
                 <div class="col-md-6">
                     
                     <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                   <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control">
+                   <select name="manager_user_id" required id="managerDropdown" class="form-control">
                                     <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                                     @foreach($managers as $manager)
                                         @php
@@ -314,15 +314,19 @@
 });
     document.addEventListener('DOMContentLoaded', function () {
         const dropdown = document.getElementById('managerDropdown');
-        const hiddenInput = document.getElementById('namaBertandatangan');
+        const namaField = document.getElementById('namaBertandatangan');
 
         dropdown.addEventListener('change', function () {
             const selectedOption = dropdown.options[dropdown.selectedIndex];
-            const name = selectedOption.getAttribute('data-name');
-            hiddenInput.value = name || '';
+            const text = selectedOption.textContent || selectedOption.innerText;
+
+            // Hapus kode posisi dari nama (opsional kalau kamu hanya mau nama)
+            // Misalnya: "(KOD01) John Doe" => "John Doe"
+            const nameOnly = text.replace(/\(.*?\)\s*/, '');
+            
+            namaField.value = nameOnly;
         });
     });
-
         // Modal Upload File - Menampilkan Modal
         document.getElementById('openUploadModal').addEventListener('click', function () {
             var uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
