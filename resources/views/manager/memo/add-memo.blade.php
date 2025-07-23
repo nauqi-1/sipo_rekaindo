@@ -80,7 +80,7 @@
                     <div style="width: 95%;">
                     <label style="font-size: small;" for="kepada" class="form-label">
                         <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span> 
-                        <span class="text-danger" style="font-size: x-small;">Cukup pilih tujuan saja. Jangan memilih tingkat dibawahnya.</span>
+                        <span class="text-danger" style="font-size: x-small;">Cukup pilih tujuan tanpa memilih tingkat dibawahnya.</span>
                     </label>
                     
                     <div id="orgTreeError" class="form-control text-danger" style="display:none;"></div>
