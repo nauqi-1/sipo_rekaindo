@@ -252,7 +252,7 @@
                 <div class="header2">
                     <table>
                         <tr>
-                            <th style="text-align: left; vertical-align: top;">Dari : {{ $memo->user->unit->name_unit ?? $memo->user->section->name_section ??  $memo->user->department->name_department ?? $memo->user->divisi->nm_divisi ?? ' ' }}</th>
+                            <th style="text-align: left; vertical-align: top;">Dari : {{ $memo->user->unit->name_unit ?? $memo->user->section->name_section ??  $memo->user->department->name_department ?? $memo->user->divisi->nm_divisi ?? $memo->user->director->name_director ??' ' }}</th>
                             <th style="text-align: left; vertical-align: top;">
                                 Kepada :
                                 @if (count($tujuanNames) === 1)
@@ -294,29 +294,26 @@
                         @endif
                         <p style="text-align: justify;">Demikian kami sampaikan. Atas segala perhatian dan kerjasamanya, kami ucapkan terima kasih.</p>
                     </div>
-                    <table class="signature">
-                        <tr>
-                            <td>
+                    
                                 {{-- PENGECEKAN APAKAH DIA DIREKTUR --}}
                     @php
-                        $bagian = optional($manager->unit)->nm_unit
-                            ?? optional($manager->section)->nm_section
+                        $bagian = optional($manager->unit)->name_unit
+                            ?? optional($manager->section)->name_section
                             ?? optional($manager->department)->name_department
                             ?? optional($manager->divisi)->nm_divisi
-                            ?? optional($manager->director)->nm_director;
+                            ?? optional($manager->director)->name_director;
 
                         $isDirektur = is_null($manager->divisi_id_divisi)
                             && is_null($manager->department_id_department)
                             && is_null($manager->section_id_section)
                             && is_null($manager->unit_id_unit);
                     @endphp
-                    <div
-                        style="width: 40%; float: right; text-align: left; margin-right: 3%; line-height: 1.3; margin-top: 20px;">
+                    <div style="width: 40%; margin-left: auto; text-align: left; line-height: 1.3; margin-top: 20px;">
                         <p style="text-align: center; margin-bottom: 5px;"><b>Hormat kami,</b></p>
                         {{-- MENAMPILKAN POSISI DARI TABEL POSITION --}}
                         @if($isDirektur)
                             <p style="text-align: center; margin: 0; font-weight: bold;">
-                                {{ optional($manager->director)->nm_director }}
+                                {{ optional($manager->director)->name_director }}
                             </p>
                         @else
                         {{-- MENAMPILKAN POSISI DARI TABEL POSITION SERTA ASAL UNIT/SECTION/DEPARTMENT/DIVISI--}}
@@ -334,12 +331,12 @@
                         <br>
                             @endif
                         {{-- NAMA BERTANDA TANGAN --}}
-                        
-                        <p style="margin: 0; text-align: center;"><b><u>{{ $manager->firstname }}
-                                    {{ $manager->lastname }}</u></b></p>
-                            </td>
-                        </tr>
-                    </table>
+                
+                        <p style="margin: 0; text-align: center;"><b><u>{{ $manager->firstname }} {{ $manager->lastname }}</u></b></p>
+                        </div>
+                        <div style="clear: both;"></div>
+
+                           
                 </div>
             </div>
         </div>
