@@ -55,11 +55,6 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl_rapat" value="{{\Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l, d F Y')}}" readonly>
                     </div>
-                    <div class="card-white">
-                        <label for="kepada">Kepada</label>
-                        <div class="separator"></div>
-                        <input type="text" id="kepada" value="{{$undangan->tujuan}}" readonly>
-                    </div>
                 </div>
                 <div class="col">
                     <div class="card-blue">
@@ -108,6 +103,19 @@
                     </div>
                 </div>
             </div>
+            <div class="row mb-4" style="gap: 20px;">
+                <div class="col">
+                    <div class="card-blue">
+                        <label for="diterima" class="form-label">
+                            <img src="/img/memo-admin/detail.png" alt="date" style="margin-right: 5px;">Daftar Tujuan
+                        </label>
+                    </div>
+                    <div class="card-white">
+                        <label for="diterima">Diterima</label>
+                        <div class="separator"></div>
+                        <pre style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
+                    </div>   
+                </div>
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="card-blue1">Catatan</div>

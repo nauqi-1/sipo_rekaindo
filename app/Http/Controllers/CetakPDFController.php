@@ -238,7 +238,7 @@ class CetakPDFController extends Controller
     }
 
 
-    private function detectLevel($user)
+    public function detectLevel($user)
     {
         if (!empty($user->unit_id_unit)) return 'unit';
         if (!empty($user->section_id_section)) return 'section';
@@ -248,7 +248,7 @@ class CetakPDFController extends Controller
         return null;
     }
 
-    private function getBagianText($user, $level)
+    public function getBagianText($user, $level)
     {
         switch ($level) {
             case 'unit':

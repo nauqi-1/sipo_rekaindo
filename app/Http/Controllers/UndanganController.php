@@ -15,6 +15,7 @@ use App\Models\Backup_Document;
 use App\Models\Kirim_Document;
 use App\Models\Section;
 use App\Models\Unit;
+use App\Http\Controllers\CetakPDFController;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Log;
@@ -957,19 +958,29 @@ class UndanganController extends Controller
             ? $undangan->tujuan
             : explode(';', $undangan->tujuan);
 
-        $users = User::whereIn('id', $idArray)->get();
+        $users = User::whereIn('id', $idArray)->with('position')->get();
+        $pdfController = new CetakPDFController();
+        // Ambil user lengkap beserta relasi organisasi
+        $listNama = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+            ->whereIn('id', $idArray)
+            ->get()
+            ->map(function ($user, $key) use ($pdfController) {
+                $level = $pdfController->detectLevel($user);
+                $user->level_kerja = $level;
+                $user->bagian_text = $pdfController->getBagianText($user, $level);
+                return $user;
+            })
+            ->sortBy(function ($user) {
+                return optional($user->position)->id_position;
+            })
+            ->values();
 
-        // Simpan langsung hasil ke $undangan->tujuan
-        $listNama = [];
-        foreach ($users as $i => $user) {
-            $listNama[] = ($i + 1) . '. ' . $user->firstname . ' ' . $user->lastname;
-        }
-
-
-        // Simpan daftar nama bernomor sebagai string (dipisah baris baru)
-        $undangan->tujuan = implode("\n", $listNama);
-
-
+        $undangan->tujuan = $listNama->map(function ($user, $index) {
+            return ($index + 1) . '. '
+                . $user->position->nm_position . ' '
+                . $user->bagian_text . ' '
+                . '(' . $user->firstname . ' ' . $user->lastname . ')';
+        })->implode("\n");
 
         $undanganCollection = collect([$undangan]); // Bungkus dalam collection
 

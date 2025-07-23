@@ -14,7 +14,7 @@
     <div class="row">
     <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="breadcrumb" style="gap: 5px; width: 82%;">
-                <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="#" style="color: #565656;">Memo</a>
+                <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="#" style="color: #565656;">Undangan</a>
             </div>
             <form method="GET" action="{{ route('undangan.superadmin') }}" class="search-filter d-flex gap-2">
             <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
