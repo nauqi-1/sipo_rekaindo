@@ -11,7 +11,7 @@
 
         <!-- Welcome Message -->
         <div class="welcome-message">
-            <p>Selamat datang <strong>{{ Auth::user()->username }}</strong> di <span class="system-name">Sistem Persuratan!</span> Anda login sebagai <span class="role-badge">Manager</span></p>
+            <p>Selamat datang <strong>{{ Auth::user()->firstname .' '. Auth::user()->lastname }}</strong> di <span class="system-name">Sistem Persuratan!</span> Anda login sebagai <span class="role-badge">{{Auth::user()->position->nm_position}}</span></p>
         </div>
 
         <!-- Overview Section -->
