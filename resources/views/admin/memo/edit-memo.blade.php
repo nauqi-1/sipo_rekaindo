@@ -148,7 +148,7 @@
                 <div class="col-md-12">
                     <label for="need" class="need">Keperluan Barang</label>
                     <label for="isi" class="fill">*Isi keperluan barang jika dibutuhkan</label>
-                </div>
+                
             </div>
             @foreach ($memo->kategoriBarang as $index => $barang)
             <div class="row mb-4 isi">
@@ -171,7 +171,7 @@
                 </div>
             </div>
         @endforeach
-
+</div>
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('memo.admin')}}">Batal</a></button>
                 <button type="submit" class="btn btn-save">Simpan</button>

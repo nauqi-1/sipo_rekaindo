@@ -39,16 +39,32 @@
                         <div class="separator"></div>
                         <input type="text" id="seri" value="{{ $memo->seri_surat }}" readonly>
                     </div>
-                     @php
-                        use App\Models\Divisi;
-                    
-                        $divisiIds = explode(';', $memo->tujuan); 
-                        $divisiNames = Divisi::whereIn('id_divisi', $divisiIds)->pluck('nm_divisi')->toArray();
-                    @endphp
-                    <div class="card-white">
-                        <label for="file">Penerima</label>
+                     <div class="card-white flex items-stretch">
+                        <label for="kepada">Kepada</label>
                         <div class="separator"></div>
-                        <input type="text" id="penerima" value="{{ implode(', ', $divisiNames) }}" readonly>                  
+
+                        @php
+                        use App\Models\User;
+
+                            $tujuanNames = explode(';', $memo->tujuan_string); 
+                        @endphp
+
+                        @if (count($tujuanNames) === 1)
+                            <input type="text" id="kepada" value="{{ trim($tujuanNames[0]) }}" readonly>
+                        @else
+                         <div 
+                        style="border-radius: 8px; 
+                               padding: 8px 12px; 
+                               background-color: #fff; 
+                               font-size: 14px;
+                               height: auto;">
+                            <ol style="padding-left: 20px;">
+                                @foreach ($tujuanNames as $tujuan)
+                                    <li>{{ trim($tujuan) }}</li>
+                                @endforeach
+                            </ol>
+                         </div>
+                        @endif
                     </div>
                 </div>
                 <div class="col">
@@ -82,7 +98,7 @@
                     <div class="card-white">
                         <label for="divisi">Divisi</label>
                         <div class="separator"></div>
-                        <input type="text" id="divisi" value="{{ $memo->divisi->nm_divisi }}" readonly>
+                        <input type="text" id="divisi" value="{{ $memo->kode }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>

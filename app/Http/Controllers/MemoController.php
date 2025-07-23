@@ -52,18 +52,27 @@ class MemoController extends Controller
         // 1. both: memo milik sendiri dan kiriman orang lain
         // 2. own: memo yang dibuat diri sendiri saja
         // 3. received: memo yang dibuat orang lain saja
+        
         $filterType = $request->get('divisi_filter', 'both');
+        
         if ($filterType === 'own') {
     // Only memos where current user is the sender
     $query->whereHas('kirimDocument', function ($q) use ($userId) {
         $q->where('id_pengirim', $userId)
-          ->where('jenis_document', 'memo');
+          ->where('jenis_document', 'memo')
+          ->whereHas('memo', function ($q) {
+              $q->where('kode', $this->getDivDeptKode(Auth::user()));
+          });
     });
     } elseif ($filterType === 'received' || $filterType === 'other') {
         // Only memos received by current user
         $query->whereHas('kirimDocument', function ($q) use ($userId) {
             $q->where('id_penerima', $userId)
-              ->where('jenis_document', 'memo');
+              ->where('jenis_document', 'memo')
+              //->whereHas('memo', function ($q) {
+              //    $q->where('kode', '!=', $this->getDivDeptKode(Auth::user()));
+              //})
+              ;
         });
     } else {
         // Both sent and received memos by the user
@@ -693,6 +702,7 @@ class MemoController extends Controller
     $sections = [];
     $divisions = [];
     $units = [];
+    $users = [];
 
     foreach ($rawTujuan as $item) {
         if (Str::startsWith($item, 'dept-')) {
@@ -703,11 +713,13 @@ class MemoController extends Controller
             $divisions[] = (int) Str::after($item, 'divisi-');
         } elseif (Str::startsWith($item, 'unit-')) {
             $units[] = (int) Str::after($item, 'unit-');
+        } elseif (Str::startsWith($item, 'user-')) {
+            $users[] = (int) Str::after($item, 'user-');
         }
     }
 
     // Now query the users who match any of the IDs
-    $users = User::where(function ($query) use ($departments, $sections, $divisions, $units) {
+    $users = User::where(function ($query) use ($departments, $sections, $divisions, $units, $users) {
         if (!empty($departments)) {
             $query->orWhereIn('department_id_department', $departments);
         }
@@ -719,6 +731,9 @@ class MemoController extends Controller
         }
         if (!empty($units)) {
             $query->orWhereIn('unit_id_unit', $units);
+        }
+        if (!empty($users)) {
+            $query->orWhereIn('id', $users);
         }
     })->pluck('id')->toArray();
 
@@ -1007,7 +1022,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
     public function updateStatus(Request $request, $id)
     {
         $memo = Memo::findOrFail($id);
-        $userDivisiId = Auth::user()->divisi_id_divisi;
+        $userDivDeptKode = $this->getDivDeptKode(Auth::user());
         $userId = Auth::id();
 
         // Validasi input
@@ -1022,9 +1037,9 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
                 'catatan' => 'required|string',
             ]);
         }
-        
-        
-        if ($userDivisiId == $memo->divisi_id_divisi) {
+
+
+        if ($userDivDeptKode == $memo->kode) {
         // Update status
             $memo->status = $request->status;
             $currentKirim = Kirim_document::where('id_document', $id)

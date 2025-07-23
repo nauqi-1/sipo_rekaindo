@@ -181,8 +181,13 @@
             </div>
 
             <div class="footer">
+                @if (Auth::user()->divisi?->kode_divisi == $memo->memo->kode || Auth::user()->department?->kode_department == $memo->memo->kode)
+                <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('memo.terkirim') }}'">Kembali</button>
+                <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+                @else
                 <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('memo.diterima') }}'">Kembali</button>
                 <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+                @endif
             </div>
             @endif
         </form>
