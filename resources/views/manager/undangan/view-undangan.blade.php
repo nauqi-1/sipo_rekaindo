@@ -47,10 +47,12 @@
                         <input type="text" id="seri" value="{{$undangan->seri_surat }}" readonly>
                     </div>
                     <div class="card-white">
-                        <label for="diterima">Diterima</label>
+                        <label for="tgl_dibuat">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <pre style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
-                    </div>
+                        <input type="text" id="tanggal"
+                            value="{{$undangan->tgl_dibuat ? \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') : '-'  }}"
+                            readonly>
+                        </div>
                 </div>
                 <div class="col">
                     <div class="card-blue">
@@ -80,6 +82,20 @@
                     </div>
                 </div>
             </div>
+            <div class="row mb-4" style="gap: 20px;">
+                <div class="col"> 
+                   <div class="card-blue">
+                        <label for="diterima" class="form-label">
+                            <img src="/img/memo-admin/detail.png" alt="date" style="margin-right: 5px;">Daftar Tujuan
+                        </label>
+                    </div>
+                    <div class="card-white">
+                        <label for="diterima">Diterima</label>
+                        <div class="separator"></div>
+                        <pre style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
+                    </div>  
+                </div>
+            </div>  
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="card-blue">
@@ -120,7 +136,7 @@
                         @endif
                     </div>
                 </div>
-            </div>
+            </div>   
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="card-blue">
