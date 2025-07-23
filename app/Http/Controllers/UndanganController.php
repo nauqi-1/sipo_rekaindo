@@ -206,27 +206,32 @@ class UndanganController extends Controller
 
         //Mengambil data manager yang bertanda tangan nanti
         $user = Auth::user();
-        $user = Auth::user();
-        //ini di cek berdasarkan role manager kemudian dicari yang cocok dengan yang login dan ditampilkan di dropdown
-        $managers = User::with('position:id_position,nm_position')
-            ->where('role_id_role', 3)
-            ->where(function ($q) use ($user) {
-                $q->where(function ($q2) use ($user) {
-                    $q2->whereNotNull('divisi_id_divisi')
-                        ->where('divisi_id_divisi', $user->divisi_id_divisi);
-                })->orWhere(function ($q2) use ($user) {
-                    $q2->whereNotNull('department_id_department')
-                        ->where('department_id_department', $user->department_id_department);
-                })->orWhere(function ($q2) use ($user) {
-                    $q2->whereNotNull('section_id_section')
-                        ->where('section_id_section', $user->section_id_section);
-                })->orWhere(function ($q2) use ($user) {
-                    $q2->whereNotNull('unit_id_unit')
-                        ->where('unit_id_unit', $user->unit_id_unit);
-                });
-            })
-            ->get(['id', 'firstname', 'lastname', 'position_id_position']);
 
+        //ini di cek berdasarkan role manager kemudian dicari yang cocok dengan yang login dan ditampilkan di dropdown
+        if ($user->position_id_position !== 1) {
+            $managers = User::with('position:id_position,nm_position')
+                ->where('role_id_role', 3)
+                ->where(function ($q) use ($user) {
+                    $q->where(function ($q2) use ($user) {
+                        $q2->whereNotNull('divisi_id_divisi')
+                            ->where('divisi_id_divisi', $user->divisi_id_divisi);
+                    })->orWhere(function ($q2) use ($user) {
+                        $q2->whereNotNull('department_id_department')
+                            ->where('department_id_department', $user->department_id_department);
+                    })->orWhere(function ($q2) use ($user) {
+                        $q2->whereNotNull('section_id_section')
+                            ->where('section_id_section', $user->section_id_section);
+                    })->orWhere(function ($q2) use ($user) {
+                        $q2->whereNotNull('unit_id_unit')
+                            ->where('unit_id_unit', $user->unit_id_unit);
+                    });
+                })
+                ->get(['id', 'firstname', 'lastname', 'position_id_position']);
+        } else
+            $managers = collect([
+                User::with('position:id_position,nm_position')
+                    ->find($user->id, ['id', 'firstname', 'lastname', 'position_id_position'])
+            ]);
 
 
 
