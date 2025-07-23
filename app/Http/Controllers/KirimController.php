@@ -428,6 +428,9 @@ class KirimController extends Controller
 
         // Ambil data kirim_document utama berdasarkan hasil subquery
         $risalahs = Kirim_Document::whereIn('id_kirim_document', $subQuery)
+            ->when(auth()->user()->position_id_position == 1, function ($query) {
+                $query->where('status', 'approve');
+            })
             ->with(['risalah' => function ($query) use ($request) {
                 // Filter tanggal dibuat
                 if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
@@ -442,7 +445,7 @@ class KirimController extends Controller
                 if ($request->filled('search')) {
                     $query->where(function ($q) use ($request) {
                         $q->where('judul', 'like', '%' . $request->search . '%')
-                        ->orWhere('nomor_risalah', 'like', '%' . $request->search . '%');
+                            ->orWhere('nomor_risalah', 'like', '%' . $request->search . '%');
                     });
                 }
             }]);
