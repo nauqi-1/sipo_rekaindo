@@ -207,16 +207,16 @@ class UndanganController extends Controller
         //Mengambil data manager yang bertanda tangan nanti
         $user = Auth::user();
         $user = Auth::user();
-
-$managers = User::with('position:id_position,nm_position')
-    ->where('role_id_role', 3)
-    ->where(function ($q) use ($user) {
-        $q->where('divisi_id_divisi', $user->divisi_id_divisi)
-            ->orWhere('department_id_department', $user->department_id_department)
-            ->orWhere('section_id_section', $user->section_id_section)
-            ->orWhere('unit_id_unit', $user->unit_id_unit);
-    })
-    ->get(['id', 'firstname', 'lastname', 'position_id_position']);
+        //ini di cek berdasarkan role manager kemudian dicari yang cocok dengan yang login dan ditampilkan di dropdown
+        $managers = User::with('position:id_position,nm_position')
+            ->where('role_id_role', 3)
+            ->where(function ($q) use ($user) {
+                $q->where('divisi_id_divisi', $user->divisi_id_divisi)
+                    ->orWhere('department_id_department', $user->department_id_department)
+                    ->orWhere('section_id_section', $user->section_id_section)
+                    ->orWhere('unit_id_unit', $user->unit_id_unit);
+            })
+            ->get(['id', 'firstname', 'lastname', 'position_id_position']);
 
 
 

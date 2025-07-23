@@ -106,6 +106,9 @@
                         <label for="file">File</label>
                         <div class="separator"></div>
                         <button class="btn-file"  onclick="window.location.href='{{ route('view-risalahPDF', $risalah->id_risalah) }}'"><img src="/img/mata.png" alt="view">Lihat</button>
+                        @if ($risalah->status=='approve')
+                        <button class="down btn-file" onclick="window.location.href='{{ route('cetakrisalah',['id' => $risalah->id_risalah]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</button>
+                        @endif
                     </div>
                     <!-- <div class="card-white">
                         <label for="lampiran">Lampiran</label>
