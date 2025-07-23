@@ -35,6 +35,8 @@ use Illuminate\Support\Facades\Route;
         ->name('memo-admin/add');
     Route::post('memo-admin/add/doc', [MemoController::class, 'store'])
     ->name('memo-admin.store');
+    Route::get('memo-manager/add', [MemoController::class, 'create'])
+        ->name('memo-manager/add');
 
     Route::get('undangan-superadmin/add', [UndanganController::class, 'create'])
         ->name('undangan-superadmin/add');

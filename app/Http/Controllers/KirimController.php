@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
+use App\Http\Controllers\MemoController;
 
 class KirimController extends Controller
 {
@@ -165,8 +166,9 @@ class KirimController extends Controller
 
     public function memoTerkirim(Request $request)
     {
-        $userId = auth()->id();
-        $divisiId = auth()->user()->divisi_id_divisi;
+        $userId = Auth::id();
+        $memoController = new MemoController();
+        $userKode = $memoController->getDivDeptKode(Auth::user());
         $sortBy = $request->get('sort_by', 'kirim_document.id_kirim_document');
         $sortDirection = $request->get('sort_direction', 'desc');
 
@@ -186,16 +188,13 @@ class KirimController extends Controller
 
         $memoTerkirim = Kirim_Document::where('jenis_document', 'memo')
             ->where(function ($query) use ($userId) {
-                $query->where('id_pengirim', $userId)
-                      ->orWhere('id_penerima', $userId);
+                $query->where('id_penerima', $userId);
+                      //->orWhere('id_penerima', $userId);
             })
            // ->where('kirim_document.status', '!=', 'pending')
-            ->whereHas('penerima', function ($query) use ($divisiId) {
-                $query->where('divisi_id_divisi', $divisiId);
-                      
-            })
-            ->whereHas('memo', function ($query) use ($request, $divisiId) {
-                $query->where('memo.divisi_id_divisi', $divisiId)
+           
+            ->whereHas('memo', function ($query) use ($request, $userKode) {
+                $query->where('memo.kode', $userKode)
                 //->where('memo.status', '!=', 'pending')
                 ;
 
@@ -237,6 +236,8 @@ class KirimController extends Controller
     public function memoDiterima(Request $request)
     {
         $userId = auth()->id();
+        $memoController = new MemoController();
+        $userKode = $memoController->getDivDeptKode(Auth::user());
         session(['previous_url' => url()->previous()]);
         $sortBy = $request->get('sort_by', 'kirim_document.id_kirim_document');
         $sortDirection = $request->get('sort_direction', 'desc');
@@ -256,7 +257,8 @@ class KirimController extends Controller
          $memoDiterima = Kirim_Document::where('jenis_document', 'memo')
         ->where('id_penerima', $userId)
         ->whereIn('kirim_document.status',  ['pending','approve'])
-        ->whereHas('memo', function ($query) use ($request) {
+        ->whereHas('memo', function ($query) use ($request, $userKode) {
+            $query->where('memo.kode', 'not', $userKode);
             // Additional filters
             if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
                 $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);

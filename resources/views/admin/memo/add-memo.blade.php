@@ -15,6 +15,7 @@
     <!--DEPENDENCY UNTUK JSTREE-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" rel="stylesheet">    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container">
@@ -78,7 +79,8 @@
                 <div class="d-flex justify-content-center">
                     <div style="width: 95%;">
                     <label style="font-size: small;" for="kepada" class="form-label">
-                        <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span> <span class="text-muted" style="font-size: x-small;">Cukup pilih tujuan saja. Jangan memilih tingkat dibawahnya.</span>
+                        <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span> 
+                        <span class="text-danger" style="font-size: x-small;">Cukup pilih tujuan saja. Jangan memilih tingkat dibawahnya.</span>
                     </label>
                     
                     <div id="orgTreeError" class="form-control text-danger" style="display:none;"></div>
@@ -104,6 +106,9 @@
                         </script>
                            
                     </div>
+                    @error('tujuan[]')
+                            <div class="form-control text-danger">{{ $message }}</div>       
+                        @enderror
                     </div>
                 </div>
                 <div class="col-md-6">
