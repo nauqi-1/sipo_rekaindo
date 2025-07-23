@@ -52,18 +52,26 @@ class MemoController extends Controller
         // 1. both: memo milik sendiri dan kiriman orang lain
         // 2. own: memo yang dibuat diri sendiri saja
         // 3. received: memo yang dibuat orang lain saja
+        
         $filterType = $request->get('divisi_filter', 'both');
+        
         if ($filterType === 'own') {
     // Only memos where current user is the sender
     $query->whereHas('kirimDocument', function ($q) use ($userId) {
         $q->where('id_pengirim', $userId)
-          ->where('jenis_document', 'memo');
+          ->where('jenis_document', 'memo')
+          ->whereHas('memo', function ($q) {
+              $q->where('kode', $this->getDivDeptKode(Auth::user()));
+          });
     });
     } elseif ($filterType === 'received' || $filterType === 'other') {
         // Only memos received by current user
         $query->whereHas('kirimDocument', function ($q) use ($userId) {
             $q->where('id_penerima', $userId)
-              ->where('jenis_document', 'memo');
+              ->where('jenis_document', 'memo')
+              ->whereHas('memo', function ($q) {
+                  $q->where('kode', '!=', $this->getDivDeptKode(Auth::user()));
+              });
         });
     } else {
         // Both sent and received memos by the user
