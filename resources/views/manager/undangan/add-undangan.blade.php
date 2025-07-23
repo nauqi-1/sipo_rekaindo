@@ -95,7 +95,8 @@
                                 <div style="width: 95%">
                                     <label for="kepada" class="form-label">
                                         <img src="/img/undangan/kepada.png" alt="kepada" class="form-label"
-                                            style="margin-right: 5px; color: #1f4178;">Kepada <span class="text-danger">*</span>
+                                            style="margin-right: 5px; color: #1f4178;">Kepada <span
+                                            class="text-danger">*</span>
                                         <span class="label-kepada">Pilih user atau struktur, semua user di bawah
                                             struktur akan otomatis terpilih</span>
                                     </label>
@@ -159,18 +160,31 @@
                             <div class="col-md-6">
                                 <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span
                                         class="text-danger">*</span></label>
-                                <select name="manager_user_id" required id="managerDropdown" class="form-control" disabled>
-                                <option value="">-- Pilih Penandatangan --</option>
-                                @foreach($managers as $manager)
-                                    <option value="{{ $manager->id }}" {{ $manager->id == Auth::id() ? 'selected' : '' }}>
-                                        {{ $manager->firstname }} {{ $manager->lastname }}
-                                    </option>
-                                @endforeach
-                            </select>
+                                <select name="manager_user_id" required id="managerDropdown" class="form-control"
+                                    disabled>
+                                    <option value="">-- Pilih Penandatangan --</option>
+                                    @foreach($managers as $manager)
+                                        <option value="{{ $manager->id }}" {{ $manager->id == Auth::id() ? 'selected' : '' }}>
+                                            @php
+                                                if ($manager->position->id_position !== 1) {
+                                                    preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
+                                                    $kode_position = $matches[1] ?? $manager->position->nm_position;
+                                                } else {
+                                                    $kode_position = $manager->position->nm_position;
+                                                }
+                                            @endphp
 
-                            <input type="hidden" name="manager_user_id" id="managerUserId" class="form-control" value="{{ Auth::user()->id }}">
+                                            ({{ $kode_position }}) {{ $manager->firstname }} {{ $manager->lastname }}
 
-                            <input type="hidden" name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" value="{{ $manager->id }}">
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                <input type="hidden" name="manager_user_id" id="managerUserId" class="form-control"
+                                    value="{{ Auth::user()->id }}">
+
+                                <input type="hidden" name="nama_bertandatangan" id="nama_bertandatangan"
+                                    class="form-control" value="{{ $manager->id }}">
                             </div>
                             <div class="col-md-6 lampiran">
                                 <label for="lampiran" class="form-label">Lampiran</label>
