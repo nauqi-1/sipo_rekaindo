@@ -474,23 +474,37 @@ class CetakPDFController extends Controller
     public function viewrisalahPDF($id_risalah)
     {
         $risalah = Risalah::findOrFail($id_risalah);
-        $path = public_path('img/border-surat.png');
+        $headerPath = public_path('img/bheader.png');
+        $footerPath = public_path('img/bfooter.png');
 
-        if (file_exists($path)) {
-            $type = pathinfo($path, PATHINFO_EXTENSION);
-            $data = file_get_contents($path);
-            $base64Image = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        } else {
-            $base64Image = null;
+        $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
+        $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
+
+        // Ambil user yang bertandatangan
+        $userBertandatangan = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+            ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$risalah->nama_bertandatangan])
+            ->first();
+
+        if ($userBertandatangan) {
+            $level = $this->detectLevel($userBertandatangan);
+            $userBertandatangan->level_kerja = $level;
+            $userBertandatangan->bagian_text = $this->getBagianText($userBertandatangan, $level);
         }
 
-        // Generate PDF risalah
-        $pdf = Pdf::loadView('format-surat.format-risalah', compact('risalah', 'base64Image'))
-            ->setPaper('A4', 'portrait');
+        $cleanIsi = strip_tags($risalah->isi_risalah);
+
+        $formatRisalahPdf = PDF::loadView('format-surat.format-risalah', [
+            'risalah' => $risalah,
+            'cleanIsi' => $cleanIsi,
+            'manager' => $userBertandatangan,
+            'headerImage' => $headerBase64,
+            'footerImage' => $footerBase64,
+            'isPdf' => true
+        ])->setPaper('A4', 'portrait');
 
         // Simpan PDF risalah sementara
         $formatRisalahPath = storage_path('app/temp_format_risalah_' . $risalah->id . '.pdf');
-        $pdf->save($formatRisalahPath);
+        $formatRisalahPdf->save($formatRisalahPath);
 
         // Jika ada lampiran, gabungkan PDF-nya
         if (!empty($risalah->lampiran)) {
@@ -508,13 +522,12 @@ class CetakPDFController extends Controller
             if (file_exists($formatRisalahPath)) unlink($formatRisalahPath);
             if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
 
-            // Tampilkan file hasil merge
             return response()->file($outputPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
         } else {
-            // Kalau tidak ada lampiran, tampilkan risalah langsung
             return response()->file($formatRisalahPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
         }
     }
+
 
     public function laporanrisalahPDF(Request $request)
     {
