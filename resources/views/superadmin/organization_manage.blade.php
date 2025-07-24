@@ -3,8 +3,72 @@
 @section('title', 'Manajemen Struktur Organisasi')
 
 @section('content')
-    <div class="container">
+<head>
+    <meta charset="UTF-8">
+    <title>Struktur Organisasi</title>
+    <link rel="stylesheet" href="https://fperucic.github.io/treant-js/Treant.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+
+    <style>
+    .Treant { 
+        position: relative; 
+        overflow: auto; 
+        padding: 20px; 
+    }
+
+    .Treant .node {
+        margin: 2px;
+        padding: 5px 5px;
+        border: 1px solid #999; 
+        border-radius: 8px; 
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .nodeExample1 {
+        width: 180px !important;
+        height: auto;
+        padding: 5px;
+        font-size: 12px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background-color: #f9f9f9;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .nodeExample1 .node-name {
+        font-weight: bold;
+        font-size: 12px;
+        font-family: poppins, sans-serif;
+    }
+
+    .nodeExample1 .node-title {
+        font-size: 8px;
+        color: #666;
+    }
+
+    .director { background-color: #1b1f45; color: white; }
+    .divisi { background-color: #F05454; color: white; }
+    .department { background-color: #c7020d; color: white; }
+    .section { background-color: #30475E; color: white; }
+    .unit { background-color: #958d91; color: white; }
+    
+    .container1 {
+        max-width: 100%;
+        padding: 20px;
+        margin: 0 auto;
+        background-color: #f9f9f9;
+    }
+</style>
+
+
+</head>
+
+    <div class="container1">
         <div class="header">
+            
             <!-- Back Button -->
             <div class="back-button">
                 <a href="{{route('superadmin.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
@@ -82,7 +146,7 @@
                 </div>
             </div>
             <!-- Card untuk tabel -->
-            <div class="accordion mt-4" id="orgStructure">
+            {{-- <div class="accordion mt-4" id="orgStructure">
                 @php
                     function renderOrgRecursive($node)
                     {
@@ -237,7 +301,35 @@
                 @if($mainDirector)
                     @php renderOrgRecursive($mainDirector); @endphp
                 @endif
-            </div>
+            </div> --}}
+
+           
+
+<div id="struktur-org" style="width: 100%; height: 100vh; border: 1px;"> </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script>
+<script src="https://fperucic.github.io/treant-js/Treant.min.js"></script>
+{{-- <pre>{{ json_encode($mainDirector, JSON_PRETTY_PRINT) }}</pre> --}}
+
+<script>
+    var chart_config = {
+        chart: {
+            container: "#struktur-org",
+            connectors: {
+                type: 'step'
+            },
+            node: {
+                HTMLclass: 'nodeExample1'
+            }
+        },
+        nodeStructure: @json($formatDirector)
+    };
+
+    new Treant(chart_config);
+</script>
+
+
+
+
         </div>
     </div>
 
@@ -368,7 +460,7 @@
             </form>
         </div>
     </div>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

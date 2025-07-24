@@ -25,8 +25,109 @@ class OrganizationController extends Controller
             'department.unit'
         ])->where('is_main', 1)->first();
 
-        return view('superadmin.organization_manage', compact('mainDirector'));
+
+
+        $formatDirector = $mainDirector ? $this->formatDirector($mainDirector) : [
+            'text' => ['name' => 'Tidak ada data direktur']
+        ];
+
+        return view('superadmin.organization_manage', compact('mainDirector', 'formatDirector'));
     }
+    public function formatDirector($director)
+    {
+        $node = [
+    'text' => ['name' => $director->name_director],
+    'HTMLclass' => 'nodeExample1 director',
+    'children' => [],
+];
+
+// Sub-directors
+foreach ($director->subDirectors ?? [] as $sub) {
+    $node['children'][] = $this->formatDirector($sub);
+}
+
+// Ambil semua department yang sudah ditangani dalam divisi
+$deptIdsInDivisi = [];
+
+foreach ($director->divisi ?? [] as $divisi) {
+    $divisiNode = [
+        'text' => ['name' => $divisi->nm_divisi],
+        'HTMLclass' => 'nodeExample1 divisi',
+        'children' => [],
+    ];
+
+    foreach ($divisi->department ?? [] as $department) {
+        $deptNode = $this->formatDepartment($department);
+        $divisiNode['children'][] = $deptNode;
+
+        // Catat ID-nya agar tidak diproses ulang di bawah director
+        $deptIdsInDivisi[] = $department->id_department;
+    }
+
+    $node['children'][] = $divisiNode;
+}
+
+// Department langsung di director (cek apakah sudah ditambahkan di divisi)
+foreach ($director->department ?? [] as $department) {
+    if (!in_array($department->id_department, $deptIdsInDivisi)) {
+        $node['children'][] = $this->formatDepartment($department);
+    }
+}
+
+return $node;
+
+    }
+
+    public function formatDepartment($department)
+    {
+        $deptNode = [
+    'text' => ['name' => $department->name_department],
+    'HTMLclass' => 'nodeExample1 department',
+    'children' => [],
+];
+
+// Step 1: Kumpulkan semua unit_id dari section
+$unitIdsInSection = [];
+foreach ($department->section ?? [] as $section) {
+    foreach ($section->unit ?? [] as $unit) {
+        $unitIdsInSection[] = $unit->id_unit; // Sesuaikan nama kolom ID unit
+    }
+}
+
+// Step 2: Tambahkan section dan unit-unitnya ke dalam tree
+foreach ($department->section ?? [] as $section) {
+    $sectionNode = [
+        'text' => ['name' => $section->name_section],
+        'HTMLclass' => 'nodeExample1 section',
+        'children' => [],
+    ];
+
+    foreach ($section->unit ?? [] as $unit) {
+        $sectionNode['children'][] = [
+            'text' => ['name' => $unit->name_unit],
+            'HTMLclass' => 'nodeExample1 unit',
+        ];
+    }
+
+    $deptNode['children'][] = $sectionNode;
+}
+
+// Step 3: Tambahkan unit yang langsung berada di department
+foreach ($department->unit ?? [] as $unit) {
+    if (!in_array($unit->id_unit, $unitIdsInSection)) {
+        $deptNode['children'][] = [
+            'text' => ['name' => $unit->name_unit],
+            'HTMLclass' => 'nodeExample1 unit',
+        ];
+    }
+}
+
+return $deptNode;
+
+    }
+
+
+
 
     public function store(Request $request)
     {
@@ -34,7 +135,7 @@ class OrganizationController extends Controller
 
         $type = $request->type;
         $name = $request->name;
-        if(!empty($request->kode)){
+        if (!empty($request->kode)) {
             $kode = $request->kode;
         } else {
             $kode = NULL;
@@ -120,7 +221,7 @@ class OrganizationController extends Controller
     public function update(Request $request, $type, $id)
     {
         $name = $request->input('name');
-        if(!empty($request->input('kode'))){
+        if (!empty($request->input('kode'))) {
             $kode = $request->input('kode');
         } else {
             $kode = NULL;
@@ -151,7 +252,7 @@ class OrganizationController extends Controller
                 break;
         }
         $model->save();
-        return back()->with('success', ucfirst($type).' berhasil diupdate');
+        return back()->with('success', ucfirst($type) . ' berhasil diupdate');
     }
 
     public function delete($type, $id)
@@ -183,5 +284,4 @@ class OrganizationController extends Controller
         $node->delete();
         return response()->json(['success' => true]);
     }
-
 }
