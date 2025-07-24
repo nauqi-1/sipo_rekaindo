@@ -1195,7 +1195,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
 
         
 
-        return redirect()->route('memo.diterima')->with('success', 'Status memo berhasil diperbarui.');
+        return redirect()->route('memo.terkirim')->with('success', 'Status memo berhasil diperbarui.');
     }
 
     public function edit($id)

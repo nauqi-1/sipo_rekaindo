@@ -20,14 +20,17 @@ class CetakPDFController extends Controller
         // Ambil data dari database
         $memo = Memo::findOrFail($id); // Sesuaikan dengan model yang benar
         
-        $tujuanIds = explode(';', $memo->tujuan);
-        $tujuanNames = User::whereIn('id', $tujuanIds)
-            ->get()
-            ->map(function ($user) {
-                return trim($user->firstname . ' ' . $user->lastname);
-            })
-            ->toArray();
+        $tujuanNames = explode(';', $memo->tujuan_string);
 
+        $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+            ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$memo->nama_bertandatangan])
+            ->first();
+
+        if ($manager) {
+            $level = $this->detectLevel($manager);
+            $manager->level_kerja = $level;
+            $manager->bagian_text = $this->getBagianText($manager, $level);
+        }
 
         $headerPath = public_path('img/bheader.png');
         $footerPath = public_path('img/bfooter.png');
@@ -46,6 +49,7 @@ class CetakPDFController extends Controller
             'headerImage' => $headerBase64,
             'footerImage' => $footerBase64,
             'tujuanNames' => $tujuanNames,
+            'manager' => $manager,
             'qrCode' => $qrCode,
             'isPdf' => true
         ])->setPaper('A4', 'portrait');
@@ -78,17 +82,6 @@ class CetakPDFController extends Controller
             }, $memo->judul . '_' . $memo->id_memo . '.pdf');
         }
     }
-
-
-
-    // public function viewmemoPDF($id)
-    // {
-    //     // Ambil data dari database
-    //     $memo = Memo::findOrFail($id); // Sesuaikan dengan model yang benar
-
-    //     // Tampilkan langsung dalam browser
-    //     return view('format-surat.format-memo', compact('memo'));
-    // }
 
     public function viewmemoPDF($id_memo)
 

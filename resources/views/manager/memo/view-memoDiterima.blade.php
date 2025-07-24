@@ -220,7 +220,7 @@
                         <!-- Success Message -->
                         <h5 class="modal-title"><b>Sukses</b></h5>
                         <p class="mt-2">Berhasil Mengirimkan Memo</p>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('memo.diterima')}}" style="color: white; text-decoration: none">Kembali ke Halaman Undangan</a></button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('memo.terkirim')}}" style="color: white; text-decoration: none">Kembali ke Halaman Undangan</a></button>
                     </div>
                 </div>
             </div>
