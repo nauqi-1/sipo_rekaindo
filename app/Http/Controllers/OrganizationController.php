@@ -37,16 +37,21 @@ class OrganizationController extends Controller
     }
     public function formatDirector($director)
     {
+        $type = 'director';
+        $id = $director->id_director;
+        $name = $director->name_director;
+        $kode = $director->kode_director ?? '';
+        $deleteUrl = route('organization.delete', ['type' => $type, 'id' => $id]);
         $node = [
-            'text' => ['name' => $director->name_director],
+            'text' => ['name' => $name],
             'innerHTML' =>
             '<div class="custom-node">
-            <div class="custom-node-title">' . htmlspecialchars($director->name_director) . '</div>
-            <div class="custom-node-actions">
-                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
-                <button class="custom-btn delete-btn"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
-            </div>
-        </div>',
+                <div class="custom-node-title">' . htmlspecialchars($name) . '</div>
+                <div class="custom-node-actions">
+                    <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal" data-type="' . $type . '" data-id="' . $id . '" data-name="' . htmlspecialchars($name, ENT_QUOTES) . '" data-kode="' . htmlspecialchars($kode, ENT_QUOTES) . '"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
+                    <button class="custom-btn delete-btn" onclick="confirmDelete(\'' . $deleteUrl . '\')"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
+                </div>
+            </div>',
             'stackChildren' => true,
             'HTMLclass' => 'nodeExample1 director',
             'children' => [],
@@ -61,15 +66,20 @@ class OrganizationController extends Controller
         $deptIdsInDivisi = [];
 
         foreach ($director->divisi ?? [] as $divisi) {
+            $type = 'divisi';
+            $id = $divisi->id_divisi;
+            $name = $divisi->nm_divisi;
+            $kode = $divisi->kode_divisi ?? '';
+            $deleteUrl = route('organization.delete', ['type' => $type, 'id' => $id]);
             $divisiNode = [
                 'innerHTML' =>
                 '<div class="custom-node">
-            <div class="custom-node-title">' . htmlspecialchars($divisi->nm_divisi) . '</div>
-            <div class="custom-node-actions">
-                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
-                <button class="custom-btn delete-btn"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
-            </div>
-        </div>',
+                    <div class="custom-node-title">' . htmlspecialchars($name) . '</div>
+                    <div class="custom-node-actions">
+                        <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal" data-type="' . $type . '" data-id="' . $id . '" data-name="' . htmlspecialchars($name, ENT_QUOTES) . '" data-kode="' . htmlspecialchars($kode, ENT_QUOTES) . '"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
+                        <button class="custom-btn delete-btn" onclick="confirmDelete(\'' . $deleteUrl . '\')"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
+                    </div>
+                </div>',
                 'stackChildren' => true,
                 'HTMLclass' => 'nodeExample1 divisi',
                 'children' => [],
@@ -115,16 +125,21 @@ class OrganizationController extends Controller
 
     public function formatDepartment($department)
     {
+        $type = 'department';
+        $id = $department->id_department;
+        $name = $department->name_department;
+        $kode = $department->kode_department ?? '';
+        $deleteUrl = route('organization.delete', ['type' => $type, 'id' => $id]);
         $deptNode = [
-            'text' => ['name' => $department->name_department],
+            'text' => ['name' => $name],
             'innerHTML' =>
             '<div class="custom-node">
-            <div class="custom-node-title">' . htmlspecialchars($department->name_department) . '</div>
-            <div class="custom-node-actions">
-                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
-                <button class="custom-btn delete-btn"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
-            </div>
-        </div>',
+                <div class="custom-node-title">' . htmlspecialchars($name) . '</div>
+                <div class="custom-node-actions">
+                    <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal" data-type="' . $type . '" data-id="' . $id . '" data-name="' . htmlspecialchars($name, ENT_QUOTES) . '" data-kode="' . htmlspecialchars($kode, ENT_QUOTES) . '"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
+                    <button class="custom-btn delete-btn" onclick="confirmDelete(\'' . $deleteUrl . '\')"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
+                </div>
+            </div>',
             'stackChildren' => true,
             'HTMLclass' => 'nodeExample1 department',
             'children' => [],
@@ -140,32 +155,42 @@ class OrganizationController extends Controller
 
         // Step 2: Tambahkan section dan unit-unitnya ke dalam tree
         foreach ($department->section ?? [] as $section) {
+            $type = 'section';
+            $id = $section->id_section;
+            $name = $section->name_section;
+            $kode = $section->kode_section ?? '';
+            $deleteUrl = route('organization.delete', ['type' => $type, 'id' => $id]);
             $sectionNode = [
-                'text' => ['name' => $section->name_section],
+                'text' => ['name' => $name],
                 'innerHTML' =>
                 '<div class="custom-node">
-            <div class="custom-node-title">' . htmlspecialchars($section->name_section) . '</div>
-            <div class="custom-node-actions">
-                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
-                <button class="custom-btn delete-btn"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
-            </div>
-        </div>',
+                    <div class="custom-node-title">' . htmlspecialchars($name) . '</div>
+                    <div class="custom-node-actions">
+                        <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal" data-type="' . $type . '" data-id="' . $id . '" data-name="' . htmlspecialchars($name, ENT_QUOTES) . '" data-kode="' . htmlspecialchars($kode, ENT_QUOTES) . '"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
+                        <button class="custom-btn delete-btn" onclick="confirmDelete(\'' . $deleteUrl . '\')"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
+                    </div>
+                </div>',
                 'stackChildren' => true,
                 'HTMLclass' => 'nodeExample1 section',
                 'children' => [],
             ];
 
             foreach ($section->unit ?? [] as $unit) {
+                $type = 'unit';
+                $id = $unit->id_unit;
+                $name = $unit->name_unit;
+                $kode = $unit->kode_unit ?? '';
+                $deleteUrl = route('organization.delete', ['type' => $type, 'id' => $id]);
                 $sectionNode['children'][] = [
-                    'text' => ['name' => $unit->name_unit],
+                    'text' => ['name' => $name],
                     'innerHTML' =>
                     '<div class="custom-node">
-            <div class="custom-node-title">' . htmlspecialchars($unit->name_unit) . '</div>
-            <div class="custom-node-actions">
-                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
-                <button class="custom-btn delete-btn"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
-            </div>
-        </div>',
+                        <div class="custom-node-title">' . htmlspecialchars($name) . '</div>
+                        <div class="custom-node-actions">
+                            <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal" data-type="' . $type . '" data-id="' . $id . '" data-name="' . htmlspecialchars($name, ENT_QUOTES) . '" data-kode="' . htmlspecialchars($kode, ENT_QUOTES) . '"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
+                            <button class="custom-btn delete-btn" onclick="confirmDelete(\'' . $deleteUrl . '\')"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
+                        </div>
+                    </div>',
                     'stackChildren' => true,
                     'HTMLclass' => 'nodeExample1 unit',
                 ];
@@ -177,16 +202,21 @@ class OrganizationController extends Controller
         // Step 3: Tambahkan unit yang langsung berada di department
         foreach ($department->unit ?? [] as $unit) {
             if (!in_array($unit->id_unit, $unitIdsInSection)) {
+                $type = 'unit';
+                $id = $unit->id_unit;
+                $name = $unit->name_unit;
+                $kode = $unit->kode_unit ?? '';
+                $deleteUrl = route('organization.delete', ['type' => $type, 'id' => $id]);
                 $deptNode['children'][] = [
-                    'text' => ['name' => $unit->name_unit],
+                    'text' => ['name' => $name],
                     'innerHTML' =>
                     '<div class="custom-node">
-            <div class="custom-node-title">' . htmlspecialchars($unit->name_unit) . '</div>
-            <div class="custom-node-actions">
-                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
-                <button class="custom-btn delete-btn"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
-            </div>
-        </div>',
+                        <div class="custom-node-title">' . htmlspecialchars($name) . '</div>
+                        <div class="custom-node-actions">
+                            <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal" data-type="' . $type . '" data-id="' . $id . '" data-name="' . htmlspecialchars($name, ENT_QUOTES) . '" data-kode="' . htmlspecialchars($kode, ENT_QUOTES) . '"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
+                            <button class="custom-btn delete-btn" onclick="confirmDelete(\'' . $deleteUrl . '\')"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
+                        </div>
+                    </div>',
                     'stackChildren' => true,
                     'HTMLclass' => 'nodeExample1 unit',
                 ];
