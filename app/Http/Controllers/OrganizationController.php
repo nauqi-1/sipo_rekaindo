@@ -30,107 +30,170 @@ class OrganizationController extends Controller
         $formatDirector = $mainDirector ? $this->formatDirector($mainDirector) : [
             'text' => ['name' => 'Tidak ada data direktur']
         ];
+        $formatDirector['stackChildren'] = true;
+
 
         return view('superadmin.organization_manage', compact('mainDirector', 'formatDirector'));
     }
     public function formatDirector($director)
     {
         $node = [
-    'text' => ['name' => $director->name_director],
-    'HTMLclass' => 'nodeExample1 director',
-    'children' => [],
-];
-
-// Sub-directors
-foreach ($director->subDirectors ?? [] as $sub) {
-    $node['children'][] = $this->formatDirector($sub);
-}
-
-// Ambil semua department yang sudah ditangani dalam divisi
-$deptIdsInDivisi = [];
-
-foreach ($director->divisi ?? [] as $divisi) {
-    $divisiNode = [
-        'innerHTML' =>
-        '<div class="custom-node">
-            <div class="custom-node-title">' . htmlspecialchars($divisi->nm_divisi) . '</div>
+            'text' => ['name' => $director->name_director],
+            'innerHTML' =>
+            '<div class="custom-node">
+            <div class="custom-node-title">' . htmlspecialchars($director->name_director) . '</div>
             <div class="custom-node-actions">
-                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"> Icon Edit</button>
-                <button class="custom-btn delete-btn"><img src="/img/user-manage/Delete1.png" alt="hapus"> Icon Hapus</button>
+                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
+                <button class="custom-btn delete-btn"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
             </div>
         </div>',
-        'HTMLclass' => 'nodeExample1 divisi',
-        'children' => [],
-    ];
+            'stackChildren' => true,
+            'HTMLclass' => 'nodeExample1 director',
+            'children' => [],
+        ];
 
-    foreach ($divisi->department ?? [] as $department) {
-        $deptNode = $this->formatDepartment($department);
-        $divisiNode['children'][] = $deptNode;
+        // Sub-directors
+        foreach ($director->subDirectors ?? [] as $sub) {
+            $node['children'][] = $this->formatDirector($sub);
+        }
 
-        // Catat ID-nya agar tidak diproses ulang di bawah director
-        $deptIdsInDivisi[] = $department->id_department;
-    }
+        // Ambil semua department yang sudah ditangani dalam divisi
+        $deptIdsInDivisi = [];
 
-    $node['children'][] = $divisiNode;
-}
+        foreach ($director->divisi ?? [] as $divisi) {
+            $divisiNode = [
+                'innerHTML' =>
+                '<div class="custom-node">
+            <div class="custom-node-title">' . htmlspecialchars($divisi->nm_divisi) . '</div>
+            <div class="custom-node-actions">
+                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
+                <button class="custom-btn delete-btn"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
+            </div>
+        </div>',
+                'stackChildren' => true,
+                'HTMLclass' => 'nodeExample1 divisi',
+                'children' => [],
+            ];
 
-// Department langsung di director (cek apakah sudah ditambahkan di divisi)
-foreach ($director->department ?? [] as $department) {
-    if (!in_array($department->id_department, $deptIdsInDivisi)) {
-        $node['children'][] = $this->formatDepartment($department);
-    }
-}
+            foreach ($divisi->department ?? [] as $department) {
+                $deptNode = $this->formatDepartment($department);
+                $divisiNode['children'][] = $deptNode;
 
-return $node;
+                // Catat ID-nya agar tidak diproses ulang di bawah director
+                $deptIdsInDivisi[] = $department->id_department;
+            }
 
+            $node['children'][] = $divisiNode;
+        }
+
+        // Department langsung di director (cek apakah sudah ditambahkan di divisi)
+        // foreach ($director->department ?? [] as $department) {
+        //     if (!in_array($department->id_department, $deptIdsInDivisi)) {
+        //         $node['children'][] = $this->formatDepartment($department);
+        //     }
+        // }
+        $directDepartments = [];
+
+        foreach ($director->department ?? [] as $department) {
+            if (!in_array($department->id_department, $deptIdsInDivisi)) {
+                $directDepartments[] = $this->formatDepartment($department);
+            }
+        }
+
+        // Jika ada department langsung di bawah director
+        if (count($directDepartments) > 0) {
+            $pseudoDivisi = [
+                'pseudo' => true, // bikin node tidak terlihat
+                'children' => $directDepartments
+            ];
+
+
+            $node['children'][] = $pseudoDivisi;
+        }
+        return $node;
     }
 
     public function formatDepartment($department)
     {
         $deptNode = [
-    'text' => ['name' => $department->name_department],
-    'HTMLclass' => 'nodeExample1 department',
-    'children' => [],
-];
-
-// Step 1: Kumpulkan semua unit_id dari section
-$unitIdsInSection = [];
-foreach ($department->section ?? [] as $section) {
-    foreach ($section->unit ?? [] as $unit) {
-        $unitIdsInSection[] = $unit->id_unit; // Sesuaikan nama kolom ID unit
-    }
-}
-
-// Step 2: Tambahkan section dan unit-unitnya ke dalam tree
-foreach ($department->section ?? [] as $section) {
-    $sectionNode = [
-        'text' => ['name' => $section->name_section],
-        'HTMLclass' => 'nodeExample1 section',
-        'children' => [],
-    ];
-
-    foreach ($section->unit ?? [] as $unit) {
-        $sectionNode['children'][] = [
-            'text' => ['name' => $unit->name_unit],
-            'HTMLclass' => 'nodeExample1 unit',
+            'text' => ['name' => $department->name_department],
+            'innerHTML' =>
+            '<div class="custom-node">
+            <div class="custom-node-title">' . htmlspecialchars($department->name_department) . '</div>
+            <div class="custom-node-actions">
+                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
+                <button class="custom-btn delete-btn"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
+            </div>
+        </div>',
+            'stackChildren' => true,
+            'HTMLclass' => 'nodeExample1 department',
+            'children' => [],
         ];
-    }
 
-    $deptNode['children'][] = $sectionNode;
-}
+        // Step 1: Kumpulkan semua unit_id dari section
+        $unitIdsInSection = [];
+        foreach ($department->section ?? [] as $section) {
+            foreach ($section->unit ?? [] as $unit) {
+                $unitIdsInSection[] = $unit->id_unit; // Sesuaikan nama kolom ID unit
+            }
+        }
 
-// Step 3: Tambahkan unit yang langsung berada di department
-foreach ($department->unit ?? [] as $unit) {
-    if (!in_array($unit->id_unit, $unitIdsInSection)) {
-        $deptNode['children'][] = [
-            'text' => ['name' => $unit->name_unit],
-            'HTMLclass' => 'nodeExample1 unit',
-        ];
-    }
-}
+        // Step 2: Tambahkan section dan unit-unitnya ke dalam tree
+        foreach ($department->section ?? [] as $section) {
+            $sectionNode = [
+                'text' => ['name' => $section->name_section],
+                'innerHTML' =>
+                '<div class="custom-node">
+            <div class="custom-node-title">' . htmlspecialchars($section->name_section) . '</div>
+            <div class="custom-node-actions">
+                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
+                <button class="custom-btn delete-btn"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
+            </div>
+        </div>',
+                'stackChildren' => true,
+                'HTMLclass' => 'nodeExample1 section',
+                'children' => [],
+            ];
 
-return $deptNode;
+            foreach ($section->unit ?? [] as $unit) {
+                $sectionNode['children'][] = [
+                    'text' => ['name' => $unit->name_unit],
+                    'innerHTML' =>
+                    '<div class="custom-node">
+            <div class="custom-node-title">' . htmlspecialchars($unit->name_unit) . '</div>
+            <div class="custom-node-actions">
+                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
+                <button class="custom-btn delete-btn"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
+            </div>
+        </div>',
+                    'stackChildren' => true,
+                    'HTMLclass' => 'nodeExample1 unit',
+                ];
+            }
 
+            $deptNode['children'][] = $sectionNode;
+        }
+
+        // Step 3: Tambahkan unit yang langsung berada di department
+        foreach ($department->unit ?? [] as $unit) {
+            if (!in_array($unit->id_unit, $unitIdsInSection)) {
+                $deptNode['children'][] = [
+                    'text' => ['name' => $unit->name_unit],
+                    'innerHTML' =>
+                    '<div class="custom-node">
+            <div class="custom-node-title">' . htmlspecialchars($unit->name_unit) . '</div>
+            <div class="custom-node-actions">
+                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"></button>
+                <button class="custom-btn delete-btn"><img src="/img/user-manage/Trash1.png" alt="hapus"></button>
+            </div>
+        </div>',
+                    'stackChildren' => true,
+                    'HTMLclass' => 'nodeExample1 unit',
+                ];
+            }
+        }
+
+        return $deptNode;
     }
 
 

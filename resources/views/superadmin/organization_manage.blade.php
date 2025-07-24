@@ -3,108 +3,141 @@
 @section('title', 'Manajemen Struktur Organisasi')
 
 @section('content')
-<head>
-    <meta charset="UTF-8">
-    <title>Struktur Organisasi</title>
-    <link rel="stylesheet" href="https://fperucic.github.io/treant-js/Treant.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 
-    <style>
-    .Treant { 
-        position: relative; 
-        overflow: auto; 
-        padding: 20px; 
-    }
+    <head>
+        <meta charset="UTF-8">
+        <title>Struktur Organisasi</title>
+        <link rel="stylesheet" href="https://fperucic.github.io/treant-js/Treant.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
 
-    .Treant .node {
-        margin: 2px;
-        padding: 5px 5px;
-        border: 1px solid #999; 
-        border-radius: 8px; 
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-    }
+        <style>
+            .Treant {
+                position: relative;
+                overflow: auto;
+                padding: 20px;
+            }
 
-    .nodeExample1 {
-        width: 180px !important;
-        height: auto;
-        padding: 5px;
-        font-size: 12px;
-        text-align: center;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        background-color: #f9f9f9;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-    }
+            .Treant .node {
+                width: fixed;
+                margin: 2px;
+                padding: 5px 5px;
+                border: 1px solid #999;
+                border-radius: 8px;
+                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            }
 
-    .nodeExample1 .node-name {
-        font-weight: bold;
-        font-size: 12px;
-        font-family: poppins, sans-serif;
-    }
+            .nodeExample1 {
+                width: 190px !important;
+                height: auto;
+                padding: 5px;
+                font-size: 12px;
+                text-align: center;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                background-color: #f9f9f9;
+                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            }
 
-    .nodeExample1 .node-title {
-        font-size: 8px;
-        color: #666;
-    }
+            .nodeExample1 .node-name {
+                font-weight: bold;
+                font-size: 12px;
+                font-family: 'Poppins', sans-serif;
+            }
 
-    .director { background-color: #1b1f45; color: white; }
-    .divisi { background-color: #F05454; color: white; }
-    .department { background-color: #c7020d; color: white; }
-    .section { background-color: #30475E; color: white; }
-    .unit { background-color: #958d91; color: white; }
-    
-    .container1 {
-        max-width: 100%;
-        padding: 20px;
-        margin: 0 auto;
-        background-color: #f9f9f9;
-    }
-    .custom-node {
-      background: #1E2347;
-      border-radius: 30px;
-      padding: 20px 30px;
-      display: flex;
-      align-items: center;
-      min-width: 400px;
-      min-height: 100px;
-      position: relative;
-      justify-content: space-between;
-    }
-    .custom-node-title {
-      color: #fff;
-      font-weight: bold;
-      font-size: 2rem;
-      flex: 1;
-      text-align: center;
-    }
-    .custom-node-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .custom-btn {
-      background: #A99A9A;
-      border: none;
-      border-radius: 30px;
-      color: #222;
-      font-weight: bold;
-      padding: 15px 25px;
-      min-width: 120px;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-</style>
+            .nodeExample1 .node-title {
+                font-size: 8px;
+                color: #666;
+            }
+
+            .nodeExample1.divisi.pseudo {
+                background: transparent;
+                border: white;
+            }
 
 
-</head>
+            .director {
+                background-color: #1b1f45;
+                color: white;
+            }
+
+            .divisi {
+                background-color: #ccc28d;
+                color: white;
+            }
+
+            .department {
+                background-color: #c7020d;
+                color: white;
+            }
+
+            .section {
+                background-color: #30475E;
+                color: white;
+            }
+
+            .unit {
+                background-color: #958d91;
+                color: white;
+            }
+
+            .container1 {
+                max-width: 100%;
+                padding: 20px;
+                margin: 0 auto;
+                background-color: #f9f9f9;
+            }
+
+            .custom-node {
+
+                border-radius: 10px;
+                padding: 10px 10px;
+                display: flex;
+                align-items: center;
+                min-width: 100px !important;
+                min-height: auto;
+                position: relative;
+                justify-content: space-between;
+            }
+
+            .custom-node-title {
+                /* color: #fff; */
+                font-weight: bold;
+                font-size: 12px;
+                flex: 1;
+                text-align: center;
+            }
+
+            .custom-node-actions {
+
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .custom-btn {
+                background: transparent;
+                border: none;
+                border-radius: 30px;
+                /* color: pink; */
+                font-weight: bold;
+                padding: 4px;
+                min-width: 10px;
+                text-align: left;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        </style>
+
+
+    </head>
 
     <div class="container1">
         <div class="header">
-            
+
             <!-- Back Button -->
             <div class="back-button">
                 <a href="{{route('superadmin.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
@@ -182,7 +215,7 @@
                 </div>
             </div>
             <!-- Card untuk tabel -->
-             <div class="accordion mt-4" id="orgStructure">
+            <div class="accordion mt-4" id="orgStructure">
                 @php
                     function renderOrgRecursive($node)
                     {
@@ -256,27 +289,27 @@
 
                         if ($hasChildren) {
                             echo "<div class='accordion-item mb-2 border border-{$border} rounded' style='margin-left: {$margin}px'>
-                                            <h4 class='accordion-header' id='heading{$idUnique}'>
-                                                <div class='d-flex align-items-center justify-content-between bg-{$bg} text-white rounded p-2'
-                                                    style='cursor: pointer;'
-                                                    data-bs-toggle='collapse' data-bs-target='#collapse{$idUnique}'
-                                                    aria-expanded='false' aria-controls='collapse{$idUnique}'>
+                                                                                <h4 class='accordion-header' id='heading{$idUnique}'>
+                                                                                    <div class='d-flex align-items-center justify-content-between bg-{$bg} text-white rounded p-2'
+                                                                                        style='cursor: pointer;' data-bs-toggle='collapse' data-bs-target='#collapse{$idUnique}'
+                                                                                        aria-expanded='false' aria-controls='collapse{$idUnique}'>
 
-                                                    <span>{$label}</span>
+                                                                                        <span>{$label}</span>
 
-                                                    <span>
-                                                        <button class='btn btn-edit' data-bs-toggle='modal' data-bs-target='#editModal'
-                                                            data-type='{$type}' data-id='{$id}' data-name=\"" . htmlspecialchars($name, ENT_QUOTES) . "\" data-kode=\"" . htmlspecialchars($kode, ENT_QUOTES) . "\">
-                                                            <img src='/img/user-manage/Edit1.png' alt='edit'>
-                                                        </button>
-                                                        <button type='button' class='btn btn-delete' onclick=\"confirmDelete('{$deleteUrl}')\">
-                                                            <img src='/img/user-manage/Trash1.png' alt='delete'>
-                                                        </button>
-                                                    </span>
-                                                </div>
-                                            </h4>
-                                            <div id='collapse{$idUnique}' class='accordion-collapse collapse' aria-labelledby='heading{$idUnique}'>
-                                                <div class='accordion-body'>";
+                                                                                        <span>
+                                                                                            <button class='btn btn-edit' data-bs-toggle='modal' data-bs-target='#editModal'
+                                                                                                data-type='{$type}' data-id='{$id}' data-name=\"" . htmlspecialchars($name, ENT_QUOTES)
+                                . "\" data-kode=\"" . htmlspecialchars($kode, ENT_QUOTES) . "\">
+                                                                                                <img src='/img/user-manage/Edit1.png' alt='edit'>
+                                                                                            </button>
+                                                                                            <button type='button' class='btn btn-delete' onclick=\"confirmDelete('{$deleteUrl}')\">
+                                                                                                <img src='/img/user-manage/Trash1.png' alt='delete'>
+                                                                                            </button>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </h4>
+                                                                                <div id='collapse{$idUnique}' class='accordion-collapse collapse' aria-labelledby='heading{$idUnique}'>
+                                                                                    <div class='accordion-body'>";
                             if (isset($node->subDirectors))
                                 foreach ($node->subDirectors as $subDir)
                                     renderOrgRecursive($subDir);
@@ -314,22 +347,23 @@
                                 }
                             }
 
-                            echo "    </div>
-                                                </div>
-                                            </div>";
+                            echo " </div>
+                                                                                </div>
+                                                                            </div>";
                         } else {
                             echo "<div class='d-flex justify-content-between align-items-center mb-2' style='margin-left: {$margin}px'>
-                                                <span>{$label}</span>
-                                                <span>
-                                                    <button class='btn btn-sm btn-light me-1' data-bs-toggle='modal' data-bs-target='#editModal'
-                                                        data-type='{$type}' data-id='{$id}' data-name=\"" . htmlspecialchars($name, ENT_QUOTES) . "\" data-kode=\"" . htmlspecialchars($kode, ENT_QUOTES) . "\">
-                                                        Edit
-                                                    </button>
-                                                    <button type='button' class='btn btn-sm btn-danger' onclick=\"confirmDelete('{$deleteUrl}')\">
-                                                        Hapus
-                                                    </button>
-                                                </span>
-                                            </div>";
+                                                                                <span>{$label}</span>
+                                                                                <span>
+                                                                                    <button class='btn btn-sm btn-light me-1' data-bs-toggle='modal' data-bs-target='#editModal'
+                                                                                        data-type='{$type}' data-id='{$id}' data-name=\"" . htmlspecialchars($name, ENT_QUOTES) . "\"
+                                                                                        data-kode=\"" . htmlspecialchars($kode, ENT_QUOTES) . "\">
+                                                                                        Edit
+                                                                                    </button>
+                                                                                    <button type='button' class='btn btn-sm btn-danger' onclick=\"confirmDelete('{$deleteUrl}')\">
+                                                                                        Hapus
+                                                                                    </button>
+                                                                                </span>
+                                                                            </div>";
                         }
                     }
                 @endphp
@@ -339,30 +373,35 @@
                 @endif
             </div>
 
-           
 
-<div id="struktur-org" style="width: 100%; height: 100vh; border: 1px;"> </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script>
-<script src="https://fperucic.github.io/treant-js/Treant.min.js"></script>
-{{-- <pre>{{ json_encode($mainDirector, JSON_PRETTY_PRINT) }}</pre> --}}
 
-<script>
-    var chart_config = {
-        chart: {
-            container: "#struktur-org",
-            connectors: {
-                type: 'step'
-            },
-            node: {
-                HTMLclass: 'nodeExample1',
-                useHtml: true
-            }
-        },
-        nodeStructure: @json($formatDirector)
-    };
+            <div id="struktur-org" style="width: 100%; height: 100vh; border: 1px;"> </div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script>
+            <script src="https://fperucic.github.io/treant-js/Treant.min.js"></script>
+            {{--
+            <pre>{{ json_encode($mainDirector, JSON_PRETTY_PRINT) }}</pre> --}}
 
-    new Treant(chart_config);
-</script>
+            <script>
+                var chart_config = {
+                    chart: {
+                        container: "#struktur-org",
+                        connectors: {
+                            type: 'step'
+                        },
+                        node: {
+                            HTMLclass: 'nodeExample1',
+                            useHtml: true
+                        },
+                        nodeAlign: "BOTTOM",
+                        levelSeparation: 30,
+                        siblingSeparation: 50,
+                        subtreeSeparation: 60
+                    },
+                    nodeStructure: @json($formatDirector)
+                };
+
+                new Treant(chart_config);
+            </script>
 
 
 
@@ -499,11 +538,11 @@
     </div>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editModal = document.getElementById('editModal');
-            editModal.addEventListener('show.bs.modal', function (event) {
-                const button = event.relatedTarget;
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                            const editModal = document.getElementById('editModal');
+                editModal.addEventListener('show.bs.modal', function (event) {
+                                const button = event.relatedTarget;
                 const type = button.getAttribute('data-type');
                 const id = button.getAttribute('data-id');
                 const name = button.getAttribute('data-name');
@@ -515,36 +554,36 @@
                 editModal.querySelector('#editKode').value = kode;
 
                 editModal.querySelector('#editForm').action = `/organization/${type}/${id}`;
-            });
-        });
+                            });
+                        });
 
-        function confirmDelete(url) {
-            Swal.fire({
-                title: 'Anda yakin?',
-                text: "Semua data di bawahnya juga akan dihapus!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, hapus!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(url, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json'
+                        function confirmDelete(url) {
+                            Swal.fire({
+                                title: 'Anda yakin?',
+                                text: "Semua data di bawahnya juga akan dihapus!",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                cancelButtonColor: '#6c757d',
+                                confirmButtonText: 'Ya, hapus!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    fetch(url, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                            'Accept': 'application/json'
+                                        }
+                                    }).then(res => {
+                                        if (res.ok) {
+                                            location.reload();
+                                        } else {
+                                            Swal.fire('Gagal!', 'Tidak dapat menghapus data.', 'error');
+                                        }
+                                    });
+                                }
+                            });
                         }
-                    }).then(res => {
-                        if (res.ok) {
-                            location.reload();
-                        } else {
-                            Swal.fire('Gagal!', 'Tidak dapat menghapus data.', 'error');
-                        }
-                    });
-                }
-            });
-        }
     </script>
 
 
