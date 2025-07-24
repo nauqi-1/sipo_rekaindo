@@ -258,7 +258,7 @@ class KirimController extends Controller
         ->where('id_penerima', $userId)
         ->whereIn('kirim_document.status',  ['pending','approve'])
         ->whereHas('memo', function ($query) use ($request, $userKode) {
-            $query->where('memo.kode', 'not', $userKode);
+            $query->where('kode', '!=', $userKode);
             // Additional filters
             if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
                 $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
