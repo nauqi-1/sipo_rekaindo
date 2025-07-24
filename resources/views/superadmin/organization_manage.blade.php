@@ -50,38 +50,55 @@
                 color: #666;
             }
 
-            .director {
-                background-color: #1b1f45;
-                color: white;
-            }
-
-            .divisi {
-                background-color: #F05454;
-                color: white;
-            }
-
-            .department {
-                background-color: #c7020d;
-                color: white;
-            }
-
-            .section {
-                background-color: #30475E;
-                color: white;
-            }
-
-            .unit {
-                background-color: #958d91;
-                color: white;
-            }
-
-            .container1 {
-                max-width: 100%;
-                padding: 20px;
-                margin: 0 auto;
-                background-color: #f9f9f9;
-            }
-        </style>
+    .director { background-color: #1b1f45; color: white; }
+    .divisi { background-color: #F05454; color: white; }
+    .department { background-color: #c7020d; color: white; }
+    .section { background-color: #30475E; color: white; }
+    .unit { background-color: #958d91; color: white; }
+    
+    .container1 {
+        max-width: 100%;
+        padding: 20px;
+        margin: 0 auto;
+        background-color: #f9f9f9;
+    }
+    .custom-node {
+      background: #1E2347;
+      border-radius: 30px;
+      padding: 20px 30px;
+      display: flex;
+      align-items: center;
+      min-width: 400px;
+      min-height: 100px;
+      position: relative;
+      justify-content: space-between;
+    }
+    .custom-node-title {
+      color: #fff;
+      font-weight: bold;
+      font-size: 2rem;
+      flex: 1;
+      text-align: center;
+    }
+    .custom-node-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .custom-btn {
+      background: #A99A9A;
+      border: none;
+      border-radius: 30px;
+      color: #222;
+      font-weight: bold;
+      padding: 15px 25px;
+      min-width: 120px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+</style>
 
 
     </head>
@@ -166,7 +183,7 @@
                 </div>
             </div>
             <!-- Card untuk tabel -->
-            {{-- <div class="accordion mt-4" id="orgStructure">
+             <div class="accordion mt-4" id="orgStructure">
                 @php
                 function renderOrgRecursive($node)
                 {
@@ -322,7 +339,7 @@
                 @if($mainDirector)
                 @php renderOrgRecursive($mainDirector); @endphp
                 @endif
-            </div> --}}
+            </div>
 
 
 
@@ -332,19 +349,20 @@
             {{--
             <pre>{{ json_encode($mainDirector, JSON_PRETTY_PRINT) }}</pre> --}}
 
-            <script>
-                var chart_config = {
-                    chart: {
-                        container: "#struktur-org",
-                        connectors: {
-                            type: 'step'
-                        },
-                        node: {
-                            HTMLclass: 'nodeExample1'
-                        }
-                    },
-                    nodeStructure: @json($formatDirector)
-                };
+<script>
+    var chart_config = {
+        chart: {
+            container: "#struktur-org",
+            connectors: {
+                type: 'step'
+            },
+            node: {
+                HTMLclass: 'nodeExample1',
+                useHtml: true
+            }
+        },
+        nodeStructure: @json($formatDirector)
+    };
 
                 new Treant(chart_config);
             </script>
