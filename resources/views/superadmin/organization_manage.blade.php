@@ -3,7 +3,6 @@
 @section('title', 'Manajemen Struktur Organisasi')
 
 @section('content')
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 
     <head>
         <meta charset="UTF-8">
@@ -129,6 +128,16 @@
                 display: flex;
                 align-items: center;
                 gap: 10px;
+            }
+            #struktur-org .Treant {
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                position: relative;
+            }
+            #struktur-org .Treant .node-tree {
+                transition: transform 0.2s ease;
+                transform: scale(0.8);
             }
         </style>
 
@@ -375,7 +384,9 @@
 
 
 
-            <div id="struktur-org" style="width: 100%; height: 100vh; border: 1px;"> </div>
+            <div id="struktur-org" style="width: 100%; height: 100vh; border: 1px;"> 
+                
+            </div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script>
             <script src="https://fperucic.github.io/treant-js/Treant.min.js"></script>
             {{--
@@ -402,11 +413,13 @@
 
                 new Treant(chart_config);
             </script>
-
-
-
-
+        <div class="treant-zoom-controls" style="margin-bottom:10px;">
+          <button class="btn btn-light" onclick="zoomTreant(1.2)">+</button>
+          <button class="btn btn-light" onclick="zoomTreant(0.8)">−</button>
+          <button class="btn btn-light" onclick="zoomTreant(1)">Reset</button>
         </div>
+        </div>
+        
     </div>
 
     <!-- Modal Tambah Struktur Organisasi -->
@@ -536,8 +549,44 @@
             </form>
         </div>
     </div>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const zoomLevel = 0.8; // Set your desired default zoom here (e.g., 0.8 = 80%)
 
+        const waitForTreant = setInterval(() => {
+            const nodeTree = document.querySelector('#struktur-org .Treant .node-tree');
+            if (nodeTree) {
+                nodeTree.style.transform = `scale(${zoomLevel})`;
+                nodeTree.style.transformOrigin = 'top left';
+                clearInterval(waitForTreant);
+            }
+        }, 100);
+    });
+    </script>
+            <script>
+            let treantScale = 1;
+
+            function zoomTreant(factor) {
+                const nodeTree = document.querySelector('#struktur-org .Treant .node-tree');
+            
+                if (!nodeTree) {
+                    // Retry after 100ms if not ready
+                    setTimeout(() => zoomTreant(factor), 100);
+                    return;
+                }
+            
+                if (factor === 1) {
+                    treantScale = 1;
+                } else {
+                    treantScale *= factor;
+                    treantScale = Math.max(0.2, Math.min(treantScale, 3));
+                }
+            
+                nodeTree.style.transform = `scale(${treantScale})`;
+                nodeTree.style.transformOrigin = '0 0';
+            }
+            </script>
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
                             const editModal = document.getElementById('editModal');
