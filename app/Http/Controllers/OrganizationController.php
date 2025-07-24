@@ -51,7 +51,14 @@ $deptIdsInDivisi = [];
 
 foreach ($director->divisi ?? [] as $divisi) {
     $divisiNode = [
-        'text' => ['name' => $divisi->nm_divisi],
+        'innerHTML' =>
+        '<div class="custom-node">
+            <div class="custom-node-title">' . htmlspecialchars($divisi->nm_divisi) . '</div>
+            <div class="custom-node-actions">
+                <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/img/user-manage/Edit1.png" alt="edit"> Icon Edit</button>
+                <button class="custom-btn delete-btn"><img src="/img/user-manage/Delete1.png" alt="hapus"> Icon Hapus</button>
+            </div>
+        </div>',
         'HTMLclass' => 'nodeExample1 divisi',
         'children' => [],
     ];
