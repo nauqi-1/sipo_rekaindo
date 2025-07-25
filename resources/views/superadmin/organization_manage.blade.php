@@ -130,8 +130,8 @@
                 gap: 10px;
             }
             #struktur-org .Treant {
-                width: 100%;
-                height: 100%;
+                width: 2000px;
+                height: 700px;
                 overflow: auto;
                 position: relative;
             }
@@ -566,25 +566,16 @@
     </script>
             <script>
             let treantScale = 1;
-
             function zoomTreant(factor) {
-                const nodeTree = document.querySelector('#struktur-org .Treant .node-tree');
-            
-                if (!nodeTree) {
-                    // Retry after 100ms if not ready
-                    setTimeout(() => zoomTreant(factor), 100);
-                    return;
-                }
-            
                 if (factor === 1) {
                     treantScale = 1;
                 } else {
                     treantScale *= factor;
+                    // Limit zoom out
                     treantScale = Math.max(0.2, Math.min(treantScale, 3));
                 }
-            
-                nodeTree.style.transform = `scale(${treantScale})`;
-                nodeTree.style.transformOrigin = '0 0';
+                document.getElementById('struktur-org').style.transform = 'scale(' + treantScale + ')';
+                document.getElementById('struktur-org').style.transformOrigin = '0 0';
             }
             </script>
             <script>
