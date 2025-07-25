@@ -25,7 +25,7 @@
                 padding: 5px 5px;
                 border: 1px solid #999;
                 border-radius: 8px;
-                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
             }
 
             .nodeExample1 {
@@ -37,7 +37,7 @@
                 border: 1px solid #ccc;
                 border-radius: 6px;
                 background-color: #f9f9f9;
-                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
             }
 
             .nodeExample1 .node-name {
@@ -63,7 +63,7 @@
             }
 
             .divisi {
-                background-color: #ccc28d;
+                background-color: #b2aa7d;
                 color: white;
             }
 
@@ -162,7 +162,7 @@
                 </div>
                 <form method="GET" action="{{ route('organization.manageOrganization') }}"
                     class="search-filter d-flex gap-2">
-                    <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
+                    {{-- <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
                         Show
                         <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
                             <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
@@ -171,7 +171,7 @@
                             <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                         </select>
                         entries
-                    </label>
+                    </label> --}}
                 </form>
             </div>
         </div>
@@ -181,7 +181,7 @@
             <div class="header-tools">
                 <h2 class="title">Struktur Organisasi</h2>
                 <div class="search-filter">
-                    <div class="d-flex gap-2">
+                    {{-- <div class="d-flex gap-2">
                         <form action="{{ route('organization.manageOrganization') }}" method="GET"
                             class="d-flex align-items-center btn btn-search" style="gap: 5px;">
                             <button type="submit" class="border-0 bg-transparent p-0"
@@ -193,9 +193,9 @@
                                 class="form-control border-0 bg-transparent" placeholder="Cari berdasarkan nama ..."
                                 style="outline: none; box-shadow: none;">
                         </form>
-                    </div>
+                    </div> --}}
 
-                    <div class="dropdown m-3">
+                    {{-- <div class="dropdown m-3">
                         <button class="btn btn-dropdown dropdown-toggle d-flex align-items-center" type="button"
                             id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="me-2">Filter</span>
@@ -216,7 +216,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </div>
+                    </div> --}}
 
                     <!-- Add User Button to Open Mod    al -->
                     <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah Struktur
@@ -224,7 +224,7 @@
                 </div>
             </div>
             <!-- Card untuk tabel -->
-            <div class="accordion mt-4" id="orgStructure">
+            {{-- <div class="accordion mt-4" id="orgStructure">
                 @php
                     function renderOrgRecursive($node)
                     {
@@ -380,7 +380,7 @@
                 @if($mainDirector)
                     @php renderOrgRecursive($mainDirector); @endphp
                 @endif
-            </div>
+            </div> --}}
 
 
 
@@ -539,7 +539,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="editKode" class="form-label">Kode</label>
-                            <input type="text" class="form-control" id="editKode" name="kode" required>
+                            <input type="text" class="form-control" id="editKode" name="kode">
                         </div>
                     </div>
                     <div class="modal-footer">
