@@ -8,7 +8,7 @@
 
     <style>
         @page {
-            margin-top: 20px;
+            margin-top: 1px;
             margin-bottom: 0;
             margin-left: 0;
             margin-right: 0;
@@ -38,13 +38,13 @@
 
         main {
             margin-top: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             text-align: center;
         }
 
         .content {
             width: 100%;
-            margin: auto;
+            margin: 20px;
             text-align: center;
         }
 
@@ -99,7 +99,7 @@
         }
 
         .fill {
-            margin-top: 5px;
+            margin-top: 1px;
             width: 95%;
             /* Atau bisa 100% jika ingin full lebar `letter` */
             margin: 0 auto;
@@ -116,6 +116,7 @@
             table-layout: fixed;
             background-color: white;
             margin-left: 20px;
+
         }
 
         .fill table td {
@@ -273,7 +274,7 @@
 
         .date {
             margin-right: 2cm;
-            margin-top: 15%;
+            margin-top: 10%;
             justify-items: end;
         }
 
@@ -285,6 +286,7 @@
         .header2 p,
         .header2 table td {
             line-height: 1.5;
+
         }
     </style>
 </head>
@@ -342,16 +344,17 @@
                     </div>
 
                     <div class="fill">
-                        <p>Dengan hormat,</p>
+                        <p style="margin-top: 1px;">Dengan hormat,</p>
                         <p class="contents">Bersama ini kami mengharapkan kehadiran Bapak / Ibu pada:</p>
                         <table style="
                         width: 100%;
-                        margin-top: 10px;
+                        margin-top: 1px;
                         line-height: 1.5;
                         border-collapse: collapse; 
                         background-color: white; 
                         margin-left: 20px; 
                         table-layout: fixed; 
+                        
                     ">
                             <tr>
                                 <td style="width: 15%;">Hari/Tanggal</td>
@@ -411,7 +414,7 @@
                             && is_null($manager->unit_id_unit);
                     @endphp
                     <div
-                        style="width: 40%; float: right; text-align: left; margin-right: 3%; line-height: 1.3; margin-top: 20px;">
+                        style="width: 40%; float: right; text-align: left; margin-right: 3%; line-height: 1.3; margin-top: 1px;">
                         <p style="text-align: center; margin-bottom: 5px;"><b>Hormat kami,</b></p>
                         {{-- MENAMPILKAN POSISI DARI TABEL POSITION --}}
                         @if($isDirektur)
@@ -419,12 +422,12 @@
                                 {{ optional($manager->director)->name_director }}
                             </p>
                         @else
-                        {{-- MENAMPILKAN POSISI DARI TABEL POSITION SERTA ASAL UNIT/SECTION/DEPARTMENT/DIVISI--}}
+                            {{-- MENAMPILKAN POSISI DARI TABEL POSITION SERTA ASAL UNIT/SECTION/DEPARTMENT/DIVISI--}}
                             <p style="text-align: center; margin: 0; font-weight: bold;">
                                 {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }} {{ $bagian }}
                             </p>
                         @endif
-                        
+
                         {{-- QR CODE --}}
                         @if(!empty($undangan->qr_approved_by))
                             <div style="margin: 10px 0; text-align: center;">
