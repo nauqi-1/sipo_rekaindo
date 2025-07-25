@@ -390,9 +390,9 @@
                             useHtml: true
                         },
                         nodeAlign: "BOTTOM",
-                        levelSeparation: 30,
+                        levelSeparation: 50,
                         siblingSeparation: 50,
-                        subtreeSeparation: 60
+                        subtreeSeparation: 100
                     },
                     nodeStructure: @json($formatDirector)
                 };
