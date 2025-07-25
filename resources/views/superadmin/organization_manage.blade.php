@@ -130,8 +130,8 @@
                 gap: 10px;
             }
             #struktur-org .Treant {
-                width: 100%;
-                height: 100%;
+                width: 2000px;
+                height: 700px;
                 overflow: auto;
                 position: relative;
             }
@@ -385,7 +385,6 @@
 
 
             <div id="struktur-org" style="width: 100%; height: 100vh; border: 1px;"> 
-                
             </div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script>
             <script src="https://fperucic.github.io/treant-js/Treant.min.js"></script>
@@ -411,13 +410,52 @@
                     nodeStructure: @json($formatDirector)
                 };
 
-                new Treant(chart_config);
+               new Treant(chart_config, function () {
+                    console.log("Treant has finished rendering");
+                            
+                    // Now the zoom buttons will work
+                    document.querySelectorAll('.treant-zoom-controls button').forEach(btn => {
+                        btn.disabled = false;
+                    });
+                
+                    // Optionally apply initial zoom
+                    treantScale = 0.8;
+                    const treantContent = document.querySelector("#struktur-org .Treant");
+                    if (treantContent) {
+                        treantContent.style.transform = 'scale(' + treantScale + ')';
+                        treantContent.style.transformOrigin = '0 0';
+                    }
+                });
             </script>
-        <div class="treant-zoom-controls" style="margin-bottom:10px;">
-          <button class="btn btn-light" onclick="zoomTreant(1.2)">+</button>
-          <button class="btn btn-light" onclick="zoomTreant(0.8)">−</button>
-          <button class="btn btn-light" onclick="zoomTreant(1)">Reset</button>
-        </div>
+            <script>
+               document.addEventListener("DOMContentLoaded", function () {
+                   const interval = setInterval(() => {
+                       const container = document.querySelector("#struktur-org");
+                       const targetNode = container.querySelector('.Treant .node [data-id="1"]');
+
+                       if (container && targetNode) {
+                           const nodeElement = targetNode.closest('.node'); // get the .node parent
+
+                           const containerRect = container.getBoundingClientRect();
+                           const nodeRect = nodeElement.getBoundingClientRect();
+
+                           const scrollLeft = (0.8 * container.clientWidth);
+                           const scrollTop = (nodeElement.offsetTop + nodeRect.height / 2) - (container.clientHeight / 2);
+
+                           container.scrollLeft = scrollLeft;
+                           container.scrollTop = scrollTop;
+
+                           clearInterval(interval);
+                       }
+                   }, 100);
+               });
+           </script>
+            <div class="treant-zoom-controls" style="margin-bottom:10px;">
+              <button class="btn btn-light" onclick="zoomTreant(1.1)">+</button>
+              <button class="btn btn-light" onclick="zoomTreant(0.9)">−</button>
+              <button class="btn btn-light" onclick="zoomTreant(1)">Reset</button>
+            </div>
+
         </div>
         
     </div>
@@ -566,27 +604,25 @@
     </script>
             <script>
             let treantScale = 1;
-
             function zoomTreant(factor) {
-                const nodeTree = document.querySelector('#struktur-org .Treant .node-tree');
-            
-                if (!nodeTree) {
-                    // Retry after 100ms if not ready
-                    setTimeout(() => zoomTreant(factor), 100);
-                    return;
-                }
-            
+
                 if (factor === 1) {
                     treantScale = 1;
                 } else {
                     treantScale *= factor;
                     treantScale = Math.max(0.2, Math.min(treantScale, 3));
                 }
-            
-                nodeTree.style.transform = `scale(${treantScale})`;
-                nodeTree.style.transformOrigin = '0 0';
+
+                const treantContent = document.querySelector("#struktur-org");
+                if (treantContent) {
+                    treantContent.style.transform = 'scale(' + treantScale + ')';
+                    treantContent.style.transformOrigin = '0 0';
+                    console.log("Zoom clicked", factor);
+
+                }
             }
             </script>
+           
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
                             const editModal = document.getElementById('editModal');
