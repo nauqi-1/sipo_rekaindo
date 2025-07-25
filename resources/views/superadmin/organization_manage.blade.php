@@ -385,7 +385,6 @@
 
 
             <div id="struktur-org" style="width: 100%; height: 100vh; border: 1px;"> 
-                
             </div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script>
             <script src="https://fperucic.github.io/treant-js/Treant.min.js"></script>
@@ -411,7 +410,22 @@
                     nodeStructure: @json($formatDirector)
                 };
 
-                new Treant(chart_config);
+               new Treant(chart_config, function () {
+                    console.log("Treant has finished rendering");
+                            
+                    // Now the zoom buttons will work
+                    document.querySelectorAll('.treant-zoom-controls button').forEach(btn => {
+                        btn.disabled = false;
+                    });
+                
+                    // Optionally apply initial zoom
+                    treantScale = 0.8;
+                    const treantContent = document.querySelector("#struktur-org .Treant");
+                    if (treantContent) {
+                        treantContent.style.transform = 'scale(' + treantScale + ')';
+                        treantContent.style.transformOrigin = '0 0';
+                    }
+                });
             </script>
             <script>
                document.addEventListener("DOMContentLoaded", function () {
@@ -436,11 +450,12 @@
                    }, 100);
                });
            </script>
-        <div class="treant-zoom-controls" style="margin-bottom:10px;">
-          <button class="btn btn-light" onclick="zoomTreant(1.2)">+</button>
-          <button class="btn btn-light" onclick="zoomTreant(0.8)">−</button>
-          <button class="btn btn-light" onclick="zoomTreant(1)">Reset</button>
-        </div>
+            <div class="treant-zoom-controls" style="margin-bottom:10px;">
+              <button class="btn btn-light" onclick="zoomTreant(1.1)">+</button>
+              <button class="btn btn-light" onclick="zoomTreant(0.9)">−</button>
+              <button class="btn btn-light" onclick="zoomTreant(1)">Reset</button>
+            </div>
+
         </div>
         
     </div>
@@ -590,17 +605,24 @@
             <script>
             let treantScale = 1;
             function zoomTreant(factor) {
+
                 if (factor === 1) {
                     treantScale = 1;
                 } else {
                     treantScale *= factor;
-                    // Limit zoom out
                     treantScale = Math.max(0.2, Math.min(treantScale, 3));
                 }
-                document.getElementById('struktur-org').style.transform = 'scale(' + treantScale + ')';
-                document.getElementById('struktur-org').style.transformOrigin = '0 0';
+
+                const treantContent = document.querySelector("#struktur-org");
+                if (treantContent) {
+                    treantContent.style.transform = 'scale(' + treantScale + ')';
+                    treantContent.style.transformOrigin = '0 0';
+                    console.log("Zoom clicked", factor);
+
+                }
             }
             </script>
+           
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
                             const editModal = document.getElementById('editModal');
