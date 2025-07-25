@@ -31,8 +31,6 @@ class OrganizationController extends Controller
             'text' => ['name' => 'Tidak ada data direktur']
         ];
         $formatDirector['stackChildren'] = true;
-
-
         return view('superadmin.organization_manage', compact('mainDirector', 'formatDirector'));
     }
     public function formatDirector($director)
@@ -45,7 +43,7 @@ class OrganizationController extends Controller
         $node = [
             'text' => ['name' => $name],
             'innerHTML' =>
-            '<div class="custom-node">
+            '<div class="custom-node" data-id="' . $id . '">
                 <div class="custom-node-title">' . htmlspecialchars($name) . '</div>
                 <div class="custom-node-actions">
                     <button class="custom-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal" data-type="' . $type . '" data-id="' . $id . '" data-name="' . htmlspecialchars($name, ENT_QUOTES) . '" data-kode="' . htmlspecialchars($kode, ENT_QUOTES) . '"><img src="/img/user-manage/Edit1.png" alt="edit"></button>

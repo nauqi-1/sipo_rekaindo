@@ -413,6 +413,29 @@
 
                 new Treant(chart_config);
             </script>
+            <script>
+               document.addEventListener("DOMContentLoaded", function () {
+                   const interval = setInterval(() => {
+                       const container = document.querySelector("#struktur-org");
+                       const targetNode = container.querySelector('.Treant .node [data-id="1"]');
+
+                       if (container && targetNode) {
+                           const nodeElement = targetNode.closest('.node'); // get the .node parent
+
+                           const containerRect = container.getBoundingClientRect();
+                           const nodeRect = nodeElement.getBoundingClientRect();
+
+                           const scrollLeft = (0.8 * container.clientWidth);
+                           const scrollTop = (nodeElement.offsetTop + nodeRect.height / 2) - (container.clientHeight / 2);
+
+                           container.scrollLeft = scrollLeft;
+                           container.scrollTop = scrollTop;
+
+                           clearInterval(interval);
+                       }
+                   }, 100);
+               });
+           </script>
         <div class="treant-zoom-controls" style="margin-bottom:10px;">
           <button class="btn btn-light" onclick="zoomTreant(1.2)">+</button>
           <button class="btn btn-light" onclick="zoomTreant(0.8)">−</button>
