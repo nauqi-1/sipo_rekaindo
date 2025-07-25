@@ -638,6 +638,7 @@ class UndanganController extends Controller
                 'updated_at' => now()
             ]);
         } else {
+
             // Kirim ke manager yang dipilih (approval masih pending)
             Kirim_Document::create([
                 'id_document' => $undangan->id_undangan,
@@ -735,6 +736,7 @@ class UndanganController extends Controller
 
 
             foreach ($tujuanUserId as $user) {
+                if ($user == $undangan->pembuat) continue;
                 $sudahDikirim = Kirim_Document::where([
                     ['id_document', $undangan->id_undangan],
                     ['jenis_document', 'undangan'],
@@ -911,7 +913,10 @@ class UndanganController extends Controller
 
         $undangan->save();
         \Log::info('Update undangan berhasil', $undangan->toArray());
-
+        // Update status pada kirim_document juga jika ada
+        \App\Models\Kirim_Document::where('id_document', $undangan->id_undangan)
+            ->where('jenis_document', 'undangan')
+            ->update(['status' => 'pending', 'updated_at' => now()]);
 
         return redirect()->route('undangan.' . Auth::user()->role->nm_role)->with('success', 'Undangan updated successfully');
     }
