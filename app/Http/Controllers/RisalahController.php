@@ -34,7 +34,7 @@ class RisalahController extends Controller
 
         $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_risalah', 'judul'];
         $sortBy = in_array($request->get('sort_by'), $allowedSortColumns) ? $request->get('sort_by') : 'created_at';
-        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $sortDirection = $request->get('sort_direction', 'desc') === 'desc' ? 'desc' : 'asc';
 
         // Query awal: risalah belum diarsipkan
         $query = Risalah::query()
@@ -204,20 +204,21 @@ class RisalahController extends Controller
         $undangan = DB::select("
             SELECT *
             FROM undangan
-            WHERE judul NOT IN (
-                SELECT judul FROM risalah
-            )
-            AND EXISTS (
-                SELECT 1
-                FROM users
-                WHERE 
-                    users.id   = undangan.pembuat
-                    AND (
-                        (users.department_id_department IS NOT NULL AND users.department_id_department = ?)
-                        OR
-                        (users.department_id_department IS NULL AND users.divisi_id_divisi = ?)
-                    )
-            )
+            WHERE status = 'approve'
+                AND judul NOT IN (
+                    SELECT judul FROM risalah
+                )
+                AND EXISTS (
+                    SELECT 1
+                    FROM users
+                    WHERE 
+                        users.id = undangan.pembuat
+                        AND (
+                            (users.department_id_department IS NOT NULL AND users.department_id_department = ?)
+                            OR
+                            (users.department_id_department IS NULL AND users.divisi_id_divisi = ?)
+                        )
+                )
         ", [$departmentId, $divisiId]);
         
         $risalah = new Risalah(); // atau ambil dari data risalah terakhir, terserah kebutuhanmu

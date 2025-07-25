@@ -380,7 +380,7 @@ class KirimController extends Controller
     {
         $userId = auth()->id();
         $sortBy = $request->get('sort_by', 'kirim_document.id_kirim_document');
-        $sortDirection = $request->get('sort_direction', 'asc');
+        $sortDirection = $request->get('sort_direction', 'desc');
         $perPage = $request->get('per_page', 10);
 
         // Validasi kolom sort yang diperbolehkan
