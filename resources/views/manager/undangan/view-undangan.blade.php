@@ -82,20 +82,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row mb-4" style="gap: 20px;">
-                <div class="col"> 
-                   <div class="card-blue">
-                        <label for="diterima" class="form-label">
-                            <img src="/img/memo-admin/detail.png" alt="date" style="margin-right: 5px;">Daftar Tujuan
-                        </label>
-                    </div>
-                    <div class="card-white">
-                        <label for="diterima">Diterima</label>
-                        <div class="separator"></div>
-                        <pre style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
-                    </div>  
-                </div>
-            </div>  
+              
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="card-blue">
@@ -135,6 +122,20 @@
                         <a style="text-decoration: none;" class="btn-file" onclick="window.location.href='{{ route('cetakundangan',['id' => $undangan->id_undangan]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
                         @endif
                     </div>
+                </div>
+            </div>
+            <div class="row mb-4" style="gap: 20px;">
+                <div class="col"> 
+                   <div class="card-blue">
+                        <label for="diterima" class="form-label">
+                            <img src="/img/memo-admin/detail.png" alt="date" style="margin-right: 5px;">Daftar Tujuan
+                        </label>
+                    </div>
+                    <div class="card-white">
+                        <label for="diterima">Diterima</label>
+                        <div class="separator"></div>
+                        <pre style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
+                    </div>  
                 </div>
             </div>   
             <div class="row mb-4" style="gap: 20px;">
