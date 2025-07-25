@@ -91,7 +91,7 @@
                     <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
                     <td>{{ $arsip->document ? $arsip->document->nomor_memo : '-' }}</td>
                     <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
+                    <td>{{ $arsip->document && $arsip->document->kode ? $arsip->document->kode : '-' }}</td>
                     <td>
                     @if ($arsip->document->final_status == 'reject')
                         <span class="badge bg-danger">Ditolak</span>

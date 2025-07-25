@@ -67,7 +67,7 @@
                         <label for="tujuan" class="form-label">
                             <img src="/img/memo-superadmin/kepada.png" alt="tujuan" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
                         </label>
-                        <input type="text" name="tujuan" id="tujuan" class="form-control" value="{{ $memo->tujuan }}" required>
+                        <input type="text" name="tujuan" id="tujuan" class="form-control" value="{{ $memo->tujuan_string }}" required>
                     </div>
                     <div class="col-md-6">
                         <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
