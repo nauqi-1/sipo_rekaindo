@@ -66,11 +66,11 @@
                 </div>
             </div>
                 <div  class="dropdown">
-                    <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" onchange="this.form.submit()">
-                    <option value="">Pilih Divisi</option>
-                        @foreach($divisi as $d)
-                            <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}>
-                                {{ $d->nm_divisi }}
+                    <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
+                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Pilih Divisi</option>
+                        @foreach($kode as $k)
+                            <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
+                                {{ $k }}
                             </option>
                         @endforeach
                     </select>
@@ -130,15 +130,12 @@
                 </td>
                 <td>
                         <span class="badge bg-danger">Memulihkan</span>  
-                    
                 </td>
                 <td>
                     
-                        <a href="{{ route('undangan.restore',['id' => $undangan->id_document]) }}" class="btn btn-sm1">
+                        <a href="{{ route('undangan.restore',['id' => $undangan->id_undangan]) }}" class="btn btn-sm1" title="Restore">
                             <img src="/img/restore.png" alt="restore" style="width: 20px; height: 20px;">
                         </a>
-                        
-                        
                     </td>
                 </tr>
                 @endforeach
