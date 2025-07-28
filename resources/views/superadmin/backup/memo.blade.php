@@ -119,6 +119,17 @@
     {{ $memos->links('pagination::bootstrap-5') }}
 </div>
 
+<div class="modal fade" id="successRestoreMemoModal" tabindex="-1" aria-labelledby="successRestoreMemoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
+                <h5 class="modal-title"><b>Sukses</b></h5>
+                <p class="mt-2">Pemulihan Memo Berhasil</p>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Overlay Add Memo Success -->
 <div class="modal fade" id="successAddMemoModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -174,6 +185,17 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        @if(session('success') === 'Pemulihan Memo Berhasil.')
+            var successModal = new bootstrap.Modal(document.getElementById("successRestoreMemoModal"));
+            successModal.show();
+            setTimeout(function () {
+                successModal.hide();
+            }, 1500);
+        @endif
+    });
+</script>
 
 <script>
     // Event listener untuk modal sukses tambah memo
