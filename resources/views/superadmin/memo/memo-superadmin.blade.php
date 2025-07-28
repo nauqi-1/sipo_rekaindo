@@ -133,7 +133,7 @@
                     </td>
                     <td>
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteMemoModal"
-                        data-memo-id="{{ $memo->id_memo }}"  data-route="{{ route('memo.destroy', [$memo->id_memo, 'jenis_document' => 'memo']) }}">
+                        data-memo-id="{{ $memo->id_memo }}"  data-route="{{ route('memo.delete', [$memo->id_memo, 'jenis_document' => 'memo']) }}">
                             <img src="/img/memo-superadmin/Delete.png" alt="delete">
                         </button>
                         
