@@ -116,7 +116,7 @@
                     <td>{{ $risalah->seri_document }}</td>
                     <td>{{ $risalah->nomor_document }}</td>
                     <td>{{ $risalah->tgl_disahkan ? \Carbon\Carbon::parse($risalah->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $risalah->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                    <td>{{ $risalah->user->department->kode_department ?? $risalah->user->divisi->kode_divisi ?? '-' }}</td>
                     
                         <td>
                            <span class="badge bg-danger">Memulihkan</span>  

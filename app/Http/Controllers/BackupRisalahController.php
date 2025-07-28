@@ -37,10 +37,6 @@ class BackupRisalahController extends Controller
                   ->orWhere('nomor_document', 'like', '%' . $request->search . '%');
             });
         }
-
-        if ($request->filled('divisi_id_divisi') ) {
-            $risalahs->where('divisi_id_divisi', $request->divisi_id_divisi);
-        }
     
         // Ambil hasil paginate
         $risalahs = $risalahs->paginate(6);
@@ -59,7 +55,6 @@ class BackupRisalahController extends Controller
            'tgl_disahkan' => $risalah->tgl_disahkan,
            'seri_surat' => $risalah->seri_document,
            'nomor_risalah' => $risalah->nomor_document,
-           'tujuan'=> $risalah->tujuan,
            'waktu_mulai' => $risalah->waktu_mulai,
            'waktu_selesai' => $risalah->waktu_selesai,
            'agenda' => $risalah->agenda,
@@ -69,7 +64,6 @@ class BackupRisalahController extends Controller
            'judul' => $risalah->judul,
            'pembuat' => $risalah->pembuat,
            'catatan' => $risalah->catatan,
-           'divisi_id_divisi' => $risalah->divisi_id_divisi,
            'status' => $risalah->status,           
            'created_at' => $risalah->created_at,
            'updated_at' => $risalah->updated_at,

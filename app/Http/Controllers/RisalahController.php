@@ -486,44 +486,43 @@ public function update(Request $request, $id)
     }
 
     public function destroy($id)
-{
-    $risalah = Risalah::findOrFail($id);
+    {
+        $risalah = Risalah::findOrFail($id);
+        \Log::info("Mencoba hapus risalah ID: " . $id);
+        DB::transaction(function () use ($risalah) {
+            BackupRisalah::create([
+                'id_document' => $risalah->id_risalah,
+                'jenis_document' => 'risalah',
+                'nomor_document' => $risalah->nomor_risalah,
+                'seri_document' => $risalah->seri_surat,
+                'tgl_dibuat' => $risalah->tgl_dibuat,
+                'tgl_disahkan' => $risalah->tgl_disahkan,
+                'waktu_mulai' => $risalah->waktu_mulai,
+                'waktu_selesai' => $risalah->waktu_selesai,
+                'agenda' => $risalah->agenda,
+                'tempat' => $risalah->tempat,
+                'nama_bertandatangan'=> $risalah->nama_bertandatangan,
+                'lampiran' => $risalah->lampiran,
+                'judul' => $risalah->judul,
+                'pembuat' => $risalah->pembuat,
+                'catatan' => $risalah->catatan,
+                'status' => $risalah->status,           
+                'created_at' => $risalah->created_at,
+                'updated_at' => $risalah->updated_at,
+            ]);
 
-    DB::transaction(function () use ($risalah) {
-        BackupRisalah::create([
-            'id_document' => $risalah->id_risalah,
-            'jenis_document' => 'risalah',
-            'nomor_document' => $risalah->nomor_risalah,
-            'seri_document' => $risalah->seri_surat,
-            'tgl_dibuat' => $risalah->tgl_dibuat,
-            'tgl_disahkan' => $risalah->tgl_disahkan,
-            'waktu_mulai' => $risalah->waktu_mulai,
-            'waktu_selesai' => $risalah->waktu_selesai,
-            'agenda' => $risalah->agenda,
-            'tempat' => $risalah->tempat,
-            'nama_bertandatangan'=> $risalah->nama_bertandatangan,
-            'lampiran' => $risalah->lampiran,
-            'judul' => $risalah->judul,
-            'pembuat' => $risalah->pembuat,
-            'catatan' => $risalah->catatan,
-            'divisi_id_divisi' => $risalah->divisi_id_divisi,
-            'status' => $risalah->status,           
-            'created_at' => $risalah->created_at,
-            'updated_at' => $risalah->updated_at,
-        ]);
+            // Hapus file lampiran jika ada
+            $lampiranPath = public_path($risalah->lampiran);
+            if ($risalah->lampiran && file_exists($lampiranPath)) {
+                unlink($lampiranPath);
+            }
 
-        // Hapus file lampiran jika ada
-        $lampiranPath = public_path($risalah->lampiran);
-        if ($risalah->lampiran && file_exists($lampiranPath)) {
-            unlink($lampiranPath);
-        }
+            RisalahDetail::where('risalah_id_risalah', $risalah->id_risalah)->delete();
+            $risalah->delete();
+        });
 
-        RisalahDetail::where('risalah_id_risalah', $risalah->id_risalah)->delete();
-        $risalah->delete();
-    });
-
-    return redirect()->route('risalah.'.Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dihapus.');
-}
+        return redirect()->route('risalah.'.Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dihapus.');
+    }
 
     
     private function convertToRoman($number)
