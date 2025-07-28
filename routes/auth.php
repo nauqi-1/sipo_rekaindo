@@ -83,7 +83,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/memo-restore', [BackupController::class, 'memo'])->name('memo.backup');
         Route::get('/undangan-restore', [BackupController::class, 'undangan'])->name('undangan.backup');
         Route::get('/risalah-restore', [BackupRisalahController::class, 'risalah'])->name('risalah.backup');
-        Route::get('/memo-restore/{id}', [BackupController::class, 'RestoreMmeo'])->name('memo.restore');
+        Route::get('/memo-restore/{id}', [BackupController::class, 'RestoreMemo'])->name('memo.restore');
         Route::get('/undangan-restore/{id}', [BackupController::class, 'RestoreUndangan'])->name('undangan.restore');
         Route::get('/risalah-restore/{id}', [BackupRisalahController::class, 'RestoreRisalah'])->name('risalah.restore');
 });
