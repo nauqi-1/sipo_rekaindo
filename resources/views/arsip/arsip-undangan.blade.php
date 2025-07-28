@@ -124,7 +124,7 @@
             <!-- Close Button -->
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
             <img src="/img/risalah/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
-            <h5 class="modal-title mb-4"><b>Hapus Undangan Rapat dari Arsip?</b></h5>
+            <h5 class="modal-title mb-4"><b>Keluarkan Undangan Rapat dari Arsip?</b></h5>
             <form id="deleteArsipUndanganForm" method="POST">
                 @csrf
                 @method('DELETE')
@@ -145,7 +145,7 @@
             <div class="modal-body">
                 <img src="/img/risalah/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                 <h5 class="modal-title"><b>Sukses</b></h5>
-                <p class="mt-2">Berhasil Hapus Undangan Rapat</p>
+                <p class="mt-2">Berhasil Keluarkan Undangan Rapat dari Arsip</p>
             </div>
         </div>
     </div>
