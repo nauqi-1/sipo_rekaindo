@@ -153,6 +153,10 @@ class MemoController extends Controller
 
     public function superadmin(Request $request){
         $divisi = Divisi::all();
+        $kode = Memo::whereNotNull('kode')
+        ->pluck('kode')
+        ->unique();
+
         $seri = Seri::all();
         $userId = Auth::id();
         
@@ -192,8 +196,8 @@ class MemoController extends Controller
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
         $query->orderBy('created_at', $sortDirection);
 
-        if ($request->filled('divisi_id_divisi') && $request->divisi_id_divisi != 'pilih') {
-    $query->where('divisi_id_divisi', $request->divisi_id_divisi);
+        if ($request->filled('kode') && $request->kode != 'pilih') {
+    $query->where('kode', $request->kode);
 }
 
         // Pencarian berdasarkan nama dokumen atau nomor memo
@@ -207,7 +211,7 @@ class MemoController extends Controller
         $memos = $query->paginate($perPage);
 
 
-        return view( 'superadmin.memo.memo-superadmin', compact('memos', 'divisi', 'seri','sortDirection'));
+        return view( 'superadmin.memo.memo-superadmin', compact('memos', 'kode', 'seri','sortDirection'));
     }
 
     public function show($id)

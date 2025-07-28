@@ -41,6 +41,7 @@
                         <option value="">Status</option>
                         <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                        <option value="correction" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi</option>
                         <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                     </select>
                 </div>
@@ -60,11 +61,11 @@
                     </div>
                 </div>
                 <div  class="dropdown">
-                    <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" onchange="this.form.submit()">
-                        <option value="pilih" disabled {{ !request()->filled('divisi_id_divisi') ? 'selected' : '' }}>Pilih Divisi</option>
-                        @foreach($divisi as $d)
-                            <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}>
-                                {{ $d->nm_divisi }}
+                    <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
+                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Pilih Divisi</option>
+                        @foreach($kode as $k)
+                            <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
+                                {{ $k }}
                             </option>
                         @endforeach
                     </select>
@@ -110,7 +111,7 @@
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
                     <td class="nama-dokumen 
-                        {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ ($memo->status == 'reject' || $memo->status == 'correction') ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
                         {{ $memo->judul }}
                     </td>
                     <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
@@ -124,18 +125,19 @@
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($memo->status == 'pending')
                             <span class="badge bg-warning">Diproses</span>
+                        @elseif ($memo->status == 'correction')
+                            <span class="badge bg-danger">Dikoreksi</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
                         @endif
                     </td>
                     <td>
-
                         <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteMemoModal"
                         data-memo-id="{{ $memo->id_memo }}"  data-route="{{ route('memo.destroy', [$memo->id_memo, 'jenis_document' => 'memo']) }}">
                             <img src="/img/memo-superadmin/Delete.png" alt="delete">
                         </button>
                         
-                        @if ($memo->status == 'approve')
+                        @if ($memo->status == 'approve' || $memo->status == 'reject')
                         <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('POST')
@@ -154,7 +156,7 @@
             @endforeach
         </tbody>
     </table>
-    {{ $memos->links('pagination::bootstrap-5') }}
+    {{ $memos->appends(request()->query())->links('pagination::bootstrap-5') }}
 </div>
 
 <!-- Overlay Add Memo Success -->
