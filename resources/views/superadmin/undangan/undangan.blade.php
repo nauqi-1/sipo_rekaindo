@@ -5,7 +5,6 @@
 @section('content')
     <div class="container">
         <div class="header">
-            <!-- Back Button -->
             <div class="back-button">
                 <a href="{{Route('superadmin.dashboard')}}"><img src="/img/undangan/Vector_back.png" alt=""></a>
             </div>
@@ -90,6 +89,7 @@
         <table class="table-light">
             <thead>
                 <tr>
+                    
                     <th>No</th>
                     <th>Nama Dokumen</th>
                     <th>Tgl Rapat
@@ -149,9 +149,10 @@
                         <td>
                             <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteUndanganModal"
                                 data-memo-id="{{ $undangan->id_undangan }}"
-                                data-route="{{ route('undangan.destroy', [$undangan->id_undangan, 'jenis_document' => 'undangan']) }}">
+                                data-route="{{ route('undangan.destroy', $undangan->id_undangan) }}">
                                 <img src="/img/undangan/Delete.png" alt="delete">
                             </button>
+                            
 
                             @if ($undangan->status == 'approve')
                                 <form
@@ -194,7 +195,41 @@
             </div>
         </div>
     </div>
+<!-- Overlay Delete Memo -->
+<div class="modal fade" id="deleteUndanganModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <!-- Close Button -->
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
+            <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus undangan?</h5>
+            <form id="deleteUndanganForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <!-- Tombol -->
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Oke</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
+<!-- Overlay Confirmation Delete Success -->
+<div class="modal fade" id="deleteUndanganSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <!-- Close Button -->
+                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="my-3" style="width: 80px;">
+                <!-- Success Message -->
+                <h5 class="modal-title"><b>Sukses</b></h5>
+                <p class="mt-2">Berhasil Menghapus Undangan</p>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- Overlay Edit Undangan Success -->
     <div class="modal fade" id="successEditUndanganModal" tabindex="-1" aria-labelledby="successModalLabel"
         aria-hidden="true">
@@ -256,7 +291,47 @@
                 }, 1500);
             @endif
         });
+         // Event Listener Overlay delete
+    document.addEventListener("DOMContentLoaded", function () {
+        let deleteUndanganModal = document.getElementById("deleteUndanganModal");
+        let deleteUndanganForm = document.getElementById("deleteUndanganForm");
+        let deleteUndanganSuccessModal = new bootstrap.Modal(document.getElementById("deleteUndanganSuccessModal"));
 
+        // Event ketika modal delete user ditampilkan
+        deleteUndanganModal.addEventListener("show.bs.modal", function (event) {
+            let button = event.relatedTarget;
+            let route = button.getAttribute("data-route");
+            deleteUndanganForm.setAttribute("action", route);
+        });
+
+        // Event ketika form delete dikirim
+        deleteUndanganForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Mencegah pengiriman form default
+
+            let formAction = deleteUndanganForm.getAttribute("action");
+
+            fetch(formAction, {
+                method: "POST", // Laravel menangani DELETE dengan _method
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ _method: "DELETE" })
+            }).then(response => {
+                if (response.ok) {
+                    let modalInstance = bootstrap.Modal.getInstance(deleteUndanganModal);
+                    modalInstance.hide();
+
+                    setTimeout(() => {
+                        deleteUndanganSuccessModal.show();
+                        setTimeout(() => {
+                            location.reload(); // Refresh halaman setelah 2 detik
+                        }, 1500);
+                    }, 500);
+                }
+            }).catch(error => console.error("Error:", error));
+        });
+    });
         // Event listener untuk modal sukses tambah undangan
         document.addEventListener("DOMContentLoaded", function () {
             @if(session('success') === 'Undangan updated successfully') // merujuk ke parameter controller undangan update

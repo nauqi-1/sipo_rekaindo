@@ -66,7 +66,9 @@ class BackupController extends Controller
     public function undangan(Request $request)
     {
         $divisi = Divisi::all();
-        $undangan = Backup_Document::where('jenis_document', 'undangan');
+        $undangan = Undangan::onlyTrashed();
+
+
 
         // Filter berdasarkan status
         if ($request->filled('status')) {
@@ -138,36 +140,13 @@ class BackupController extends Controller
 
      public function RestoreUndangan($id)
      {
-        $undangan = Backup_Document::where('id_document', $id)->first();
+         $undangan = Undangan::withTrashed()->where('id_undangan', $id)->first();
 
-        // Pindahkan data ke tabel backup
-        undangan::create([
-            'id_undangan' => $undangan->id_document,
-            'tujuan'=> $undangan->tujuan,
-            'judul' => $undangan->judul,
-            'nomor_undangan' => $undangan->nomor_document,
-            'tgl_dibuat' => $undangan->tgl_dibuat,
-            'tgl_disahkan' => $undangan->tgl_disahkan,
-            'status' => $undangan->status,
-            'catatan' => $undangan->catatan,
-            'isi_undangan' => $undangan->isi_document,
-            'seri_surat' => $undangan->seri_document,
-            'nama_bertandatangan'=> $undangan->nama_bertandatangan,
-            'lampiran' => $undangan->lampiran,
-            'pembuat' => $undangan->pembuat,
-            'divisi_id_divisi' => $undangan->divisi_id_divisi,
-            'created_at' => $undangan->created_at,
-            'updated_at' => $undangan->updated_at,
-            // tambahkan kolom lain jika ada
-        ]);
-    
-        // Hapus file lampiran jika ada
-        if ($undangan->lampiran && file_exists(public_path($undangan->lampiran))) {
-            unlink(public_path($undangan->lampiran));
-        }
-    
-        // Hapus dari tabel memo
-        $undangan->delete();
+    if (!$undangan) {
+        return redirect()->back()->with('error', 'Data tidak ditemukan.');
+    }
+
+    $undangan->restore();
  
          return redirect()->route('undangan.backup' )->with('success', 'Memo deleted successfully.');
      }

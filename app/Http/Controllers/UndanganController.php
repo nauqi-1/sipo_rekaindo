@@ -127,24 +127,35 @@ class UndanganController extends Controller
     }
 
     public function superadmin(Request $request)
-    {
+    {   //dd('Superadmin Undangan');
+        $divisi = Divisi::all();
+        $kode = Undangan::whereNotNull('kode')
+            ->pluck('kode')
+            ->unique();
+
         $seri = Seri::all();
         $userId = Auth::id();
 
-        // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
-        $undanganDiarsipkan = Arsip::where('user_id', $userId)->pluck('document_id')->toArray();
 
-        // Variabel sortDirection tetap dikirim, walaupun tidak dipakai
+        $undanganDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
+        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+
+        $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_undangan', 'judul'];
+        if (!in_array($sortBy, $allowedSortColumns)) {
+            $sortBy = 'created_at'; // fallback default
+        }
 
         $query = Undangan::query()
             ->whereNotIn('id_undangan', $undanganDiarsipkan)
-            ->orderBy('tgl_dibuat', 'desc');
+            ->orderBy($sortBy, $sortDirection);
 
+        // Filter berdasarkan status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
+        // Filter berdasarkan tanggal dibuat
         if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
             $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
         } elseif ($request->filled('tgl_dibuat_awal')) {
@@ -153,17 +164,30 @@ class UndanganController extends Controller
             $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
         }
 
+        // Ambil semua arsip undangan berdasarkan user login
+        $arsipUndanganQuery = Arsip::where('user_id', $userId)
+            ->where('jenis_document', 'undangan')
+            ->with('document');
+
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $query->orderBy('created_at', $sortDirection);
+
+        if ($request->filled('kode') && $request->kode != 'pilih') {
+            $query->where('kode', $request->kode);
+        }
+
+        // Pencarian berdasarkan nama dokumen atau nomor memo
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('judul', 'like', '%' . $request->search . '%')
                     ->orWhere('nomor_undangan', 'like', '%' . $request->search . '%');
             });
         }
-
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
         $undangans = $query->paginate($perPage);
 
-        return view(Auth::user()->role->nm_role . '.undangan.undangan', compact('undangans', 'seri', 'sortDirection'));
+
+        return view('superadmin.undangan.undangan', compact('undangans', 'kode', 'seri', 'sortDirection'));
     }
 
 
@@ -923,35 +947,8 @@ class UndanganController extends Controller
     public function destroy($id)
     {
         $undangan = Undangan::findOrFail($id);
-
-        // Pindahkan data ke tabel backup
-        Backup_Document::create([
-            'id_document' => $undangan->id_undangan,
-            'jenis_document' => 'undangan',
-            'tujuan' => $undangan->tujuan,
-            'judul' => $undangan->judul,
-            'nomor_document' => $undangan->nomor_undangan,
-            'tgl_dibuat' => $undangan->tgl_dibuat,
-            'tgl_disahkan' => $undangan->tgl_disahkan,
-            'status' => $undangan->status,
-            'catatan' => $undangan->catatan,
-            'isi_document' => $undangan->isi_undangan,
-            'nama_bertandatangan' => $undangan->nama_bertandatangan,
-            'lampiran' => $undangan->lampiran,
-            'pembuat' => $undangan->pembuat,
-            'seri_document' => $undangan->seri_surat,
-            'divisi_id_divisi' => $undangan->divisi_id_divisi,
-            'created_at' => $undangan->created_at,
-            'updated_at' => $undangan->updated_at,
-            'tgl_rapat' => $undangan->tgl_rapat,
-            'tempat' => $undangan->tempat,
-            'waktu_mulai' => $undangan->waktu_mulai,
-            'waktu_selesai' => $undangan->waktu_selesai,
-            'kode' => $undangan->kode,
-            'qr_approved_by' => $undangan->tujuan_string,
-            // tambahkan kolom lain jika ada
-        ]);
-
+        
+        // Hapus kirim_document terkait
         $undangan->delete();
 
         return redirect()->route('undangan.' . Auth::user()->role->nm_role)->with('success', 'Undangan deleted successfully.');
