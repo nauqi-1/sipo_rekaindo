@@ -102,18 +102,15 @@
                 </td>
                 
                 <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
-                <td>{{ $memo->seri_document }}</td>
-                <td>{{ $memo->nomor_document }}</td>
+                <td>{{ $memo->seri_surat }}</td>
+                <td>{{ $memo->nomor_memo }}</td>
                 <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
                 <td>{{ $memo->kode ?? 'No Divisi Assigned' }}</td>
                 <td><span class="badge bg-danger">Memulihkan</span></td>
                 <td>
-                    <form action="{{ route('memo.restore', ['id' => $memo->id_document]) }}" method="GET">
-                        @csrf
-                        <button type="submit" class="btn btn-sm1">
+                    <a href="{{ route('memo.restore', ['id' => $memo->id_memo]) }}" class="btn btn-sm1" title="Restore">
                         <img src="/img/restore.png" alt="restore" style="width: 20px; height: 20px;">
-                        </button>
-                    </form>
+                    </a>
                 </td>
             </tr>
             @endforeach

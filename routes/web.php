@@ -62,7 +62,11 @@ Route::get('/add-memoSuperadmin', function() {
 
 
 Route::get('/memo/edit/{id_memo}', [MemoController::class, 'edit'])->name('memo.edit');
-Route::delete('/memo/delete/{id_memo}', [MemoController::class, 'destroy'])->name('memo.destroy');
+//hapus sementara
+Route::delete('/memo/delete/{id_memo}', [MemoController::class, 'destroyTemp'])->name('memo.delete');
+//hapus permanen
+Route::delete('/memo/delete-perm/{id_memo}', [MemoController::class, 'destroyPerm'])->name('memo.destroy');
+
 Route::put('/memo/update/{id_memo}', [MemoController::class, 'update'])->name('memo/update');
 
 Route::get('/undangan/edit/{id_undangan}', [UndanganController::class, 'edit'])->name('undangan.edit');
