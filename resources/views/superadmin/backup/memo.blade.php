@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Memo Admin')
+@section('title', 'Memo Backup')
 @section('content')
 <div class="container">
     <div class="header">
@@ -50,16 +50,15 @@
                         </div>
                     </div>
                     <div  class="dropdown">
-                        <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" onchange="this.form.submit()">
-                        <option value="">Pilih Divisi</option>
-                            @foreach($divisi as $d)
-                                <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}>
-                                    {{ $d->nm_divisi }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </form>
+                    <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
+                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Pilih Divisi</option>
+                        @foreach($kode as $k)
+                            <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
+                                {{ $k }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -106,7 +105,7 @@
                 <td>{{ $memo->seri_document }}</td>
                 <td>{{ $memo->nomor_document }}</td>
                 <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                <td>{{ $memo->divisi->nm_divisi  ?? 'No Divisi Assigned' }}</td>
+                <td>{{ $memo->kode ?? 'No Divisi Assigned' }}</td>
                 <td><span class="badge bg-danger">Memulihkan</span></td>
                 <td>
                     <form action="{{ route('memo.restore', ['id' => $memo->id_document]) }}" method="GET">

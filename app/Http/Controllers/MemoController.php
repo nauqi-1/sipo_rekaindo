@@ -1317,11 +1317,17 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
             'nama_bertandatangan'=> $memo->nama_bertandatangan,
             'lampiran' => $memo->lampiran,
             'pembuat' => $memo->pembuat,
-            'divisi_id_divisi' => $memo->divisi_id_divisi,
+            'kode' => $memo->kode,
             'created_at' => $memo->created_at,
             'updated_at' => $memo->updated_at,
+            'tujuan_string' => $memo->tujuan_string,
+            'qr_approved_by' => $memo->qr_approved_by,
+            'tgl_rapat' => null,
+            'waktu_mulai' => null,
+            'waktu_selesai' => null,
+            'tempat' => null
             
-            // tambahkan kolom lain jika ada
+            
         ]);
     
         // Hapus file lampiran jika ada
