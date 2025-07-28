@@ -63,45 +63,48 @@ class BackupController extends Controller
 
     public function undangan(Request $request)
     {
-        $divisi = Divisi::all();
-        $undangan = Backup_Document::where('jenis_document', 'undangan');
-
+       $userId = Auth::id();
+        $kode = Undangan::whereNotNull('kode')
+        ->pluck('kode')
+        ->unique();
+    
+        
+        $query = Undangan::onlyTrashed();
         // Filter berdasarkan status
         if ($request->filled('status')) {
-            $undangan->where('status', $request->status);
+            $query->where('status', $request->status);
         }
-
+    
         // Filter berdasarkan tanggal dibuat
         if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
-            $undangan->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
+            $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
         } elseif ($request->filled('tgl_dibuat_awal')) {
-            $undangan->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
+            $query->whereDate('tgl_dibuat', '>=', $request->tgl_dibuat_awal);
         } elseif ($request->filled('tgl_dibuat_akhir')) {
-            $undangan->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
+            $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
         }
-
-        // Urutan sorting
+    
+        // Urutan data
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-        $undangan->orderBy('created_at', $sortDirection);
-
-        // Pencarian berdasarkan judul atau nomor dokumen
+        $query->orderBy('created_at', $sortDirection);
+    
+        // Pencarian berdasarkan judul atau nomor
         if ($request->filled('search')) {
-            $undangan->where(function ($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('judul', 'like', '%' . $request->search . '%')
-                ->orWhere('nomor_document', 'like', '%' . $request->search . '%');
+                  ->orWhere('nomor_document', 'like', '%' . $request->search . '%');
             });
         }
-
+    
         // Filter berdasarkan divisi
-        if ($request->filled('divisi_id_divisi')) {
-            $undangan->where('divisi_id_divisi', $request->divisi_id_divisi);
+        if ($request->filled('kode')) {
+            $query->where('kode', $request->kode);
         }
-
         // Ambil hasil paginate
         $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
-        $undangans = $undangan->paginate($perPage);
+        $undangans = $query->paginate($perPage);
 
-        return view('superadmin.backup.undangan', compact('undangans', 'divisi', 'sortDirection'));
+        return view('superadmin.backup.undangan', compact('undangans', 'sortDirection', 'kode'));
     }
 
 
@@ -121,37 +124,14 @@ class BackupController extends Controller
 
      public function RestoreUndangan($id)
      {
-        $undangan = Backup_Document::where('id_document', $id)->first();
-
-        // Pindahkan data ke tabel backup
-        undangan::create([
-            'id_undangan' => $undangan->id_document,
-            'tujuan'=> $undangan->tujuan,
-            'judul' => $undangan->judul,
-            'nomor_undangan' => $undangan->nomor_document,
-            'tgl_dibuat' => $undangan->tgl_dibuat,
-            'tgl_disahkan' => $undangan->tgl_disahkan,
-            'status' => $undangan->status,
-            'catatan' => $undangan->catatan,
-            'isi_undangan' => $undangan->isi_document,
-            'seri_surat' => $undangan->seri_document,
-            'nama_bertandatangan'=> $undangan->nama_bertandatangan,
-            'lampiran' => $undangan->lampiran,
-            'pembuat' => $undangan->pembuat,
-            'divisi_id_divisi' => $undangan->divisi_id_divisi,
-            'created_at' => $undangan->created_at,
-            'updated_at' => $undangan->updated_at,
-            // tambahkan kolom lain jika ada
-        ]);
-    
-        // Hapus file lampiran jika ada
-        if ($undangan->lampiran && file_exists(public_path($undangan->lampiran))) {
-            unlink(public_path($undangan->lampiran));
-        }
-    
-        // Hapus dari tabel memo
-        $undangan->delete();
- 
-         return redirect()->route('undangan.backup' )->with('success', 'Memo deleted successfully.');
+         $undangan = Undangan::withTrashed()
+    ->where('id_undangan', $id)
+    ->first();
+    if($undangan) {
+        $undangan->restore();
+    } else {
+        dd($undangan);
+    }
+    return redirect()->route('undangan.backup')->with('success', 'Pemulihan Undangan Berhasil.');
      }
     }

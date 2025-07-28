@@ -102,8 +102,8 @@
 
                     <!-- Button Arsip -->
                     @if ($arsip->document)
-                    <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipUndanganModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_undangan, 'jenis_document' => 'Undangan']) }}">
-                        <img src="/img/arsip/delete.png" alt="delete">
+                    <button class="btn btn-sm3" data-bs-toggle="modal" data-bs-target="#deleteArsipUndanganModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_undangan, 'jenis_document' => 'Undangan']) }}">
+                        <img src="/img/arsip/unarchive2.png" alt="unarchive" style="height: 16px;">
                     </button>
 
                     <button class="btn btn-sm3" onclick="window.location.href='{{route('view.undangan-arsip',$arsip->document->id_undangan)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
