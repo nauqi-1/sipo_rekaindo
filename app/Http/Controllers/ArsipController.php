@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Arsip;
-use App\Models\Memo; 
-use App\Models\Undangan; 
-use App\Models\Risalah; 
+use App\Models\Memo;
+use App\Models\Undangan;
+use App\Models\Risalah;
+use App\Models\Department;
+use App\Models\Director;
+use App\Models\Divisi;
 use App\Models\Kirim_Document;
+use App\Models\User;
+
 use Illuminate\Support\Facades\Auth;
 
 class ArsipController extends Controller
@@ -50,7 +55,7 @@ class ArsipController extends Controller
     }
 
     // Tampilkan daftar arsip berdasarkan user yang login
-    
+
 
     // Kembalikan Dokumen dari Arsip
     public function restoreDocument($document_id, $jenis_document)
@@ -67,92 +72,92 @@ class ArsipController extends Controller
         return redirect()->back()->with('success', ucfirst($jenis_document) . ' berhasil dikembalikan!');
     }
     public function indexMemo(Request $request)
-{
-    $user_id = Auth::id();
+    {
+        $user_id = Auth::id();
 
-    // Ambil daftar arsip memo dari user
-    $arsipQuery = Arsip::where('user_id', $user_id)
-        ->where('jenis_document', 'App\Models\Memo');
+        // Ambil daftar arsip memo dari user
+        $arsipQuery = Arsip::where('user_id', $user_id)
+            ->where('jenis_document', 'App\Models\Memo');
 
-    // Ambil semua document_id dari arsip terlebih dahulu
-    $arsipAll = $arsipQuery->get();
-    $memoIds = $arsipAll->pluck('document_id');
+        // Ambil semua document_id dari arsip terlebih dahulu
+        $arsipAll = $arsipQuery->get();
+        $memoIds = $arsipAll->pluck('document_id');
 
-    // Siapkan query memo berdasarkan ID dari arsip
-    $memoQuery = Memo::whereIn('id_memo', $memoIds);
+        // Siapkan query memo berdasarkan ID dari arsip
+        $memoQuery = Memo::whereIn('id_memo', $memoIds);
 
-    // Pencarian berdasarkan judul atau nomor memo
-    if ($request->filled('search')) {
-        $searchTerm = '%' . str_replace(' ', '%', $request->search) . '%';
-        $memoQuery->where(function ($q) use ($searchTerm) {
-            $q->where('judul', 'like', $searchTerm)
-              ->orWhere('nomor_memo', 'like', $searchTerm);
-        });
-    }
-
-    // Filter tanggal dibuat (dari - sampai)
-    if ($request->filled('start_date')) {
-        $memoQuery->whereDate('tgl_dibuat', '>=', $request->start_date);
-    }
-    if ($request->filled('end_date')) {
-        $memoQuery->whereDate('tgl_dibuat', '<=', $request->end_date);
-    }
-
-    // Filter status jika disediakan
-    if ($request->filled('status')) {
-        $memoQuery->where('status', $request->status);
-    }
-
-    // Sorting
-    $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-    $memoQuery->orderBy('tgl_dibuat', $sortDirection);
-
-    // Ambil hasil memo yang sudah difilter
-    $filteredMemos = $memoQuery->get();
-
-    // Ambil kembali ID memo yang tersaring
-    $filteredMemoIds = $filteredMemos->pluck('id_memo');
-
-    // Filter kembali arsip hanya untuk memo yang lolos filter
-    $filteredArsipQuery = Arsip::where('user_id', $user_id)
-        ->where('jenis_document', 'App\Models\Memo')
-        ->whereIn('document_id', $filteredMemoIds);
-
-    // Pagination arsip
-    $perPage = $request->get('per_page', 10);
-    $arsipMemo = $filteredArsipQuery->paginate($perPage);
-
-    // Sisipkan data memo ke dalam arsip
-    $memosMap = $filteredMemos->keyBy('id_memo');
-    foreach ($arsipMemo as $arsip) {
-        $arsip->document = $memosMap->get($arsip->document_id);
-    }
-
-        $arsipMemo->getCollection()->transform(function ($arsip) use ($user_id) {
-        $memo = $arsip->document;
-
-        if ($memo) {
-            if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
-                $memo->final_status = $memo->status; // Memo dari divisi sendiri
-            } else {
-                $statusKirim = Kirim_Document::where('id_document', $memo->id_memo)
-                    ->where('jenis_document', 'memo')
-                    ->where('id_penerima', $user_id)
-                    ->first();
-
-                $memo->final_status = $statusKirim ? $statusKirim->status : '-';
-            }
+        // Pencarian berdasarkan judul atau nomor memo
+        if ($request->filled('search')) {
+            $searchTerm = '%' . str_replace(' ', '%', $request->search) . '%';
+            $memoQuery->where(function ($q) use ($searchTerm) {
+                $q->where('judul', 'like', $searchTerm)
+                    ->orWhere('nomor_memo', 'like', $searchTerm);
+            });
         }
 
-        return $arsip;
-    });
+        // Filter tanggal dibuat (dari - sampai)
+        if ($request->filled('start_date')) {
+            $memoQuery->whereDate('tgl_dibuat', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $memoQuery->whereDate('tgl_dibuat', '<=', $request->end_date);
+        }
+
+        // Filter status jika disediakan
+        if ($request->filled('status')) {
+            $memoQuery->where('status', $request->status);
+        }
+
+        // Sorting
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $memoQuery->orderBy('tgl_dibuat', $sortDirection);
+
+        // Ambil hasil memo yang sudah difilter
+        $filteredMemos = $memoQuery->get();
+
+        // Ambil kembali ID memo yang tersaring
+        $filteredMemoIds = $filteredMemos->pluck('id_memo');
+
+        // Filter kembali arsip hanya untuk memo yang lolos filter
+        $filteredArsipQuery = Arsip::where('user_id', $user_id)
+            ->where('jenis_document', 'App\Models\Memo')
+            ->whereIn('document_id', $filteredMemoIds);
+
+        // Pagination arsip
+        $perPage = $request->get('per_page', 10);
+        $arsipMemo = $filteredArsipQuery->paginate($perPage);
+
+        // Sisipkan data memo ke dalam arsip
+        $memosMap = $filteredMemos->keyBy('id_memo');
+        foreach ($arsipMemo as $arsip) {
+            $arsip->document = $memosMap->get($arsip->document_id);
+        }
+
+        $arsipMemo->getCollection()->transform(function ($arsip) use ($user_id) {
+            $memo = $arsip->document;
+
+            if ($memo) {
+                if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                    $memo->final_status = $memo->status; // Memo dari divisi sendiri
+                } else {
+                    $statusKirim = Kirim_Document::where('id_document', $memo->id_memo)
+                        ->where('jenis_document', 'memo')
+                        ->where('id_penerima', $user_id)
+                        ->first();
+
+                    $memo->final_status = $statusKirim ? $statusKirim->status : '-';
+                }
+            }
+
+            return $arsip;
+        });
 
 
-    return view('arsip.arsip-memo', compact('arsipMemo', 'sortDirection'));
-}
+        return view('arsip.arsip-memo', compact('arsipMemo', 'sortDirection'));
+    }
 
 
-        
+
     public function indexUndangan(Request $request)
     {
         $user_id = Auth::id();
@@ -173,7 +178,7 @@ class ArsipController extends Controller
             $searchTerm = '%' . str_replace(' ', '%', $request->search) . '%';
             $undanganQuery->where(function ($q) use ($searchTerm) {
                 $q->where('judul', 'like', $searchTerm)
-                ->orWhere('nomor_undangan', 'like', $searchTerm);
+                    ->orWhere('nomor_undangan', 'like', $searchTerm);
             });
         }
 
@@ -216,23 +221,23 @@ class ArsipController extends Controller
         }
 
         $arsipUndangan->getCollection()->transform(function ($arsip) use ($user_id) {
-        $undangan = $arsip->document;
+            $undangan = $arsip->document;
 
-        if ($undangan) {
-            if ($undangan->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
-                $undangan->final_status = $undangan->status; // Dari divisi sendiri
-            } else {
-                $statusKirim = Kirim_Document::where('id_document', $undangan->id_undangan)
-                    ->where('jenis_document', 'undangan')
-                    ->where('id_penerima', $user_id)
-                    ->first();
+            if ($undangan) {
+                if ($undangan->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                    $undangan->final_status = $undangan->status; // Dari divisi sendiri
+                } else {
+                    $statusKirim = Kirim_Document::where('id_document', $undangan->id_undangan)
+                        ->where('jenis_document', 'undangan')
+                        ->where('id_penerima', $user_id)
+                        ->first();
 
-                $undangan->final_status = $statusKirim ? $statusKirim->status : '-';
+                    $undangan->final_status = $statusKirim ? $statusKirim->status : '-';
+                }
             }
-        }
 
-        return $arsip;
-    });
+            return $arsip;
+        });
 
 
 
@@ -260,7 +265,7 @@ class ArsipController extends Controller
             $searchTerm = '%' . str_replace(' ', '%', $request->search) . '%';
             $risalahQuery->where(function ($q) use ($searchTerm) {
                 $q->where('judul', 'like', $searchTerm)
-                ->orWhere('nomor_risalah', 'like', $searchTerm);
+                    ->orWhere('nomor_risalah', 'like', $searchTerm);
             });
         }
 
@@ -303,23 +308,23 @@ class ArsipController extends Controller
         }
 
         $arsipRisalah->getCollection()->transform(function ($arsip) use ($user_id) {
-        $risalah = $arsip->document;
+            $risalah = $arsip->document;
 
-        if ($risalah) {
-            if ($risalah->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
-                $risalah->final_status = $risalah->status; // Dari divisi sendiri
-            }else {
-                $statusKirim = Kirim_Document::where('id_document', $risalah->id_risalah)
-                    ->where('jenis_document', 'risalah')
-                    ->where('id_penerima', $user_id)
-                    ->first();
+            if ($risalah) {
+                if ($risalah->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                    $risalah->final_status = $risalah->status; // Dari divisi sendiri
+                } else {
+                    $statusKirim = Kirim_Document::where('id_document', $risalah->id_risalah)
+                        ->where('jenis_document', 'risalah')
+                        ->where('id_penerima', $user_id)
+                        ->first();
 
-                $risalah->final_status = $statusKirim ? $statusKirim->status : '-';
+                    $risalah->final_status = $statusKirim ? $statusKirim->status : '-';
+                }
             }
-        }
 
-        return $arsip;
-    });
+            return $arsip;
+        });
 
 
         return view('arsip.arsip-risalah', compact('arsipRisalah', 'sortDirection'));
@@ -335,12 +340,63 @@ class ArsipController extends Controller
 
     public function viewUndangan($id)
     {
+        $userId = Auth::id(); // Ambil ID user yang sedang login
         $undangan = Undangan::where('id_undangan', $id)->firstOrFail();
+
+
+        $undangan = Undangan::findOrFail($id);
+
+        // Konversi tujuan ID menjadi array
+        $idArray = is_array($undangan->tujuan)
+            ? $undangan->tujuan
+            : explode(';', $undangan->tujuan);
+
+        $users = User::whereIn('id', $idArray)->with('position')->get();
+        $pdfController = new CetakPDFController();
+        // Ambil user lengkap beserta relasi organisasi
+        $listNama = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+            ->whereIn('id', $idArray)
+            ->get()
+            ->map(function ($user, $key) use ($pdfController) {
+                $level = $pdfController->detectLevel($user);
+                $user->level_kerja = $level;
+                $user->bagian_text = $pdfController->getBagianText($user, $level);
+                return $user;
+            })
+            ->sortBy(function ($user) {
+                return optional($user->position)->id_position;
+            })
+            ->values();
+
+        $undangan->tujuan = $listNama->map(function ($user, $index) {
+            return ($index + 1) . '. '
+                . $user->position->nm_position . ' '
+                . $user->bagian_text . ' '
+                . '(' . $user->firstname . ' ' . $user->lastname . ')';
+        })->implode("\n");
+
+        $undanganCollection = collect([$undangan]); // Bungkus dalam collection
+
+        $undanganCollection->transform(function ($undangan) use ($userId) {
+            if ($undangan->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $undangan->final_status = $undangan->status; // Undangan dari divisi sendiri
+            } else {
+                $statusKirim = Kirim_Document::where('id_document', $undangan->id_undangan)
+                    ->where('jenis_document', 'undangan')
+                    ->where('id_penerima', $userId)
+                    ->first();
+                $undangan->final_status = $statusKirim ? $statusKirim->status : '-';
+            }
+            return $undangan;
+        });
+
+        // Karena hanya satu memo, kita bisa mengambil dari collection lagi
+        $undangan = $undanganCollection->first();
 
         return view('arsip.view-arsipUndangan', compact('undangan'));
     }
 
-    
+
     public function viewRisalah($id)
     {
         $risalah = Risalah::where('id_risalah', $id)->firstOrFail();

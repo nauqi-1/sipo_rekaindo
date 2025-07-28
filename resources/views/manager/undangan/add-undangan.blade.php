@@ -241,7 +241,7 @@
                 <div class="card-footer">
                     <button type="button" class="btn btn-cancel"><a
                             href="{{route('undangan.superadmin')}}">Batal</a></button>
-                    <button type="submit" class="btn btn-save">Ajukan</button>
+                    <button type="submit" class="btn btn-save">Kirim</button>
                     <div id="tujuan-container"></div> <!--Manggil script dibawah-->
                 </div>
             </div>

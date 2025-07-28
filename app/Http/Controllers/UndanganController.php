@@ -943,6 +943,12 @@ class UndanganController extends Controller
             'divisi_id_divisi' => $undangan->divisi_id_divisi,
             'created_at' => $undangan->created_at,
             'updated_at' => $undangan->updated_at,
+            'tgl_rapat' => $undangan->tgl_rapat,
+            'tempat' => $undangan->tempat,
+            'waktu_mulai' => $undangan->waktu_mulai,
+            'waktu_selesai' => $undangan->waktu_selesai,
+            'kode' => $undangan->kode,
+            'qr_approved_by' => $undangan->tujuan_string,
             // tambahkan kolom lain jika ada
         ]);
 

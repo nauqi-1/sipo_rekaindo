@@ -36,7 +36,14 @@ class Backup_Document extends Model
         'nomor_document',
         'lampiran',
         'divisi_id_divisi',  
-        'pembuat',        
+        'pembuat',
+        'tgl_rapat',              // Tanggal rapat (khusus undangan)
+        'tempat',                // Tempat rapat (khusus undangan)
+        'waktu_mulai',           // Waktu mulai rapat (khusus undangan)
+        'waktu_selesai',         // Waktu selesai rapat (khusus undangan)
+        'kode',                  // Kode unik untuk undangan
+        'qr_approved_by',        // QR code yang berisi informasi persetujuan (
+        'tujuan_string',         // String tujuan untuk QR code
     ];
 
     /**
