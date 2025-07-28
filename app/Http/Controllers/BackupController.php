@@ -8,7 +8,7 @@ use App\Models\Undangan;
 use App\Models\Risalah;
 use App\Models\Divisi;
 use App\Models\Backup_Document;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 
 class BackupController extends Controller
@@ -16,7 +16,9 @@ class BackupController extends Controller
     public function memo(Request $request)
     {
         $userId = Auth::id();
-        $divisi = Divisi::all();
+        $kode = Backup_Document::where('jenis_document','memo')
+        ->pluck('kode')
+        ->unique();
     
         // Gunakan nama variabel $query agar lebih jelas bahwa ini query builder
         $query = Backup_Document::where('jenis_document', 'memo');
@@ -48,15 +50,15 @@ class BackupController extends Controller
         }
     
         // Filter berdasarkan divisi
-        if ($request->filled('divisi_id_divisi')) {
-            $query->where('divisi_id_divisi', $request->divisi_id_divisi);
+        if ($request->filled('kode')) {
+            $query->where('kode', $request->kode);
         }
     
         // Ambil hasil paginate
         $perPage = $request->get('per_page', 10);
         $memos = $query->paginate($perPage);
     
-        return view('superadmin.backup.memo', compact('memos', 'sortDirection', 'divisi'));
+        return view('superadmin.backup.memo', compact('memos', 'sortDirection', 'kode'));
     }
     
     
@@ -105,7 +107,7 @@ class BackupController extends Controller
     }
 
 
-    public function RestoreMmeo($id)
+    public function RestoreMemo($id)
     {
 
     $memo = Backup_Document::where('id_document', $id)->first();
@@ -113,6 +115,7 @@ class BackupController extends Controller
         Memo::create([
             'id_memo' => $memo->id_document,
             'tujuan'=> $memo->tujuan,
+            'tujuan_string'=>$memo->tujuan_string,
             'judul' => $memo->judul,
             'nomor_memo' => $memo->nomor_document,
             'tgl_dibuat' => $memo->tgl_dibuat,
@@ -124,11 +127,12 @@ class BackupController extends Controller
             'nama_bertandatangan'=> $memo->nama_bertandatangan,
             'lampiran' => $memo->lampiran,
             'pembuat' => $memo->pembuat,
-            'divisi_id_divisi' => $memo->divisi_id_divisi,
+            'kode' => $memo->kode,
+            'qr_approved_by' => $memo->qr_approved_by
         ]);
         // Hapus dari backup
         $memo->delete();
-        return redirect()->route('memo.backup')->with('success', 'Memo restored successfully.');
+        return redirect()->route('memo.backup')->with('success', 'Pemulihan Memo Berhasil.');
     
     }
 
