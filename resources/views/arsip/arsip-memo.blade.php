@@ -108,7 +108,7 @@
                     <!-- Button Arsip -->
                     @if ($arsip->document)
                     <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipMemoModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}">
-                        <img src="/img/arsip/delete.png" alt="delete">
+                        <img src="/img/arsip/unarchive2.png" alt="unarchive" style="height: 16px;">
                     </button>
 
                     <!-- Button View -->
@@ -129,7 +129,7 @@
             <!-- Close Button -->
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
             <img src="/img/memo-admin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
-            <h5 class="modal-title mb-4"><b>Hapus Memo dari arsip?</b></h5>
+            <h5 class="modal-title mb-4"><b>Keluarkan memo dari arsip?</b></h5>
             <form id="deleteArsipMemoForm" method="POST">
                 @csrf
                 @method('DELETE')
@@ -150,7 +150,7 @@
             <div class="modal-body">
                 <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                 <h5 class="modal-title"><b>Sukses</b></h5>
-                <p class="mt-2">Berhasil Hapus Memo</p>
+                <p class="mt-2">Berhasil Mengeluarkan Memo</p>
             </div>
         </div>
     </div>
