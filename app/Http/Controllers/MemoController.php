@@ -577,7 +577,6 @@ class MemoController extends Controller
         }
 
         $tujuanId = $this->convertTujuanToUserId($request->tujuan);
-
         $filePath = null;
         if ($request->hasFile('lampiran')) {
             $file = $request->file('lampiran');
@@ -743,7 +742,6 @@ class MemoController extends Controller
 
     // Final tujuan result:
     $tujuanId = $users;
-
     return $tujuanId;
     }
 
@@ -1297,48 +1295,25 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
         
          return redirect()->route('memo.'.Auth::user()->role->nm_role)->with('success', 'User updated successfully');
      }
-     public function destroy($id)
+     //PENGHAPUSAN SEMENTARA
+     public function destroyTemp($id)
      {
         $memo = Memo::findOrFail($id);
-
+        $memo->delete();
         // Pindahkan data ke tabel backup
-        Backup_Document::create([
-            'id_document' => $memo->id_memo,
-            'jenis_document' => 'memo',
-            'tujuan'=> $memo->tujuan,
-            'judul' => $memo->judul,
-            'nomor_document' => $memo->nomor_memo,
-            'tgl_dibuat' => $memo->tgl_dibuat,
-            'tgl_disahkan' => $memo->tgl_disahkan,
-            'status' => $memo->status,
-            'catatan' => $memo->catatan,
-            'isi_document' => $memo->isi_memo,
-            'seri_document' => $memo->seri_surat,
-            'nama_bertandatangan'=> $memo->nama_bertandatangan,
-            'lampiran' => $memo->lampiran,
-            'pembuat' => $memo->pembuat,
-            'kode' => $memo->kode,
-            'created_at' => $memo->created_at,
-            'updated_at' => $memo->updated_at,
-            'tujuan_string' => $memo->tujuan_string,
-            'qr_approved_by' => $memo->qr_approved_by,
-            'tgl_rapat' => null,
-            'waktu_mulai' => null,
-            'waktu_selesai' => null,
-            'tempat' => null
-            
-            
-        ]);
+        //Backup_Document::create([
+        //    'id_document' => $memo->id_memo,
+        //    'jenis_document' => 'memo',
+        //    'tujuan'=> $memo->tujuan,            
+        //]);
     
         // Hapus file lampiran jika ada
-        if ($memo->lampiran && file_exists(public_path($memo->lampiran))) {
-            unlink(public_path($memo->lampiran));
-        }
-    
-        // Hapus dari tabel memo
-        $memo->delete();
+        //if ($memo->lampiran && file_exists(public_path($memo->lampiran))) {
+        //    unlink(public_path($memo->lampiran));
+        //}
+
  
-         return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo deleted successfully.');
+         return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo berhasil dihapus.');
      }
 
     //  menampilkan file yang disimpan dalam database

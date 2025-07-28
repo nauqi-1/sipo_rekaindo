@@ -97,6 +97,8 @@
                         <span class="badge bg-danger">Ditolak</span>
                     @elseif ($arsip->document->final_status == 'pending')
                         <span class="badge bg-warning">Diproses</span>
+                    @elseif ($arsip->document->final_status == 'correction')
+                        <span class="badge bg-warning">Dikoreksi</span>
                     @else
                         <span class="badge bg-success">Diterima</span>
                     @endif
@@ -107,7 +109,7 @@
 
                     <!-- Button Arsip -->
                     @if ($arsip->document)
-                    <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipMemoModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}">
+                    <button class="btn btn-sm3" data-bs-toggle="modal" data-bs-target="#deleteArsipMemoModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}">
                         <img src="/img/arsip/unarchive2.png" alt="unarchive" style="height: 16px;">
                     </button>
 

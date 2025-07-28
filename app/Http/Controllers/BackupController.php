@@ -16,13 +16,12 @@ class BackupController extends Controller
     public function memo(Request $request)
     {
         $userId = Auth::id();
-        $kode = Backup_Document::where('jenis_document','memo')
+        $kode = Memo::whereNotNull('kode')
         ->pluck('kode')
         ->unique();
     
-        // Gunakan nama variabel $query agar lebih jelas bahwa ini query builder
-        $query = Backup_Document::where('jenis_document', 'memo');
-    
+        
+        $query = Memo::onlyTrashed();
         // Filter berdasarkan status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -57,7 +56,6 @@ class BackupController extends Controller
         // Ambil hasil paginate
         $perPage = $request->get('per_page', 10);
         $memos = $query->paginate($perPage);
-    
         return view('superadmin.backup.memo', compact('memos', 'sortDirection', 'kode'));
     }
     
@@ -111,30 +109,15 @@ class BackupController extends Controller
 
     public function RestoreMemo($id)
     {
-
-    $memo = Backup_Document::where('id_document', $id)->first();
-   
-        Memo::create([
-            'id_memo' => $memo->id_document,
-            'tujuan'=> $memo->tujuan,
-            'tujuan_string'=>$memo->tujuan_string,
-            'judul' => $memo->judul,
-            'nomor_memo' => $memo->nomor_document,
-            'tgl_dibuat' => $memo->tgl_dibuat,
-            'tgl_disahkan' => $memo->tgl_disahkan,
-            'status' => $memo->status,
-            'catatan' => $memo->catatan,
-            'isi_memo' => $memo->isi_document,
-            'seri_surat' => $memo->seri_document,
-            'nama_bertandatangan'=> $memo->nama_bertandatangan,
-            'lampiran' => $memo->lampiran,
-            'pembuat' => $memo->pembuat,
-            'kode' => $memo->kode,
-            'qr_approved_by' => $memo->qr_approved_by
-        ]);
-        // Hapus dari backup
-        $memo->delete();
-        return redirect()->route('memo.backup')->with('success', 'Pemulihan Memo Berhasil.');
+    $memo = Memo::withTrashed()
+    ->where('id_memo', $id)
+    ->first();
+    if($memo) {
+        $memo->restore();
+    } else {
+        dd($memo);
+    }
+    return redirect()->route('memo.backup')->with('success', 'Pemulihan Memo Berhasil.');
     
     }
 
