@@ -1,18 +1,19 @@
 @extends('layouts.admin')
 @section('title', 'Memo Backup')
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <div class="container">
     <div class="header">
         <!-- Back Button -->
         <div class="back-button">
             <a href="{{ route('admin.dashboard')}}"><img src="/img/memo-admin/Vector_back.png" alt=""></a>
         </div>
-        <h1>Memo</h1>
+        <h1>Pemulihan Memo</h1>
     </div>        
     <div class="row">
         <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="breadcrumb" style="gap: 5px; width: 83%;">
-                <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="#" style="color: #565656;">Memo</a>
+                <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="#" style="color: #565656;">Pemulihan Memo</a>
             </div>
             <form method="GET" action="{{ route('memo.backup') }}" class="search-filter d-flex gap-2">
                 <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
@@ -59,6 +60,24 @@
                         @endforeach
                     </select>
                 </div>
+                </form>
+                <form id="bulkActionForm" method="POST" action="">
+                        @csrf
+                        <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 10px;">
+                            <div class="d-flex gap-2">
+                                <button type="submit" formaction="{{ route('memo.bulk-restore') }}"
+                                    class="btn btn-success btn-sm d-flex align-items-center justify-content-center"
+                                    style="padding: 5px 10px; font-size: 14px; height: 32px;">
+                                    <i class="fa-solid fa-rotate-left me-2"></i> Pulihkan
+                                </button>
+
+                                <button type="submit" formaction="{{ route('memo.bulk-force-delete') }}"
+                                    class="btn btn-danger btn-sm d-flex align-items-center justify-content-center"
+                                    style="padding: 5px 10px; font-size: 14px; height: 32px; width: 150px;">
+                                    <i class="fa-solid fa-trash me-2"></i> Hapus Permanen
+                                </button>
+                            </div>
+                        </div>
             </div>
         </div>
     </div>
@@ -67,6 +86,9 @@
     <table class="table-light">
         <thead>
             <tr>
+                <th>
+                    <input type="checkbox" id="selectAll">
+                </th>
                 <th>No</th>
                 <th>Nama Dokumen</th>
                 <th>Tanggal Memo
@@ -95,82 +117,48 @@
         <tbody>
             @foreach ($memos as $index => $memo)
             <tr>
+                <td>
+                    <input type="checkbox" name="selected_ids[]" value="{{ $memo->id_memo }}" class="selectItem">
+                </td>
                 <td class="nomor">{{ $index + 1 }}</td>
                 <td class="nama-dokumen 
-                    {{'text-danger'}}">
-                    {{ $memo->judul }}
-                </td>
-                
+                        {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'correction' ? 'text-warning' : ($memo->status == 'approve' ? 'text-success' : '')) }}"
+                             style="{{ $memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
+                        {{ $memo->judul }}
+                    </td>
                 <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
                 <td>{{ $memo->seri_surat }}</td>
                 <td>{{ $memo->nomor_memo }}</td>
                 <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
                 <td>{{ $memo->kode ?? 'No Divisi Assigned' }}</td>
-                <td><span class="badge bg-danger">Memulihkan</span></td>
                 <td>
-                    <a href="{{ route('memo.restore', ['id' => $memo->id_memo]) }}" class="btn btn-sm1" title="Restore">
-                        <img src="/img/restore.png" alt="restore" style="width: 20px; height: 20px;">
-                    </a>
+                        @if ($memo->status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($memo->status == 'pending')
+                            <span class="badge bg-info">Diproses</span>
+                        @elseif ($memo->status == 'correction')
+                            <span class="badge bg-warning">Dikoreksi</span>
+                        @else
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
+                    </td>
+                <td>
+                    <button type="button" class="btn btn-sm1 submitRestoreMemo" data-bs-toggle="modal"
+                        data-bs-target="#restoreMemoModal" data-id="{{ $memo->id_memo }}"
+                        data-route="{{ route('memo.restore-file', $memo->id_memo) }}">
+                        <i class="fa-solid fa-rotate-left" style="font-size: 14px;"></i> 
+                    </button>
+                    <button type="button" class="btn btn-sm2 submitDeleteMemo" data-bs-toggle="modal"
+                        data-bs-target="#deleteMemoModal" data-id="{{ $memo->id_memo }}"
+                        data-route="{{ route('memo.destroy', $memo->id_memo) }}">
+                        <i class="fa-solid fa-trash" style="color: red; font-size: 14px;"></i>
+                    </button>
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
-    {{ $memos->links('pagination::bootstrap-5') }}
-</div>
-
-<div class="modal fade" id="successRestoreMemoModal" tabindex="-1" aria-labelledby="successRestoreMemoModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center p-4">
-            <div class="modal-body">
-                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
-                <h5 class="modal-title"><b>Sukses</b></h5>
-                <p class="mt-2">Pemulihan Memo Berhasil</p>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Overlay Add Memo Success -->
-<div class="modal fade" id="successAddMemoModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center p-4">
-            <div class="modal-body">
-                <!-- Success Icon -->
-                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
-                <!-- Success Message -->
-                <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
-                <p class="mt-2">Berhasil Menambahkan Memo</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Overlay Edit Memo Success -->
-<div class="modal fade" id="successEditMemoSuperModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center p-4">
-            <div class="modal-body">
-                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
-                <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
-                <p class="mt-2">Berhasil Mengubah Memo</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Arsip -->
-<div class="modal fade" id="arsipMemoModal" tabindex="-1" aria-labelledby="arsipMemoModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center p-4">
-            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-            <img src="/img/memo-admin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
-            <h5 class="modal-title mb-4"><b>Arsip Memo?</b></h5>
-            <div class="d-flex justify-content-center mt-3">
-                <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary" id="confirmArsipMemo">Oke</button>
-            </div>
-        </div>
-    </div>
+    {{ $memos->appends(request()->query())->links('pagination::bootstrap-5') }}
 </div>
 
 <!-- Modal Arsip Berhasil -->
@@ -185,6 +173,84 @@
         </div>
     </div>
 </div>
+
+<!-- Restore Confirmation Modal -->
+<div class="modal fade" id="restoreMemoModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <!-- Close Button -->
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            
+            <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
+            <h5 class="modal-title mb-4" id="restoreModalLabel">Pulihkan memo?</h5>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-center mt-3">
+                <form method="POST" id="restoreMemoForm">
+                    @csrf
+                    @method('POST')
+                    <button type="submit" class="btn btn-outline-secondary me-2">Oke</button>
+                </form>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Memo Modal -->
+<div class="modal fade" id="deleteMemoModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" id="deleteMemoForm">
+      @csrf
+      @method('DELETE')
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Hapus Permanen Memo?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+        <div class="modal-body">
+          Apakah Anda yakin ingin menghapus memo ini secara permanen?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-danger">Hapus</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const restoreModal = document.getElementById('restoreMemoModal');
+        const restoreForm = document.getElementById('restoreMemoForm');
+
+        restoreModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const route = button.getAttribute('data-route');
+                    console.log("Restore route set to:", route);
+
+            if (restoreForm && route) {
+                restoreForm.setAttribute('action', route);
+            }
+        });
+    
+
+        const deleteButtons = document.querySelectorAll(".submitDeleteMemo");
+        const deleteBtnOk = document.getElementById("openConfirmDeleteBtn");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const route = button.getAttribute("data-route");
+                deleteBtnOk.setAttribute("data-route", route);
+            });
+        });
+
+        // Optional: if you're submitting the delete via JS
+       
+    });
+</script>
+
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         @if(session('success') === 'Pemulihan Memo Berhasil.')
@@ -198,16 +264,7 @@
 </script>
 
 <script>
-    // Event listener untuk modal sukses tambah memo
-    document.addEventListener("DOMContentLoaded", function () {
-        @if(session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller memo store
-            var successModal = new bootstrap.Modal(document.getElementById("successAddMemoModal"));
-            successModal.show();
-            setTimeout(function () {
-                successModal.hide();
-            }, 1500);
-        @endif
-    });
+  
 
     // Event listener untuk modal sukses edit memo
     document.addEventListener("DOMContentLoaded", function () {
@@ -258,6 +315,10 @@
                 }, 1500);
             }
         });
+    });
+    document.getElementById("selectAll").addEventListener("change", function () {
+        const checkboxes = document.querySelectorAll(".selectItem");
+        checkboxes.forEach(cb => cb.checked = this.checked);
     });
 </script>
 @endsection

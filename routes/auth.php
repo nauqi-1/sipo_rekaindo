@@ -84,13 +84,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/undangan-restore', [BackupController::class, 'undangan'])->name('undangan.backup');
 
         
+        Route::post('/memo/bulk-restore', [BackupController::class, 'bulkRestoreMemo'])->name('memo.bulk-restore');
+        Route::post('/memo/bulk-force-delete', [BackupController::class, 'bulkForceDeleteMemo'])->name('memo.bulk-force-delete');
+
         Route::post('/undangan/bulk-restore', [BackupController::class, 'bulkRestore'])->name('undangan.bulk-restore');
         Route::post('/undangan/bulk-force-delete', [BackupController::class, 'bulkForceDelete'])->name('undangan.bulk-force-delete');
 
 
 
         Route::get('/risalah-restore', [BackupRisalahController::class, 'risalah'])->name('risalah.backup');
-        Route::get('/memo-restore/{id}', [BackupController::class, 'RestoreMemo'])->name('memo.restore');
+        Route::post('/memo-restore-file/{id}', [BackupController::class, 'RestoreMemo'])->name('memo.restore-file');
         Route::get('/undangan-restore/{id}', [BackupController::class, 'RestoreUndangan'])->name('undangan.restore');
         Route::get('/risalah-restore/{id}', [BackupRisalahController::class, 'RestoreRisalah'])->name('risalah.restore');
 });
