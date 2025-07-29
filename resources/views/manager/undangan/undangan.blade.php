@@ -128,11 +128,11 @@
                     @endphp
                     <tr>
                         <td class="nomor">{{ $index + 1 }}</td>
-                        <td
-                            class="nama-dokumen 
-                                {{ $finalStatus == 'reject' ? 'text-danger' : ($finalStatus == 'pending' ? 'text-warning' : ($finalStatus == 'correction' ? 'text-danger' : 'text-success')) }}">
-                            {{ $undangan->judul ?? '-' }}
-                        </td>
+                        <td class="nama-dokumen 
+                        {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'correction' ? 'text-warning' : ($undangan->status == 'approve' ? 'text-success' : '')) }}"
+                             style="{{ $undangan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
+                        {{ $undangan->judul }}
+                    </td>
                         <td>{{ isset($undangan->tgl_rapat) ? \Carbon\Carbon::parse($undangan->tgl_rapat)->format('d-m-Y') : '-' }}
                         </td>
                         <td>{{ $undangan->seri_surat ?? '-' }}</td>
@@ -153,9 +153,9 @@
                                 @if ($undangan->status == 'reject')
                                     <span class="badge bg-danger">Ditolak</span>
                                 @elseif ($undangan->status == 'pending')
-                                    <span class="badge bg-warning">Diproses</span>
+                                    <span class="badge bg-info">Diproses</span>
                                 @elseif ($undangan->status == 'correction')
-                                    <span class="badge bg-danger">Dikoreksi</span>
+                                    <span class="badge bg-warning">Dikoreksi</span>
                                 @elseif ($undangan->status == 'approve')
                                     <span class="badge bg-success">Diterima</span>
                                 @endif

@@ -117,8 +117,9 @@
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
                 <td class="nama-dokumen 
-                        {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'pending' ? 'text-warning' : ($undangan->status == 'correction' ? 'text-danger' : 'text-success')) }}">
-                        {{ $undangan->judul ?? '-' }}
+                        {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'correction' ? 'text-warning' : ($undangan->status == 'approve' ? 'text-success' : '')) }}"
+                             style="{{ $undangan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
+                        {{ $undangan->judul }}
                     </td>
                 <td>
                     @php
@@ -132,13 +133,19 @@
                             // $kirimDocument->id_penerima == $kirimDocument->id_pengirim &&
                             // in_array($undangan->status, ['pending'])
                         )
-                            <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
+                            <img src="/img/checklist-biru.png" alt="share" style="width: 20px;height: 20px;">
                         @elseif (
                             $undangan->status == 'approve' &&
                             //$kirimDocument->id_pengirim == Auth::user()->id &&
                             $kirimDocument->status == 'approve'
                         )
                             <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
+                            @elseif (
+                            $undangan->status == 'correction' &&
+                            //$kirimDocument->id_pengirim == Auth::user()->id &&
+                            $kirimDocument->status == 'correction'
+                        )
+                            <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
                         @else
                             <p>-</p>
                         @endif
@@ -158,9 +165,9 @@
                             @if ($undangan->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($undangan->status == 'pending')
-                            <span class="badge bg-warning">Diproses</span>
+                            <span class="badge bg-info">Diproses</span>
                         @elseif ($undangan->status == 'correction')
-                            <span class="badge bg-danger">Dikoreksi</span>
+                            <span class="badge bg-warning">Dikoreksi</span>
                         @else 
                             <span class="badge bg-success">Diterima</span>
                         @endif
@@ -168,9 +175,9 @@
                             @if ($undangan->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($undangan->status == 'pending')
-                            <span class="badge bg-warning">Diproses</span>
+                            <span class="badge bg-info">Diproses</span>
                         @elseif ($undangan->status == 'correction')
-                            <span class="badge bg-danger">Dikoreksi</span>
+                            <span class="badge bg-warning">Dikoreksi</span>
                         @else 
                             <span class="badge bg-success">Diterima</span>
                         @endif

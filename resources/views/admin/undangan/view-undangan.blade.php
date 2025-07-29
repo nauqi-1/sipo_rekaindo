@@ -75,7 +75,7 @@
                             @if ($undangan->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($undangan->status == 'pending')
-                            <span class="badge bg-warning">Diproses</span>
+                            <span class="badge bg-info">Diproses</span>
                         @elseif ($undangan->status == 'correction')
                             <span class="badge bg-danger">Dikoreksi</span>
                         @else 
@@ -85,9 +85,9 @@
                             @if ($undangan->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($undangan->status == 'pending')
-                            <span class="badge bg-warning">Diproses</span>
+                            <span class="badge bg-info">Diproses</span>
                         @elseif ($undangan->status == 'correction')
-                            <span class="badge bg-danger">Dikoreksi</span>
+                            <span class="badge bg-warning">Dikoreksi</span>
                         @else 
                             <span class="badge bg-success">Diterima</span>
                         @endif
