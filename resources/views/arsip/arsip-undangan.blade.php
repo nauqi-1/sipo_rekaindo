@@ -80,7 +80,8 @@
             <tr>
                 <td class="nomor">{{ $loop->iteration }}</td>
                 <td class="nama-dokumen 
-                        {{ $arsip->document->final_status == 'reject' ? 'text-danger' : ($arsip->document->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $arsip->document->status == 'reject' ? 'text-danger' : ($arsip->document->status == 'correction' ? 'text-warning' : ($arsip->document->status == 'approve' ? 'text-success' : '')) }}"
+                             style="{{ $arsip->document->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                         {{ $arsip->document->judul }}
                     </td>
                     <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
@@ -92,9 +93,13 @@
                         @if ($arsip->document->final_status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
                             @elseif ($arsip->document->final_status == 'pending')
-                                <span class="badge bg-warning">Diproses</span>
-                            @else
+                                <span class="badge bg-info">Diproses</span>
+                            @elseif ($arsip->document->final_status == 'pending')
+                                <span class="badge bg-warning">Dikoreksi</span>
+                            @elseif ($arsip->document->final_status == 'approve')
                                 <span class="badge bg-success">Diterima</span>
+                            @else
+                                <span class="badge bg-secondary">-</span>
                             @endif
                 </td>
                 <td>
