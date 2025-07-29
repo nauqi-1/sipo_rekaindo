@@ -59,16 +59,16 @@
                         <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                     </div>
                 </div>
-                <div  class="dropdown">
-                    <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" onchange="this.form.submit()">
-                        <option value="pilih" disabled {{ !request()->filled('divisi_id_divisi') ? 'selected' : '' }}>Pilih Divisi</option>
-                        @foreach($divisi as $d)
-                            <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}>
-                                {{ $d->nm_divisi }}
+               <div  class="dropdown">
+                    <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
+                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Pilih Divisi</option>
+                        @foreach($kode as $k)
+                            <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
+                                {{ $k }}
                             </option>
                         @endforeach
                     </select>
-                </div>
+               </div>
                 </form>
                 <!-- Add User Button to Open Modal -->
                 
@@ -110,7 +110,8 @@
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
                     <td class="nama-dokumen 
-                        {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'correction' ? 'text-warning' : ($memo->status == 'approve' ? 'text-success' : '')) }}"
+                             style="{{ $memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                         {{ $memo->judul }}
                     </td>
                     <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
@@ -123,7 +124,9 @@
                         @if ($memo->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
                         @elseif ($memo->status == 'pending')
-                            <span class="badge bg-warning">Diproses</span>
+                            <span class="badge bg-info">Diproses</span>
+                        @elseif ($memo->status == 'correction')
+                            <span class="badge bg-warning">Dikoreksi</span>
                         @else
                             <span class="badge bg-success">Diterima</span>
                         @endif
