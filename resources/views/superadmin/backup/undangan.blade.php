@@ -103,7 +103,7 @@
 
                                 <button type="submit" formaction="{{ route('undangan.bulk-force-delete') }}"
                                     class="btn btn-danger btn-sm d-flex align-items-center justify-content-center"
-                                    style="padding: 5px 10px; font-size: 14px; height: 32px;">
+                                    style="padding: 5px 10px; font-size: 14px; height: 32px; width: 150px;">
                                     <i class="fa-solid fa-trash me-2"></i> Hapus Permanen
                                 </button>
                             </div>

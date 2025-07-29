@@ -197,8 +197,8 @@ class MemoController extends Controller
         $query->orderBy('created_at', $sortDirection);
 
         if ($request->filled('kode') && $request->kode != 'pilih') {
-    $query->where('kode', $request->kode);
-}
+            $query->where('kode', $request->kode);
+        }
 
         // Pencarian berdasarkan nama dokumen atau nomor memo
         if ($request->filled('search')) {
@@ -1296,23 +1296,20 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
          return redirect()->route('memo.'.Auth::user()->role->nm_role)->with('success', 'User updated successfully');
      }
      //PENGHAPUSAN SEMENTARA
-     public function destroyTemp($id)
+     public function delete($id)
      {
         $memo = Memo::findOrFail($id);
         $memo->delete();
-        // Pindahkan data ke tabel backup
-        //Backup_Document::create([
-        //    'id_document' => $memo->id_memo,
-        //    'jenis_document' => 'memo',
-        //    'tujuan'=> $memo->tujuan,            
-        //]);
-    
-        // Hapus file lampiran jika ada
-        //if ($memo->lampiran && file_exists(public_path($memo->lampiran))) {
-        //    unlink(public_path($memo->lampiran));
-        //}
 
- 
+         return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo berhasil dihapus.');
+     }
+     //PENGHAPUSAN PERMANEN
+     public function destroy($id)
+     {
+    
+        $memo = Memo::findOrFail($id);
+        $memo->forceDelete();
+
          return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo berhasil dihapus.');
      }
 

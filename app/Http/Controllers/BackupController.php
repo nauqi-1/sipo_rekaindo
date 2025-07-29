@@ -49,7 +49,7 @@ class BackupController extends Controller
         }
 
         // Filter berdasarkan divisi
-        if ($request->filled('kode')) {
+        if ($request->filled('kode') && $request->kode != 'pilih') {
             $query->where('kode', $request->kode);
         }
 
@@ -97,7 +97,7 @@ class BackupController extends Controller
         }
 
         // Filter berdasarkan divisi
-        if ($request->filled('kode')) {
+        if ($request->filled('kode') && $request->kode != 'pilih') {
             $query->where('kode', $request->kode);
         }
         // Ambil hasil paginate
@@ -132,6 +132,21 @@ class BackupController extends Controller
             dd($undangan);
         }
         return redirect()->route('undangan.backup')->with('success', 'Pemulihan Undangan Berhasil.');
+    }
+    public function bulkRestoreMemo(Request $request)
+    {
+        $ids = $request->input('selected_ids', []);
+        Memo::onlyTrashed()->whereIn('id_memo', $ids)->restore();
+
+        return redirect()->back()->with('success', 'Semua memo berhasil dipulihkan.');
+    }
+
+    public function bulkForceDeleteMemo(Request $request)
+    {
+        $ids = $request->input('selected_ids', []);
+        Memo::onlyTrashed()->whereIn('id_memo', $ids)->forceDelete();
+
+        return redirect()->back()->with('success', 'Semua memo berhasil dihapus permanen.');
     }
     public function bulkRestore(Request $request)
     {
