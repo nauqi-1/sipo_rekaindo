@@ -110,12 +110,14 @@
                     <td class="nomor">{{ $index + 1 }}</td>
                     @if (Auth::user()->id == $memo->pembuat)
                     <td class="nama-dokumen 
-                        {{ ($memo->status == 'reject' || $memo->status == 'correction') ? 'text-danger' : ($memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'correction' ? 'text-warning' : ($memo->status == 'approve' ? 'text-success' : '')) }}"
+                             style="{{ $memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                         {{ $memo->judul }}
                     </td>
                     @else
-                    <td class="nama-dokumen 
-                        {{ ($memo->final_status == 'reject' || $memo->final_status == 'correction') ? 'text-danger' : ($memo->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
+                   <td class="nama-dokumen 
+                        {{ $memo->final_status == 'reject' ? 'text-danger' : ($memo->final_status == 'correction' ? 'text-warning' : ($memo->final_status == 'approve' ? 'text-success' : '')) }}"
+                             style="{{ $memo->final_status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                         {{ $memo->judul }}
                     </td>
                     @endif
@@ -128,11 +130,13 @@
 
                         @if($kirimDocument)
                             @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $memo->final_status == 'pending')
-                                <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
+                                <img src="/img/checklist-biru.png" alt="share" style="width: 20px;height: 20px;">
                             @elseif($memo->status == 'approve' && $kirimDocument->id_pengirim == Auth::user()->id && $kirimDocument->status == 'approve')
                                 <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
-                            @else
-                                <p>-</p>
+                            @elseif($memo->status == 'correction' && $kirimDocument->id_pengirim == Auth::user()->id && $kirimDocument->status == 'correction')
+                                <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
+                            @else    
+                            <p>-</p>
                             @endif
                         @else
                             <p>-</p>
@@ -150,9 +154,9 @@
                             @if ($memo->final_status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
                             @elseif ($memo->final_status == 'pending')
-                                <span class="badge bg-warning">Diproses</span>
+                                <span class="badge bg-info">Diproses</span>
                             @elseif ($memo->final_status == 'correction')
-                                <span class="badge bg-danger">Dikoreksi</span>
+                                <span class="badge bg-warning">Dikoreksi</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
                             @endif

@@ -98,13 +98,18 @@
             @foreach ($memoTerkirim as $index => $kirim)
                 <tr>
                     <td class="nomor">{{ $index + 1 }}</td>
-                    @if (Auth::user()->divisi_id_divisi == $kirim->memo->divisi_id_divisi)
-                        <td class="nama-dokumen {{ $kirim->memo->status == 'reject' || $kirim->memo->status == 'correction' ? 'text-danger' : ($kirim->memo->status == 'pending' ? 'text-warning' : 'text-success') }}">
-                        {{ $kirim->memo->judul }}</td>
+                   @if (Auth::user()->divisi_id_divisi == $kirim->memo->divisi_id_divisi)
+                        <td class="nama-dokumen {{ ($kirim->memo->status == 'reject' || $kirim->memo->status == 'correction') ? 'text-danger' : ($kirim->memo->status == 'pending' ? '' : 'text-success') }}"
+                            style="{{ $kirim->memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
+                            {{ $kirim->memo->judul }}
+                        </td>
                     @else
-                        <td class="nama-dokumen {{ $kirim->status == 'reject' || $kirim->status == 'correction' ? 'text-danger' : ($kirim->status == 'pending' ? 'text-warning' : 'text-success') }}">
-                        {{ $kirim->memo->judul }}</td>
+                        <td class="nama-dokumen {{ ($kirim->status == 'reject' || $kirim->status == 'correction') ? 'text-danger' : ($kirim->status == 'pending' ? '' : 'text-success') }}"
+                            style="{{ $kirim->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
+                            {{ $kirim->memo->judul }}
+                        </td>
                     @endif
+
                      <!-- <td>{{ $kirim->memo->tgl_dibuat }}</td> -->
                      <td>{{ $kirim->memo->tgl_dibuat ? \Carbon\Carbon::parse($kirim->memo->tgl_dibuat)->format('d-m-Y') : '-' }}</td>
                     <td>{{ $kirim->memo->seri_surat }}</td>
@@ -116,9 +121,9 @@
                             @if ($kirim->memo->status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
                             @elseif ($kirim->memo->status == 'pending')
-                                <span class="badge bg-warning">Diproses</span>
+                                <span class="badge bg-info">Diproses</span>
                             @elseif ($kirim->memo->status == 'correction')
-                                <span class="badge bg-danger">Dikoreksi</span>
+                                <span class="badge bg-warning">Dikoreksi</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
                             @endif
@@ -126,9 +131,9 @@
                             @if ($kirim->status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
                             @elseif ($kirim->status == 'pending')
-                                <span class="badge bg-warning">Diproses</span>
+                                <span class="badge bg-info">Diproses</span>
                             @elseif ($kirim->status == 'correction')
-                                <span class="badge bg-danger">Dikoreksi</span>
+                                <span class="badge bg-warning">Dikoreksi</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
                             @endif

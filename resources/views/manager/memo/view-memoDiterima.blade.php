@@ -84,7 +84,8 @@
                             $status = $memo->status;
                             $statusClass = match($status) {
                                 'reject' => 'bg-danger',
-                                'pending' => 'bg-warning',
+                                'pending' => 'bg-info',
+                                'correction' => 'bg-warning',
                                 default => 'bg-success',
                             };
                         @endphp
