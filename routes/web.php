@@ -349,5 +349,5 @@ Route::get('/risalah/{id}/preview', [RisalahController::class, 'showFile'])->nam
 Route::get('/risalah/arsip/{id}', [ArsipController::class, 'viewRisalah'])->name('view.risalah-arsip');
 
 Route::get('/risalah/manager/{id}', [RisalahController::class, 'view'])->name('view.risalah');
-Route::delete('/undangan-restore/{id}', [BackupController::class, 'forceDelete'])->name('undangan.destroy');
+
 

@@ -89,11 +89,13 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/undangan/bulk-restore', [BackupController::class, 'bulkRestore'])->name('undangan.bulk-restore');
         Route::post('/undangan/bulk-force-delete', [BackupController::class, 'bulkForceDelete'])->name('undangan.bulk-force-delete');
+        // web.php
+Route::delete('/undangan-force-delete/{id}', [BackupController::class, 'forceDelete'])->name('undangan.forceDelete');
 
 
 
         Route::get('/risalah-restore', [BackupRisalahController::class, 'risalah'])->name('risalah.backup');
         Route::post('/memo-restore-file/{id}', [BackupController::class, 'RestoreMemo'])->name('memo.restore-file');
-        Route::get('/undangan-restore/{id}', [BackupController::class, 'RestoreUndangan'])->name('undangan.restore');
+        Route::post('/undangan-restore/{id}', [BackupController::class, 'RestoreUndangan'])->name('undangan.restore');
         Route::get('/risalah-restore/{id}', [BackupRisalahController::class, 'RestoreRisalah'])->name('risalah.restore');
 });
