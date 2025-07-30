@@ -124,14 +124,9 @@
                     </td>
 
                     <td>
-                       
-                            
-                            <a href="{{ route('risalah.restore',['id' => $risalah->id]) }}" class="btn btn-sm1">
+                            <a href="{{ route('risalah.restore',['id' => $risalah->id_risalah]) }}" class="btn btn-sm1">
                                 <img src="/img/restore.png" alt="restore" style="width: 20px; height: 20px;">
                             </a>
-                           
-                       
-
                 </td>
             </tr>
             @endforeach

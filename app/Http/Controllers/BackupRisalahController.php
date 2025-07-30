@@ -12,7 +12,8 @@ class BackupRisalahController extends Controller
     public function risalah(Request $request)
     {
         $divisi = Divisi::all();
-        $risalahs = BackupRisalah::where('jenis_document', 'risalah');
+        $risalahs = Risalah::onlyTrashed();
+
         // Filter berdasarkan status
         if ($request->filled('status')) {
             $risalahs->where('status', $request->status);
@@ -46,38 +47,7 @@ class BackupRisalahController extends Controller
 
     public function RestoreRisalah($id)
     {
-       $risalah = BackupRisalah::findOrFail($id);
-
-       // Pindahkan data ke tabel backup
-       risalah::create([
-           'id_risalah' => $risalah->id_document,
-           'tgl_dibuat' => $risalah->tgl_dibuat,
-           'tgl_disahkan' => $risalah->tgl_disahkan,
-           'seri_surat' => $risalah->seri_document,
-           'nomor_risalah' => $risalah->nomor_document,
-           'waktu_mulai' => $risalah->waktu_mulai,
-           'waktu_selesai' => $risalah->waktu_selesai,
-           'agenda' => $risalah->agenda,
-           'tempat' => $risalah->tempat,
-           'nama_bertandatangan'=> $risalah->nama_bertandatangan,
-           'lampiran' => $risalah->lampiran,
-           'judul' => $risalah->judul,
-           'pembuat' => $risalah->pembuat,
-           'catatan' => $risalah->catatan,
-           'status' => $risalah->status,           
-           'created_at' => $risalah->created_at,
-           'updated_at' => $risalah->updated_at,
-           
-           // tambahkan kolom lain jika ada
-       ]);
-   
-       // Hapus file lampiran jika ada
-       if ($risalah->lampiran && file_exists(public_path($risalah->lampiran))) {
-           unlink(public_path($risalah->lampiran));
-       }
-   
-       // Hapus dari tabel memo
-       $risalah->delete();
+       Risalah::withTrashed()->find($id)->restore();
 
         return redirect()->route('risalah.backup')->with('success', 'Risalah deleted successfully.');
     }
