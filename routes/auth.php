@@ -82,7 +82,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/memo-restore', [BackupController::class, 'memo'])->name('memo.backup');
         Route::get('/undangan-restore', [BackupController::class, 'undangan'])->name('undangan.backup');
-
+        
+        Route::delete('/memo-force-delete/{id}', [BackupController::class, 'forceDeleteMemo'])->name('memo.forceDelete');
         
         Route::post('/memo/bulk-restore', [BackupController::class, 'bulkRestoreMemo'])->name('memo.bulk-restore');
         Route::post('/memo/bulk-force-delete', [BackupController::class, 'bulkForceDeleteMemo'])->name('memo.bulk-force-delete');
@@ -90,7 +91,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/undangan/bulk-restore', [BackupController::class, 'bulkRestore'])->name('undangan.bulk-restore');
         Route::post('/undangan/bulk-force-delete', [BackupController::class, 'bulkForceDelete'])->name('undangan.bulk-force-delete');
         // web.php
-Route::delete('/undangan-force-delete/{id}', [BackupController::class, 'forceDelete'])->name('undangan.forceDelete');
+        Route::delete('/undangan-force-delete/{id}', [BackupController::class, 'forceDelete'])->name('undangan.forceDelete');
 
 
 

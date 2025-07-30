@@ -138,7 +138,7 @@
                             <img src="/img/memo-superadmin/Delete.png" alt="delete">
                         </button>
                         
-                        @if ($memo->status == 'approve')
+                        @if ($memo->status == 'approve' || $memo->status == 'reject')
                         <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('POST')
@@ -147,10 +147,11 @@
                             </button>
                         </form>
 
-                    @else
+                    @elseif ($memo->status== 'pending' || $memo->status == 'correction')
                         <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
                             <img src="/img/memo-superadmin/edit.png" alt="edit">
                         </a>
+                        
                     @endif
                 </td>
             </tr>

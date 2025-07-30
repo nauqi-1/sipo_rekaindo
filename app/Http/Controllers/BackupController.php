@@ -170,4 +170,14 @@ class BackupController extends Controller
 
         return redirect()->route('undangan.backup')->with('success', 'Undangan berhasil dihapus permanen.');
     }
+    //PENGHAPUSAN PERMANEN
+     public function forceDeleteMemo($id)
+     {
+    
+        $memo = Memo::onlyTrashed()->findOrFail($id);
+        $memo->forceDelete();
+
+         return redirect()->route('memo.backup' .Auth::user()->role->nm_role)->with('success', 'Memo berhasil dihapus permanen.');
+     }
+
 }
