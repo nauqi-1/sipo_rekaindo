@@ -15,7 +15,7 @@
             <div class="breadcrumb" style="gap: 5px; width: 83%;">
                 <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="#" style="color: #565656;">Pemulihan Memo</a>
             </div>
-            <form method="GET" action="{{ route('memo.backup') }}" class="search-filter d-flex gap-2">
+            <form method="GET"  class="search-filter d-flex gap-2">
                 <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
                     Show
                     <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
@@ -34,7 +34,7 @@
     <div class="surat">
         <div class="header-tools">
             <div class="search-filter">
-                <form method="GET" action="{{ route('memo.backup') }}" class="search-filter d-flex gap-2">
+                <form method="GET" class="search-filter d-flex gap-2">
                     <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                         <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                     </div>
@@ -61,7 +61,7 @@
                     </select>
                 </div>
                 </form>
-                <form id="bulkActionForm" method="POST" action="">
+                <form id="bulkActionForm" method="POST">
                         @csrf
                         <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 10px;">
                             <div class="d-flex gap-2">
@@ -71,14 +71,16 @@
                                     <i class="fa-solid fa-rotate-left me-2"></i> Pulihkan
                                 </button>
 
-                                <button type="submit" formaction="{{ route('memo.bulk-force-delete') }}"
+                                <button title="Hapus" type="submit" formaction="{{ route('memo.bulk-force-delete') }}"
                                     class="btn btn-danger btn-sm d-flex align-items-center justify-content-center"
                                     style="padding: 5px 10px; font-size: 14px; height: 32px; width: 150px;">
                                     <i class="fa-solid fa-trash me-2"></i> Hapus Permanen
                                 </button>
                             </div>
                         </div>
+                
             </div>
+            
         </div>
     </div>
 
@@ -143,22 +145,24 @@
                         @endif
                     </td>
                 <td>
-                    <button type="button" class="btn btn-sm1 submitRestoreMemo" data-bs-toggle="modal"
+                    <button title="Pulihkan" type="button" class="btn btn-sm1 submitRestoreMemo" data-bs-toggle="modal"
                         data-bs-target="#restoreMemoModal" data-id="{{ $memo->id_memo }}"
                         data-route="{{ route('memo.restore-file', $memo->id_memo) }}">
                         <i class="fa-solid fa-rotate-left" style="font-size: 14px;"></i> 
                     </button>
-                    <button type="button" class="btn btn-sm2 submitDeleteMemo" data-bs-toggle="modal"
-                        data-bs-target="#deleteMemoModal" data-id="{{ $memo->id_memo }}"
-                        data-route="{{ route('memo.destroy', $memo->id_memo) }}">
-                        <i class="fa-solid fa-trash" style="color: red; font-size: 14px;"></i>
-                    </button>
+                    
+                        <button title="Hapus Permanen" type="button" class="btn btn-sm2 submitDeleteMemo" data-bs-toggle="modal"
+                            data-bs-target="#deleteMemoModal" data-id="{{ $memo->id_memo }}"
+                            data-route="{{ route('memo.forceDelete', $memo->id_memo) }}">
+                            <i class="fa-solid fa-trash" style="color: red; font-size: 14px;"></i>
+                        </button>
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
     {{ $memos->appends(request()->query())->links('pagination::bootstrap-5') }}
+</form>
 </div>
 
 <!-- Modal Arsip Berhasil -->
@@ -174,151 +178,123 @@
     </div>
 </div>
 
-<!-- Restore Confirmation Modal -->
-<div class="modal fade" id="restoreMemoModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+<!-- Restore Success Modal -->
+<div class="modal fade" id="successRestoreMemoModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center p-4">
-            <!-- Close Button -->
-            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-            
-            <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
-            <h5 class="modal-title mb-4" id="restoreModalLabel">Pulihkan memo?</h5>
-
-            <!-- Action Buttons -->
-            <div class="d-flex justify-content-center mt-3">
-                <form method="POST" id="restoreMemoForm">
-                    @csrf
-                    @method('POST')
-                    <button type="submit" class="btn btn-outline-secondary me-2">Oke</button>
-                </form>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
+            <div class="modal-body">
+                <img src="/img/memo-admin/success.png" alt="Success Icon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title"><b>Sukses</b></h5>
+                <p class="mt-2">Pemulihan Memo Berhasil.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Destroy Success Modal -->
+<div class="modal fade" id="successDeleteMemoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <img src="/img/memo-admin/success.png" alt="Success Icon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title"><b>Sukses</b></h5>
+                <p class="mt-2">Memo Berhasil Dihapus.</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Delete Memo Modal -->
-<div class="modal fade" id="deleteMemoModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form method="POST" id="deleteMemoForm">
-      @csrf
-      @method('DELETE')
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="deleteModalLabel">Hapus Permanen Memo?</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteMemoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <img src="/img/memo-superadmin/warning.png" class="mb-3" style="width: 80px;">
+            <h5 class="modal-title mb-4">Hapus Dokumen?</h5>
+            <p class="text-muted mb-4" style="font-size: 0.95rem;">
+                <span class="text-danger"><strong>PERHATIAN:</strong></span> Surat yang telah dihapus <strong>TIDAK DAPAT</strong> dipulihkan.
+            </p>
+            
+            <div class="d-flex justify-content-center mt-3">
+                <form method="POST" id="deleteMemoForm">
+                    @csrf
+                    @method('DELETE')
+                <button type="submit" class="btn btn-danger me-2" id="confirmDeleteBtn">Hapus</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
+                </form>
+            </div>
+            
         </div>
-        <div class="modal-body">
-          Apakah Anda yakin ingin menghapus memo ini secara permanen?
+    </div>
+</div>
+
+<!-- Restore Confirmation Modal -->
+<div class="modal fade" id="restoreMemoModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
+            <h5 class="modal-title mb-4" id="restoreModalLabel">Pulihkan Dokumen?</h5>
+            <p class="text-muted mb-4" style="font-size: 0.95rem;">
+                Surat akan dikembalikan ke menu <strong>Memo</strong>.
+            </p>
+            <div class="d-flex justify-content-center mt-3">
+                <form method="POST" id="restoreMemoForm">
+                    @csrf
+                    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary" >Pulihkan</button>
+                </form>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-danger">Hapus</button>
-        </div>
-      </div>
-    </form>
-  </div>
+    </div>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const restoreModal = document.getElementById('restoreMemoModal');
-        const restoreForm = document.getElementById('restoreMemoForm');
+        
 
-        restoreModal.addEventListener('show.bs.modal', function (event) {
+        // DELETE MODAL LOGIC
+        const deleteMemoModal = document.getElementById('deleteMemoModal');
+        const deleteMemoForm = document.getElementById('deleteMemoForm');
+
+        deleteMemoModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
             const route = button.getAttribute('data-route');
-                    console.log("Restore route set to:", route);
-
-            if (restoreForm && route) {
-                restoreForm.setAttribute('action', route);
+            console.log('DELETE route:', route);
+            console.log('deleteMemoForm element: ', deleteMemoForm);
+            if (deleteMemoForm && route) {
+                
+                deleteMemoForm.setAttribute('action', route);
             }
         });
-    
 
-        const deleteButtons = document.querySelectorAll(".submitDeleteMemo");
-        const deleteBtnOk = document.getElementById("openConfirmDeleteBtn");
+        // RESTORE MODAL LOGIC
+        const restoreMemoModal = document.getElementById('restoreMemoModal');
+        const restoreMemoForm = document.getElementById('restoreMemoForm');
 
-        deleteButtons.forEach(button => {
-            button.addEventListener("click", function () {
-                const route = button.getAttribute("data-route");
-                deleteBtnOk.setAttribute("data-route", route);
-            });
+        restoreMemoModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const route = button.getAttribute('data-route');
+            console.log('RESTORE route:', route);
+            console.log('restoreMemoForm element: ', restoreMemoForm);
+            if (restoreMemoForm && route) {
+                
+                restoreMemoForm.setAttribute('action', route);
+            }
         });
 
-        // Optional: if you're submitting the delete via JS
-       
-    });
-</script>
+        // SHOW SUCCESS MODALS
+        @if(session('success') === 'Memo Berhasil Dihapus.')
+            const successDeleteModal = new bootstrap.Modal(document.getElementById("successDeleteMemoModal"));
+            successDeleteModal.show();
+            setTimeout(() => successDeleteModal.hide(), 1500);
+        @endif
 
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
         @if(session('success') === 'Pemulihan Memo Berhasil.')
-            var successModal = new bootstrap.Modal(document.getElementById("successRestoreMemoModal"));
-            successModal.show();
-            setTimeout(function () {
-                successModal.hide();
-            }, 1500);
+            const successRestoreModal = new bootstrap.Modal(document.getElementById("successRestoreMemoModal"));
+            successRestoreModal.show();
+            setTimeout(() => successRestoreModal.hide(), 1500);
         @endif
     });
 </script>
 
-<script>
-  
 
-    // Event listener untuk modal sukses edit memo
-    document.addEventListener("DOMContentLoaded", function () {
-        @if(session('success') == 'Dokumen berhasil diubah.') // merujuk ke parameter controller memo update
-            var successModal = new bootstrap.Modal(document.getElementById("successEditMemoSuperModal"));
-            successModal.show();
-            setTimeout(function () {
-                successModal.hide();
-            }, 1500);
-        @endif
-    });
 
-    // Event Listener Arsip Memo
-    document.addEventListener("DOMContentLoaded", function () {
-        const arsipButtons = document.querySelectorAll(".submitArsipMemo");
-        const confirmArsipButton = document.getElementById("confirmArsipMemo");
-        const cancelArsipButton = document.querySelector("#arsipMemoModal .btn-outline-secondary");
-        const arsipMemoModal = new bootstrap.Modal(document.getElementById("arsipMemoModal"));
-        const successArsipMemoModal = new bootstrap.Modal(document.getElementById("successArsipMemoModal"));
-
-        let currentForm = null;
-
-        // Saat tombol arsip ditekan, simpan form yang akan dikirim
-        arsipButtons.forEach(button => {
-            button.addEventListener("click", function (event) {
-                event.preventDefault(); // Mencegah submit langsung
-                currentForm = this.closest("form"); 
-                arsipMemoModal.show(); // Tampilkan modal konfirmasi
-            });
-        });
-
-        // Saat tombol "Batal" ditekan, tutup modal konfirmasi
-        cancelArsipButton.addEventListener("click", function () {
-            arsipMemoModal.hide();
-        });
-
-        // Saat tombol "OK" ditekan, submit form dan tampilkan modal sukses
-        confirmArsipButton.addEventListener("click", function () {
-            if (currentForm) {
-                arsipMemoModal.hide(); // Tutup modal konfirmasi
-                setTimeout(() => {
-                    successArsipMemoModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
-                }, 300); 
-
-                setTimeout(() => {
-                    successArsipMemoModal.hide();
-                    currentForm.submit(); // Submit form setelah modal sukses ditutup
-                }, 1500);
-            }
-        });
-    });
-    document.getElementById("selectAll").addEventListener("change", function () {
-        const checkboxes = document.querySelectorAll(".selectItem");
-        checkboxes.forEach(cb => cb.checked = this.checked);
-    });
-</script>
 @endsection

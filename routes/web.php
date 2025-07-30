@@ -15,6 +15,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\BackupController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/p', function () {
@@ -65,7 +66,6 @@ Route::get('/memo/edit/{id_memo}', [MemoController::class, 'edit'])->name('memo.
 //hapus sementara
 Route::delete('/memo/delete/{id_memo}', [MemoController::class, 'delete'])->name('memo.delete');
 //hapus permanen
-Route::delete('/memo/destroy/{id_memo}', [MemoController::class, 'destroy'])->name('memo.destroy');
 
 Route::put('/memo/update/{id_memo}', [MemoController::class, 'update'])->name('memo/update');
 
@@ -348,3 +348,5 @@ Route::get('/risalah/{id}/preview', [RisalahController::class, 'showFile'])->nam
 Route::get('/risalah/arsip/{id}', [ArsipController::class, 'viewRisalah'])->name('view.risalah-arsip');
 
 Route::get('/risalah/manager/{id}', [RisalahController::class, 'view'])->name('view.risalah');
+
+

@@ -1303,16 +1303,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
 
          return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo berhasil dihapus.');
      }
-     //PENGHAPUSAN PERMANEN
-     public function destroy($id)
-     {
-    
-        $memo = Memo::findOrFail($id);
-        $memo->forceDelete();
-
-         return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo berhasil dihapus.');
-     }
-
+     
     //  menampilkan file yang disimpan dalam database
     public function showFile($id)
     {

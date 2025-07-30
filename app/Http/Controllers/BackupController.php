@@ -122,7 +122,7 @@ class BackupController extends Controller
     }
 
     public function RestoreUndangan($id)
-    {
+    {   //dd($id);
         $undangan = Undangan::withTrashed()
             ->where('id_undangan', $id)
             ->first();
@@ -186,4 +186,23 @@ class BackupController extends Controller
 
         return redirect()->back()->with('success_delete', 'Risalah berhasil dihapus permanen.');
     }
+  
+    public function forceDelete($id)
+    {
+        $undangan = Undangan::withTrashed()->findOrFail($id);
+        $undangan->forceDelete();
+
+        return redirect()->route('undangan.backup')->with('success', 'Undangan berhasil dihapus permanen.');
+    }
+  
+    //PENGHAPUSAN PERMANEN
+     public function forceDeleteMemo($id)
+     {
+    
+        $memo = Memo::onlyTrashed()->findOrFail($id);
+        $memo->forceDelete();
+
+         return redirect()->route('memo.backup' .Auth::user()->role->nm_role)->with('success', 'Memo berhasil dihapus permanen.');
+     }
+
 }
