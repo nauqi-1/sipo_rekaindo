@@ -1300,8 +1300,8 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
      {
         $memo = Memo::findOrFail($id);
         $memo->delete();
-
-         return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo berhasil dihapus.');
+        Kirim_Document::where('id_document', $id)->where('jenis_document','memo')->delete();
+        return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo berhasil dihapus.');
      }
      
     //  menampilkan file yang disimpan dalam database
