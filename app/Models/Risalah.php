@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Risalah extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'risalah';
     protected $primaryKey = 'id_risalah';
@@ -25,6 +26,8 @@ class Risalah extends Model
         'tgl_dibuat' => 'datetime',
         'tgl_disahkan' => 'datetime',
     ];
+
+    protected $dates = ['deleted_at'];
 
     // Relasi ke tabel RisalahDetail
     public function risalahDetails()
@@ -45,4 +48,19 @@ class Risalah extends Model
     public function user(){
         return $this->belongsTo(User::class, 'pembuat');
     }
+
+    public function up()
+    {
+        Schema::table('risalah', function (Blueprint $table) {
+            $table->softDeletes();
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('risalah', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
+    }
+
 }

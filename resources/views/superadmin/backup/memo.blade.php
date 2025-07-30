@@ -61,7 +61,7 @@
                     </select>
                 </div>
                 </form>
-                <form id="bulkActionForm" method="POST" action="">
+                <form id="bulkActionForm" method="POST">
                         @csrf
                         <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 10px;">
                             <div class="d-flex gap-2">
@@ -174,6 +174,84 @@
     </div>
 </div>
 
+<!-- Restore Success Modal -->
+<div class="modal fade" id="successRestoreMemoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <img src="/img/memo-admin/success.png" alt="Success Icon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title"><b>Sukses</b></h5>
+                <p class="mt-2">Pemulihan Memo Berhasil.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Destroy Success Modal -->
+<div class="modal fade" id="successDeleteMemoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <img src="/img/memo-admin/success.png" alt="Success Icon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title"><b>Sukses</b></h5>
+                <p class="mt-2">Memo Berhasil Dihapus.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--perm delete confirmation modal-->
+<div class="modal fade" id="deleteMemoModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <!-- Close Button -->
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            
+            <img src="/img/memo-superadmin/warning.png" alt="Warning Icon" class="mb-3" style="width: 80px; height: 80px;">
+            <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus Dokumen?</h5>
+            <p class="text-muted mb-4" style="font-size: 0.95rem;">
+                <span class="text-danger"><strong>PERHATIAN:</strong> </span>Surat yang telah dihapus <strong>TIDAK DAPAT</strong> dipulihkan.
+            </p>
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-center mt-3">
+                <form method="POST" id="deleteMemoForm">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-secondary me-2">Hapus</button>
+                </form>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteModal = document.querySelectorAll(".deleteMemoModal");
+        const deleteForm = document.getElementById("deleteMemoForm");
+
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const route = button.getAttribute('data-route');
+                    console.log("Restore route set to:", route);
+                    console.log("Modal triggered by:", button);
+                    console.log("Setting form action to:", route);
+                    console.log("Form before:", restoreForm);
+            if (restoreForm && route) {
+                restoreForm.setAttribute('action', route);
+                console.log("Form after:", restoreForm.getAttribute('action'));
+
+            }
+        });
+        
+    document.addEventListener("DOMContentLoaded", function () {
+        @if(session('success') === 'Memo Berhasil Dihapus.')
+            var successModal = new bootstrap.Modal(document.getElementById("successDeleteMemoModal"));
+            successModal.show();
+            setTimeout(function () {
+                successModal.hide();
+            }, 1500);
+        @endif
+    });
+    });
+</script>
 <!-- Restore Confirmation Modal -->
 <div class="modal fade" id="restoreMemoModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -182,42 +260,19 @@
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
             
             <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
-            <h5 class="modal-title mb-4" id="restoreModalLabel">Pulihkan memo?</h5>
-
-            <!-- Action Buttons -->
+            <h5 class="modal-title mb-4" id="restoreModalLabel">Pulihkan Dokumen?</h5>
+            <p class="text-muted mb-4" style="font-size: 0.95rem;">
+                Surat akan dikembalikan ke menu <strong>Memo</strong>.
+            </p>
             <div class="d-flex justify-content-center mt-3">
                 <form method="POST" id="restoreMemoForm">
                     @csrf
-                    @method('POST')
-                    <button type="submit" class="btn btn-outline-secondary me-2">Oke</button>
+                    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary" >Pulihkan</button>
                 </form>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Delete Memo Modal -->
-<div class="modal fade" id="deleteMemoModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form method="POST" id="deleteMemoForm">
-      @csrf
-      @method('DELETE')
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="deleteModalLabel">Hapus Permanen Memo?</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-        </div>
-        <div class="modal-body">
-          Apakah Anda yakin ingin menghapus memo ini secara permanen?
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-danger">Hapus</button>
-        </div>
-      </div>
-    </form>
-  </div>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -228,30 +283,16 @@
             const button = event.relatedTarget;
             const route = button.getAttribute('data-route');
                     console.log("Restore route set to:", route);
-
+                    console.log("Modal triggered by:", button);
+                    console.log("Setting form action to:", route);
+                    console.log("Form before:", restoreForm);
             if (restoreForm && route) {
                 restoreForm.setAttribute('action', route);
+                console.log("Form after:", restoreForm.getAttribute('action'));
+
             }
         });
-    
-
-        const deleteButtons = document.querySelectorAll(".submitDeleteMemo");
-        const deleteBtnOk = document.getElementById("openConfirmDeleteBtn");
-
-        deleteButtons.forEach(button => {
-            button.addEventListener("click", function () {
-                const route = button.getAttribute("data-route");
-                deleteBtnOk.setAttribute("data-route", route);
-            });
-        });
-
-        // Optional: if you're submitting the delete via JS
-       
     });
-</script>
-
-
-<script>
     document.addEventListener("DOMContentLoaded", function () {
         @if(session('success') === 'Pemulihan Memo Berhasil.')
             var successModal = new bootstrap.Modal(document.getElementById("successRestoreMemoModal"));
@@ -263,62 +304,5 @@
     });
 </script>
 
-<script>
-  
 
-    // Event listener untuk modal sukses edit memo
-    document.addEventListener("DOMContentLoaded", function () {
-        @if(session('success') == 'Dokumen berhasil diubah.') // merujuk ke parameter controller memo update
-            var successModal = new bootstrap.Modal(document.getElementById("successEditMemoSuperModal"));
-            successModal.show();
-            setTimeout(function () {
-                successModal.hide();
-            }, 1500);
-        @endif
-    });
-
-    // Event Listener Arsip Memo
-    document.addEventListener("DOMContentLoaded", function () {
-        const arsipButtons = document.querySelectorAll(".submitArsipMemo");
-        const confirmArsipButton = document.getElementById("confirmArsipMemo");
-        const cancelArsipButton = document.querySelector("#arsipMemoModal .btn-outline-secondary");
-        const arsipMemoModal = new bootstrap.Modal(document.getElementById("arsipMemoModal"));
-        const successArsipMemoModal = new bootstrap.Modal(document.getElementById("successArsipMemoModal"));
-
-        let currentForm = null;
-
-        // Saat tombol arsip ditekan, simpan form yang akan dikirim
-        arsipButtons.forEach(button => {
-            button.addEventListener("click", function (event) {
-                event.preventDefault(); // Mencegah submit langsung
-                currentForm = this.closest("form"); 
-                arsipMemoModal.show(); // Tampilkan modal konfirmasi
-            });
-        });
-
-        // Saat tombol "Batal" ditekan, tutup modal konfirmasi
-        cancelArsipButton.addEventListener("click", function () {
-            arsipMemoModal.hide();
-        });
-
-        // Saat tombol "OK" ditekan, submit form dan tampilkan modal sukses
-        confirmArsipButton.addEventListener("click", function () {
-            if (currentForm) {
-                arsipMemoModal.hide(); // Tutup modal konfirmasi
-                setTimeout(() => {
-                    successArsipMemoModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
-                }, 300); 
-
-                setTimeout(() => {
-                    successArsipMemoModal.hide();
-                    currentForm.submit(); // Submit form setelah modal sukses ditutup
-                }, 1500);
-            }
-        });
-    });
-    document.getElementById("selectAll").addEventListener("change", function () {
-        const checkboxes = document.querySelectorAll(".selectItem");
-        checkboxes.forEach(cb => cb.checked = this.checked);
-    });
-</script>
 @endsection

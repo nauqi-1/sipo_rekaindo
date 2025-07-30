@@ -24,9 +24,9 @@ class BackupRisalah extends Model
      */
     protected $fillable = [
     'id_document', 'jenis_document', 'nomor_document', 'seri_document',
-    'tgl_dibuat', 'tgl_disahkan', 'tujuan', 'waktu_mulai', 'waktu_selesai',
+    'tgl_dibuat', 'tgl_disahkan', 'waktu_mulai', 'waktu_selesai',
     'agenda', 'tempat', 'nama_bertandatangan', 'lampiran', 'judul',
-    'pembuat', 'catatan', 'divisi_id_divisi', 'status', 'created_at', 'updated_at'
+    'pembuat', 'catatan', 'status', 'created_at', 'updated_at'
     ];
 
     /**
@@ -42,10 +42,6 @@ class BackupRisalah extends Model
     /**
      * Get the division associated with the document.
      */
-    public function divisi()
-    {
-        return $this->belongsTo(Divisi::class, 'divisi_id_divisi','id_divisi');
-    }
     public function risalah_detail()
     {
         return $this->hasMany(RisalahDetail::class);

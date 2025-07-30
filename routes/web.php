@@ -76,6 +76,9 @@ Route::put('/undangan/update/{id_undangan}', [UndanganController::class, 'update
 
 Route::get('/risalah/edit/{id_risalah}', [RisalahController::class, 'edit'])->name('risalah.edit');
 Route::delete('/risalah/delete/{id_risalah}', [RisalahController::class, 'destroy'])->name('risalah.destroy');
+Route::delete('/risalah/delete/{id_risalah}', [RisalahController::class, 'destroy'])->name('superadmin.risalah.destroy');
+Route::post('/risalah/delete/{id_risalah}', [RisalahController::class, 'destroy'])
+    ->name('superadmin.risalah.destroy');
 Route::put('/risalah/update/{id_risalah}', [RisalahController::class, 'update'])->name('risalah/update');
 
 Route::middleware('auth')->group(function () {

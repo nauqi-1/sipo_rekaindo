@@ -71,22 +71,10 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="tujuan" class="form-label">Tujuan</label>
-                            <input type="text" name="tujuan" id="tujuan" class="form-control" value="{{ $risalah->tujuan }}" required>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
                             <label for="nama_bertandatangan">Nama yang Bertanda Tangan</label>
                             <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control select2" required>
-                                <option value="" disabled>--Pilih--</option>
-                                @foreach($managers as $manager)
-                                    <option value="{{ $manager->firstname . ' ' . $manager->lastname }}" 
-                                        {{ (old('nama_bertandatangan', $risalah->nama_bertandatangan ?? '') == $manager->firstname . ' ' . $manager->lastname) ? 'selected' : '' }}>
-                                        {{ $manager->firstname . ' ' . $manager->lastname }}
-                                    </option>
-                                @endforeach
+                                <option value="{{ $risalah->nama_bertandatangan }}" selected disabled>{{ $risalah->nama_bertandatangan }}</option>
                             </select>
-                            </div>
                         </div>
                     </div>
                     <div id="risalahContainer">
