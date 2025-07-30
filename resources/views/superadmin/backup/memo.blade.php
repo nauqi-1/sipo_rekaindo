@@ -153,7 +153,7 @@
                     
                         <button title="Hapus Permanen" type="button" class="btn btn-sm2 submitDeleteMemo" data-bs-toggle="modal"
                             data-bs-target="#deleteMemoModal" data-id="{{ $memo->id_memo }}"
-                            data-route="{{ route('memo.destroy', $memo->id_memo) }}">
+                            data-route="{{ route('memo.forceDelete', $memo->id_memo) }}">
                             <i class="fa-solid fa-trash" style="color: red; font-size: 14px;"></i>
                         </button>
                 </td>
