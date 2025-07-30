@@ -3,6 +3,7 @@
 @section('title', 'Undangan Rapat')
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <div class="container">
         <div class="header">
             <div class="back-button">
@@ -150,7 +151,7 @@
                             <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteUndanganModal"
                                 data-memo-id="{{ $undangan->id_undangan }}"
                                 data-route="{{ route('undangan.destroy', $undangan->id_undangan) }}">
-                                <img src="/img/undangan/Delete.png" alt="delete">
+                                <i class="fa-solid fa-trash" style="color: red; font-size: 12px;"></i>
                             </button>
 
 
