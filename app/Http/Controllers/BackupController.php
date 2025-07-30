@@ -118,7 +118,7 @@ class BackupController extends Controller
         } else {
             dd($memo);
         }
-        return redirect()->route('memo.backup')->with('success', 'Pemulihan Memo Berhasil.');
+        return redirect()->route('memo.backup')->with('success', 'Memo terpilih berhasil dipulihkan.');
     }
 
     public function RestoreUndangan($id)
@@ -138,7 +138,7 @@ class BackupController extends Controller
         $ids = $request->input('selected_ids', []);
         Memo::onlyTrashed()->whereIn('id_memo', $ids)->restore();
 
-        return redirect()->back()->with('success', 'Semua memo berhasil dipulihkan.');
+        return redirect()->back()->with('success', 'Memo terpilih berhasil dipulihkan.');
     }
 
     public function bulkForceDeleteMemo(Request $request)
@@ -146,7 +146,7 @@ class BackupController extends Controller
         $ids = $request->input('selected_ids', []);
         Memo::onlyTrashed()->whereIn('id_memo', $ids)->forceDelete();
 
-        return redirect()->back()->with('success', 'Semua memo berhasil dihapus permanen.');
+        return redirect()->back()->with('success', 'Memo terpilih berhasil dihapus permanen.');
     }
     public function bulkRestore(Request $request)
     {
@@ -202,7 +202,7 @@ class BackupController extends Controller
         $memo = Memo::onlyTrashed()->findOrFail($id);
         $memo->forceDelete();
 
-         return redirect()->route('memo.backup' .Auth::user()->role->nm_role)->with('success', 'Memo berhasil dihapus permanen.');
+         return redirect()->route('memo.backup')->with('success', 'Memo terpilih berhasil dihapus permanen.');
      }
 
 }

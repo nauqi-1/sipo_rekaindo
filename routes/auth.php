@@ -86,7 +86,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/memo-force-delete/{id}', [BackupController::class, 'forceDeleteMemo'])->name('memo.forceDelete');
         
         Route::post('/memo/bulk-restore', [BackupController::class, 'bulkRestoreMemo'])->name('memo.bulk-restore');
-        Route::post('/memo/bulk-force-delete', [BackupController::class, 'bulkForceDeleteMemo'])->name('memo.bulk-force-delete');
+        Route::delete('/memo/bulk-force-delete', [BackupController::class, 'bulkForceDeleteMemo'])->name('memo.bulk-force-delete');
 
         Route::post('/undangan/bulk-restore', [BackupController::class, 'bulkRestore'])->name('undangan.bulk-restore');
         Route::delete('/undangan/bulk-force-delete', [BackupController::class, 'bulkForceDelete'])->name('undangan.bulk-force-delete');
