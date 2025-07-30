@@ -82,7 +82,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/memo-restore', [BackupController::class, 'memo'])->name('memo.backup');
         Route::get('/undangan-restore', [BackupController::class, 'undangan'])->name('undangan.backup');
-
+        
+        Route::delete('/memo/destroy/{id}', [MemoController::class, 'destroy'])->name('memo.destroy');
         
         Route::post('/memo/bulk-restore', [BackupController::class, 'bulkRestoreMemo'])->name('memo.bulk-restore');
         Route::post('/memo/bulk-force-delete', [BackupController::class, 'bulkForceDeleteMemo'])->name('memo.bulk-force-delete');

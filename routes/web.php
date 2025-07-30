@@ -65,7 +65,6 @@ Route::get('/memo/edit/{id_memo}', [MemoController::class, 'edit'])->name('memo.
 //hapus sementara
 Route::delete('/memo/delete/{id_memo}', [MemoController::class, 'delete'])->name('memo.delete');
 //hapus permanen
-Route::delete('/memo/destroy/{id_memo}', [MemoController::class, 'destroy'])->name('memo.destroy');
 
 Route::put('/memo/update/{id_memo}', [MemoController::class, 'update'])->name('memo/update');
 
