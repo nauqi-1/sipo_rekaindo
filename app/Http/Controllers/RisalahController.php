@@ -100,39 +100,31 @@ class RisalahController extends Controller
             compact('risalahs', 'seri', 'sortDirection', 'kirimDocuments'));
     }
 
-    public function superadmin(Request $request)
-    {
+    public function superadmin(Request $request){
         $divisi = Divisi::all();
         $seri = Seri::all();
         $userId = Auth::id();
+        
 
-        // Ambil semua ID dokumen yang sudah diarsipkan oleh user ini
-        $arsipIds = Arsip::where('user_id', $userId)->pluck('document_id')->toArray();
-
-        // Sorting dan validasi kolom sort
-        $sortBy = $request->get('sort_by', 'created_at');
+        $risalahDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
+        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+
         $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_risalah', 'judul'];
-        if (!in_array($sortBy, $allowedSortColumns)) {
-            $sortBy = 'created_at';
+         if (!in_array($sortBy, $allowedSortColumns)) {
+            $sortBy = 'created_at'; // fallback default
         }
 
-        // Subquery: ambil ID risalah terbaru untuk setiap judul
-        $latestIds = Risalah::selectRaw('MAX(id_risalah) as id_risalah')
-            ->whereNotIn('id_risalah', $arsipIds)
-            ->groupBy('judul')
-            ->pluck('id_risalah');
+        $query = Risalah::query()
+        ->whereNotIn('id_risalah', $risalahDiarsipkan)
+        ->orderBy($sortBy, $sortDirection);
 
-        // Query utama berdasarkan ID hasil group by
-        $query = Risalah::whereIn('id_risalah', $latestIds)
-            ->orderBy($sortBy, $sortDirection);
-
-        // Filter status
+        // Filter berdasarkan status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Filter tanggal dibuat
+        // Filter berdasarkan tanggal dibuat
         if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
             $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
         } elseif ($request->filled('tgl_dibuat_awal')) {
@@ -141,23 +133,29 @@ class RisalahController extends Controller
             $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
         }
 
-        // Filter divisi
-        if ($request->filled('divisi_id_divisi') && $request->divisi_id_divisi != 'pilih') {
-            $query->where('divisi_id_divisi', $request->divisi_id_divisi);
-        }
+         // Ambil semua arsip memo berdasarkan user login
+        $arsipRisalahQuery = Arsip::where('user_id', $userId)
+        ->where('jenis_document', 'risalah')
+        ->with('document');
 
-        // Pencarian judul / nomor risalah
+        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $query->orderBy('created_at', $sortDirection);
+
+        if ($request->filled('divisi_id_divisi') && $request->divisi_id_divisi != 'pilih') {
+    $query->where('divisi_id_divisi', $request->divisi_id_divisi);
+}
+
+        // Pencarian berdasarkan nama dokumen atau nomor memo
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('judul', 'like', '%' . $request->search . '%')
                 ->orWhere('nomor_risalah', 'like', '%' . $request->search . '%');
             });
         }
-
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
         $risalahs = $query->paginate($perPage);
 
-        return view('superadmin.risalah.risalah-superadmin', compact('risalahs', 'divisi', 'seri', 'sortDirection'));
+        return view( 'superadmin.risalah.risalah-superadmin', compact('risalahs', 'divisi', 'seri','sortDirection'));
     }
 
     public function create()
