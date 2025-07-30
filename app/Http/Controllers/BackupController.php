@@ -163,4 +163,27 @@ class BackupController extends Controller
 
         return redirect()->back()->with('success', 'Beberapa undangan berhasil dihapus permanen.');
     }
+
+    public function bulkRestoreRisalah(Request $request)
+    {
+        $ids = $request->input('selected_ids', []);
+        Risalah::onlyTrashed()->whereIn('id_risalah', $ids)->restore();
+
+        return redirect()->back()->with('success', 'Beberapa risalah berhasil dipulihkan.');
+    }
+
+    public function bulkForceDeleteRisalah(Request $request)
+    {
+        $ids = $request->input('selected_ids', []);
+        Risalah::onlyTrashed()->whereIn('id_risalah', $ids)->forceDelete();
+
+        return redirect()->back()->with('success', 'Beberapa risalah berhasil dihapus permanen.');
+    }
+
+    public function forceDeleteRisalah($id)
+    {
+        Risalah::onlyTrashed()->where('id_risalah', $id)->forceDelete();
+
+        return redirect()->back()->with('success_delete', 'Risalah berhasil dihapus permanen.');
+    }
 }

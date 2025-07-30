@@ -49,6 +49,6 @@ class BackupRisalahController extends Controller
     {
        Risalah::withTrashed()->find($id)->restore();
 
-        return redirect()->route('risalah.backup')->with('success', 'Risalah deleted successfully.');
+        return redirect()->route('risalah.backup')->with('success_restore', 'Risalah deleted successfully.');
     }
 }

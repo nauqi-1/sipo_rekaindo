@@ -70,6 +70,22 @@
                     </select>
                 </div>
                 </form>
+                <form id="bulkActionForm" method="POST" action="">
+                    @csrf
+                    <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 10px;">
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-success btn-sm d-flex align-items-center justify-content-center"
+                                style="padding: 5px 10px; font-size: 14px; height: 32px;" data-bs-toggle="modal" data-bs-target="#restoreRisalahModal">
+                                <i class="fa-solid fa-rotate-left me-2"></i> Pulihkan
+                            </button>
+
+                            <button type="button" class="btn btn-danger btn-sm d-flex align-items-center justify-content-center"
+                                style="padding: 5px 10px; font-size: 14px; height: 32px; width: 150px;" data-bs-toggle="modal" data-bs-target="#deleteRisalahModal">
+                                <i class="fa-solid fa-trash me-2"></i> Hapus Permanen
+                            </button>
+                        </div>
+                    </div>
+                </form>
                 <!-- Add User Button to Open Modal -->
             </div>
         </div>
@@ -79,6 +95,9 @@
         <table class="table-light">
             <thead>
                 <tr>
+                    <th>
+                        <input type="checkbox" id="selectAll">
+                    </th>
                     <th>No</th>
                     <th>Nama Dokumen</th>
                     <th>Tanggal Risalah
@@ -107,6 +126,10 @@
             <tbody>
                 @foreach ($risalahs as $index => $risalah)
                 <tr>
+                    <td>
+                        <input type="checkbox" name="selected_ids[]" value="{{ $risalah->id_risalah }}"
+                            class="selectItem">
+                    </td>
                     <td class="nomor">{{ $index + 1 }}</td>
                     <td class="nama-dokumen 
                         {{ 'text-danger'}}">
@@ -124,10 +147,20 @@
                     </td>
 
                     <td>
-                            <a href="{{ route('risalah.restore',['id' => $risalah->id_risalah]) }}" class="btn btn-sm1">
-                                <img src="/img/restore.png" alt="restore" style="width: 20px; height: 20px;">
-                            </a>
-                </td>
+                        <button type="button" class="btn btn-sm1 triggerRestoreBtn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#restoreRisalahModal"
+                            data-route="{{ route('risalah.restore', ['id' => $risalah->id_risalah]) }}">
+                            <img src="/img/restore.png" alt="restore" style="width: 20px; height: 20px;">
+                        </button>
+
+                        <button type="button" class="btn btn-sm2 submitDeleterisalah" data-bs-toggle="modal"
+                            data-bs-target="#deleteRisalahModal" data-id="{{ $risalah->id_risalah }}"
+                            data-route="{{ route('risalah.forcedestroy', $risalah->id_risalah) }}">
+                            <img src="/img/risalah/Delete.png" alt="delete" style="height: 14px;">
+                        </button>
+                    </td>
+
             </tr>
             @endforeach
         </tbody>
@@ -195,7 +228,155 @@
     </div>
 </div>
 
+<!-- Restore Success Modal -->
+<div class="modal fade" id="successRestoreRisalahModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <img src="/img/memo-admin/success.png" alt="Success Icon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title"><b>Sukses</b></h5>
+                <p class="mt-2">Pemulihan Risalah Berhasil.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Restore Risalah -->
+<div class="modal fade" id="restoreRisalahModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <!-- Close Button -->
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"
+                aria-label="Close"></button>
+
+            <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3"
+                style="width: 80px; height: 80px;">
+            <h5 class="modal-title mb-4" id="restoreModalLabel">Pulihkan Dokumen?</h5>
+            <p class="text-muted mb-4" style="font-size: 0.95rem;">
+                Surat akan dikembalikan ke menu <strong>Risalah</strong>.
+            </p>
+            <div class="d-flex justify-content-center mt-3">
+                <form method="POST" id="restoreRisalahForm">
+                    @csrf
+                    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Pulihkan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Sukses Hapus -->
+
+<div class="modal fade" id="successDeleteRisalahModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <img src="/img/memo-admin/success.png" alt="Success Icon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title"><b>Sukses</b></h5>
+                <p class="mt-2">Risalah berhasil dihapus permanen.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Hapus Risalah -->
+<div class="modal fade" id="deleteRisalahModal" tabindex="-1" aria-labelledby="deleteRisalahModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <!-- Close Button -->
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+
+                <img src="/img/memo-superadmin/warning.png" alt="Warning Icon" class="mb-3"
+                    style="width: 80px; height: 80px;">
+                <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus Dokumen?</h5>
+                <p class="text-muted mb-4" style="font-size: 0.95rem;">
+                    <span class="text-danger"><strong>PERHATIAN:</strong> </span>Surat yang telah dihapus <strong>TIDAK
+                        DAPAT</strong> dipulihkan.
+                </p>
+                <div class="modal-footer border-0">
+                    <form id="deleteRisalahForm" method="POST">
+                    @csrf
+                    @method('POST')
+                    <button type="submit" class="btn btn-outline-secondary me-2">Hapus</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 <script>
+
+    // Ambil semua id dari checkbox yang dicentang
+    function getSelectedIds() {
+        return Array.from(document.querySelectorAll('input[name="selected_ids[]"]:checked'))
+            .map(cb => cb.value);
+    }
+
+    // Trigger saat tombol pulihkan diklik
+    document.querySelector('[data-bs-target="#restoreRisalahModal"]').addEventListener('click', function () {
+        const ids = getSelectedIds();
+        if (ids.length === 0) return;
+
+        const form = document.getElementById('restoreRisalahForm');
+        form.action = "{{ route('risalah.bulk-restore') }}";
+
+        // Tambahkan input tersembunyi
+        form.innerHTML += ids.map(id => `<input type="hidden" name="selected_ids[]" value="${id}">`).join('');
+    });
+
+    // Trigger saat tombol hapus diklik
+    document.querySelector('[data-bs-target="#deleteRisalahModal"]').addEventListener('click', function () {
+        const ids = getSelectedIds();
+        if (ids.length === 0) return;
+
+        const form = document.getElementById('deleteRisalahForm');
+        form.action = "{{ route('risalah.bulk-force-delete') }}";
+
+        // Tambahkan input tersembunyi
+        form.innerHTML += ids.map(id => `<input type="hidden" name="selected_ids[]" value="${id}">`).join('');
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const restoreModal = document.getElementById('restoreRisalahModal');
+        const restoreForm = document.getElementById('restoreRisalahForm');
+
+        // Saat tombol restore diklik, isi action form
+        document.querySelectorAll('.triggerRestoreBtn').forEach(button => {
+            button.addEventListener('click', function () {
+                const route = this.getAttribute('data-route');
+                restoreForm.setAttribute('action', route);
+            });
+        });
+
+        // Tampilkan modal sukses jika session berhasil restore
+        @if(session('success_restore'))
+            const successModal = new bootstrap.Modal(document.getElementById('successRestoreRisalahModal'));
+            successModal.show();
+        @endif
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteModal = document.getElementById("deleteRisalahModal");
+        const deleteForm = document.getElementById("deleteRisalahForm");
+
+        // Atur route saat modal delete dibuka
+        deleteModal.addEventListener("show.bs.modal", function (event) {
+            const triggerButton = event.relatedTarget;
+            const route = triggerButton.getAttribute("data-route");
+            deleteForm.setAttribute("action", route);
+        });
+
+        // Tampilkan modal sukses jika ada session flash
+        @if(session('success_delete'))
+            const successModal = new bootstrap.Modal(document.getElementById('successDeleteRisalahModal'));
+            successModal.show();
+        @endif
+    });
+
     // Event listener untuk modal sukses tambah memo
     document.addEventListener("DOMContentLoaded", function () {
         @if(session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller memo store
