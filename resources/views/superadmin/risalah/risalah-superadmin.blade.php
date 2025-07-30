@@ -123,7 +123,7 @@
                     @endif
                 </td>
                 <td>
-                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteUndanganModal" data-memo-id="{{ $risalah->id_risalah }}"  data-route="{{ route('superadmin.risalah.destroy', [$risalah->id_risalah, 'jenis_document' => 'risalah']) }}">
+                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteRisalahModal" data-memo-id="{{ $risalah->id_risalah }}"  data-route="{{ route('superadmin.risalah.destroy', [$risalah->id_risalah, 'jenis_document' => 'risalah']) }}">
                         <img src="/img/undangan/Delete.png" alt="delete">
                     </button>
                     
@@ -150,7 +150,7 @@
 </div>
 
 <!-- Overlay Add User Success -->
-<div class="modal fade" id="successAddUndanganModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+<div class="modal fade" id="successAddRisalahModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center p-4">
             <div class="modal-body">
@@ -164,15 +164,15 @@
     </div>
 </div>
 
-<div class="modal fade" id="deleteUndanganModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteRisalahModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center p-4">
             <!-- Close Button -->
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
             <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
-            <h5 class="modal-title mb-2" id="deleteModalLabel">Yakin ingin menghapus undangan ini?</h5>
+            <h5 class="modal-title mb-2" id="deleteModalLabel">Yakin ingin menghapus risalah ini?</h5>
             <p class="text-muted mb-4" style="font-size: 0.95rem;">
-                Undangan yang dihapus akan masuk ke menu <strong>Pemulihan</strong> dan dapat dikembalikan sewaktu-waktu.
+                Risalah yang dihapus akan masuk ke menu <strong>Pemulihan</strong> dan dapat dikembalikan sewaktu-waktu.
             </p>
 
                 <!-- Tombol -->
@@ -191,8 +191,8 @@
             <!-- Close Button -->
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
             <img src="/img/memo-superadmin/warning.png" alt="Warning Icon" class="mb-3" style="width: 80px; height: 80px;">
-            <h5 class="modal-title mb-4" id="confirmDeleteLabel">Yakin ingin menghapus undangan ini?</h5>
-            <form id="deleteUndanganForm" method="POST">
+            <h5 class="modal-title mb-4" id="confirmDeleteLabel">Yakin ingin menghapus risalah ini?</h5>
+            <form id="deleteRisalahForm" method="POST">
                 @csrf
                 @method('DELETE')
 
@@ -206,7 +206,7 @@
 </div>
 
 <!-- Overlay Confirmation Delete Success -->
-<div class="modal fade" id="deleteUndanganSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteRisalahSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center p-4">
             <div class="modal-body">
@@ -221,7 +221,7 @@
 </div>
 
 <!-- Modal Arsip -->
-<div class="modal fade" id="arsipUndanganModal" tabindex="-1" aria-labelledby="arsipUndanganModalLabel" aria-hidden="true">
+<div class="modal fade" id="arsipRisalahModal" tabindex="-1" aria-labelledby="arsipRisalahModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center p-4">
             <!-- Close Button -->
@@ -238,7 +238,7 @@
 </div>
 
 <!-- Modal Arsip Berhasil -->
-<div class="modal fade" id="successArsipUndanganModal" tabindex="-1" aria-labelledby="successArsipUndanganModalLabel" aria-hidden="true">
+<div class="modal fade" id="successArsipRisalahModal" tabindex="-1" aria-labelledby="successArsipRisalahModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center p-4">
             <div class="modal-body">
@@ -253,17 +253,17 @@
 <script>
     // Event listener untuk modal hapus undangan
     document.addEventListener("DOMContentLoaded", function () {
-        const deleteUndanganModal = document.getElementById("deleteUndanganModal");
+        const deleteRisalahModal = document.getElementById("deleteRisalahModal");
         const confirmDeleteModalElement = document.getElementById("confirmDeleteModal");
         const confirmDeleteModal = new bootstrap.Modal(confirmDeleteModalElement);
-        const deleteUndanganSuccessModal = new bootstrap.Modal(document.getElementById("deleteUndanganSuccessModal"));
-        const deleteUndanganForm = document.getElementById("deleteUndanganForm");
+        const deleteRisalahSuccessModal = new bootstrap.Modal(document.getElementById("deleteRisalahSuccessModal"));
+        const deleteRisalahForm = document.getElementById("deleteRisalahForm");
         const openConfirmDeleteBtn = document.getElementById("openConfirmDeleteBtn");
 
         let routeToDelete = "";
 
         // Ketika modal pertama ditampilkan
-        deleteUndanganModal.addEventListener("show.bs.modal", function (event) {
+        deleteRisalahModal.addEventListener("show.bs.modal", function (event) {
             const triggerButton = event.relatedTarget;
             routeToDelete = triggerButton.getAttribute("data-route");
 
@@ -277,20 +277,20 @@
         // Saat tombol konfirmasi di klik
         openConfirmDeleteBtn.addEventListener("click", function () {
             // Tutup modal awal
-            const deleteModalInstance = bootstrap.Modal.getInstance(deleteUndanganModal);
+            const deleteModalInstance = bootstrap.Modal.getInstance(deleteRisalahModal);
             if (deleteModalInstance) deleteModalInstance.hide();
 
             // Tampilkan modal konfirmasi setelah delay
             setTimeout(() => {
-                deleteUndanganForm.setAttribute("action", routeToDelete);
+                deleteRisalahForm.setAttribute("action", routeToDelete);
                 confirmDeleteModal.show();
             }, 300);
         });
 
         // Submit form untuk hapus data
-        deleteUndanganForm.addEventListener("submit", function (event) {
+        deleteRisalahForm.addEventListener("submit", function (event) {
             event.preventDefault();
-            const formAction = deleteUndanganForm.getAttribute("action");
+            const formAction = deleteRisalahForm.getAttribute("action");
 
             fetch(formAction, {
                 method: "POST",
@@ -304,7 +304,7 @@
                 if (response.ok) {
                     confirmDeleteModal.hide();
                     setTimeout(() => {
-                        deleteUndanganSuccessModal.show();
+                        deleteRisalahSuccessModal.show();
                         setTimeout(() => location.reload(), 1500);
                     }, 500);
                 } else {
@@ -323,9 +323,9 @@
     document.addEventListener("DOMContentLoaded", function () {
         const arsipButtons = document.querySelectorAll(".submitArsip");
         const confirmArsipButton = document.getElementById("confirmArsip");
-        const cancelArsipButton = document.querySelector("#arsipUndanganModal .btn-outline-secondary");
-        const arsipUndanganModal = new bootstrap.Modal(document.getElementById("arsipUndanganModal"));
-        const successArsipUndanganModal = new bootstrap.Modal(document.getElementById("successArsipUndanganModal"));
+        const cancelArsipButton = document.querySelector("#arsipRisalahModal .btn-outline-secondary");
+        const arsipRisalahModal = new bootstrap.Modal(document.getElementById("arsipRisalahModal"));
+        const successArsipRisalahModal = new bootstrap.Modal(document.getElementById("successArsipRisalahModal"));
 
         let currentForm = null;
 
@@ -334,25 +334,25 @@
             button.addEventListener("click", function (event) {
                 event.preventDefault(); // Mencegah submit langsung
                 currentForm = this.closest("form"); 
-                arsipUndanganModal.show(); // Tampilkan modal konfirmasi
+                arsipRisalahModal.show(); // Tampilkan modal konfirmasi
             });
         });
 
         // Saat tombol "Batal" ditekan, tutup modal konfirmasi
         cancelArsipButton.addEventListener("click", function () {
-            arsipUndanganModal.hide();
+            arsipRisalahModal.hide();
         });
 
         // Saat tombol "OK" ditekan, submit form dan tampilkan modal sukses
         confirmArsipButton.addEventListener("click", function () {
             if (currentForm) {
-                arsipUndanganModal.hide(); // Tutup modal konfirmasi
+                arsipRisalahModal.hide(); // Tutup modal konfirmasi
                 setTimeout(() => {
-                    successArsipUndanganModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
+                    successArsipRisalahModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
                 }, 300); 
 
                 setTimeout(() => {
-                    successArsipUndanganModal.hide();
+                    successArsipRisalahModal.hide();
                     currentForm.submit(); // Submit form setelah modal sukses ditutup
                 }, 1500);
             }
@@ -362,7 +362,7 @@
     // Event listener untuk modal sukses tambah Undangan
     document.addEventListener("DOMContentLoaded", function () {
     @if(session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller Undangan store
-        var successModal = new bootstrap.Modal(document.getElementById("successAddUndanganModal"));
+        var successModal = new bootstrap.Modal(document.getElementById("successAddRisalahModal"));
         successModal.show();
         setTimeout(function () {
             successModal.hide();

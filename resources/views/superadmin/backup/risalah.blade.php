@@ -3,6 +3,8 @@
 @section('title', 'Risalah Admin')
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <div class="container">
     <div class="header">
         <!-- Back Button -->
@@ -308,6 +310,17 @@
         </div>
     </div>
 <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const selectAllCheckbox = document.getElementById("selectAll");
+        const checkboxes = document.querySelectorAll(".selectItem");
+
+        selectAllCheckbox.addEventListener("change", function () {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+        });
+    });
 
     // Ambil semua id dari checkbox yang dicentang
     function getSelectedIds() {
