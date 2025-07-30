@@ -163,4 +163,12 @@ class BackupController extends Controller
 
         return redirect()->back()->with('success', 'Beberapa undangan berhasil dihapus permanen.');
     }
+    public function forceDelete($id)
+{
+    $undangan = Undangan::withTrashed()->findOrFail($id);
+    $undangan->forceDelete();
+
+    return redirect()->route('undangan.backup')->with('success', 'Undangan berhasil dihapus permanen.');
+}
+
 }

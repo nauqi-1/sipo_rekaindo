@@ -258,6 +258,24 @@
             </div>
         </div>
     </div>
+<!-- Modal Konfirmasi Hapus Permanen -->
+<div class="modal fade" id="deleteUndanganModal" tabindex="-1" aria-labelledby="deleteUndanganModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            <img src="/img/undangan/konfirmasi.png" alt="Konfirmasi Hapus" class="mb-3" style="width: 80px;">
+            <h5 class="modal-title mb-4"><b>Hapus Undangan Secara Permanen?</b></h5>
+            <form id="deleteUndanganForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
     <script>
         // Event listener untuk modal sukses tambah undangan
@@ -327,5 +345,19 @@
             const checkboxes = document.querySelectorAll(".selectItem");
             checkboxes.forEach(cb => cb.checked = this.checked);
         });
+        
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".submitDeleteUndangan");
+        const deleteForm = document.getElementById("deleteUndanganForm");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const route = this.getAttribute("data-route");
+                deleteForm.setAttribute("action", route);
+            });
+        });
+    });
+
+
     </script>
 @endsection
