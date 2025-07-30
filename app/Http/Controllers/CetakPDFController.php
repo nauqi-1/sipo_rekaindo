@@ -418,45 +418,63 @@ class CetakPDFController extends Controller
     public function cetakrisalahPDF($id)
     {
         $risalah = Risalah::findOrFail($id);
-        $path = public_path('img/border-surat.png');
+
+        // Header & Footer Image
+        $headerPath = public_path('img/bheader.png');
+        $footerPath = public_path('img/bfooter.png');
+        $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
+        $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
+
+        // QRCode jika ada
         $qrCode = $risalah->qr_approved_by;
 
-        if (file_exists($path)) {
-            $type = pathinfo($path, PATHINFO_EXTENSION);
-            $data = file_get_contents($path);
-            $base64Image = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        } else {
-            $base64Image = null;
+        // User bertandatangan
+        $userBertandatangan = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+            ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$risalah->nama_bertandatangan])
+            ->first();
+
+        if ($userBertandatangan) {
+            $level = $this->detectLevel($userBertandatangan);
+            $userBertandatangan->level_kerja = $level;
+            $userBertandatangan->bagian_text = $this->getBagianText($userBertandatangan, $level);
         }
 
-        // Gunakan PDF::loadView() secara langsung
-        $pdf = Pdf::loadView('format-surat.format-risalah', compact('risalah', 'base64Image', 'qrCode'))
-            ->setPaper('A4', 'portrait');
+        $cleanIsi = strip_tags($risalah->isi_risalah);
 
-        // Simpan PDF memo sementara
+        // Generate PDF menggunakan format yang sama dengan viewRisalahPDF
+        $pdf = PDF::loadView('format-surat.format-risalah', [
+            'risalah' => $risalah,
+            'cleanIsi' => $cleanIsi,
+            'manager' => $userBertandatangan,
+            'headerImage' => $headerBase64,
+            'footerImage' => $footerBase64,
+            'qrCode' => $qrCode,
+            'isPdf' => true
+        ])->setPaper('A4', 'portrait');
+
+        // Simpan PDF risalah sementara
         $formatRisalahPath = storage_path('app/temp_format_risalah_' . $risalah->id . '.pdf');
         $pdf->save($formatRisalahPath);
 
-        // Cek apakah lampiran tidak kosong
+        // Jika ada lampiran, gabungkan PDF risalah + lampiran
         if (!empty($risalah->lampiran)) {
-            // Decode base64 lampiran dan simpan sementara
             $lampiranTempPath = storage_path('app/temp_lampiran_' . $risalah->id . '.pdf');
             file_put_contents($lampiranTempPath, base64_decode($risalah->lampiran));
 
-            // Gabungkan format memo + lampiran
-            $pdfMerger = new PDFMerger;
+            $pdfMerger = new \Clegginabox\PDFMerger\PDFMerger;
             $pdfMerger->addPDF($formatRisalahPath, 'all');
             $pdfMerger->addPDF($lampiranTempPath, 'all');
 
             $outputPath = storage_path('app/cetak_risalah_' . $risalah->id . '.pdf');
             $pdfMerger->merge('file', $outputPath);
 
-            // Download lalu hapus semua file sementara
+            // Hapus file sementara
             if (file_exists($formatRisalahPath)) unlink($formatRisalahPath);
             if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
+
             return response()->download($outputPath)->deleteFileAfterSend(true);
         } else {
-            // Jika tidak ada lampiran, langsung download PDF memo saja
+            // Jika tidak ada lampiran, langsung download PDF risalah saja
             return response()->streamDownload(function () use ($pdf, $formatRisalahPath) {
                 echo $pdf->output();
                 if (file_exists($formatRisalahPath)) unlink($formatRisalahPath);

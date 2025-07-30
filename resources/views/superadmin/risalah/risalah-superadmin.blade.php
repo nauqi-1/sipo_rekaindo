@@ -110,26 +110,29 @@
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
                 <td class="nama-dokumen 
-                    {{ $risalah->status == 'reject' ? 'text-danger' : ($risalah->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $risalah->status == 'reject' ? 'text-danger' : ($risalah->status == 'correction' ? 'text-warning' : ($risalah->status == 'approve' ? 'text-success' : '')) }}"
+                    style="{{ $risalah->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                     {{ $risalah->judul }}
                 </td>
                 <td>{{ \Carbon\Carbon::parse($risalah->tgl_dibuat)->format('d-m-Y') }}</td>
                 <td>{{ $risalah->seri_surat }}</td>
                 <td>{{ $risalah->nomor_risalah }}</td>
                 <td>{{ $risalah->tgl_disahkan ? \Carbon\Carbon::parse($risalah->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                <td>{{ $risalah->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                <td>{{ $risalah->user->department->kode_department ?? $risalah->user->divisi->kode_divisi ?? '-' }}</td>
                 </td>
                 <td>
                     @if ($risalah->status == 'reject')
                         <span class="badge bg-danger">Ditolak</span>
                     @elseif ($risalah->status == 'pending')
-                        <span class="badge bg-warning">Diproses</span>
+                        <span class="badge bg-info">Diproses</span>
+                    @elseif ($risalah->status == 'correction')
+                        <span class="badge bg-warning">Dikoreksi</span>
                     @else
                         <span class="badge bg-success">Diterima</span>
                     @endif
                 </td>
                 <td>
-                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteUndanganModal" data-memo-id="{{ $risalah->id_risalah }}"  data-route="{{ route('risalah.destroy', [$risalah->id_risalah, 'jenis_document' => 'isalah']) }}">
+                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteUndanganModal" data-memo-id="{{ $risalah->id_risalah }}"  data-route="{{ route('superadmin.risalah.destroy', [$risalah->id_risalah, 'jenis_document' => 'risalah']) }}">
                         <img src="/img/undangan/Delete.png" alt="delete">
                     </button>
                     
@@ -239,25 +242,24 @@
 <script>
     // Event Listener Overlay delete
     document.addEventListener("DOMContentLoaded", function () {
-        let deleteUndanganModal = document.getElementById("deleteUndanganModal");
-        let deleteUndanganForm = document.getElementById("deleteUndanganForm");
-        let deleteUndanganSuccessModal = new bootstrap.Modal(document.getElementById("deleteUndanganSuccessModal"));
+    let deleteUndanganModal = document.getElementById("deleteUndanganModal");
+    let deleteUndanganSuccessModal = new bootstrap.Modal(document.getElementById("deleteUndanganSuccessModal"));
 
-        // Event ketika modal delete user ditampilkan
-        deleteUndanganModal.addEventListener("show.bs.modal", function (event) {
-            let button = event.relatedTarget;
-            let route = button.getAttribute("data-route");
-            deleteUndanganForm.setAttribute("action", route);
-        });
+    // Event ketika modal delete ditampilkan
+    deleteUndanganModal.addEventListener("show.bs.modal", function (event) {
+        let button = event.relatedTarget;
+        let route = button.getAttribute("data-route");
 
-        // Event ketika form delete dikirim
-        deleteUndanganForm.addEventListener("submit", function (event) {
-            event.preventDefault(); // Mencegah pengiriman form default
+        // Set action pada form setiap kali modal dibuka
+        let form = document.getElementById("deleteUndanganForm");
+        form.setAttribute("action", route);
 
-            let formAction = deleteUndanganForm.getAttribute("action");
+        // Bind ulang event submit agar tidak dobel
+        form.onsubmit = function (e) {
+            e.preventDefault();
 
-            fetch(formAction, {
-                method: "POST", // Laravel menangani DELETE dengan _method
+            fetch(route, {
+                method: "POST",
                 headers: {
                     "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
                     "Content-Type": "application/json"
@@ -265,19 +267,22 @@
                 body: JSON.stringify({ _method: "DELETE" })
             }).then(response => {
                 if (response.ok) {
-                    let modalInstance = bootstrap.Modal.getInstance(deleteUndanganModal);
-                    modalInstance.hide();
+                    bootstrap.Modal.getInstance(deleteUndanganModal).hide();
 
                     setTimeout(() => {
                         deleteUndanganSuccessModal.show();
                         setTimeout(() => {
-                            location.reload(); // Refresh halaman setelah 2 detik
+                            location.reload();
                         }, 1500);
                     }, 500);
+                } else {
+                    alert("Gagal menghapus data");
                 }
             }).catch(error => console.error("Error:", error));
-        });
+        };
     });
+});
+
 
     // Event listener arsip Undangan
     document.addEventListener("DOMContentLoaded", function () {

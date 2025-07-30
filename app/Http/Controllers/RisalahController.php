@@ -100,31 +100,39 @@ class RisalahController extends Controller
             compact('risalahs', 'seri', 'sortDirection', 'kirimDocuments'));
     }
 
-    public function superadmin(Request $request){
+    public function superadmin(Request $request)
+    {
         $divisi = Divisi::all();
         $seri = Seri::all();
         $userId = Auth::id();
-        
 
-        $risalahDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
-        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
+        // Ambil semua ID dokumen yang sudah diarsipkan oleh user ini
+        $arsipIds = Arsip::where('user_id', $userId)->pluck('document_id')->toArray();
+
+        // Sorting dan validasi kolom sort
+        $sortBy = $request->get('sort_by', 'created_at');
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-
         $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_risalah', 'judul'];
-         if (!in_array($sortBy, $allowedSortColumns)) {
-            $sortBy = 'created_at'; // fallback default
+        if (!in_array($sortBy, $allowedSortColumns)) {
+            $sortBy = 'created_at';
         }
 
-        $query = Risalah::query()
-        ->whereNotIn('id_risalah', $risalahDiarsipkan)
-        ->orderBy($sortBy, $sortDirection);
+        // Subquery: ambil ID risalah terbaru untuk setiap judul
+        $latestIds = Risalah::selectRaw('MAX(id_risalah) as id_risalah')
+            ->whereNotIn('id_risalah', $arsipIds)
+            ->groupBy('judul')
+            ->pluck('id_risalah');
 
-        // Filter berdasarkan status
+        // Query utama berdasarkan ID hasil group by
+        $query = Risalah::whereIn('id_risalah', $latestIds)
+            ->orderBy($sortBy, $sortDirection);
+
+        // Filter status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Filter berdasarkan tanggal dibuat
+        // Filter tanggal dibuat
         if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
             $query->whereBetween('tgl_dibuat', [$request->tgl_dibuat_awal, $request->tgl_dibuat_akhir]);
         } elseif ($request->filled('tgl_dibuat_awal')) {
@@ -133,29 +141,23 @@ class RisalahController extends Controller
             $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
         }
 
-         // Ambil semua arsip memo berdasarkan user login
-        $arsipRisalahQuery = Arsip::where('user_id', $userId)
-        ->where('jenis_document', 'risalah')
-        ->with('document');
-
-        $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-        $query->orderBy('created_at', $sortDirection);
-
+        // Filter divisi
         if ($request->filled('divisi_id_divisi') && $request->divisi_id_divisi != 'pilih') {
-    $query->where('divisi_id_divisi', $request->divisi_id_divisi);
-}
+            $query->where('divisi_id_divisi', $request->divisi_id_divisi);
+        }
 
-        // Pencarian berdasarkan nama dokumen atau nomor memo
+        // Pencarian judul / nomor risalah
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('judul', 'like', '%' . $request->search . '%')
                 ->orWhere('nomor_risalah', 'like', '%' . $request->search . '%');
             });
         }
-        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
+
+        $perPage = $request->get('per_page', 10);
         $risalahs = $query->paginate($perPage);
 
-        return view( 'superadmin.risalah.risalah-superadmin', compact('risalahs', 'divisi', 'seri','sortDirection'));
+        return view('superadmin.risalah.risalah-superadmin', compact('risalahs', 'divisi', 'seri', 'sortDirection'));
     }
 
     public function create()
@@ -486,44 +488,11 @@ public function update(Request $request, $id)
     }
 
     public function destroy($id)
-{
-    $risalah = Risalah::findOrFail($id);
+    {
+        Risalah::find($id)->delete();
 
-    DB::transaction(function () use ($risalah) {
-        BackupRisalah::create([
-            'id_document' => $risalah->id_risalah,
-            'jenis_document' => 'risalah',
-            'nomor_document' => $risalah->nomor_risalah,
-            'seri_document' => $risalah->seri_surat,
-            'tgl_dibuat' => $risalah->tgl_dibuat,
-            'tgl_disahkan' => $risalah->tgl_disahkan,
-            'waktu_mulai' => $risalah->waktu_mulai,
-            'waktu_selesai' => $risalah->waktu_selesai,
-            'agenda' => $risalah->agenda,
-            'tempat' => $risalah->tempat,
-            'nama_bertandatangan'=> $risalah->nama_bertandatangan,
-            'lampiran' => $risalah->lampiran,
-            'judul' => $risalah->judul,
-            'pembuat' => $risalah->pembuat,
-            'catatan' => $risalah->catatan,
-            'divisi_id_divisi' => $risalah->divisi_id_divisi,
-            'status' => $risalah->status,           
-            'created_at' => $risalah->created_at,
-            'updated_at' => $risalah->updated_at,
-        ]);
-
-        // Hapus file lampiran jika ada
-        $lampiranPath = public_path($risalah->lampiran);
-        if ($risalah->lampiran && file_exists($lampiranPath)) {
-            unlink($lampiranPath);
-        }
-
-        RisalahDetail::where('risalah_id_risalah', $risalah->id_risalah)->delete();
-        $risalah->delete();
-    });
-
-    return redirect()->route('risalah.'.Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dihapus.');
-}
+        return redirect()->route('risalah.'.Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dihapus.');
+    }
 
     
     private function convertToRoman($number)
@@ -539,16 +508,17 @@ public function update(Request $request, $id)
     public function view($id)
     {
         $userId = Auth::id();
-        $risalah = risalah::where('id_risalah', $id)->firstOrFail();
+        $risalah = Risalah::where('id_risalah', $id)->firstOrFail();
 
-        // Ambil data undangan yang judulnya sama dengan judul risalah
+        // Ambil data undangan yang judulnya sama
         $undangan = Undangan::where('judul', $risalah->judul)->first();
 
-        $risalahCollection = collect([$risalah]); // Bungkus dalam collection
+        // Bungkus risalah dalam collection agar bisa diproses transform
+        $risalahCollection = collect([$risalah]);
 
         $risalahCollection->transform(function ($risalah) use ($userId) {
             if ($risalah->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
-                $risalah->final_status = $risalah->status; // Risalah dari divisi sendiri
+                $risalah->final_status = $risalah->status;
             } else {
                 $statusKirim = Kirim_Document::where('id_document', $risalah->id_risalah)
                     ->where('jenis_document', 'risalah')
@@ -559,24 +529,26 @@ public function update(Request $request, $id)
             return $risalah;
         });
 
-        // Karena hanya satu memo, kita bisa mengambil dari collection lagi
         $risalah = $risalahCollection->first();
 
-        // Ubah tujuan dari string jadi array
-        $userIds = explode(';', $undangan->tujuan);
+        // Cek apakah undangan dan tujuannya tidak null
+        if ($undangan && $undangan->tujuan) {
+            $userIds = explode(';', $undangan->tujuan);
 
-        // Ambil firstname + lastname
-        $namaUserList = User::whereIn('id', $userIds)
-            ->get()
-            ->map(function ($user) {
-                return $user->firstname . ' ' . $user->lastname;
-            })
-            ->toArray();
+            // Ambil nama user (firstname + lastname)
+            $namaUserList = User::whereIn('id', $userIds)
+                ->get()
+                ->map(function ($user) {
+                    return $user->firstname . ' ' . $user->lastname;
+                })
+                ->toArray();
 
-        // Gabungkan jadi satu string untuk ditampilkan
-        $tujuanUsernames = implode(', ', $namaUserList);
+            $tujuanUsernames = implode(', ', $namaUserList);
+        } else {
+            $tujuanUsernames = '-';
+        }
 
-        return view(Auth::user()->role->nm_role.'.risalah.view-risalah', compact('risalah', 'undangan','tujuanUsernames'));
+        return view(Auth::user()->role->nm_role.'.risalah.view-risalah', compact('risalah', 'undangan', 'tujuanUsernames'));
     }
 
     public function updateStatus(Request $request, $id)
