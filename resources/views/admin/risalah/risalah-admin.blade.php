@@ -96,7 +96,8 @@
             <tr>
                 <td class="nomor">{{ $loop->iteration }}</td>
                 <td class="nama-dokumen 
-                    {{ $risalah->status == 'reject' || $risalah->status == 'correction' ? 'text-danger' : ($risalah->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $risalah->status == 'reject' ? 'text-danger' : ($risalah->status == 'correction' ? 'text-warning' : ($risalah->status == 'approve' ? 'text-success' : '')) }}"
+                    style="{{ $risalah->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                     {{ $risalah->judul }}
                 </td>
                 <td>
@@ -118,9 +119,9 @@
                     @if ($risalah->status == 'reject')
                         <span class="badge bg-danger">Ditolak</span>
                     @elseif ($risalah->status == 'pending')
-                        <span class="badge bg-warning">Diproses</span>
+                        <span class="badge bg-info">Diproses</span>
                     @elseif ($risalah->status == 'correction')
-                        <span class="badge bg-danger">Dikoreksi</span>
+                        <span class="badge bg-warning">Dikoreksi</span>
                     @else
                         <span class="badge bg-success">Diterima</span>
                     @endif

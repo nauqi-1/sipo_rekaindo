@@ -136,15 +136,15 @@
                         <td>{{ $undangan->kode ?? 'No Divisi Assigned' }}</td>
                         </td>
                         <td>
-                            @if ($undangan->status == 'reject')
-                                <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($undangan->status == 'pending')
-                                <span class="badge bg-info">Diproses</span>
-                            @elseif ($undangan->status == 'correction')
-                                <span class="badge bg-warning">Dikoreksi</span>
-                            @else
-                                <span class="badge bg-success">Diterima</span>
-                            @endif
+                        @if ($undangan->status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($undangan->status == 'pending')
+                            <span class="badge bg-info">Diproses</span>
+                        @elseif ($undangan->status == 'correction')
+                            <span class="badge bg-warning">Dikoreksi</span>
+                        @else
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
                         </td>
                         <td>
                             <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteUndanganModal"
