@@ -231,7 +231,7 @@
             <img src="/img/memo-superadmin/warning.png" alt="Warning Icon" class="mb-3" style="width: 80px; height: 80px;">
             <h5 class="modal-title mb-4" id="confirmDeleteLabel">Yakin ingin menghapus memo ini?</h5>
             <p class="text-muted mb-4" style="font-size: 0.95rem;">
-                Undangan yang dihapus akan masuk ke menu <strong>Pemulihan</strong> dan dapat dikembalikan sewaktu-waktu.
+                Memo yang dihapus akan masuk ke menu <strong>Pemulihan</strong> dan dapat dikembalikan sewaktu-waktu.
             </p>
             <form id="deleteMemoForm" method="POST">
                 @csrf
