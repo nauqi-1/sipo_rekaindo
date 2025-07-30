@@ -41,6 +41,7 @@
                         <option value="">Status</option>
                         <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                        <option value="pending" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi</option>
                         <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
                     </select>
                 </div>
@@ -58,16 +59,6 @@
                             <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
                             <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                         </div>
-                    </div>
-                    <div  class="dropdown">
-                        <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" onchange="this.form.submit()">
-                            <option value="pilih" disabled {{ !request()->filled('divisi_id_divisi') ? 'selected' : '' }}>Pilih Divisi</option>
-                            @foreach($divisi as $d)
-                                <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}>
-                                    {{ $d->nm_divisi }}
-                                </option>
-                            @endforeach
-                        </select>
                     </div>
                 </form>
                 <!-- Add User Button to Open Modal -->
@@ -173,21 +164,41 @@
     </div>
 </div>
 
-<!-- Overlay Delete Memo -->
 <div class="modal fade" id="deleteUndanganModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center p-4">
             <!-- Close Button -->
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-            <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
-            <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus Risalah?</h5>
+            <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
+            <h5 class="modal-title mb-2" id="deleteModalLabel">Yakin ingin menghapus undangan ini?</h5>
+            <p class="text-muted mb-4" style="font-size: 0.95rem;">
+                Undangan yang dihapus akan masuk ke menu <strong>Pemulihan</strong> dan dapat dikembalikan sewaktu-waktu.
+            </p>
+
+                <!-- Tombol -->
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="button" class="btn btn-outline-secondary me-2" id="openConfirmDeleteBtn" data-route="">Oke</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
+                    
+                </div>
+        </div>
+    </div>
+</div>
+<!-- Pop up konfirmasi penghapusan memo kedua-->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <!-- Close Button -->
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            <img src="/img/memo-superadmin/warning.png" alt="Warning Icon" class="mb-3" style="width: 80px; height: 80px;">
+            <h5 class="modal-title mb-4" id="confirmDeleteLabel">Yakin ingin menghapus undangan ini?</h5>
             <form id="deleteUndanganForm" method="POST">
                 @csrf
                 @method('DELETE')
-                <!-- Tombol -->
-                <div class="d-flex justify-content-center mt-3">
-                    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Oke</button>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-danger me-2" id="confirmDeleteBtn">Ya, Hapus</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
                 </div>
             </form>
         </div>
@@ -240,48 +251,72 @@
 </div>
 
 <script>
-    // Event Listener Overlay delete
+    // Event listener untuk modal hapus undangan
     document.addEventListener("DOMContentLoaded", function () {
-    let deleteUndanganModal = document.getElementById("deleteUndanganModal");
-    let deleteUndanganSuccessModal = new bootstrap.Modal(document.getElementById("deleteUndanganSuccessModal"));
+        const deleteUndanganModal = document.getElementById("deleteUndanganModal");
+        const confirmDeleteModalElement = document.getElementById("confirmDeleteModal");
+        const confirmDeleteModal = new bootstrap.Modal(confirmDeleteModalElement);
+        const deleteUndanganSuccessModal = new bootstrap.Modal(document.getElementById("deleteUndanganSuccessModal"));
+        const deleteUndanganForm = document.getElementById("deleteUndanganForm");
+        const openConfirmDeleteBtn = document.getElementById("openConfirmDeleteBtn");
 
-    // Event ketika modal delete ditampilkan
-    deleteUndanganModal.addEventListener("show.bs.modal", function (event) {
-        let button = event.relatedTarget;
-        let route = button.getAttribute("data-route");
+        let routeToDelete = "";
 
-        // Set action pada form setiap kali modal dibuka
-        let form = document.getElementById("deleteUndanganForm");
-        form.setAttribute("action", route);
+        // Ketika modal pertama ditampilkan
+        deleteUndanganModal.addEventListener("show.bs.modal", function (event) {
+            const triggerButton = event.relatedTarget;
+            routeToDelete = triggerButton.getAttribute("data-route");
 
-        // Bind ulang event submit agar tidak dobel
-        form.onsubmit = function (e) {
-            e.preventDefault();
+            // Simpan route ke tombol konfirmasi
+            openConfirmDeleteBtn.setAttribute("data-route", routeToDelete);
 
-            fetch(route, {
+            // Hilangkan backdrop modal sebelumnya (jika ada)
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        });
+
+        // Saat tombol konfirmasi di klik
+        openConfirmDeleteBtn.addEventListener("click", function () {
+            // Tutup modal awal
+            const deleteModalInstance = bootstrap.Modal.getInstance(deleteUndanganModal);
+            if (deleteModalInstance) deleteModalInstance.hide();
+
+            // Tampilkan modal konfirmasi setelah delay
+            setTimeout(() => {
+                deleteUndanganForm.setAttribute("action", routeToDelete);
+                confirmDeleteModal.show();
+            }, 300);
+        });
+
+        // Submit form untuk hapus data
+        deleteUndanganForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const formAction = deleteUndanganForm.getAttribute("action");
+
+            fetch(formAction, {
                 method: "POST",
                 headers: {
                     "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ _method: "DELETE" })
-            }).then(response => {
+            })
+            .then(response => {
                 if (response.ok) {
-                    bootstrap.Modal.getInstance(deleteUndanganModal).hide();
-
+                    confirmDeleteModal.hide();
                     setTimeout(() => {
                         deleteUndanganSuccessModal.show();
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1500);
+                        setTimeout(() => location.reload(), 1500);
                     }, 500);
                 } else {
-                    alert("Gagal menghapus data");
+                    alert("Gagal menghapus data.");
                 }
-            }).catch(error => console.error("Error:", error));
-        };
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Terjadi kesalahan saat menghapus.");
+            });
+        });
     });
-});
 
 
     // Event listener arsip Undangan
