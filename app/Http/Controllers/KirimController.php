@@ -439,7 +439,6 @@ class KirimController extends Controller
         } else {
             $risalahs = $risalahs->orderBy($sortBy, $sortDirection);
         }
-
         // Paginate
         $risalahs = $risalahs->paginate($perPage);
 
