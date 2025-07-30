@@ -101,6 +101,7 @@
                                 <span class="badge bg-success">Diterima</span>
                             @endif
                 </td>
+
                 <td>
                     <!-- Button Unduh -->
                     <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakrisalah',['id' => $arsip->document->id_risalah]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
@@ -108,7 +109,7 @@
                     <!-- Button Arsip -->
                     @if ($arsip->document)
                     <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipRisalahModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_risalah, 'jenis_document' => 'Risalah']) }}">
-                        <img src="/img/arsip/delete.png" alt="delete">
+                        <img src="/img/arsip/unarchive2.png" alt="unarchive" style="height: 16px;">
                     </button>
 
                     <!-- Button View -->
