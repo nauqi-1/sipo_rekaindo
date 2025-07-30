@@ -131,8 +131,15 @@ class BackupController extends Controller
         $undangan = Undangan::withTrashed()
             ->where('id_undangan', $id)
             ->first();
+        $kirim_documents = Kirim_Document::withTrashed()
+        ->where('id_document', $id)
+        ->where('jenis_document','undangan')
+        ->get();
         if ($undangan) {
             $undangan->restore();
+            foreach ($kirim_documents as $kirim_undangan) {
+                $kirim_undangan->restore();
+            }
         } else {
             dd($undangan);
         }
@@ -195,8 +202,18 @@ class BackupController extends Controller
     public function forceDelete($id)
     {
         $undangan = Undangan::withTrashed()->findOrFail($id);
-        $undangan->forceDelete();
-
+        $kirim_documents = Kirim_Document::withTrashed()
+        ->where('id_document', $id)
+        ->where('jenis_document','undangan')
+        ->get();
+        if ($undangan) {
+            $undangan->forceDelete();
+            foreach ($kirim_documents as $kirim_undangan) {
+                $kirim_undangan->forceDelete();
+            }
+        } else {
+            return redirect()->route('undangan.backup')->with('failure', 'Undangan tidak ditemukan.');
+        }
         return redirect()->route('undangan.backup')->with('success', 'Undangan berhasil dihapus permanen.');
     }
   
@@ -205,10 +222,9 @@ class BackupController extends Controller
      {
     
         $memo = Memo::onlyTrashed()->findOrFail($id);
-        $memo->forceDelete();
         $kirim_document = Kirim_Document::onlyTrashed()->where('id_document', $id)->where('jenis_document','memo')->get();
         if ($memo) {
-            $memo->restore();
+            $memo->forceDelete();
             foreach ($kirim_document as $kirim_memo) {
                 $kirim_memo->forceDelete();
             }
