@@ -950,7 +950,7 @@ class UndanganController extends Controller
         
         // Hapus kirim_document terkait
         $undangan->delete();
-
+        Kirim_Document::where('id_document', $id)->where('jenis_document','undangan')->delete();
         return redirect()->route('undangan.' . Auth::user()->role->nm_role)->with('success', 'Undangan deleted successfully.');
     }
     public function view($id)
