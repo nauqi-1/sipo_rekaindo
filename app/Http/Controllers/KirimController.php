@@ -692,40 +692,40 @@ class KirimController extends Controller
 
     public function viewRisalah($id)
     {
-        // Cek apakah ID ini milik Memo, Undangan, atau Risalah
+        // Cek apakah ID ini milik Risalah
         $risalah = Risalah::find($id);
 
-        // Pastikan minimal satu dokumen ditemukan
         if (!$risalah) {
             return redirect()->back()->with('error', 'Dokumen tidak ditemukan.');
         }
 
-        // Ambil data divisi dan user
+        // Ambil data referensi
         $divisi = Divisi::all();
         $position = Position::all();
         $user = User::whereIn('role_id_role', ['2', '3'])->get();  
 
+        // Ambil undangan berdasarkan judul risalah
         $undangan = Undangan::where('judul', $risalah->judul)->first();
 
-        // Ubah tujuan dari string jadi array
-        $userIds = explode(';', $undangan->tujuan);
+        // Cek apakah undangan dan tujuannya ada
+        if ($undangan && $undangan->tujuan) {
+            $userIds = explode(';', $undangan->tujuan);
 
-        // Ambil firstname + lastname
-        $namaUserList = User::whereIn('id', $userIds)
-            ->get()
-            ->map(function ($user) {
-                return $user->firstname . ' ' . $user->lastname;
-            })
-            ->toArray();
+            // Ambil nama lengkap
+            $namaUserList = User::whereIn('id', $userIds)
+                ->get()
+                ->map(function ($user) {
+                    return $user->firstname . ' ' . $user->lastname;
+                })
+                ->toArray();
 
-        // Gabungkan jadi satu string untuk ditampilkan
-        $tujuanUsernames = implode(', ', $namaUserList);
+            $tujuanUsernames = implode(', ', $namaUserList);
+        } else {
+            $tujuanUsernames = '-';
+        }
 
         return view('manager.risalah.persetujuan-risalah', compact('user', 'divisi', 'risalah', 'position', 'undangan', 'tujuanUsernames'));
-       
     }
-
-    
 
 }
 

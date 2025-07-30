@@ -508,16 +508,17 @@ public function update(Request $request, $id)
     public function view($id)
     {
         $userId = Auth::id();
-        $risalah = risalah::where('id_risalah', $id)->firstOrFail();
+        $risalah = Risalah::where('id_risalah', $id)->firstOrFail();
 
-        // Ambil data undangan yang judulnya sama dengan judul risalah
+        // Ambil data undangan yang judulnya sama
         $undangan = Undangan::where('judul', $risalah->judul)->first();
 
-        $risalahCollection = collect([$risalah]); // Bungkus dalam collection
+        // Bungkus risalah dalam collection agar bisa diproses transform
+        $risalahCollection = collect([$risalah]);
 
         $risalahCollection->transform(function ($risalah) use ($userId) {
             if ($risalah->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
-                $risalah->final_status = $risalah->status; // Risalah dari divisi sendiri
+                $risalah->final_status = $risalah->status;
             } else {
                 $statusKirim = Kirim_Document::where('id_document', $risalah->id_risalah)
                     ->where('jenis_document', 'risalah')
@@ -528,24 +529,26 @@ public function update(Request $request, $id)
             return $risalah;
         });
 
-        // Karena hanya satu memo, kita bisa mengambil dari collection lagi
         $risalah = $risalahCollection->first();
 
-        // Ubah tujuan dari string jadi array
-        $userIds = explode(';', $undangan->tujuan);
+        // Cek apakah undangan dan tujuannya tidak null
+        if ($undangan && $undangan->tujuan) {
+            $userIds = explode(';', $undangan->tujuan);
 
-        // Ambil firstname + lastname
-        $namaUserList = User::whereIn('id', $userIds)
-            ->get()
-            ->map(function ($user) {
-                return $user->firstname . ' ' . $user->lastname;
-            })
-            ->toArray();
+            // Ambil nama user (firstname + lastname)
+            $namaUserList = User::whereIn('id', $userIds)
+                ->get()
+                ->map(function ($user) {
+                    return $user->firstname . ' ' . $user->lastname;
+                })
+                ->toArray();
 
-        // Gabungkan jadi satu string untuk ditampilkan
-        $tujuanUsernames = implode(', ', $namaUserList);
+            $tujuanUsernames = implode(', ', $namaUserList);
+        } else {
+            $tujuanUsernames = '-';
+        }
 
-        return view(Auth::user()->role->nm_role.'.risalah.view-risalah', compact('risalah', 'undangan','tujuanUsernames'));
+        return view(Auth::user()->role->nm_role.'.risalah.view-risalah', compact('risalah', 'undangan', 'tujuanUsernames'));
     }
 
     public function updateStatus(Request $request, $id)
