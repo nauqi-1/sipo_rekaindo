@@ -42,16 +42,16 @@
                 <div class="search-filter">
                     <form method="GET" action="{{ route('undangan.backup') }}" class="search-filter d-flex gap-2">
                         <!-- <div class="dropdown">
-                        <select name="status" class="form-select" onchange="this.form.submit()">
-                                <option value="">Status</option>
-                                <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
-                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
-                                <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
-                            </select>
-                        </div> -->
+                                            <select name="status" class="form-select" onchange="this.form.submit()">
+                                                    <option value="">Status</option>
+                                                    <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
+                                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                                                    <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
+                                                </select>
+                                            </div> -->
                         <!-- <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                            <input type="date" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}"  onchange="this.form.submit()" placeholder="Tanggal Awal" style="width: 100%;">
-                        </div> -->
+                                                <input type="date" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}"  onchange="this.form.submit()" placeholder="Tanggal Awal" style="width: 100%;">
+                                            </div> -->
                         <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                             <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal"
                                 class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}"
@@ -61,8 +61,8 @@
                         </div>
                         <i class="bi bi-arrow-right"></i>
                         <!-- <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                        <input type="date" name="tgl_dibuat_akhir" class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" onchange="this.form.submit()" placeholder="Tanggal Akhir" style="width: 100%;">
-                        </div> -->
+                                            <input type="date" name="tgl_dibuat_akhir" class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" onchange="this.form.submit()" placeholder="Tanggal Akhir" style="width: 100%;">
+                                            </div> -->
                         <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                             <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
                                 class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}"
@@ -158,7 +158,8 @@
                         </td>
                         <td class="nomor">{{ $index + 1 }}</td>
                         <td class="nama-dokumen 
-                                                {{ 'text-danger'}}">
+                                            {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'correction' ? 'text-warning' : ($undangan->status == 'approve' ? 'text-success' : '')) }}"
+                            style="{{ $undangan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                             {{ $undangan->judul }}
                         </td>
 
@@ -170,19 +171,28 @@
                         <td>{{ $undangan->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
                         </td>
                         <td>
-                            <span class="badge bg-danger">Memulihkan</span>
+                            @if ($undangan->status == 'reject')
+                                <span class="badge bg-danger">Ditolak</span>
+                            @elseif ($undangan->status == 'pending')
+                                <span class="badge bg-info">Diproses</span>
+                            @elseif ($undangan->status == 'correction')
+                                <span class="badge bg-warning">Dikoreksi</span>
+                            @elseif($undangan->status == 'approve')
+                                <span class="badge bg-success">Diterima</span>
+                            @else
+                                <span class="badge bg-success">-</span>
+                            @endif
                         </td>
                         <td>
-
-                            <a href="{{ route('undangan.restore', ['id' => $undangan->id_undangan]) }}" class="btn btn-sm1"
-                                title="Restore">
-                                <img src="/img/restore.png" alt="restore" style="width: 20px; height: 20px;">
-                            </a>
-
+                            <button type="button" class="btn btn-sm1 submitRestoreMemo" data-bs-toggle="modal"
+                                data-bs-target="#restoreUndanganModal" data-id="{{ $undangan->id_undangan }}"
+                                data-route="{{ route('undangan.restore', $undangan->id_undangan) }}">
+                                <i class="fa-solid fa-rotate-left" style="font-size: 14px;"></i>
+                            </button>
                             <button type="button" class="btn btn-sm2 submitDeleteUndangan" data-bs-toggle="modal"
                                 data-bs-target="#deleteUndanganModal" data-id="{{ $undangan->id_undangan }}"
-                                data-route="{{ route('undangan.destroy', $undangan->id_undangan) }}">
-                                <img src="/img/undangan/Delete.png" alt="delete" style="height: 14px;">
+                                data-route="{{ route('undangan.forceDelete', $undangan->id_undangan) }}">
+                                <i class="fa-solid fa-trash" style="color: red; font-size: 14px;"></i>
                             </button>
                         </td>
                     </tr>
@@ -190,142 +200,152 @@
             </tbody>
         </table>
         {{ $undangans->links('pagination::bootstrap-5') }}
+    </form>
     </div>
 
-    <!-- Overlay Add Undangan Success -->
-    <div class="modal fade" id="successAddUndanganModal" tabindex="-1" aria-labelledby="successModalLabel"
-        aria-hidden="true">
+    <!-- Destroy Success Modal -->
+    <div class="modal fade" id="successDeleteUndanganModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center p-4">
                 <div class="modal-body">
-                    <!-- Success Icon -->
-                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3"
-                        style="width: 80px; height: 80px;">
-                    <!-- Success Message -->
-                    <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
-                    <p class="mt-2">Berhasil Menambahkan Undangan</p>
+                    <img src="/img/memo-admin/success.png" alt="Success Icon" class="mb-3" style="width: 80px;">
+                    <h5 class="modal-title"><b>Sukses</b></h5>
+                    <p class="mt-2">Undangan Berhasil Dihapus.</p>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Overlay Edit Undangan Success -->
-    <div class="modal fade" id="successEditUndanganModal" tabindex="-1" aria-labelledby="successModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-center p-4">
-                <div class="modal-body">
-                    <!-- Success Icon -->
-                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3"
-                        style="width: 80px; height: 80px;">
-                    <!-- Success Message -->
-                    <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
-                    <p class="mt-2">Berhasil Mengubah Undangan</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Arsip -->
-    <div class="modal fade" id="arsipUndanganModal" tabindex="-1" aria-labelledby="arsipUndanganModalLabel"
-        aria-hidden="true">
+    <!--perm delete confirmation modal-->
+    <div class="modal fade" id="deleteUndanganModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center p-4">
                 <!-- Close Button -->
                 <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"
                     aria-label="Close"></button>
-                <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
-                <h5 class="modal-title mb-4"><b>Arsip Undangann?</b></h5>
-                <!-- Tombol -->
+
+                <img src="/img/memo-superadmin/warning.png" alt="Warning Icon" class="mb-3"
+                    style="width: 80px; height: 80px;">
+                <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus Dokumen?</h5>
+                <p class="text-muted mb-4" style="font-size: 0.95rem;">
+                    <span class="text-danger"><strong>PERHATIAN:</strong> </span>Surat yang telah dihapus <strong>TIDAK
+                        DAPAT</strong> dipulihkan.
+                </p>
+                <!-- Action Buttons -->
                 <div class="d-flex justify-content-center mt-3">
-                    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="confirmArsipUndangan">Oke</button>
+                    <form method="POST" id="deleteUndanganForm">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-outline-secondary me-2">Hapus</button>
+                    </form>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Modal Arsip Berhasil -->
-    <div class="modal fade" id="successArsipUndanganModal" tabindex="-1" aria-labelledby="successArsipUndanganModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-center p-4">
-                <div class="modal-body">
-                    <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                    <h5 class="modal-title"><b>Sukses</b></h5>
-                    <p class="mt-2">Berhasil Arsip Undangan</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Event listener untuk modal sukses tambah undangan
-        document.addEventListener("DOMContentLoaded", function () {
-            @if(session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller undangan store
-                var successModal = new bootstrap.Modal(document.getElementById("successAddUndanganModal"));
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteModal = document.getElementById("deleteUndanganModal");
+            const deleteForm = document.getElementById("deleteUndanganForm");
+
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    const route = button.getAttribute('data-route');
+                    console.log("Restore route set to:", route);
+                    console.log("Modal triggered by:", button);
+                    console.log("Setting form action to:", route);
+                    console.log("Form before:", deleteForm);
+                    console.log("Delete route set to:", route);
+                    if (deleteForm && route) {
+                        deleteForm.setAttribute('action', route);
+                        console.log("Form action set to:", deleteForm.getAttribute('action'));
+                    }
+                });
+            }
+
+            @if(session('success') === 'Undangan Berhasil Dihapus.')
+                var successModal = new bootstrap.Modal(document.getElementById("successDeleteUndanganModal"));
                 successModal.show();
                 setTimeout(function () {
                     successModal.hide();
                 }, 1500);
             @endif
-                });
+    });
 
-        // Event listener untuk modal sukses tambah undangan
-        document.addEventListener("DOMContentLoaded", function () {
-            @if(session('success') === 'Undangan updated successfully') // merujuk ke parameter controller undangan update
-                var successEditUndanganModal = new bootstrap.Modal(document.getElementById("successEditUndanganModal"));
-                successEditUndanganModal.show();
-                setTimeout(function () {
-                    successEditUndanganModal.hide();
-                }, 1500);
-            @endif
-                });
+    </script>
 
-        // Event Listener Arsip undangan
-        document.addEventListener("DOMContentLoaded", function () {
-            const arsipButtons = document.querySelectorAll(".submitArsipUndangan");
-            const confirmArsipButton = document.getElementById("confirmArsipUndangan");
-            const cancelArsipButton = document.querySelector("#arsipUndanganModal .btn-outline-secondary");
-            const arsipUndanganModal = new bootstrap.Modal(document.getElementById("arsipUndanganModal"));
-            const successArsipUndanganModal = new bootstrap.Modal(document.getElementById("successArsipUndanganModal"));
+    <!-- Restore Success Modal -->
+    <div class="modal fade" id="successRestoreUndanganModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <img src="/img/memo-admin/success.png" alt="Success Icon" class="mb-3" style="width: 80px;">
+                    <h5 class="modal-title"><b>Sukses</b></h5>
+                    <p class="mt-2">Pemulihan Undangan Berhasil.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="restoreUndanganModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <!-- Close Button -->
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
 
-            let currentForm = null;
+                <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3"
+                    style="width: 80px; height: 80px;">
+                <h5 class="modal-title mb-4" id="restoreModalLabel">Pulihkan Dokumen?</h5>
+                <p class="text-muted mb-4" style="font-size: 0.95rem;">
+                    Surat akan dikembalikan ke menu <strong>Undangan</strong>.
+                </p>
+                <div class="d-flex justify-content-center mt-3">
+                    <form method="POST" id="restoreUndanganForm">
+                        @csrf
+                        <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Pulihkan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const restoreModal = document.getElementById('restoreUndanganModal');
+            const restoreForm = document.getElementById('restoreUndanganForm');
 
-            // Saat tombol arsip ditekan, simpan form yang akan dikirim
-            arsipButtons.forEach(button => {
-                button.addEventListener("click", function (event) {
-                    event.preventDefault(); // Mencegah submit langsung
-                    currentForm = this.closest("form");
-                    arsipUndanganModal.show(); // Tampilkan modal konfirmasi
-                });
-            });
+            restoreModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const route = button.getAttribute('data-route');
+                console.log("Restore route set to:", route);
+                console.log("Modal triggered by:", button);
+                console.log("Setting form action to:", route);
+                console.log("Form before:", restoreForm);
+                if (restoreForm && route) {
+                    restoreForm.setAttribute('action', route);
+                    console.log("Form after:", restoreForm.getAttribute('action'));
 
-            // Saat tombol "Batal" ditekan, tutup modal konfirmasi
-            cancelArsipButton.addEventListener("click", function () {
-                arsipUndanganModal.hide();
-            });
-
-            // Saat tombol "OK" ditekan, submit form dan tampilkan modal sukses
-            confirmArsipButton.addEventListener("click", function () {
-                if (currentForm) {
-                    arsipUndanganModal.hide(); // Tutup modal konfirmasi
-                    setTimeout(() => {
-                        successArsipUndanganModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
-                    }, 300);
-
-                    setTimeout(() => {
-                        successArsipUndanganModal.hide();
-                        currentForm.submit(); // Submit form setelah modal sukses ditutup
-                    }, 1500);
                 }
             });
         });
+        document.addEventListener("DOMContentLoaded", function () {
+            @if(session('success') === 'Pemulihan Undangan Berhasil.')
+                var successModal = new bootstrap.Modal(document.getElementById("successRestoreUndanganModal"));
+                successModal.show();
+                setTimeout(function () {
+                    successModal.hide();
+                }, 1500);
+            @endif
+                    });
+    </script>
 
+
+    <script>
         // Select all checkbox
         document.getElementById("selectAll").addEventListener("change", function () {
             const checkboxes = document.querySelectorAll(".selectItem");
             checkboxes.forEach(cb => cb.checked = this.checked);
         });
+
     </script>
 @endsection

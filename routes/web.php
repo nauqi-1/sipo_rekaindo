@@ -15,6 +15,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\BackupController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/p', function () {
@@ -347,3 +348,5 @@ Route::get('/risalah/{id}/preview', [RisalahController::class, 'showFile'])->nam
 Route::get('/risalah/arsip/{id}', [ArsipController::class, 'viewRisalah'])->name('view.risalah-arsip');
 
 Route::get('/risalah/manager/{id}', [RisalahController::class, 'view'])->name('view.risalah');
+
+
