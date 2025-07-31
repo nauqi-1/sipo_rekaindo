@@ -78,6 +78,7 @@
                         </div>
                     </form>
                     
+                    <div id="bulkActions" style="display: none;">
                     <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 10px;">
                         <div class="d-flex gap-2">
                             <button type="button" id="bulkRestoreBtn"
@@ -94,6 +95,7 @@
                                 <i class="fa-solid fa-trash me-2"></i> Hapus Permanen
                             </button>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -254,7 +256,6 @@
             </div>
         </div>
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Helper function to get selected IDs
@@ -387,5 +388,28 @@
             @endif
         });
     </script>
+      <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkboxes = document.querySelectorAll('.selectItem');
+        const bulkActions = document.getElementById('bulkActions');
 
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                bulkActions.style.display = anyChecked ? 'flex' : 'none';
+
+            });
+        });
+
+        const selectAll = document.getElementById('selectAll');
+        if (selectAll) {
+            selectAll.addEventListener('change', () => {
+                checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                bulkActions.style.display = anyChecked ? 'flex' : 'none';
+
+            });
+        }
+    });
+</script>
 @endsection

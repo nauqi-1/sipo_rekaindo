@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\models\Divisi;
+use App\Models\Divisi;
 use App\Models\Risalah;
 use App\Models\BackupRisalah;
-
+use App\Models\Kirim_Document;
 class BackupRisalahController extends Controller
 {
     public function risalah(Request $request)

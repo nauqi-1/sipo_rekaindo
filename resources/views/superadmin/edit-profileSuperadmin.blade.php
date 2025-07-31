@@ -118,7 +118,7 @@ input[readonly] {
             <div id="profileEdit">
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label class="form-label">NIP</label>
+                        <label class="form-label">ID User</label>
                         <input type="text" class="form-control" value="{{ Auth::user()->id }}" readonly>
                     </div>
                     <div class="col-md-6">
@@ -129,21 +129,21 @@ input[readonly] {
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Nama Depan</label>
-                        <input type="text" name="firstname" class="form-control" value="{{ Auth::user()->firstname }}" required>
+                        <input type="text" name="firstname" class="form-control profile-input" value="{{ Auth::user()->firstname }}" required readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Nama Belakang</label>
-                        <input type="text" name="lastname" class="form-control" value="{{ Auth::user()->lastname }}" required>
+                        <input type="text" name="lastname" class="form-control profile-input" value="{{ Auth::user()->lastname }}" required readonly>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Nama Pengguna</label>
-                        <input type="text" name="username" class="form-control" value="{{ Auth::user()->username }}" required>
+                        <input type="text" name="username" class="form-control profile-input" value="{{ Auth::user()->username }}" required readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Nomor Telepon</label>
-                        <input type="text" name="phone_number" class="form-control" value="{{ Auth::user()->phone_number }}">
+                        <input type="text" name="phone_number" class="form-control profile-input" value="{{ Auth::user()->phone_number }}" readonly>
                     </div>
                 </div>
 
@@ -152,7 +152,7 @@ input[readonly] {
                         <div class="col-md-6">
                             <label class="form-label">Password</label>
                             <div class="input-group">
-                                <input type="password" name="password" id="password" class="form-control" placeholder="********">
+                                <input type="password" name="password" id="password" class="form-control" placeholder="Password Baru">
                                 <span class="input-group-text" onclick="togglePassword('password', this)" style="cursor:pointer;">
                                     <i class="fa fa-eye-slash"></i>
                                 </span>
@@ -213,6 +213,9 @@ input[readonly] {
 
 <script>
     function enableEditProfile() {
+        const inputs = document.querySelectorAll('.profile-input');
+        inputs.forEach(input => input.removeAttribute('readonly'));
+        
         document.getElementById('editButtons').style.display = 'block';
         document.getElementById('passwordFields').style.display = 'block';
     }
