@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
   <link rel="stylesheet" href="{{ asset('css/login.css') }}">
-  {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"> --}}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
 </head>
 <body>
@@ -39,8 +41,8 @@
 
                     <!-- Email Address -->
                     <div class="input-group">
-                        <i class="bi bi-person"></i>
-                        <input type="email" id="email" name="email" placeholder="Enter email" value="{{ old('email') }}" required autofocus autocomplete="email" class="form-control-icon form-control">
+                        <i class="bi bi-person-fill"></i>
+                        <input type="email" id="email" name="email" placeholder="Enter email" value="{{ old('email') }}" required autofocus autocomplete="email">
                         {{-- <x-input-error :messages="$errors->get('email')" class="mt-2" /> --}}
                     </div>
 

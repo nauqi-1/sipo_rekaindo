@@ -11,7 +11,9 @@
 
         <!-- Welcome Message -->
         <div class="welcome-message">
-            <p>Selamat datang <strong>{{ Auth::user()->firstname .' '. Auth::user()->lastname }}</strong> di <span class="system-name">Sistem Persuratan!</span> Anda login sebagai <span class="role-badge">{{Auth::user()->position->nm_position}}</span></p>
+            <p>Selamat datang <strong>{{ Auth::user()->firstname . ' ' . Auth::user()->lastname }}</strong> di <span
+                    class="system-name">Sistem Persuratan!</span> Anda login sebagai <span
+                    class="role-badge">{{Auth::user()->position->nm_position}}</span></p>
         </div>
 
         <!-- Overview Section -->
@@ -20,7 +22,7 @@
             <div class="overview-cards">
                 <div class="overview-card">
                     <h4>MEMO</h4>
-                    <a href="{{route ('memo.diterima')}}" class="tampil">Lihat Semua</a>
+                    <a href="{{route('memo.diterima')}}" class="tampil">Lihat Semua</a>
                     <hr>
                     <p>
                         <button><img src="/img/dashboard/memo.png" alt="memo"></button>
@@ -30,7 +32,7 @@
                 </div>
                 <div class="overview-card">
                     <h4>RISALAH RAPAT</h4>
-                    <a href="{{ route ('risalah.manager') }}" class="tampil">Lihat Semua</a>
+                    <a href="{{ route('risalah.manager') }}" class="tampil">Lihat Semua</a>
                     <hr>
                     <p>
                         <button><img src="/img/dashboard/risalah.png" alt="memo"></button>
@@ -40,7 +42,7 @@
                 </div>
                 <div class="overview-card">
                     <h4>UNDANGAN RAPAT</h4>
-                    <a href="{{ route ('undangan.manager') }}" class="tampil">Lihat Semua</a>
+                    <a href="{{ route('undangan.manager') }}" class="tampil">Lihat Semua</a>
                     <hr>
                     <p>
                         <button><img src="/img/dashboard/undangan.png" alt="memo"></button>
@@ -51,7 +53,7 @@
             </div>
         </div>
 
-        <div class="things-to-do-container">
+        {{-- <div class="things-to-do-container">
             <!-- History hari ini -->
             <h3>Hari Ini</h3>
             <div class="things-to-do-list">
@@ -65,7 +67,7 @@
                     <p>5:12 pm • <span>Diterima</span></p>
                 </div>
             </div>
-            <div class="things-to-do-list">   
+            <div class="things-to-do-list">
                 <form action="#">
                     <div class="icon2">
                         <img src="/img/dashboard/surat.png" alt="Undangan Icon">
@@ -88,7 +90,6 @@
                 </div>
             </div>
         </div>
-            
         <!-- History kemarin -->
         <div class="things-to-do-container">
             <h3>Jumat, 28 Oktober</h3>
@@ -103,7 +104,7 @@
                     <p>5:12 pm • <span>Ditolak</span></p>
                 </div>
             </div>
-            <div class="things-to-do-list">   
+            <div class="things-to-do-list">
                 <form action="#">
                     <div class="icon2">
                         <img src="/img/dashboard/surat.png" alt="Undangan Icon">
@@ -114,6 +115,29 @@
                     <p>5:12 pm • <span>Diterima</span></p>
                 </div>
             </div>
-        </div>
+        </div> --}}
+
+        @foreach ($notifikasiByDate as $tanggal => $list)
+            <div class="things-to-do-container">
+                <h3>{{ $tanggal }}</h3>
+                @foreach ($list as $notif)
+                    <div class="things-to-do-list">
+                        <form action="#">
+                            <div
+                                class="{{ $loop->iteration % 3 == 1 ? 'icon1' : ($loop->iteration % 3 == 2 ? 'icon2' : 'icon3') }}">
+                                <img src="/img/dashboard/memoy.png" alt="Icon">
+                            </div>
+                        </form>
+                        <div class="content">
+                            <h4><a href="#">{{ $notif->judul }}</a></h4>
+                            <p>{{ \Carbon\Carbon::parse($notif->updated_at)->format('g:i a') }} •
+                                <span>{{ $notif->judul_document }}</span>
+                            </p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endforeach
+
     </div>
 @endsection

@@ -299,7 +299,7 @@ class KirimController extends Controller
         $filterType = $request->get('userid_filter', 'both');
         $sortBy = $request->get('sort_by', 'tgl_rapat_diff');
         $sortDirection = $request->get('sort_direction', 'asc') === 'asc' ? 'asc' : 'desc';
-
+        
         $allowedSorts = [
             'kirim_document.id_kirim_document',
             'undangan.tgl_dibuat',

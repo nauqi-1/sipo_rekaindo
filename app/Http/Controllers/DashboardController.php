@@ -10,6 +10,8 @@ use App\Models\Divisi;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class DashboardController extends Controller
 {
@@ -55,7 +57,31 @@ class DashboardController extends Controller
         $Undangan = Undangan::all()->count();
         $Risalah = Risalah::all()->count();
 
-        // Kirim data ke view
-        return view(Auth::user()->role->nm_role . '.dashboard', compact('jumlahMemo', 'jumlahRisalah', 'jumlahUndangan', 'Memo', 'Undangan', 'Risalah'));
+        // Jumlah total semua
+        $Memo = Memo::all()->count();
+        $Undangan = Undangan::all()->count();
+        $Risalah = Risalah::all()->count();
+
+        // === ⬇ Tambahkan bagian notifikasi di sini ⬇ ===
+        $notifikasi = DB::table('notifikasi')
+            ->where('id_user', Auth::id())
+            ->orderBy('updated_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        $notifikasiByDate = $notifikasi->groupBy(function ($item) {
+            return Carbon::parse($item->updated_at)->translatedFormat('l, d F');
+        });
+        // === ⬆ END Notifikasi Section ⬆ ===
+
+        return view(Auth::user()->role->nm_role . '.dashboard', compact(
+            'jumlahMemo',
+            'jumlahRisalah',
+            'jumlahUndangan',
+            'Memo',
+            'Undangan',
+            'Risalah',
+            'notifikasiByDate'
+        ));
     }
 }
