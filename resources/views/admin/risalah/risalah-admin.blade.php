@@ -3,173 +3,196 @@
 @section('title', 'Risalah Rapat')
 
 @section('content')
-<div class="container">
-    <div class="header">
-        <!-- Back Button -->
-        <div class="back-button">
-            <a href="{{ route('admin.dashboard')}}"><img src="/img/memo-admin/Vector_back.png" alt=""></a>
-        </div>
-        <h1>Risalah Rapat</h1>
-    </div>        
-    <div class="row">
-        <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-            <div class="breadcrumb" style="gap: 5px; width: 83%;">
-                <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="#" style="color: #565656;">Risalah Rapat</a>
+    <div class="container">
+        <div class="header">
+            <!-- Back Button -->
+            <div class="back-button">
+                <a href="{{ route('admin.dashboard')}}"><img src="/img/memo-admin/Vector_back.png" alt=""></a>
             </div>
-            <form method="GET" action="{{ route('risalah.admin') }}" class="search-filter d-flex gap-2">
-            <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
-                Show
-                <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
-                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                </select>
-                entries
-            </label>
-            </form>
+            <h1>Risalah Rapat</h1>
         </div>
-    </div>
-
-    <!-- Filter & Search Bar -->
-    <div class="surat">
-        <div class="header-tools">
-            <div class="search-filter">
-            <form method="GET" action="{{ route('risalah.admin') }}" class="search-filter d-flex gap-2">
-                <div class="dropdown">
-                    <select name="status" class="form-select" onchange="this.form.submit()">
-                        <option value="" disabled selected>Status</option>
-                        <option value="">Semua</option>
-                        <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
-                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
-                        <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
-                    </select>
+        <div class="row">
+            <div class="breadcrumb-wrapper"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div class="breadcrumb" style="gap: 5px; width: 83%;">
+                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="#" style="color: #565656;">Risalah
+                        Rapat</a>
                 </div>
-                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                    <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
-                </div>
-                <i class="bi bi-arrow-right"></i>
-                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                    <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
-                        class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" placeholder="Tanggal Akhir"
-                        onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }" onchange="this.form.submit()">
-                </div>
-                <div class="d-flex gap-2">
-                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                        <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
-                        <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
-                    </div>
-                </div>
+                <form method="GET" action="{{ route('risalah.admin') }}" class="search-filter d-flex gap-2">
+                    <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
+                        Show
+                        <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
+                            <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                        </select>
+                        entries
+                    </label>
                 </form>
-                <!-- Add User Button to Open Modal -->
-                <a href="{{route ('add-risalah.admin')}}" class="btn btn-add">+ <span>Tambah Risalah Rapat</span></a>
             </div>
         </div>
-    </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="surat">
+            <div class="header-tools">
+                <div class="search-filter">
+                    <form method="GET" action="{{ route('risalah.admin') }}" class="search-filter d-flex gap-2">
+                        <div class="dropdown">
+                            <select name="status" class="form-select" onchange="this.form.submit()">
+                                <option value="" disabled selected>Status</option>
+                                <option value="">Semua</option>
+                                <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima
+                                </option>
+                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses
+                                </option>
+                                <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
+                            </select>
+                        </div>
+                        <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                            <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal"
+                                class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}"
+                                placeholder="Tanggal Awal" onfocus="this.type='date'"
+                                onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }"
+                                onchange="this.form.submit()">
+                        </div>
+                        <i class="bi bi-arrow-right"></i>
+                        <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                            <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
+                                class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}"
+                                placeholder="Tanggal Akhir" onfocus="this.type='date'"
+                                onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }"
+                                onchange="this.form.submit()">
+                        </div>
+                        <div class="d-flex gap-2">
+                            <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                                <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
+                                <input type="text" name="search" class="form-control border-0 bg-transparent"
+                                    placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()"
+                                    style="outline: none; box-shadow: none;">
+                            </div>
+                        </div>
+                    </form>
+                    <!-- Add User Button to Open Modal -->
+                    <a href="{{route('add-risalah.admin')}}" class="btn btn-add">+ <span>Tambah Risalah Rapat</span></a>
+                </div>
+            </div>
+        </div>
 
         <!-- Table -->
         <table class="table-light">
-    <thead>
-        <tr>
-            <th>No</th>
-            <th>Nama Dokumen</th>
-            <th>Verif</th>
-            <th>Tgl. Risalah
-                <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'created_at', 'sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}" style="color:rgb(135,135,148); text-decoration:none;">
-                    <span class="bi-arrow-down-up"></span>
-                </a>
-            </th>
-            <th>Seri</th>
-            <th>Dokumen</th>
-            <th>Tgl. Disahkan
-                <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan', 'sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}" style="color:rgb(135,135,148); text-decoration:none;">
-                    <span class="bi-arrow-down-up"></span>
-                </a>
-            </th>
-            <th>Divisi</th>
-            <th>Status</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($risalahs as $risalah)
-            <tr>
-                <td class="nomor">{{ $loop->iteration }}</td>
-                <td class="nama-dokumen 
-                        {{ $risalah->status == 'reject' ? 'text-danger' : ($risalah->status == 'correction' ? 'text-warning' : ($risalah->status == 'approve' ? 'text-success' : '')) }}"
-                    style="{{ $risalah->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                    {{ $risalah->judul }}
-                </td>
-                <td>
-
-                    @if($risalah->status == 'pending')
-                        <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
-                    @elseif($risalah->status == 'approve')
-                        <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
-                    @else
-                        <p>-</p>
-                    @endif
-                </td>
-                <td>{{ \Carbon\Carbon::parse($risalah->tgl_dibuat)->format('d-m-Y') }}</td>
-                <td>{{ $risalah->seri_surat }}</td>
-                <td>{{ $risalah->nomor_risalah }}</td>
-                <td>{{ $risalah->tgl_disahkan ? \Carbon\Carbon::parse($risalah->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                <td>{{ $risalah->user->department->kode_department ?? $risalah->user->divisi->kode_divisi ?? '-' }}</td>
-                <td>
-                    @if ($risalah->status == 'reject')
-                        <span class="badge bg-danger">Ditolak</span>
-                    @elseif ($risalah->status == 'pending')
-                        <span class="badge bg-info">Diproses</span>
-                    @elseif ($risalah->status == 'correction')
-                        <span class="badge bg-warning">Dikoreksi</span>
-                    @else
-                        <span class="badge bg-success">Diterima</span>
-                    @endif
-                </td>
-                <td>
-                    {{-- Edit / Arsip --}}
-                    @if ($risalah->status == 'approve' || $risalah->status == 'reject')
-                        <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display:inline;">
-                            @csrf
-                            <button type="submit" class="btn btn-sm3 submitArsipRisalah">
-                                <img src="/img/memo-superadmin/arsip.png" alt="arsip">
-                            </button>
-                        </form>
-                    @else
-                        <a href="{{ route('risalah.edit', $risalah->id_risalah) }}" class="btn btn-sm3">
-                            <img src="/img/risalah/edit.png" alt="edit">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Dokumen</th>
+                    <th>Verif</th>
+                    <th>Tgl. Risalah
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'created_at', 'sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                            style="color:rgb(135,135,148); text-decoration:none;">
+                            <span class="bi-arrow-down-up"></span>
                         </a>
-                        {{-- Jika sudah approve/reject untuk diarsipkan juga --}}
-                        @if ($risalah->final_status == 'approve' || $risalah->final_status == 'reject')
-                            <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display:inline;">
-                                @csrf
-                                <button type="submit" class="btn btn-sm3">
-                                    <img src="/img/memo-superadmin/arsip.png" alt="arsip">
-                                </button>
-                            </form>
-                        @endif
-                    @endif
-                    {{-- View --}}
-                    <a href="{{ route('view.risalahAdmin', ['id' => $risalah->id_risalah]) }}" class="btn btn-sm1">
-                        <img src="/img/memo-admin/viewBlue.png" alt="view">
-                    </a>
-                </td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+                    </th>
+                    <th>Seri</th>
+                    <th>Dokumen</th>
+                    <th>Tgl. Disahkan
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan', 'sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                            style="color:rgb(135,135,148); text-decoration:none;">
+                            <span class="bi-arrow-down-up"></span>
+                        </a>
+                    </th>
+                    <th>Divisi</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($risalahs as $risalah)
+                    <tr>
+                        <td class="nomor">{{ $loop->iteration }}</td>
+                        <td class="nama-dokumen 
+                                {{ $risalah->status == 'reject' ? 'text-danger' : ($risalah->status == 'correction' ? 'text-warning' : ($risalah->status == 'approve' ? 'text-success' : '')) }}"
+                            style="{{ $risalah->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
+                            {{ $risalah->judul }}
+                        </td>
+                        <td>
+
+                            @if($risalah->status == 'pending')
+                                <img src="/img/checklist-biru.png" alt="share" style="width: 20px;height: 20px;">
+                            @elseif($risalah->status == 'approve')
+                                <img src="/img/checklist-hijau.png" alt="share" style="width: 20px;height: 20px;">
+                            @elseif($risalah->status == 'correction')
+                                <img src="/img/checklist-kuning.png" alt="share" style="width: 20px;height: 20px;">
+                            @else
+                                <p>-</p>
+                            @endif
+                        </td>
+                        <td>{{ \Carbon\Carbon::parse($risalah->tgl_dibuat)->format('d-m-Y') }}</td>
+                        <td>{{ $risalah->seri_surat }}</td>
+                        <td>{{ $risalah->nomor_risalah }}</td>
+                        <td>{{ $risalah->tgl_disahkan ? \Carbon\Carbon::parse($risalah->tgl_disahkan)->format('d-m-Y') : '-' }}
+                        </td>
+                        <td>{{ $risalah->user->department->kode_department ?? $risalah->user->divisi->kode_divisi ?? '-' }}</td>
+                        <td>
+                            @if ($risalah->status == 'reject')
+                                <span class="badge bg-danger">Ditolak</span>
+                            @elseif ($risalah->status == 'pending')
+                                <span class="badge bg-info">Diproses</span>
+                            @elseif ($risalah->status == 'correction')
+                                <span class="badge bg-warning">Dikoreksi</span>
+                            @else
+                                <span class="badge bg-success">Diterima</span>
+                            @endif
+                        </td>
+                        <td>
+                            {{-- Edit / Arsip --}}
+                            @if ($risalah->status == 'approve' || $risalah->status == 'reject')
+                                <form
+                                    action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}"
+                                    method="POST" style="display:inline;">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm3 submitArsipRisalah">
+                                        <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('risalah.edit', $risalah->id_risalah) }}" class="btn btn-sm3">
+                                    <img src="/img/risalah/edit.png" alt="edit">
+                                </a>
+                                {{-- Jika sudah approve/reject untuk diarsipkan juga --}}
+                                @if ($risalah->final_status == 'approve' || $risalah->final_status == 'reject')
+                                    <form
+                                        action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}"
+                                        method="POST" style="display:inline;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm3">
+                                            <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                                        </button>
+                                    </form>
+                                @endif
+                            @endif
+                            {{-- View --}}
+                            <a href="{{ route('view.risalahAdmin', ['id' => $risalah->id_risalah]) }}" class="btn btn-sm1">
+                                <img src="/img/memo-admin/viewBlue.png" alt="view">
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
 
         {{ $risalahs->links('pagination::bootstrap-5') }}
     </div>
-</div>
+    </div>
 
     <!-- Modal Add Risalah Sukses -->
-    <div class="modal fade" id="successAddRisalahModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal fade" id="successAddRisalahModal" tabindex="-1" aria-labelledby="successModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center p-4">
                 <div class="modal-body">
                     <!-- Success Icon -->
-                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
+                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3"
+                        style="width: 80px; height: 80px;">
                     <!-- Success Message -->
                     <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
                     <p class="mt-2">Berhasil Menambahkan Risalah Rapat</p>
@@ -179,12 +202,14 @@
     </div>
 
     <!-- Overlay Edit Risalah Success -->
-    <div class="modal fade" id="successEditRisalahModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal fade" id="successEditRisalahModal" tabindex="-1" aria-labelledby="successModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center p-4">
                 <div class="modal-body">
                     <!-- Success Icon -->
-                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
+                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3"
+                        style="width: 80px; height: 80px;">
                     <!-- Success Message -->
                     <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
                     <p class="mt-2">Berhasil Mengubah Risalah Rapat</p>
@@ -194,11 +219,13 @@
     </div>
 
     <!-- Modal Arsip -->
-    <div class="modal fade" id="arsipRisalahModal" tabindex="-1" aria-labelledby="arsipRisalahModalLabel" aria-hidden="true">
+    <div class="modal fade" id="arsipRisalahModal" tabindex="-1" aria-labelledby="arsipRisalahModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center p-4">
                 <!-- Close Button -->
-                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
                 <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
                 <h5 class="modal-title mb-4"><b>Arsip Risalah Rapat?</b></h5>
                 <!-- Tombol -->
@@ -211,7 +238,8 @@
     </div>
 
     <!-- Modal Arsip Berhasil -->
-    <div class="modal fade" id="successArsipRisalahModal" tabindex="-1" aria-labelledby="successArsipRisalahModalLabel" aria-hidden="true">
+    <div class="modal fade" id="successArsipRisalahModal" tabindex="-1" aria-labelledby="successArsipRisalahModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center p-4">
                 <div class="modal-body">
@@ -233,7 +261,7 @@
                     successModal.hide();
                 }, 1500);
             @endif
-        });
+            });
 
         // Event listener untuk modal sukses edit risalah
         document.addEventListener("DOMContentLoaded", function () {
@@ -244,7 +272,7 @@
                     successEditRisalahModal.hide();
                 }, 1500);
             @endif
-        });
+            });
 
         // Event Listener Arsip risalah
         document.addEventListener("DOMContentLoaded", function () {
@@ -260,7 +288,7 @@
             arsipButtons.forEach(button => {
                 button.addEventListener("click", function (event) {
                     event.preventDefault(); // Mencegah submit langsung
-                    currentForm = this.closest("form"); 
+                    currentForm = this.closest("form");
                     arsipRisalahModal.show(); // Tampilkan modal konfirmasi
                 });
             });
@@ -276,7 +304,7 @@
                     arsipRisalahModal.hide(); // Tutup modal konfirmasi
                     setTimeout(() => {
                         successArsipRisalahModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
-                    }, 300); 
+                    }, 300);
 
                     setTimeout(() => {
                         successArsipRisalahModal.hide();
