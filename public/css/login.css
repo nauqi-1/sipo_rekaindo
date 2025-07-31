@@ -1,272 +1,179 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #ffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
-  html{
-    width: 100vw;
-    overflow-x: hidden;
-  }
-  .container {
-    width: 100%;
-    max-width: 450px;
-    padding: 20px;
-  }
-  
-  .card.login-card {
-    background-color: #fff;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4);
-    border: 1px solid #ccc9c9;
-  }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  .card-header {
-    position: relative;
-    height: 150px;
-  }
-  
-  .background-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    opacity: 1;
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.card.login-card {
+  width: 40%;
+  min-width: 320px;
+  max-width: 500px;
+  background-color: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
+  border: 1px solid #ccc9c9;
+}
+
+.card-header {
+  position: relative;
+  height: 150px;
+}
+
+.background-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  opacity: 1;
 }
 
 .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    text-align: center;
-    flex-direction: column; 
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+  text-align: center;
+  flex-direction: column;
 }
 
 .overlay h1 {
-    font-size: 18px;
-    margin: 0;
-    color: #000000;
-    margin-top: 20px;
+  font-size: 16px;
+  margin-top: 10px;
 }
-.overlay img {
-    width: 100%;
-    height: 100%;
-    padding-top: 10px;
-    padding-right: 5px;
-    margin: 0 auto;
+
+.logo img {
+  max-width: 150px;
 }
 
 .card-body {
-    padding: 20px;
+  padding: 25px;
 }
 
-  .logo img {
-    max-width: 150px;
-    margin: 20px auto;
-    margin-top: 1px;
-    margin-bottom: 1px;
-  }
-      
-  form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  label {
-    font-size: 14px;
-    color: #1E4178;
-    margin-bottom: 8px;
-  }
-  
-  input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  button {
-    width: 100%;
-    padding: 10px;
-    background-color: #1E4178;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-  }
-  
-  button:hover {
-    background-color: #1E4178;
-  }
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
-  .input-verifemail {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .code-input {
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
-    text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    outline: none;
-  }
-  
-  .code-input:focus {
-    border-color: #1E4178;
-    box-shadow: 0 0 5px rgba(0, 51, 102, 0.5);
-  }
-
-  .timer {
-    font-size: 14px;
-    color: red;
-    text-align: center;
-  }
-
-  .resend {
-    margin-top: 20px;
-    text-align: center;
-  }
-
-  .resend-link {
-      text-decoration: none;
-      color: red;
-      font-weight: bold;
-  }
-
-  .resend-link:hover {
-      color: #1E4178;
-  }
-  
 .input-group {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 .input-group i {
-    position: absolute;
-    top: 50%;
-    left: 15px;
-    transform: translateY(-90%);
-    font-size: 18px;
-    color: #1E4178;
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #1E4178;
 }
 
 .input-group input {
-    width: 100%;
-    padding: 10px 10px 10px 50px; /* Tambah padding kiri untuk memberi ruang ikon */
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    outline: none;
+  width: 100%;
+  padding: 10px 10px 10px 40px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
 .input-group input:focus {
-    border-color: #007BFF;
+  border-color: #007BFF;
 }
 
-/* FORGOT PASSWORD */
-
 .col {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
 }
 
 .col a {
-    color: #007bff; 
-    text-decoration: none; 
-    font-size: 12px; 
-    transition: color 0.3s ease;
+  font-size: 12px;
+  color: #007bff;
+  text-decoration: none;
 }
 
 .col a:hover {
-    color: #0056b3; 
-    text-decoration: underline; 
+  color: #0056b3;
+  text-decoration: underline;
 }
 
-/* CHECK BOX REMEMBER ME */
-
 .custom-control {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .custom-control-input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
+  width: 16px;
+  height: 16px;
 }
 
 .custom-control-label {
-    position: relative;
-    padding-left: 30px;
-    cursor: pointer;
-    font-size: 12px;
-    color: #000000;
-    transition: color 0.3s ease;
+  font-size: 12px;
+  color: #000;
 }
 
-.custom-control-label::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
-    border: 1px solid #1f1f1f;
-    border-radius: 4px;
-    background-color: white;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #1E4178;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-.custom-control-input:checked ~ .custom-control-label::before {
-    background-color: #007bff;
-    border-color: #007bff;
+button:hover {
+  background-color: #183665;
 }
 
-.custom-control.custom-checkbox.small .custom-control-label::before {
-    width: 16px;
-    height: 16px;
+/* ALERT / VALIDATION */
+.alert {
+  width: 100%;
+  font-size: 14px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  background-color: #f8d7da;
+  color: #721c24;
+  margin-bottom: 10px;
+  border: 1px solid #f5c6cb;
 }
 
-.custom-control-label:hover {
-    color: #0056b3;
+ul.mb-0 {
+  margin-bottom: 0 !important;
+  padding-left: 20px;
 }
-
-.custom-control-input:checked ~ .custom-control-label {
-    color: #007bff;
-}
-
-.custom-control-input:focus ~ .custom-control-label::before {
-    box-shadow: 0 0 0 2px rgba(38, 143, 255, 0.5);
-} 

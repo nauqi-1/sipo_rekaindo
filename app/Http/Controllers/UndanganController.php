@@ -662,7 +662,6 @@ class UndanganController extends Controller
                 'updated_at' => now()
             ]);
         } else {
-
             // Kirim ke manager yang dipilih (approval masih pending)
             Kirim_Document::create([
                 'id_document' => $undangan->id_undangan,
@@ -677,6 +676,12 @@ class UndanganController extends Controller
                 'judul' => "Undangan Dalam Proses Persetujuan",
                 'judul_document' => $undangan->judul,
                 'id_user' => $undangan->pembuat,
+                'updated_at' => now()
+            ]);
+            Notifikasi::create([
+                'judul' => "Undangan Menunggu Approval",
+                'judul_document' => $undangan->judul,
+                'id_user' => $manager->id,
                 'updated_at' => now()
             ]);
         }
@@ -781,16 +786,29 @@ class UndanganController extends Controller
                         'updated_at' => now(),
                     ]);
                 }
+                Notifikasi::create([
+                    'judul' => "Undangan Masuk",
+                    'judul_document' => $undangan->judul,
+                    'id_user' => $user,
+                    'updated_at' => now()
+                ]);
             }
-
-
             // Notifikasi
             Notifikasi::create([
-                'judul' => "Undangan Disetujui",
+                'judul' => "Undangan Disetujui dan Telah Terkirim",
                 'judul_document' => $undangan->judul,
                 'id_user' => $undangan->pembuat,
                 'updated_at' => now()
             ]);
+            // Notifikasi
+            Notifikasi::create([
+                'judul' => "Undangan Terkirim",
+                'judul_document' => $undangan->judul,
+                'id_user' => $userId,
+                'updated_at' => now()
+            ]);
+            // Notifikasi
+
         } elseif ($request->status == 'reject') {
             Notifikasi::create([
                 'judul' => "Undangan Tidak Disetujui",
@@ -947,10 +965,10 @@ class UndanganController extends Controller
     public function destroy($id)
     {
         $undangan = Undangan::findOrFail($id);
-        
+
         // Hapus kirim_document terkait
         $undangan->delete();
-        Kirim_Document::where('id_document', $id)->where('jenis_document','undangan')->delete();
+        Kirim_Document::where('id_document', $id)->where('jenis_document', 'undangan')->delete();
         return redirect()->route('undangan.' . Auth::user()->role->nm_role)->with('success', 'Undangan deleted successfully.');
     }
     public function view($id)
