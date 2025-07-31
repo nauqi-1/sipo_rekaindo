@@ -1,7 +1,7 @@
 @extends('layouts.superadmin')
 
 @section('title', 'Laporan Memo')
-      
+
 @section('content')
 <div class="container">
     <div class="header">
@@ -10,7 +10,7 @@
             <a href="{{ route('laporan-memo.superadmin') }}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
         </div>
         <h1>Laporan Memo</h1>
-    </div>        
+    </div>
     <div class="row">
         <div class="breadcrumb-wrapper">
             <div class="breadcrumb" style="gap: 5px;">
@@ -25,22 +25,22 @@
             <h2><b>Laporan Memo</b></h2>
             <div class="d-flex gap-2">
                 <form method="GET" action="{{ route('cetak-laporan-memo.superadmin') }}" class="search-filter d-flex gap-2">
-                <div  class="dropdown" style="margin-bottom: 8px;">
-                    <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
-                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
-                        @foreach($kode as $k)
+                    <div class="dropdown" style="margin-bottom: 8px;">
+                        <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
+                            <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
+                            @foreach($kode as $k)
                             <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
                                 {{ $k }}
                             </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="d-flex gap-2">
-                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px; width: 200px; height: 80%; border: 1px solid #E5E5E5;">
-                        <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
-                        <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
+                            @endforeach
+                        </select>
                     </div>
-                </div>
+                    <div class="d-flex gap-2">
+                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px; width: 200px; height: 80%; border: 1px solid #E5E5E5;">
+                            <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
+                            <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
+                        </div>
+                    </div>
                 </form>
                 <a href="{{ route('format-cetakLaporan-memo', request()->all()) }}" class="btn btn-primary-print">
                     <img src="{{ asset('img/laporan/print.png') }}" alt="print"> Cetak Data
@@ -72,7 +72,7 @@
             </tr>
         </thead>
         <tbody>
-        @if ($memos->isNotEmpty())
+            @if ($memos->isNotEmpty())
             @foreach ($memos as $index => $laporan)
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
@@ -82,7 +82,7 @@
                 </td>
                 <td>{{ $laporan->tgl_dibuat->format('d-m-Y') }}</td>
                 <td>{{ $laporan->seri_surat }}</td>
-                <td>{{ $laporan->nomor_memo }}</td> 
+                <td>{{ $laporan->nomor_memo }}</td>
                 <td>{{ $laporan->kode ?? '-' }}</td>
                 <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                 <td>
@@ -99,11 +99,11 @@
                 </td> -->
             </tr>
             @endforeach
-        @else
+            @else
             <tr>
                 <td colspan="8">Tidak ada memo pada tanggal yang dipilih.</td>
             </tr>
-        @endif
+            @endif
         </tbody>
     </table>
 

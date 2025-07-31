@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Position;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
@@ -12,14 +13,16 @@ class ProfileController extends Controller
     public function editProfile()
     {
         $user = Auth::user();
-        return view('superadmin.edit-profileSuperadmin', compact('user'));
+        $position = Position::where('id_position', $user->position_id_position)->value('nm_position');
+        
+        return view('superadmin.edit-profileSuperadmin', compact('user', 'position'));
     }
 
     // Simpan atau update profil user
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
-        
+
         // Validasi data input
         $request->validate([
             'firstname'         => 'required|string|max:50',
