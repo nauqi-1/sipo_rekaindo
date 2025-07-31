@@ -26,11 +26,11 @@
             <div class="d-flex gap-2">
                 <form method="GET" action="{{ route('cetak-laporan-memo.superadmin') }}" class="search-filter d-flex gap-2">
                 <div  class="dropdown" style="margin-bottom: 8px;">
-                    <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" onchange="this.form.submit()">
-                        <option value="pilih" disabled {{ !request()->filled('divisi_id_divisi') ? 'selected' : '' }}>Pilih Divisi</option>
-                        @foreach($divisi as $d)
-                            <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}>
-                                {{ $d->nm_divisi }}
+                    <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
+                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
+                        @foreach($kode as $k)
+                            <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
+                                {{ $k }}
                             </option>
                         @endforeach
                     </select>
@@ -83,7 +83,7 @@
                 <td>{{ $laporan->tgl_dibuat->format('d-m-Y') }}</td>
                 <td>{{ $laporan->seri_surat }}</td>
                 <td>{{ $laporan->nomor_memo }}</td> 
-                <td>{{ $laporan->divisi ? $laporan->divisi->nm_divisi : '-' }}</td>
+                <td>{{ $laporan->kode ?? '-' }}</td>
                 <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                 <td>
                     <span class="badge bg-{{ $laporan->status == 'approve' ? 'success' : 'warning' }}">

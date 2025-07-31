@@ -15,11 +15,14 @@ use Illuminate\Http\Request;
 
 class LaporanController extends Controller
 {
-    // ... (previous methods remain unchanged)
 
     public function filterMemosByDate(Request $request)
     {
         $divisi = Divisi::all(); // Menambahkan variabel divisi
+        $kode = Memo::whereNotNull('kode')
+        ->pluck('kode')
+        ->unique();
+
         $request->validate([
             'tgl_awal' => 'required|date',
             'tgl_akhir' => 'required|date|after_or_equal:tgl_awal'
@@ -32,9 +35,14 @@ class LaporanController extends Controller
         ]);
 
         // Get filtered memos
-        $memos = Memo::where(function($query) {
+        $memos = Memo::where(function($query) use ($request) {
             $query->where('status', 'diterima')
                   ->orWhere('status', 'approve');
+            
+            if ($request->filled('kode') && $request->kode != 'pilih') {
+                $query->where('kode', $request->kode);
+            }
+
         })->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
           ->whereDate('tgl_dibuat', '<=', $request->tgl_akhir)
           ->orderBy('tgl_dibuat', 'desc')
@@ -42,7 +50,8 @@ class LaporanController extends Controller
 
         return view('superadmin.laporan.cetak-laporan-memo', [
             'memos' => $memos,
-            'divisi' => $divisi
+            'divisi' => $divisi,
+            'kode' => $kode
         ]);
     }
 
@@ -107,6 +116,11 @@ class LaporanController extends Controller
     public function index(Request $request)
     {
         $divisi = Divisi::all();
+        $kode = Memo::whereNotNull('kode')
+        ->pluck('kode')
+        ->filter()
+        ->unique()
+        ->values();
         $seri = Seri::all();  
         $user = Auth::user();
         if (!$user) {
@@ -131,6 +145,11 @@ class LaporanController extends Controller
             $memos->where('divisi_id_divisi', $request->divisi_id_divisi);
         }
 
+        if ($request->filled('kode') && $request->kode != 'pilih') {
+            $memos->where('kode', $request->kode);
+        }
+
+
         // Filter search jika ada
         if ($request->filled('search')) {
             $memos->where('judul', 'like', '%' . $request->search . '%');
@@ -142,7 +161,8 @@ class LaporanController extends Controller
         if (request()->route()->getName() === 'cetak-laporan-memo.superadmin' || request()->is('cetak-laporan-memo')) {
             return view('superadmin.laporan.cetak-laporan-memo', [
                 'memos' => $memos,
-                'divisi' => $divisi
+                'divisi' => $divisi,
+                'kode' => $kode
             ]);
         }
 

@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('title', 'Memo Backup')
 @section('content')
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <div class="container">
     <div class="header">
@@ -52,7 +53,7 @@
                     </div>
                     <div  class="dropdown">
                     <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
-                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Pilih Divisi</option>
+                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
                         @foreach($kode as $k)
                             <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
                                 {{ $k }}
@@ -61,24 +62,28 @@
                     </select>
                 </div>
                 </form>
+                
                 <form id="bulkActionForm" method="POST">
                         @csrf
-                        <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 10px;">
+                        <div id="bulkActions" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 5px;">
                             <div class="d-flex gap-2">
-                                <button type="submit" formaction="{{ route('memo.bulk-restore') }}"
+                                <button type="button" formaction="{{ route('memo.bulk-restore') }}"
                                     class="btn btn-success btn-sm d-flex align-items-center justify-content-center"
-                                    style="padding: 5px 10px; font-size: 14px; height: 32px;">
+                                    style="padding: 5px 10px; font-size: 14px; height: 32px;"
+                                    data-bs-toggle="modal" data-bs-target="#restoreMemoModal">
                                     <i class="fa-solid fa-rotate-left me-2"></i> Pulihkan
                                 </button>
-
-                                <button title="Hapus" type="submit" formaction="{{ route('memo.bulk-force-delete') }}"
+                                <button type="button" formaction="{{ route('memo.bulk-force-delete') }}"
                                     class="btn btn-danger btn-sm d-flex align-items-center justify-content-center"
-                                    style="padding: 5px 10px; font-size: 14px; height: 32px; width: 150px;">
+                                    style="padding: 5px 10px; font-size: 14px; height: 32px; width: 150px;"
+                                    data-bs-toggle="modal" data-bs-target="#deleteMemoModal">
                                     <i class="fa-solid fa-trash me-2"></i> Hapus Permanen
                                 </button>
                             </div>
                         </div>
-                
+                        </div>
+                </form>
             </div>
             
         </div>
@@ -162,7 +167,7 @@
         </tbody>
     </table>
     {{ $memos->appends(request()->query())->links('pagination::bootstrap-5') }}
-</form>
+
 </div>
 
 <!-- Modal Arsip Berhasil -->
@@ -214,11 +219,11 @@
                 <span class="text-danger"><strong>PERHATIAN:</strong></span> Surat yang telah dihapus <strong>TIDAK DAPAT</strong> dipulihkan.
             </p>
             
-            <div class="d-flex justify-content-center mt-3">
                 <form method="POST" id="deleteMemoForm">
                     @csrf
                     @method('DELETE')
-                <button type="submit" class="btn btn-danger me-2" id="confirmDeleteBtn">Hapus</button>
+                <div class="d-flex justify-content-center mt-3">
+                <button type="submit" class="btn btn-danger me-2" id="confirmDeleteBtn" style="padding-inline: 25px;">Hapus</button>
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
                 </form>
             </div>
@@ -240,13 +245,18 @@
                 <form method="POST" id="restoreMemoForm">
                     @csrf
                     <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary" >Pulihkan</button>
+                    <button type="submit" class="btn btn-primary">Pulihkan</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 <script>
+    // Select all checkbox
+        document.getElementById("selectAll").addEventListener("change", function () {
+            const checkboxes = document.querySelectorAll(".selectItem");
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
     document.addEventListener('DOMContentLoaded', function () {
         
 
@@ -281,20 +291,72 @@
         });
 
         // SHOW SUCCESS MODALS
-        @if(session('success') === 'Memo Berhasil Dihapus.')
+        @if(session('success') === 'Memo terpilih berhasil dihapus permanen.')
             const successDeleteModal = new bootstrap.Modal(document.getElementById("successDeleteMemoModal"));
             successDeleteModal.show();
             setTimeout(() => successDeleteModal.hide(), 1500);
         @endif
 
-        @if(session('success') === 'Pemulihan Memo Berhasil.')
+        @if(session('success') === 'Memo terpilih berhasil dipulihkan.')
             const successRestoreModal = new bootstrap.Modal(document.getElementById("successRestoreMemoModal"));
             successRestoreModal.show();
             setTimeout(() => successRestoreModal.hide(), 1500);
         @endif
     });
 </script>
+<script>
+    function getSelectedIds() {
+        return Array.from(document.querySelectorAll('input[name="selected_ids[]"]:checked'))
+            .map(cb => cb.value);
+    }
 
+    // Trigger saat tombol pulihkan diklik
+    document.querySelector('[data-bs-target="#restoreMemoModal"]').addEventListener('click', function () {
+        const ids = getSelectedIds();
+        if (ids.length === 0) return;
 
+        const form = document.getElementById('restoreMemoForm');
+        form.action = "{{ route('memo.bulk-restore') }}";
+
+        // Tambahkan input tersembunyi
+        form.innerHTML += ids.map(id => `<input type="hidden" name="selected_ids[]" value="${id}">`).join('');
+    });
+
+    // Trigger saat tombol hapus diklik
+    document.querySelector('[data-bs-target="#deleteMemoModal"]').addEventListener('click', function () {
+        const ids = getSelectedIds();
+        if (ids.length === 0) return;
+
+        const form = document.getElementById('deleteMemoForm');
+        form.action = "{{ route('memo.bulk-force-delete') }}";
+
+        // Tambahkan input tersembunyi
+        form.innerHTML += ids.map(id => `<input type="hidden" name="selected_ids[]" value="${id}">`).join('');
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkboxes = document.querySelectorAll('.selectItem');
+        const bulkActions = document.getElementById('bulkActions');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                bulkActions.style.display = anyChecked ? 'flex' : 'none';
+
+            });
+        });
+
+        const selectAll = document.getElementById('selectAll');
+        if (selectAll) {
+            selectAll.addEventListener('change', () => {
+                checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                bulkActions.style.display = anyChecked ? 'flex' : 'none';
+
+            });
+        }
+    });
+</script>
 
 @endsection

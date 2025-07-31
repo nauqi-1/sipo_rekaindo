@@ -27,6 +27,10 @@
                 </select>
                 entries
             </label>
+
+                @foreach(request()->except('per_page', 'page') as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
             </form>
         </div>
     </div>
@@ -61,7 +65,7 @@
                 </div>
                <div  class="dropdown">
                     <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
-                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Pilih Divisi</option>
+                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
                         @foreach($kode as $k)
                             <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
                                 {{ $k }}
@@ -118,7 +122,7 @@
                     <td>{{ $memo->seri_surat }}</td>
                     <td>{{ $memo->nomor_memo }}</td>
                     <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $memo->kode ?? 'No Divisi Assigned' }}</td>
+                    <td>{{ $memo->kode ?? '-' }}</td>
                     </td>
                     <td>
                         @if ($memo->status == 'reject')
