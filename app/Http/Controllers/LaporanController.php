@@ -62,6 +62,9 @@ class LaporanController extends Controller
             'tgl_awal' => 'required|date',
             'tgl_akhir' => 'required|date|after_or_equal:tgl_awal'
         ]);
+        $kode = Undangan::whereNotNull('kode')
+        ->pluck('kode')
+        ->unique();
 
         // Store dates in session
         $request->session()->put('filter_dates', [
@@ -70,17 +73,22 @@ class LaporanController extends Controller
         ]);
 
         // Get filtered memos
-        $undangans = Undangan::where(function($query) {
+        $undangans = Undangan::where(function($query)use ($request) {
             $query->where('status', 'diterima')
                   ->orWhere('status', 'approve');
+            
+                  if ($request->filled('kode') && $request->kode != 'pilih') {
+                $query->where('kode', $request->kode);
+            }
         })->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
           ->whereDate('tgl_dibuat', '<=', $request->tgl_akhir)
           ->orderBy('tgl_dibuat', 'desc')
           ->get();
-
+        
         return view('superadmin.laporan.cetak-laporan-undangan', [
             'undangans' => $undangans,
-            'divisi' => $divisi
+            'divisi' => $divisi,
+            'kode' => $kode
         ]);
     }
 
