@@ -74,6 +74,7 @@
                 </form>
                 <form id="bulkActionForm" method="POST" action="">
                     @csrf
+                <div id="bulkActions" style="display: none;">
                     <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 10px;">
                         <div class="d-flex gap-2">
                             <button type="button" class="btn btn-success btn-sm d-flex align-items-center justify-content-center"
@@ -87,6 +88,7 @@
                             </button>
                         </div>
                     </div>
+                </div>
                 </form>
                 <!-- Add User Button to Open Modal -->
             </div>
@@ -309,6 +311,7 @@
             </div>
         </div>
     </div>
+    
 <script>
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -450,6 +453,30 @@
                 }, 1500);
             }
         });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkboxes = document.querySelectorAll('.selectItem');
+        const bulkActions = document.getElementById('bulkActions');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                bulkActions.style.display = anyChecked ? 'flex' : 'none';
+
+            });
+        });
+
+        const selectAll = document.getElementById('selectAll');
+        if (selectAll) {
+            selectAll.addEventListener('change', () => {
+                checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                bulkActions.style.display = anyChecked ? 'flex' : 'none';
+
+            });
+        }
     });
 </script>
 @endsection
