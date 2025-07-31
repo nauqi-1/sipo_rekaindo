@@ -67,10 +67,12 @@ class BackupController extends Controller
     public function undangan(Request $request)
     {
         $userId = Auth::id();
+        
         $kode = Undangan::whereNotNull('kode')
             ->pluck('kode')
-            ->unique();
-
+            ->filter()
+            ->unique()
+            ->values();
 
         $query = Undangan::onlyTrashed();
         // Filter berdasarkan status

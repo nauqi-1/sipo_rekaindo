@@ -80,6 +80,16 @@
                                     style="outline: none; box-shadow: none;">
                             </div>
                         </div>
+                        <div  class="dropdown">
+                    <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
+                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
+                        @foreach($kode as $k)
+                            <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
+                                {{ $k }}
+                            </option>
+                        @endforeach
+                    </select>
+               </div>
                     </form>
 
                 </div>
