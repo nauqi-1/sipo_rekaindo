@@ -155,8 +155,9 @@ class MemoController extends Controller
         $divisi = Divisi::all();
         $kode = Memo::whereNotNull('kode')
         ->pluck('kode')
-        ->unique();
-
+        ->filter()
+        ->unique()
+        ->values();
         $seri = Seri::all();
         $userId = Auth::id();
         
@@ -207,7 +208,7 @@ class MemoController extends Controller
                 ->orWhere('nomor_memo', 'like', '%' . $request->search . '%');
             });
         }
-        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
+        $perPage = $request->get('per_page', 10);
         $memos = $query->paginate($perPage);
 
 

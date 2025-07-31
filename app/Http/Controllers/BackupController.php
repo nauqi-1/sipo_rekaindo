@@ -19,7 +19,9 @@ class BackupController extends Controller
         $userId = Auth::id();
         $kode = Memo::whereNotNull('kode')
             ->pluck('kode')
-            ->unique();
+            ->filter()
+            ->unique()
+            ->values();
 
 
         $query = Memo::onlyTrashed();
@@ -149,7 +151,7 @@ class BackupController extends Controller
     {
         $ids = $request->input('selected_ids', []);
         Memo::onlyTrashed()->whereIn('id_memo', $ids)->restore();
-
+        Kirim_Document::onlyTrashed()->whereIn('id_document', $ids)->where('jenis_document','memo')->restore();
         return redirect()->back()->with('success', 'Memo terpilih berhasil dipulihkan.');
     }
 
@@ -157,7 +159,7 @@ class BackupController extends Controller
     {
         $ids = $request->input('selected_ids', []);
         Memo::onlyTrashed()->whereIn('id_memo', $ids)->forceDelete();
-
+        Kirim_Document::onlyTrashed()->whereIn('id_document', $ids)->where('jenis_document','memo')->forceDelete();
         return redirect()->back()->with('success', 'Memo terpilih berhasil dihapus permanen.');
     }
     public function bulkRestore(Request $request)
