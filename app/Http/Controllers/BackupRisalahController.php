@@ -48,6 +48,7 @@ class BackupRisalahController extends Controller
     public function RestoreRisalah($id)
     {
        Risalah::withTrashed()->find($id)->restore();
+       Kirim_Document::withTrashed()->where('id_document', $id)->restore();
 
         return redirect()->route('risalah.backup')->with('success_restore', 'Risalah deleted successfully.');
     }

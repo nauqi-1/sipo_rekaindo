@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Kirim_Document extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
     protected $table = 'kirim_document';
     protected $primaryKey = 'id_kirim_document';
 
@@ -20,6 +23,7 @@ class Kirim_Document extends Model
         'updated_at',
     ];
     public $timestamps = false;
+    protected $dates = ['deleted_at'];
 
     // Relasi ke User (Pengirim)
     public function pengirim()
@@ -46,5 +50,19 @@ class Kirim_Document extends Model
     public function penerima()
     {
         return $this->belongsTo(User::class, 'id_penerima');
+    }
+
+    public function up()
+    {
+        Schema::table('kirim_document', function (Blueprint $table) {
+            $table->softDeletes();
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('kirim_document', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 }

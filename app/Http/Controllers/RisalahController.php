@@ -488,6 +488,7 @@ public function update(Request $request, $id)
     public function destroy($id)
     {
         Risalah::find($id)->delete();
+        Kirim_Document::where('id_document', $id)->delete();
 
         return redirect()->route('risalah.'.Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dihapus.');
     }

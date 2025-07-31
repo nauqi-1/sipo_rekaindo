@@ -168,6 +168,7 @@ class BackupController extends Controller
     {
         $ids = $request->input('selected_ids', []);
         Risalah::onlyTrashed()->whereIn('id_risalah', $ids)->restore();
+        Kirim_Document::onlyTrashed()->whereIn('id_document', $ids)->restore();
 
         return redirect()->back()->with('success', 'Beberapa risalah berhasil dipulihkan.');
     }
@@ -176,6 +177,7 @@ class BackupController extends Controller
     {
         $ids = $request->input('selected_ids', []);
         Risalah::onlyTrashed()->whereIn('id_risalah', $ids)->forceDelete();
+        Kirim_Document::onlyTrashed()->whereIn('id_document', $ids)->forceDelete();
 
         return redirect()->back()->with('success', 'Beberapa risalah berhasil dihapus permanen.');
     }
@@ -183,6 +185,7 @@ class BackupController extends Controller
     public function forceDeleteRisalah($id)
     {
         Risalah::onlyTrashed()->where('id_risalah', $id)->forceDelete();
+        Kirim_Document::onlyTrashed()->whereIn('id_document', $ids)->forceDelete();
 
         return redirect()->back()->with('success_delete', 'Risalah berhasil dihapus permanen.');
     }
