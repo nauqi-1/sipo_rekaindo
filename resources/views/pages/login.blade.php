@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
   <link rel="stylesheet" href="{{ asset('css/login.css') }}">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"> --}}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
 </head>
 <body>
     <div class="container">
@@ -19,25 +20,35 @@
                     <h1>SISTEM INFORMASI PERSURATAN ONLINE</h1>
                 </div>
             </div>
+            
             <div class="card-body">
+                
                 <form method="POST" action="{{ route('login') }}" novalidate>
                     @csrf
-                    
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <!-- Session Status -->
                     <x-auth-session-status class="mb-4" :status="session('status')" />
 
                     <!-- Email Address -->
                     <div class="input-group">
                         <i class="bi bi-person"></i>
-                        <input type="email" id="email" name="email" placeholder="Enter email" value="{{ old('email') }}" required autofocus autocomplete="email">
-                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                        <input type="email" id="email" name="email" placeholder="Enter email" value="{{ old('email') }}" required autofocus autocomplete="email" class="form-control-icon form-control">
+                        {{-- <x-input-error :messages="$errors->get('email')" class="mt-2" /> --}}
                     </div>
 
                     <!-- Password -->
                     <div class="input-group">
                         <i class="bi bi-lock"></i>
                         <input type="password" id="password" name="password" placeholder="Enter password" required autocomplete="current-password">
-                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                        {{-- <x-input-error :messages="$errors->get('password')" class="mt-2" /> --}}
                     </div>
 
                     <!-- Forgot Password -->
@@ -59,5 +70,7 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 </body>
+
 </html>
