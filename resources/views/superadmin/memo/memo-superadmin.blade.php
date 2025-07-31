@@ -10,26 +10,26 @@
             <a href="{{route('superadmin.dashboard')}}"><img src="/img/memo-superadmin/Vector_back.png" alt=""></a>
         </div>
         <h1>Memo</h1>
-    </div>        
+    </div>
     <div class="row">
-    <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="breadcrumb" style="gap: 5px; width: 82%;">
                 <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="#" style="color: #565656;">Memo</a>
             </div>
             <form method="GET" action="{{ route('memo.superadmin') }}" class="search-filter d-flex gap-2">
-            <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
-                Show
-                <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
-                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                </select>
-                entries
-            </label>
+                <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
+                    Show
+                    <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
+                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                    </select>
+                    entries
+                </label>
 
                 @foreach(request()->except('per_page', 'page') as $key => $value)
-                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                 @endforeach
             </form>
         </div>
@@ -39,123 +39,123 @@
     <div class="surat">
         <div class="header-tools">
             <div class="search-filter">
-            <form method="GET" action="{{ route('memo.superadmin') }}" class="search-filter d-flex gap-2">
-                <div class="dropdown">
-                    <select name="status" class="form-select" onchange="this.form.submit()">
-                        <option value="">Status</option>
-                        <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
-                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
-                        <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
-                    </select>
-                </div>
-                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                    <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
-                </div>
-                <i class="bi bi-arrow-right"></i>
-                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                    <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
-                        class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" placeholder="Tanggal Akhir"
-                        onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }" onchange="this.form.submit()">
-                </div>
-                <div class="d-flex gap-2">
-                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                        <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
-                        <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
+                <form method="GET" action="{{ route('memo.superadmin') }}" class="search-filter d-flex gap-2">
+                    <div class="dropdown">
+                        <select name="status" class="form-select" onchange="this.form.submit()">
+                            <option value="">Status</option>
+                            <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                            <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
+                        </select>
                     </div>
-                </div>
-               <div  class="dropdown">
-                    <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
-                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
-                        @foreach($kode as $k)
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                        <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
+                    </div>
+                    <i class="bi bi-arrow-right"></i>
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                        <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
+                            class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" placeholder="Tanggal Akhir"
+                            onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }" onchange="this.form.submit()">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                            <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
+                            <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
+                            <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
+                            @foreach($kode as $k)
                             <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
                                 {{ $k }}
                             </option>
-                        @endforeach
-                    </select>
-               </div>
+                            @endforeach
+                        </select>
+                    </div>
                 </form>
                 <!-- Add User Button to Open Modal -->
-                
+
             </div>
         </div>
     </div>
 
-        <!-- Table -->
-        <table class="table-light">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Dokumen</th>
-                    <th>Tanggal Memo
-                        <button class="data-md">
-                            <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
-                                style="color:rgb(135, 135, 148); text-decoration: none;">
-                                <span class="bi-arrow-down-up"></span>
-                            </a>
-                        </button>
-                    </th>
-                    <th>Seri</th>
-                    <th>Dokumen</th>
-                    <th>Tanggal Disahkan
-                        <button class="data-md">
-                            <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
-                                style="color:rgb(135, 135, 148); text-decoration: none;">
-                                <span class="bi-arrow-down-up"></span>
-                            </a>
-                        </button>
-                    </th>
-                    <th>Divisi</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($memos as $index => $memo)
-                <tr>
-                    <td class="nomor">{{ $index + 1 }}</td>
-                    <td class="nama-dokumen 
+    <!-- Table -->
+    <table class="table-light">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Dokumen</th>
+                <th>Tanggal Memo
+                    <button class="data-md">
+                        <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                            style="color:rgb(135, 135, 148); text-decoration: none;">
+                            <span class="bi-arrow-down-up"></span>
+                        </a>
+                    </button>
+                </th>
+                <th>Seri</th>
+                <th>Dokumen</th>
+                <th>Tanggal Disahkan
+                    <button class="data-md">
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
+                            style="color:rgb(135, 135, 148); text-decoration: none;">
+                            <span class="bi-arrow-down-up"></span>
+                        </a>
+                    </button>
+                </th>
+                <th>Divisi</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($memos as $index => $memo)
+            <tr>
+                <td class="nomor">{{ $index + 1 }}</td>
+                <td class="nama-dokumen 
                         {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'correction' ? 'text-warning' : ($memo->status == 'approve' ? 'text-success' : '')) }}"
-                             style="{{ $memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                        {{ $memo->judul }}
-                    </td>
-                    <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
-                    <td>{{ $memo->seri_surat }}</td>
-                    <td>{{ $memo->nomor_memo }}</td>
-                    <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $memo->kode ?? '-' }}</td>
-                    </td>
-                    <td>
-                        @if ($memo->status == 'reject')
-                            <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($memo->status == 'pending')
-                            <span class="badge bg-info">Diproses</span>
-                        @elseif ($memo->status == 'correction')
-                            <span class="badge bg-warning">Dikoreksi</span>
-                        @else
-                            <span class="badge bg-success">Diterima</span>
-                        @endif
-                    </td>
-                    <td>
+                    style="{{ $memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
+                    {{ $memo->judul }}
+                </td>
+                <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
+                <td>{{ $memo->seri_surat }}</td>
+                <td>{{ $memo->nomor_memo }}</td>
+                <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
+                <td>{{ $memo->kode ?? '-' }}</td>
+                </td>
+                <td>
+                    @if ($memo->status == 'reject')
+                    <span class="badge bg-danger">Ditolak</span>
+                    @elseif ($memo->status == 'pending')
+                    <span class="badge bg-info">Diproses</span>
+                    @elseif ($memo->status == 'correction')
+                    <span class="badge bg-warning">Dikoreksi</span>
+                    @else
+                    <span class="badge bg-success">Diterima</span>
+                    @endif
+                </td>
+                <td>
 
-                        <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteMemoModal"
-                        data-memo-id="{{ $memo->id_memo }}"  data-route="{{ route('memo.delete', [$memo->id_memo, 'jenis_document' => 'memo']) }}">
-                            <img src="/img/memo-superadmin/Delete.png" alt="delete">
+                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteMemoModal"
+                        data-memo-id="{{ $memo->id_memo }}" data-route="{{ route('memo.delete', [$memo->id_memo, 'jenis_document' => 'memo']) }}">
+                        <img src="/img/memo-superadmin/Delete.png" alt="delete">
+                    </button>
+
+                    @if ($memo->status == 'approve' || $memo->status == 'reject')
+                    <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
+                        @csrf
+                        @method('POST')
+                        <button type="submit" class="btn btn-sm3 submitArsip">
+                            <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                         </button>
-                        
-                        @if ($memo->status == 'approve' || $memo->status == 'reject')
-                        <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('POST')
-                            <button type="submit" class="btn btn-sm3 submitArsip">
-                                <img src="/img/memo-superadmin/arsip.png" alt="arsip">
-                            </button>
-                        </form>
+                    </form>
 
                     @elseif ($memo->status== 'pending' || $memo->status == 'correction')
-                        <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
-                            <img src="/img/memo-superadmin/edit.png" alt="edit">
-                        </a>
-                        
+                    <a href="{{ route('memo.edit', $memo->id_memo) }}" class="btn btn-sm3">
+                        <img src="/img/memo-superadmin/edit.png" alt="edit">
+                    </a>
+
                     @endif
                 </td>
             </tr>
@@ -218,12 +218,12 @@
             <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
             <h5 class="modal-title mb-4" id="deleteModalLabel">Hapus memo?</h5>
 
-                <!-- Tombol -->
-                <div class="d-flex justify-content-center mt-3">
-                    <button type="button" class="btn btn-outline-secondary me-2" id="openConfirmDeleteBtn" data-route="">Oke</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
-                    
-                </div>
+            <!-- Tombol -->
+            <div class="d-flex justify-content-center mt-3">
+                <button type="button" class="btn btn-outline-secondary me-2" id="openConfirmDeleteBtn" data-route="">Oke</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
+
+            </div>
         </div>
     </div>
 </div>
@@ -266,59 +266,61 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const deleteMemoModal = document.getElementById("deleteMemoModal");
-    const confirmDeleteModalElement = document.getElementById("confirmDeleteModal");
-    const confirmDeleteModal = new bootstrap.Modal(confirmDeleteModalElement); 
-    const deleteMemoSuccessModal = new bootstrap.Modal(document.getElementById("deleteMemoSuccessModal"));
-    const deleteMemoForm = document.getElementById("deleteMemoForm");
-    const openConfirmDeleteBtn = document.getElementById("openConfirmDeleteBtn");
+    document.addEventListener("DOMContentLoaded", function() {
+        const deleteMemoModal = document.getElementById("deleteMemoModal");
+        const confirmDeleteModalElement = document.getElementById("confirmDeleteModal");
+        const confirmDeleteModal = new bootstrap.Modal(confirmDeleteModalElement);
+        const deleteMemoSuccessModal = new bootstrap.Modal(document.getElementById("deleteMemoSuccessModal"));
+        const deleteMemoForm = document.getElementById("deleteMemoForm");
+        const openConfirmDeleteBtn = document.getElementById("openConfirmDeleteBtn");
 
-    let routeToDelete = "";
+        let routeToDelete = "";
 
-    deleteMemoModal.addEventListener("show.bs.modal", function (event) {
-        const triggerButton = event.relatedTarget;
-        routeToDelete = triggerButton.getAttribute("data-route");
-        openConfirmDeleteBtn.setAttribute("data-route", routeToDelete);
-        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        deleteMemoModal.addEventListener("show.bs.modal", function(event) {
+            const triggerButton = event.relatedTarget;
+            routeToDelete = triggerButton.getAttribute("data-route");
+            openConfirmDeleteBtn.setAttribute("data-route", routeToDelete);
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
 
+        });
+
+        openConfirmDeleteBtn.addEventListener("click", function() {
+            const deleteModalInstance = bootstrap.Modal.getInstance(deleteMemoModal);
+            if (deleteModalInstance) deleteModalInstance.hide();
+
+            setTimeout(() => {
+                deleteMemoForm.setAttribute("action", routeToDelete);
+                confirmDeleteModal.show();
+            }, 300);
+        });
+
+        deleteMemoForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const formAction = deleteMemoForm.getAttribute("action");
+
+            fetch(formAction, {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    _method: "DELETE"
+                })
+            }).then(response => {
+                if (response.ok) {
+                    confirmDeleteModal.hide(); // ✅ Reuse same instance here
+                    setTimeout(() => {
+                        deleteMemoSuccessModal.show();
+                        setTimeout(() => location.reload(), 1500);
+                    }, 500);
+                }
+            }).catch(error => console.error("Error:", error));
+        });
     });
-
-    openConfirmDeleteBtn.addEventListener("click", function () {
-        const deleteModalInstance = bootstrap.Modal.getInstance(deleteMemoModal);
-        if (deleteModalInstance) deleteModalInstance.hide();
-
-        setTimeout(() => {
-            deleteMemoForm.setAttribute("action", routeToDelete);
-            confirmDeleteModal.show(); 
-        }, 300);
-    });
-
-    deleteMemoForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-        const formAction = deleteMemoForm.getAttribute("action");
-        
-        fetch(formAction, {
-            method: "POST",
-            headers: {
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ _method: "DELETE" })
-        }).then(response => {
-            if (response.ok) {
-                confirmDeleteModal.hide(); // ✅ Reuse same instance here
-                setTimeout(() => {
-                    deleteMemoSuccessModal.show();
-                    setTimeout(() => location.reload(), 1500);
-                }, 500);
-            }
-        }).catch(error => console.error("Error:", error));
-    });
-});
 
     // Event listener arsip memo
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const arsipButtons = document.querySelectorAll(".submitArsip");
         const confirmArsipButton = document.getElementById("confirmArsip");
         const cancelArsipButton = document.querySelector("#arsipMemoModal .btn-outline-secondary");
@@ -329,25 +331,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Saat tombol arsip ditekan, simpan form yang akan dikirim
         arsipButtons.forEach(button => {
-            button.addEventListener("click", function (event) {
+            button.addEventListener("click", function(event) {
                 event.preventDefault(); // Mencegah submit langsung
-                currentForm = this.closest("form"); 
+                currentForm = this.closest("form");
                 arsipMemoModal.show(); // Tampilkan modal konfirmasi
             });
         });
 
         // Saat tombol "Batal" ditekan, tutup modal konfirmasi
-        cancelArsipButton.addEventListener("click", function () {
+        cancelArsipButton.addEventListener("click", function() {
             arsipMemoModal.hide();
         });
 
         // Saat tombol "OK" ditekan, submit form dan tampilkan modal sukses
-        confirmArsipButton.addEventListener("click", function () {
+        confirmArsipButton.addEventListener("click", function() {
             if (currentForm) {
                 arsipMemoModal.hide(); // Tutup modal konfirmasi
                 setTimeout(() => {
                     successArsipMemoModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
-                }, 300); 
+                }, 300);
 
                 setTimeout(() => {
                     successArsipMemoModal.hide();
@@ -358,14 +360,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Event listener untuk modal sukses tambah memo
-    document.addEventListener("DOMContentLoaded", function () {
-    @if(session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller memo store
+    document.addEventListener("DOMContentLoaded", function() {
+        @if(session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller memo store
         var successModal = new bootstrap.Modal(document.getElementById("successAddMemoModal"));
         successModal.show();
-        setTimeout(function () {
+        setTimeout(function() {
             successModal.hide();
         }, 1500);
-    @endif
+        @endif
     });
 </script>
 @endsection

@@ -10,13 +10,13 @@
             <a href="{{ route('admin.dashboard')}}"><img src="/img/memo-admin/Vector_back.png" alt=""></a>
         </div>
         <h1>Pemulihan Memo</h1>
-    </div>        
+    </div>
     <div class="row">
         <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="breadcrumb" style="gap: 5px; width: 83%;">
                 <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="#" style="color: #565656;">Pemulihan Memo</a>
             </div>
-            <form method="GET"  class="search-filter d-flex gap-2">
+            <form method="GET" class="search-filter d-flex gap-2">
                 <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
                     Show
                     <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
@@ -51,21 +51,21 @@
                             <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                         </div>
                     </div>
-                    <div  class="dropdown">
-                    <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
-                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
-                        @foreach($kode as $k)
+                    <div class="dropdown">
+                        <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
+                            <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
+                            @foreach($kode as $k)
                             <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
                                 {{ $k }}
                             </option>
-                        @endforeach
-                    </select>
-                </div>
+                            @endforeach
+                        </select>
+                    </div>
                 </form>
-                
+
                 <form id="bulkActionForm" method="POST">
-                        @csrf
-                        <div id="bulkActions" style="display: none;">
+                    @csrf
+                    <div id="bulkActions" style="display: none;">
                         <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 5px;">
                             <div class="d-flex gap-2">
                                 <button type="button" formaction="{{ route('memo.bulk-restore') }}"
@@ -82,10 +82,10 @@
                                 </button>
                             </div>
                         </div>
-                        </div>
+                    </div>
                 </form>
             </div>
-            
+
         </div>
     </div>
 
@@ -104,7 +104,7 @@
                             style="color:rgb(135, 135, 148); text-decoration: none;">
                             <span class="bi-arrow-down-up"></span>
                         </a>
-                    </button>         
+                    </button>
                 </th>
                 <th>Seri</th>
                 <th>Dokumen</th>
@@ -130,37 +130,37 @@
                 <td class="nomor">{{ $index + 1 }}</td>
                 <td class="nama-dokumen 
                         {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'correction' ? 'text-warning' : ($memo->status == 'approve' ? 'text-success' : '')) }}"
-                             style="{{ $memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                        {{ $memo->judul }}
-                    </td>
+                    style="{{ $memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
+                    {{ $memo->judul }}
+                </td>
                 <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
                 <td>{{ $memo->seri_surat }}</td>
                 <td>{{ $memo->nomor_memo }}</td>
                 <td>{{ $memo->tgl_disahkan ? \Carbon\Carbon::parse($memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
                 <td>{{ $memo->kode ?? 'No Divisi Assigned' }}</td>
                 <td>
-                        @if ($memo->status == 'reject')
-                            <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($memo->status == 'pending')
-                            <span class="badge bg-info">Diproses</span>
-                        @elseif ($memo->status == 'correction')
-                            <span class="badge bg-warning">Dikoreksi</span>
-                        @else
-                            <span class="badge bg-success">Diterima</span>
-                        @endif
-                    </td>
+                    @if ($memo->status == 'reject')
+                    <span class="badge bg-danger">Ditolak</span>
+                    @elseif ($memo->status == 'pending')
+                    <span class="badge bg-info">Diproses</span>
+                    @elseif ($memo->status == 'correction')
+                    <span class="badge bg-warning">Dikoreksi</span>
+                    @else
+                    <span class="badge bg-success">Diterima</span>
+                    @endif
+                </td>
                 <td>
                     <button title="Pulihkan" type="button" class="btn btn-sm1 submitRestoreMemo" data-bs-toggle="modal"
                         data-bs-target="#restoreMemoModal" data-id="{{ $memo->id_memo }}"
                         data-route="{{ route('memo.restore-file', $memo->id_memo) }}">
-                        <i class="fa-solid fa-rotate-left" style="font-size: 14px;"></i> 
+                        <i class="fa-solid fa-rotate-left" style="font-size: 14px;"></i>
                     </button>
-                    
-                        <button title="Hapus Permanen" type="button" class="btn btn-sm2 submitDeleteMemo" data-bs-toggle="modal"
-                            data-bs-target="#deleteMemoModal" data-id="{{ $memo->id_memo }}"
-                            data-route="{{ route('memo.forceDelete', $memo->id_memo) }}">
-                            <i class="fa-solid fa-trash" style="color: red; font-size: 14px;"></i>
-                        </button>
+
+                    <button title="Hapus Permanen" type="button" class="btn btn-sm2 submitDeleteMemo" data-bs-toggle="modal"
+                        data-bs-target="#deleteMemoModal" data-id="{{ $memo->id_memo }}"
+                        data-route="{{ route('memo.forceDelete', $memo->id_memo) }}">
+                        <i class="fa-solid fa-trash" style="color: red; font-size: 14px;"></i>
+                    </button>
                 </td>
             </tr>
             @endforeach
@@ -218,18 +218,18 @@
             <p class="text-muted mb-4" style="font-size: 0.95rem;">
                 <span class="text-danger"><strong>PERHATIAN:</strong></span> Surat yang telah dihapus <strong>TIDAK DAPAT</strong> dipulihkan.
             </p>
-            
-                <form method="POST" id="deleteMemoForm">
-                    @csrf
-                    @method('DELETE')
+
+            <form method="POST" id="deleteMemoForm">
+                @csrf
+                @method('DELETE')
                 <div class="d-flex justify-content-center mt-3">
-                <button type="submit" class="btn btn-danger me-2" id="confirmDeleteBtn" style="padding-inline: 25px;">Hapus</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
-                </form>
-            </div>
-            
+                    <button type="submit" class="btn btn-danger me-2" id="confirmDeleteBtn" style="padding-inline: 25px;">Hapus</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
+            </form>
         </div>
+
     </div>
+</div>
 </div>
 
 <!-- Restore Confirmation Modal -->
@@ -253,24 +253,24 @@
 </div>
 <script>
     // Select all checkbox
-        document.getElementById("selectAll").addEventListener("change", function () {
-            const checkboxes = document.querySelectorAll(".selectItem");
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
-    document.addEventListener('DOMContentLoaded', function () {
-        
+    document.getElementById("selectAll").addEventListener("change", function() {
+        const checkboxes = document.querySelectorAll(".selectItem");
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+
 
         // DELETE MODAL LOGIC
         const deleteMemoModal = document.getElementById('deleteMemoModal');
         const deleteMemoForm = document.getElementById('deleteMemoForm');
 
-        deleteMemoModal.addEventListener('show.bs.modal', function (event) {
+        deleteMemoModal.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
             const route = button.getAttribute('data-route');
             console.log('DELETE route:', route);
             console.log('deleteMemoForm element: ', deleteMemoForm);
             if (deleteMemoForm && route) {
-                
+
                 deleteMemoForm.setAttribute('action', route);
             }
         });
@@ -279,28 +279,28 @@
         const restoreMemoModal = document.getElementById('restoreMemoModal');
         const restoreMemoForm = document.getElementById('restoreMemoForm');
 
-        restoreMemoModal.addEventListener('show.bs.modal', function (event) {
+        restoreMemoModal.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
             const route = button.getAttribute('data-route');
             console.log('RESTORE route:', route);
             console.log('restoreMemoForm element: ', restoreMemoForm);
             if (restoreMemoForm && route) {
-                
+
                 restoreMemoForm.setAttribute('action', route);
             }
         });
 
         // SHOW SUCCESS MODALS
         @if(session('success') === 'Memo terpilih berhasil dihapus permanen.')
-            const successDeleteModal = new bootstrap.Modal(document.getElementById("successDeleteMemoModal"));
-            successDeleteModal.show();
-            setTimeout(() => successDeleteModal.hide(), 1500);
+        const successDeleteModal = new bootstrap.Modal(document.getElementById("successDeleteMemoModal"));
+        successDeleteModal.show();
+        setTimeout(() => successDeleteModal.hide(), 1500);
         @endif
 
         @if(session('success') === 'Memo terpilih berhasil dipulihkan.')
-            const successRestoreModal = new bootstrap.Modal(document.getElementById("successRestoreMemoModal"));
-            successRestoreModal.show();
-            setTimeout(() => successRestoreModal.hide(), 1500);
+        const successRestoreModal = new bootstrap.Modal(document.getElementById("successRestoreMemoModal"));
+        successRestoreModal.show();
+        setTimeout(() => successRestoreModal.hide(), 1500);
         @endif
     });
 </script>
@@ -311,7 +311,7 @@
     }
 
     // Trigger saat tombol pulihkan diklik
-    document.querySelector('[data-bs-target="#restoreMemoModal"]').addEventListener('click', function () {
+    document.querySelector('[data-bs-target="#restoreMemoModal"]').addEventListener('click', function() {
         const ids = getSelectedIds();
         if (ids.length === 0) return;
 
@@ -323,7 +323,7 @@
     });
 
     // Trigger saat tombol hapus diklik
-    document.querySelector('[data-bs-target="#deleteMemoModal"]').addEventListener('click', function () {
+    document.querySelector('[data-bs-target="#deleteMemoModal"]').addEventListener('click', function() {
         const ids = getSelectedIds();
         if (ids.length === 0) return;
 
@@ -335,7 +335,7 @@
     });
 </script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const checkboxes = document.querySelectorAll('.selectItem');
         const bulkActions = document.getElementById('bulkActions');
 

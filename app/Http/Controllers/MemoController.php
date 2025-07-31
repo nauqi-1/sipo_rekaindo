@@ -27,7 +27,7 @@ class MemoController extends Controller
 {
     public function index(Request $request)
     {
-        
+
         $divisi = Divisi::all();
         $seri = Seri::all();
         $user = User::all();
@@ -39,7 +39,7 @@ class MemoController extends Controller
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
 
         $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_memo', 'judul'];
-         if (!in_array($sortBy, $allowedSortColumns)) {
+        if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'created_at'; // fallback default
         }
 
@@ -52,44 +52,44 @@ class MemoController extends Controller
         // 1. both: memo milik sendiri dan kiriman orang lain
         // 2. own: memo yang dibuat diri sendiri saja
         // 3. received: memo yang dibuat orang lain saja
-        
+
         $filterType = $request->get('divisi_filter', 'both');
-        
+
         if ($filterType === 'own') {
-    // Only memos where current user is the sender
-    $query->whereHas('kirimDocument', function ($q) use ($userId) {
-        $q->where('id_pengirim', $userId)
-          ->where('jenis_document', 'memo')
-          ->whereHas('memo', function ($q) {
-              $q->where('kode', $this->getDivDeptKode(Auth::user()));
-          });
-    });
-    } elseif ($filterType === 'received' || $filterType === 'other') {
-        // Only memos received by current user
-        $query->whereHas('kirimDocument', function ($q) use ($userId) {
-            $q->where('id_penerima', $userId)
-              ->where('jenis_document', 'memo')
-              //->whereHas('memo', function ($q) {
-              //    $q->where('kode', '!=', $this->getDivDeptKode(Auth::user()));
-              //})
-              ;
-        });
-    } else {
-        // Both sent and received memos by the user
-        $query->whereHas('kirimDocument', function ($q) use ($userId) {
-            $q->where(function ($subQ) use ($userId) {
-                $subQ->where('id_pengirim', $userId)
-                     ->orWhere('id_penerima', $userId);
-            })->where('jenis_document', 'memo');
-        });
-    }
-            
-    
+            // Only memos where current user is the sender
+            $query->whereHas('kirimDocument', function ($q) use ($userId) {
+                $q->where('id_pengirim', $userId)
+                    ->where('jenis_document', 'memo')
+                    ->whereHas('memo', function ($q) {
+                        $q->where('kode', $this->getDivDeptKode(Auth::user()));
+                    });
+            });
+        } elseif ($filterType === 'received' || $filterType === 'other') {
+            // Only memos received by current user
+            $query->whereHas('kirimDocument', function ($q) use ($userId) {
+                $q->where('id_penerima', $userId)
+                    ->where('jenis_document', 'memo')
+                    //->whereHas('memo', function ($q) {
+                    //    $q->where('kode', '!=', $this->getDivDeptKode(Auth::user()));
+                    //})
+                ;
+            });
+        } else {
+            // Both sent and received memos by the user
+            $query->whereHas('kirimDocument', function ($q) use ($userId) {
+                $q->where(function ($subQ) use ($userId) {
+                    $subQ->where('id_pengirim', $userId)
+                        ->orWhere('id_penerima', $userId);
+                })->where('jenis_document', 'memo');
+            });
+        }
+
+
 
         // Filter berdasarkan status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
-        } 
+        }
 
         // Filter berdasarkan tanggal dibuat
         if ($request->filled('tgl_dibuat_awal') && $request->filled('tgl_dibuat_akhir')) {
@@ -100,36 +100,36 @@ class MemoController extends Controller
             $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
         }
 
-         // Ambil semua arsip memo berdasarkan user login
+        // Ambil semua arsip memo berdasarkan user login
         $arsipMemoQuery = Arsip::where('user_id', $userId)
-        ->where('jenis_document', 'memo')
-        ->with('document');
+            ->where('jenis_document', 'memo')
+            ->with('document');
 
-        
+
         $query->orderBy($sortBy, $sortDirection);
 
         // Pencarian berdasarkan nama dokumen atau nomor memo
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('judul', 'like', '%' . $request->search . '%')
-                ->orWhere('nomor_memo', 'like', '%' . $request->search . '%');
+                    ->orWhere('nomor_memo', 'like', '%' . $request->search . '%');
             });
         }
-         
+
         // Pagination
         $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
         $memos = $query->paginate($perPage);
         // **Tambahkan status penerima untuk setiap memo**
-        
+
 
         $memos->getCollection()->transform(function ($memo) use ($userId) {
-            
+
             $creator = \App\Models\User::where('id', $userId)
-            ->first();
+                ->first();
             if ($creator && $creator->id === $userId) {
                 $memo->final_status = $memo->status; // Memo diri sendiri
             } else {
-                $statusKirim= Kirim_Document::where('id_document', $memo->id_memo)
+                $statusKirim = Kirim_Document::where('id_document', $memo->id_memo)
                     ->where('jenis_document', 'memo')
                     ->where('id_penerima', $userId)
                     ->first();
@@ -139,41 +139,42 @@ class MemoController extends Controller
             return $memo;
         });
 
-    // Ambil id penerima dan pengirim melalui relasi user
-    $kirimDocuments = Kirim_Document::where('jenis_document', 'memo')
-            ->where(function($query) use ($userId) {
+        // Ambil id penerima dan pengirim melalui relasi user
+        $kirimDocuments = Kirim_Document::where('jenis_document', 'memo')
+            ->where(function ($query) use ($userId) {
                 $query->where('id_pengirim', $userId)
-                      ->orWhere('id_penerima', $userId);
+                    ->orWhere('id_penerima', $userId);
             })
             ->with('memo') // eager-load related memo
             ->orderBy('id_kirim_document', 'desc')
             ->get();
-        return view(Auth::user()->role->nm_role . '.memo.memo-' . Auth::user()->role->nm_role, compact('memos', 'divisi', 'seri','sortDirection', 'kirimDocuments'));
+        return view(Auth::user()->role->nm_role . '.memo.memo-' . Auth::user()->role->nm_role, compact('memos', 'divisi', 'seri', 'sortDirection', 'kirimDocuments'));
     }
 
-    public function superadmin(Request $request){
+    public function superadmin(Request $request)
+    {
         $divisi = Divisi::all();
         $kode = Memo::whereNotNull('kode')
-        ->pluck('kode')
-        ->filter()
-        ->unique()
-        ->values();
+            ->pluck('kode')
+            ->filter()
+            ->unique()
+            ->values();
         $seri = Seri::all();
         $userId = Auth::id();
-        
+
 
         $memoDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
         $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
 
         $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_memo', 'judul'];
-         if (!in_array($sortBy, $allowedSortColumns)) {
+        if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'created_at'; // fallback default
         }
 
         $query = Memo::query()
-        ->whereNotIn('id_memo', $memoDiarsipkan)
-        ->orderBy($sortBy, $sortDirection);
+            ->whereNotIn('id_memo', $memoDiarsipkan)
+            ->orderBy($sortBy, $sortDirection);
 
         // Filter berdasarkan status
         if ($request->filled('status')) {
@@ -189,10 +190,10 @@ class MemoController extends Controller
             $query->whereDate('tgl_dibuat', '<=', $request->tgl_dibuat_akhir);
         }
 
-         // Ambil semua arsip memo berdasarkan user login
+        // Ambil semua arsip memo berdasarkan user login
         $arsipMemoQuery = Arsip::where('user_id', $userId)
-        ->where('jenis_document', 'memo')
-        ->with('document');
+            ->where('jenis_document', 'memo')
+            ->with('document');
 
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
         $query->orderBy('created_at', $sortDirection);
@@ -205,14 +206,14 @@ class MemoController extends Controller
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('judul', 'like', '%' . $request->search . '%')
-                ->orWhere('nomor_memo', 'like', '%' . $request->search . '%');
+                    ->orWhere('nomor_memo', 'like', '%' . $request->search . '%');
             });
         }
         $perPage = $request->get('per_page', 10);
         $memos = $query->paginate($perPage);
 
 
-        return view( 'superadmin.memo.memo-superadmin', compact('memos', 'divisi', 'kode', 'seri','sortDirection'));
+        return view('superadmin.memo.memo-superadmin', compact('memos', 'divisi', 'kode', 'seri', 'sortDirection'));
     }
 
     public function show($id)
@@ -224,7 +225,7 @@ class MemoController extends Controller
             if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
                 $memo->final_status = $memo->status; // Memo dari divisi sendiri
             } else {
-                $statusKirim= Kirim_Document::where('id_document', $memo->id_memo)
+                $statusKirim = Kirim_Document::where('id_document', $memo->id_memo)
                     ->where('jenis_document', 'memo')
                     ->where('id_penerima', $userId)
                     ->first();
@@ -234,7 +235,7 @@ class MemoController extends Controller
             return $memo;
         });
 
-        
+
         return view('admin.view-memo', compact('memo'));
     }
 
@@ -243,22 +244,22 @@ class MemoController extends Controller
     public function create()
     {
         //$divisiId = auth()->user()->divisi_id_divisi;
-        
+
         //$divisiName = auth()->user()->divisi->nm_divisi;
-        $divisiList = Divisi::all(); 
+        $divisiList = Divisi::all();
 
         $user = Auth::user();
         $idUser = Auth::user();
         $user = User::where('id', $idUser->id)->first();
 
-        if($user->position_id_position==1){
+        if ($user->position_id_position == 1) {
             $idDirektur = Director::where('id_director', $user->director_id_director)->first();
             $kodeDirektur = $idDirektur->kode_director;
         } else {
             $kodeDirektur = '';
         }
         // dd($user);
-        
+
         $divDeptKode = $this->getDivDeptKode($user);
 
         // Ambil nomor seri berikutnya
@@ -278,28 +279,28 @@ class MemoController extends Controller
         // Daftar manager yang satu divisi, department, section, dan unit dengan admin yg membuat suratnya
         if ($user->position_id_position !== 1) {
             $managers = User::with('position:id_position,nm_position')
-            ->where('role_id_role', 3)
-            ->where(function ($q) use ($user) {
-                $q->where(function ($q2) use ($user) {
-                    $q2->whereNotNull('divisi_id_divisi')
-                        ->where('divisi_id_divisi', $user->divisi_id_divisi);
-                })->orWhere(function ($q2) use ($user) {
-                    $q2->whereNotNull('department_id_department')
-                        ->where('department_id_department', $user->department_id_department);
-                })->orWhere(function ($q2) use ($user) {
-                    $q2->whereNotNull('section_id_section')
-                        ->where('section_id_section', $user->section_id_section);
-                })->orWhere(function ($q2) use ($user) {
-                    $q2->whereNotNull('unit_id_unit')
-                        ->where('unit_id_unit', $user->unit_id_unit);
-                });
-            })
-            ->get(['id', 'firstname', 'lastname', 'position_id_position']);
+                ->where('role_id_role', 3)
+                ->where(function ($q) use ($user) {
+                    $q->where(function ($q2) use ($user) {
+                        $q2->whereNotNull('divisi_id_divisi')
+                            ->where('divisi_id_divisi', $user->divisi_id_divisi);
+                    })->orWhere(function ($q2) use ($user) {
+                        $q2->whereNotNull('department_id_department')
+                            ->where('department_id_department', $user->department_id_department);
+                    })->orWhere(function ($q2) use ($user) {
+                        $q2->whereNotNull('section_id_section')
+                            ->where('section_id_section', $user->section_id_section);
+                    })->orWhere(function ($q2) use ($user) {
+                        $q2->whereNotNull('unit_id_unit')
+                            ->where('unit_id_unit', $user->unit_id_unit);
+                    });
+                })
+                ->get(['id', 'firstname', 'lastname', 'position_id_position']);
         } else {
-             $managers = User::with('position:id_position,nm_position')
-             ->where('role_id_role', 3)
-             ->where('director_id_director', $user->director_id_director)
-             ->get(['id', 'firstname', 'lastname', 'position_id_position']);
+            $managers = User::with('position:id_position,nm_position')
+                ->where('role_id_role', 3)
+                ->where('director_id_director', $user->director_id_director)
+                ->get(['id', 'firstname', 'lastname', 'position_id_position']);
         }
 
         // Ambil seluruh user dan struktur organisasi (untuk dropdown tree)
@@ -307,8 +308,8 @@ class MemoController extends Controller
         $orgTree = $this->getOrgTreeWithUsers();
         $jsTreeData = $this->convertToJsTree($orgTree);
         $mainDirector = $orgTree[0] ?? null; // assuming the first node is the main director
-        
-        return view(Auth::user()->role->nm_role.'.memo.add-memo', [
+
+        return view(Auth::user()->role->nm_role . '.memo.add-memo', [
             'nomorSeriTahunan' => $nextSeri['seri_tahunan'],
             'nomorDokumen' => $nomorDokumen,
             'managers' => $managers,
@@ -321,7 +322,7 @@ class MemoController extends Controller
     }
     private function getOrgTreeWithUsers()
     {
-       $directors = Director::with([
+        $directors = Director::with([
             'users.position',
             'divisi.users.position',
             'divisi.department.users.position',
@@ -340,11 +341,11 @@ class MemoController extends Controller
             $tree[] = $dir;
         }
         return $tree;
-        }
-    
+    }
+
     private function filterUsersAtLevel($users, $level)
     {
-        return array_values(array_filter($users, function($user) use ($level) {
+        return array_values(array_filter($users, function ($user) use ($level) {
             return (
                 ($level === 'director' && is_null($user['divisi_id_divisi']) && is_null($user['department_id_department']) && is_null($user['section_id_section']) && is_null($user['unit_id_unit'])) ||
                 ($level === 'divisi' && !is_null($user['divisi_id_divisi']) && is_null($user['department_id_department']) && is_null($user['section_id_section']) && is_null($user['unit_id_unit'])) ||
@@ -373,13 +374,13 @@ class MemoController extends Controller
 
         return "$position $hierarki ($firstname $lastname)";
     }
-    
+
     private function convertToJsTree($tree)
     {
         $result = [];
         foreach ($tree as $director) {
             $dirNode = [
-                'id' => 'director-'.$director['id_director'],
+                'id' => 'director-' . $director['id_director'],
                 'text' => $director['name_director'],
                 'children' => []
             ];
@@ -389,7 +390,7 @@ class MemoController extends Controller
             $usersAtDirector = $this->filterUsersAtLevel($director['users'], 'director');
             foreach ($usersAtDirector as $user) {
                 $dirNode['children'][] = [
-                    'id' => 'user-'.$user['id'],
+                    'id' => 'user-' . $user['id'],
                     'text' => $this->getUserText($user, ['director' => $director['name_director']]),
                     'icon' => 'fa fa-user'
                 ];
@@ -398,11 +399,11 @@ class MemoController extends Controller
             // Tanpa Divisi (langsung Department)
             if (empty($director['divisi'])) {
                 foreach ($director['department'] ?? [] as $dept) {
-                    $deptNode = [ 'id' => 'dept-'.$dept['id_department'], 'text' => $dept['name_department'], 'children' => [] ];
+                    $deptNode = ['id' => 'dept-' . $dept['id_department'], 'text' => $dept['name_department'], 'children' => []];
                     $usersAtDepartment = $this->filterUsersAtLevel($dept['users'] ?? [], 'department');
                     foreach ($usersAtDepartment as $user) {
                         $deptNode['children'][] = [
-                            'id' => 'user-'.$user['id'],
+                            'id' => 'user-' . $user['id'],
                             'text' => $this->getUserText($user, [
                                 'director' => $director['name_director'],
                                 'department' => $dept['name_department']
@@ -411,11 +412,11 @@ class MemoController extends Controller
                         ];
                     }
                     foreach ($dept['section'] ?? [] as $section) {
-                        $sectionNode = [ 'id' => 'section-'.$section['id_section'], 'text' => $section['name_section'], 'children' => [] ];
+                        $sectionNode = ['id' => 'section-' . $section['id_section'], 'text' => $section['name_section'], 'children' => []];
                         $usersAtSection = $this->filterUsersAtLevel($section['users'] ?? [], 'section');
                         foreach ($usersAtSection as $user) {
                             $sectionNode['children'][] = [
-                                'id' => 'user-'.$user['id'],
+                                'id' => 'user-' . $user['id'],
                                 'text' => $this->getUserText($user, [
                                     'director' => $director['name_director'],
                                     'department' => $dept['name_department'],
@@ -425,17 +426,17 @@ class MemoController extends Controller
                             ];
                         }
                         foreach ($section['unit'] ?? [] as $unit) {
-                            $unitNode = [ 'id' => 'unit-'.$unit['id_unit'], 'text' => $unit['name_unit'], 'children' => [] ];
+                            $unitNode = ['id' => 'unit-' . $unit['id_unit'], 'text' => $unit['name_unit'], 'children' => []];
                             $usersAtUnit = $this->filterUsersAtLevel($unit['users'] ?? [], 'unit');
                             foreach ($usersAtUnit as $user) {
                                 $unitNode['children'][] = [
-                                    'id' => 'user-'.$user['id'],
+                                    'id' => 'user-' . $user['id'],
                                     'text' => $this->getUserText($user, [
-                                    'director' => $director['name_director'],
-                                    'department' => $dept['name_department'],
-                                    'section' => $section['name_section'],
-                                    'unit' => $unit['name_unit']
-                                ]),
+                                        'director' => $director['name_director'],
+                                        'department' => $dept['name_department'],
+                                        'section' => $section['name_section'],
+                                        'unit' => $unit['name_unit']
+                                    ]),
                                     'icon' => 'fa fa-user'
                                 ];
                             }
@@ -448,11 +449,11 @@ class MemoController extends Controller
             } else {
                 // Dengan Divisi
                 foreach ($director['divisi'] ?? [] as $divisi) {
-                    $divNode = [ 'id' => 'divisi-'.$divisi['id_divisi'], 'text' => $divisi['nm_divisi'], 'children' => [] ];
+                    $divNode = ['id' => 'divisi-' . $divisi['id_divisi'], 'text' => $divisi['nm_divisi'], 'children' => []];
                     $usersAtDivisi = $this->filterUsersAtLevel($divisi['users'] ?? [], 'divisi');
                     foreach ($usersAtDivisi as $user) {
                         $divNode['children'][] = [
-                            'id' => 'user-'.$user['id'],
+                            'id' => 'user-' . $user['id'],
                             'text' => $this->getUserText($user, [
                                 'director' => $director['name_director'],
                                 'divisi' => $divisi['nm_divisi']
@@ -461,11 +462,11 @@ class MemoController extends Controller
                         ];
                     }
                     foreach ($divisi['department'] ?? [] as $dept) {
-                        $deptNode = [ 'id' => 'dept-'.$dept['id_department'], 'text' => $dept['name_department'], 'children' => [] ];
+                        $deptNode = ['id' => 'dept-' . $dept['id_department'], 'text' => $dept['name_department'], 'children' => []];
                         $usersAtDepartment = $this->filterUsersAtLevel($dept['users'] ?? [], 'department');
                         foreach ($usersAtDepartment as $user) {
                             $deptNode['children'][] = [
-                                'id' => 'user-'.$user['id'],
+                                'id' => 'user-' . $user['id'],
                                 'text' => $this->getUserText($user, [
                                     'director' => $director['name_director'],
                                     'divisi' => $divisi['nm_divisi'],
@@ -475,11 +476,11 @@ class MemoController extends Controller
                             ];
                         }
                         foreach ($dept['section'] ?? [] as $section) {
-                            $sectionNode = [ 'id' => 'section-'.$section['id_section'], 'text' => $section['name_section'], 'children' => [] ];
+                            $sectionNode = ['id' => 'section-' . $section['id_section'], 'text' => $section['name_section'], 'children' => []];
                             $usersAtSection = $this->filterUsersAtLevel($section['users'] ?? [], 'section');
                             foreach ($usersAtSection as $user) {
                                 $sectionNode['children'][] = [
-                                    'id' => 'user-'.$user['id'],
+                                    'id' => 'user-' . $user['id'],
                                     'text' => $this->getUserText($user, [
                                         'director' => $director['name_director'],
                                         'divisi' => $divisi['nm_divisi'],
@@ -490,11 +491,11 @@ class MemoController extends Controller
                                 ];
                             }
                             foreach ($section['unit'] ?? [] as $unit) {
-                                $unitNode = [ 'id' => 'unit-'.$unit['id_unit'], 'text' => $unit['name_unit'], 'children' => [] ];
+                                $unitNode = ['id' => 'unit-' . $unit['id_unit'], 'text' => $unit['name_unit'], 'children' => []];
                                 $usersAtUnit = $this->filterUsersAtLevel($unit['users'] ?? [], 'unit');
                                 foreach ($usersAtUnit as $user) {
                                     $unitNode['children'][] = [
-                                        'id' => 'user-'.$user['id'],
+                                        'id' => 'user-' . $user['id'],
                                         'text' => $this->getUserText($user, [
                                             'director' => $director['name_director'],
                                             'divisi' => $divisi['nm_divisi'],
@@ -519,41 +520,42 @@ class MemoController extends Controller
         return json_encode($result);
     }
 
-    public function getDivDeptKode($user) {
-        if($user->department_id_department != NULL){
+    public function getDivDeptKode($user)
+    {
+        if ($user->department_id_department != NULL) {
             $divisiName = Department::where('id_department', $user->department_id_department)->first();
-            if($divisiName->kode_department != NULL){
+            if ($divisiName->kode_department != NULL) {
                 $divisiName = $divisiName->kode_department;
-            } else if($divisiName->kode_department == NULL){
-                if($user->divisi_id_divisi == NULL){
+            } else if ($divisiName->kode_department == NULL) {
+                if ($user->divisi_id_divisi == NULL) {
                     $divisiName = $divisiName->name_department;
                 } else {
                     $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
-                    if($divisiName->kode_divisi != NULL){
+                    if ($divisiName->kode_divisi != NULL) {
                         $divisiName = $divisiName->kode_divisi;
-                    }else if($divisiName->kode_divisi == NULL){
+                    } else if ($divisiName->kode_divisi == NULL) {
                         $divisiName = $divisiName->nm_divisi;
                     }
                 }
             }
-        } else if($user->divisi_id_divisi != NULL){
+        } else if ($user->divisi_id_divisi != NULL) {
             $divisiName = Divisi::where('id_divisi', $user->divisi_id_divisi)->first();
-            if($divisiName->kode_divisi != NULL){
+            if ($divisiName->kode_divisi != NULL) {
                 $divisiName = $divisiName->kode_divisi;
-            }else if($divisiName->kode_divisi == NULL){
+            } else if ($divisiName->kode_divisi == NULL) {
                 $divisiName = $divisiName->nm_divisi;
             }
-        } else if($user->director_id_director != NULL){
+        } else if ($user->director_id_director != NULL) {
             $divisiName = Director::where('id_director', $user->director_id_director)->first();
             $divisiName = $divisiName->kode_director;
         }
-        
-    return($divisiName);
+
+        return ($divisiName);
     }
-    
+
     public function store(Request $request)
-    {   
-    $validator = Validator::make($request->all(), [
+    {
+        $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'isi_memo' => 'required|string',
             'tujuan' => 'required|array|min:1',
@@ -561,14 +563,14 @@ class MemoController extends Controller
             'nomor_memo' => 'required|string|max:255',
             'nama_bertandatangan' => 'required|string|max:255',
             'manager_user_id' => 'required|exists:users,id',
-            'pembuat'=>'required|string|max:255',
-            'catatan'=>'nullable|string|max:255',
+            'pembuat' => 'required|string|max:255',
+            'catatan' => 'nullable|string|max:255',
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
             'divisi_id_divisi' => 'nullable',
             'lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // 2MB max
-        ],[
+        ], [
             'lampiran.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
             'lampiran.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
         ]);
@@ -587,12 +589,12 @@ class MemoController extends Controller
 
         $divDeptKode = $this->getDivDeptKode(Auth::user());
 
-        
-        
+
+
         $seri = Seri::where('kode', $divDeptKode)
-                ->where('tahun', now()->year)
-                ->latest()
-                ->first();
+            ->where('tahun', now()->year)
+            ->latest()
+            ->first();
         $seri = Seri::getNextSeri(true);
         if (!$seri) {
             return back()->with('error', 'Nomor seri tidak ditemukan.');
@@ -616,7 +618,7 @@ class MemoController extends Controller
             'lampiran' => $filePath,
 
         ]);
-        if ($request->has('jumlah_kolom')&& !empty($request->nomor)) {
+        if ($request->has('jumlah_kolom') && !empty($request->nomor)) {
             foreach ($request->nomor as $key => $nomor) {
                 kategori_barang::create([
                     'memo_id_memo' => $memo->id_memo,
@@ -627,34 +629,44 @@ class MemoController extends Controller
                 ]);
             }
         }
-    
+
         $creator = Auth::user();
-            
+
 
         $managers = User::where('id', $request->manager_user_id)
-                        ->get();
+            ->get();
 
         $sentCount = 0;
-        
-        if ($creator->role_id_role == 2)
-        {foreach ($managers as $manager) {
-            
-            $kirim = Kirim_document::create([
-                'id_document' => $memo->id_memo,
-                'jenis_document' => 'memo',
-                'id_pengirim' => $creator->id,
-                'id_penerima' => $manager->id,
-                'status' => 'pending',
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-        
-            if ($kirim) {
-                $sentCount++;
-            }
-        }}
 
-        elseif ($creator->role_id_role == 3) {
+        if ($creator->role_id_role == 2) {
+            foreach ($managers as $manager) {
+
+                $kirim = Kirim_document::create([
+                    'id_document' => $memo->id_memo,
+                    'jenis_document' => 'memo',
+                    'id_pengirim' => $creator->id,
+                    'id_penerima' => $manager->id,
+                    'status' => 'pending',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                Notifikasi::create([
+                    'judul' => "Memo Dalam Proses Persetujuan",
+                    'judul_document' => $memo->judul,
+                    'id_user' => $memo->pembuat,
+                    'updated_at' => now()
+                ]);
+                Notifikasi::create([
+                    'judul' => "Memo Menunggu Persetujuan",
+                    'judul_document' => $memo->judul,
+                    'id_user' => $manager->id,
+                    'updated_at' => now()
+                ]);
+                if ($kirim) {
+                    $sentCount++;
+                }
+            }
+        } elseif ($creator->role_id_role == 3) {
 
             $kirim = Kirim_document::create([
                 'id_document' => $memo->id_memo,
@@ -666,6 +678,12 @@ class MemoController extends Controller
                 'updated_at' => now()
             ]);
 
+            Notifikasi::create([
+                'judul' => "Memo Terkirim",
+                'judul_document' => $memo->judul,
+                'id_user' => $memo->pembuat,
+                'updated_at' => now()
+            ]);
             $memo->status = 'approve';
             $memo->tgl_disahkan = now();
             $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
@@ -674,338 +692,358 @@ class MemoController extends Controller
             $memo->qr_approved_by = $qrBase64;
             $memo->save();
 
-        $tujuanUserIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
-        //dd($tujuanUserIds);
-        foreach ($tujuanUserIds as $userId) {
-            if ($userId == $creator->id) continue;
-            $recipients = User::where('id', $userId)->get();
-            foreach ($recipients as $recipient) {
-                Kirim_document::create([
-                    'id_document' => $memo->id_memo,
-                    'jenis_document' => 'memo',
-                    'id_pengirim' => $creator->id,
-                    'id_penerima' => $recipient->id,
-                    'status' => 'approve',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+            $tujuanUserIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
+            //dd($tujuanUserIds);
+            foreach ($tujuanUserIds as $userId) {
+                if ($userId == $creator->id) continue;
+                $recipients = User::where('id', $userId)->get();
+                foreach ($recipients as $recipient) {
+                    Kirim_document::create([
+                        'id_document' => $memo->id_memo,
+                        'jenis_document' => 'memo',
+                        'id_pengirim' => $creator->id,
+                        'id_penerima' => $recipient->id,
+                        'status' => 'approve',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                    Notifikasi::create([
+                        'judul' => "Memo Masuk",
+                        'judul_document' => $memo->judul,
+                        'id_user' => $recipient->id,
+                        'updated_at' => now()
+                    ]);
+                }
             }
         }
-    }
-        
-    if (Auth::user()->role_id_role == 2) {
-        return redirect()->route('memo.'. Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dibuat.');
-    } else {
-        return redirect()->route('memo.terkirim')->with('success', 'Dokumen berhasil dibuat.');
-    }
-    }
 
-    public function convertTujuanToUserId (array $rawTujuan) {
-
-    $departments = [];
-    $sections = [];
-    $divisions = [];
-    $units = [];
-    $users = [];
-
-    foreach ($rawTujuan as $item) {
-        if (Str::startsWith($item, 'dept-')) {
-            $departments[] = (int) Str::after($item, 'dept-');
-        } elseif (Str::startsWith($item, 'section-')) {
-            $sections[] = (int) Str::after($item, 'section-');
-        } elseif (Str::startsWith($item, 'divisi-')) {
-            $divisions[] = (int) Str::after($item, 'divisi-');
-        } elseif (Str::startsWith($item, 'unit-')) {
-            $units[] = (int) Str::after($item, 'unit-');
-        } elseif (Str::startsWith($item, 'user-')) {
-            $users[] = (int) Str::after($item, 'user-');
+        if (Auth::user()->role_id_role == 2) {
+            return redirect()->route('memo.' . Auth::user()->role->nm_role)->with('success', 'Dokumen berhasil dibuat.');
+        } else {
+            return redirect()->route('memo.terkirim')->with('success', 'Dokumen berhasil dibuat.');
         }
     }
 
-    // Now query the users who match any of the IDs
-    $users = User::where(function ($query) use ($departments, $sections, $divisions, $units, $users) {
-        if (!empty($departments)) {
-            $query->orWhereIn('department_id_department', $departments);
-        }
-        if (!empty($sections)) {
-            $query->orWhereIn('section_id_section', $sections);
-        }
-        if (!empty($divisions)) {
-            $query->orWhereIn('divisi_id_divisi', $divisions);
-        }
-        if (!empty($units)) {
-            $query->orWhereIn('unit_id_unit', $units);
-        }
-        if (!empty($users)) {
-            $query->orWhereIn('id', $users);
-        }
-    })->pluck('id')->toArray();
+    public function convertTujuanToUserId(array $rawTujuan)
+    {
 
-    // Final tujuan result:
-    $tujuanId = $users;
-    return $tujuanId;
+        $departments = [];
+        $sections = [];
+        $divisions = [];
+        $units = [];
+        $users = [];
+
+        foreach ($rawTujuan as $item) {
+            if (Str::startsWith($item, 'dept-')) {
+                $departments[] = (int) Str::after($item, 'dept-');
+            } elseif (Str::startsWith($item, 'section-')) {
+                $sections[] = (int) Str::after($item, 'section-');
+            } elseif (Str::startsWith($item, 'divisi-')) {
+                $divisions[] = (int) Str::after($item, 'divisi-');
+            } elseif (Str::startsWith($item, 'unit-')) {
+                $units[] = (int) Str::after($item, 'unit-');
+            } elseif (Str::startsWith($item, 'user-')) {
+                $users[] = (int) Str::after($item, 'user-');
+            }
+        }
+
+        // Now query the users who match any of the IDs
+        $users = User::where(function ($query) use ($departments, $sections, $divisions, $units, $users) {
+            if (!empty($departments)) {
+                $query->orWhereIn('department_id_department', $departments);
+            }
+            if (!empty($sections)) {
+                $query->orWhereIn('section_id_section', $sections);
+            }
+            if (!empty($divisions)) {
+                $query->orWhereIn('divisi_id_divisi', $divisions);
+            }
+            if (!empty($units)) {
+                $query->orWhereIn('unit_id_unit', $units);
+            }
+            if (!empty($users)) {
+                $query->orWhereIn('id', $users);
+            }
+        })->pluck('id')->toArray();
+
+        // Final tujuan result:
+        $tujuanId = $users;
+        return $tujuanId;
     }
 
     //fungsi untuk ngubah daftar penerima dari per-user jadi per hierarki, public supaya bisa dipake di controller CetakMemoPDF juga
     public function simplifyRecipients($tujuanString)
-{
-    $userIds = explode(';', $tujuanString);
-    $userIds = array_filter($userIds); // remove empty
+    {
+        $userIds = explode(';', $tujuanString);
+        $userIds = array_filter($userIds); // remove empty
 
-    // Group user IDs by unit
-    $units = DB::table('users')
-        ->whereIn('id', $userIds)
-        ->get()
-        ->groupBy('unit_id');
+        // Group user IDs by unit
+        $units = DB::table('users')
+            ->whereIn('id', $userIds)
+            ->get()
+            ->groupBy('unit_id');
 
-    $selectedUnitIds = [];
-    $remainingUserIds = [];
+        $selectedUnitIds = [];
+        $remainingUserIds = [];
 
-    foreach ($units as $unitId => $usersInUnit) {
-        $totalUsersInUnit = DB::table('users')->where('unit_id', $unitId)->count();
+        foreach ($units as $unitId => $usersInUnit) {
+            $totalUsersInUnit = DB::table('users')->where('unit_id', $unitId)->count();
 
-        if (count($usersInUnit) == $totalUsersInUnit) {
-            $selectedUnitIds[] = $unitId;
-        } else {
-            $remainingUserIds = array_merge($remainingUserIds, $usersInUnit->pluck('id')->toArray());
-        }
-    }
-
-    // Now group selected unit IDs by section
-    $sections = DB::table('units')
-        ->whereIn('id', $selectedUnitIds)
-        ->get()
-        ->groupBy('section_id');
-
-    $selectedSectionIds = [];
-    $remainingUnitIds = [];
-
-    foreach ($sections as $sectionId => $unitsInSection) {
-        $totalUnitsInSection = DB::table('units')->where('section_id', $sectionId)->count();
-
-        if (count($unitsInSection) == $totalUnitsInSection) {
-            $selectedSectionIds[] = $sectionId;
-        } else {
-            $remainingUnitIds = array_merge($remainingUnitIds, $unitsInSection->pluck('id')->toArray());
-        }
-    }
-
-    // Now group selected section IDs by department
-    $departments = DB::table('section')
-        ->whereIn('id', $selectedSectionIds)
-        ->get()
-        ->groupBy('department_id_department');
-
-    $selectedDepartmentIds = [];
-    $remainingSectionIds = [];
-
-    foreach ($departments as $departmentId => $sectionsInDept) {
-        $totalSectionsInDept = DB::table('section')->where('department_id_department', $departmentId)->count();
-
-        if (count($sectionsInDept) == $totalSectionsInDept) {
-            $selectedDepartmentIds[] = $departmentId;
-        } else {
-            $remainingSectionIds = array_merge($remainingSectionIds, $sectionsInDept->pluck('id')->toArray());
-        }
-    }
-
-    // Now group selected departments by divisi
-    $divisis = DB::table('departments')
-        ->whereIn('id', $selectedDepartmentIds)
-        ->get()
-        ->groupBy('divisi_id');
-
-    $selectedDivisiIds = [];
-    $remainingDepartmentIds = [];
-
-    foreach ($divisis as $divisiId => $departmentsInDiv) {
-        $totalDeptsInDiv = DB::table('department')->where('divisi_id_divisi', $divisiId)->count();
-
-        if (count($departmentsInDiv) == $totalDeptsInDiv) {
-            $selectedDivisiIds[] = $divisiId;
-        } else {
-            $remainingDepartmentIds = array_merge($remainingDepartmentIds, $departmentsInDiv->pluck('id')->toArray());
-        }
-    }
-
-    return [
-        'divisi' => $selectedDivisiIds,
-        'departments' => $remainingDepartmentIds,
-        'sections' => $remainingSectionIds,
-        'units' => $remainingUnitIds,
-        'users' => $remainingUserIds,
-    ];
-}
-public function collapseRecipients2(array $selectedUserIds)
-{
-    $selected = collect($selectedUserIds)->map(fn($id) => (int)$id);
-
-    // Start from users and move up
-    $collapsed = $this->collapseAtLevel($selected, 'unit_id_unit', 'unit');
-    $collapsed = $this->collapseAtLevel($collapsed, 'section_id_section', 'section');
-    $collapsed = $this->collapseAtLevel($collapsed, 'department_id_department', 'department');
-    $collapsed = $this->collapseAtLevel($collapsed, 'divisi_id_divisi', 'divisi');
-
-    return $collapsed->implode(';'); // return string
-}
-
-protected function collapseAtLevel2(Collection $items, string $parentKey, string $table)
-{
-    // Group by parent
-    $grouped = DB::table('users')
-        ->whereIn('id', $items)
-        ->get()
-        ->groupBy($parentKey);
-
-    $collapsed = collect();
-
-    foreach ($grouped as $parentId => $children) {
-        $allUserIds = DB::table('users')
-            ->where($parentKey, $parentId)
-            ->pluck('id');
-
-        $selectedIds = $children->pluck('id');
-
-        if ($selectedIds->sort()->values()->all() === $allUserIds->sort()->values()->all()) {
-            // All children under this parent are selected → collapse
-            $collapsed->push($parentKey . ':' . $parentId);
-        } else {
-            $collapsed = $collapsed->merge($selectedIds);
-        }
-    }
-
-    return $collapsed;
-}
-
-public function collapseRecipients3(array $selectedUserIds)
-{
-    $selected = collect($selectedUserIds)->map(fn($id) => (int)$id);
-
-    // Load all user data with parent info
-    $users = DB::table('users')
-        ->whereIn('id', $selected)
-        ->get(['id', 'unit_id_unit', 'section_id_section', 'department_id_department', 'divisi_id_divisi']);
-
-    // Collapse upward
-    $result = $this->collapseAtLevel($users, 'unit_id_unit', 'users');
-    $result = $this->collapseAtLevel($result, 'section_id_section', 'users');
-    $result = $this->collapseAtLevel($result, 'department_id_department', 'users');
-    $result = $this->collapseAtLevel($result, 'divisi_id_divisi', 'users');
-
-    // Final clean-up: extract IDs or tags like "unit:5"
-    return $result->map(fn($item) => is_array($item) ? "{$item['level']}:{$item['id']}" : $item)->implode(';');
-}
-
-protected function collapseAtLevel3($items, $levelKey, $userTable)
-{ 
-    $grouped = collect();
-
-    foreach ($items as $item) {
-        // item can be user_id (int) or ['level' => ..., 'id' => ...]
-        if (is_int($item)) {
-            $user = DB::table($userTable)->where('id', $item)->first([$levelKey, 'id']);
-            $grouped[$user->$levelKey][] = $user->id;
-        } else {
-            // Already collapsed higher — pass through
-            $grouped[] = $item;
-        }
-    }
-
-    $collapsed = collect();
-
-    foreach ($grouped as $parentId => $userIds) {
-        if (is_numeric($parentId)) {
-            $allUsersUnderParent = DB::table($userTable)->where($levelKey, $parentId)->pluck('id')->all();
-
-            sort($allUsersUnderParent);
-            sort($userIds);
-
-            if ($userIds == $allUsersUnderParent) {
-                // All users selected — collapse
-                $collapsed->push(['level' => str_replace('_id', '', $levelKey), 'id' => $parentId]);
+            if (count($usersInUnit) == $totalUsersInUnit) {
+                $selectedUnitIds[] = $unitId;
             } else {
-                $collapsed = $collapsed->merge($userIds);
+                $remainingUserIds = array_merge($remainingUserIds, $usersInUnit->pluck('id')->toArray());
             }
-        } else {
-            // This is already collapsed at a higher level
-            $collapsed->push($parentId);
         }
+
+        // Now group selected unit IDs by section
+        $sections = DB::table('units')
+            ->whereIn('id', $selectedUnitIds)
+            ->get()
+            ->groupBy('section_id');
+
+        $selectedSectionIds = [];
+        $remainingUnitIds = [];
+
+        foreach ($sections as $sectionId => $unitsInSection) {
+            $totalUnitsInSection = DB::table('units')->where('section_id', $sectionId)->count();
+
+            if (count($unitsInSection) == $totalUnitsInSection) {
+                $selectedSectionIds[] = $sectionId;
+            } else {
+                $remainingUnitIds = array_merge($remainingUnitIds, $unitsInSection->pluck('id')->toArray());
+            }
+        }
+
+        // Now group selected section IDs by department
+        $departments = DB::table('section')
+            ->whereIn('id', $selectedSectionIds)
+            ->get()
+            ->groupBy('department_id_department');
+
+        $selectedDepartmentIds = [];
+        $remainingSectionIds = [];
+
+        foreach ($departments as $departmentId => $sectionsInDept) {
+            $totalSectionsInDept = DB::table('section')->where('department_id_department', $departmentId)->count();
+
+            if (count($sectionsInDept) == $totalSectionsInDept) {
+                $selectedDepartmentIds[] = $departmentId;
+            } else {
+                $remainingSectionIds = array_merge($remainingSectionIds, $sectionsInDept->pluck('id')->toArray());
+            }
+        }
+
+        // Now group selected departments by divisi
+        $divisis = DB::table('departments')
+            ->whereIn('id', $selectedDepartmentIds)
+            ->get()
+            ->groupBy('divisi_id');
+
+        $selectedDivisiIds = [];
+        $remainingDepartmentIds = [];
+
+        foreach ($divisis as $divisiId => $departmentsInDiv) {
+            $totalDeptsInDiv = DB::table('department')->where('divisi_id_divisi', $divisiId)->count();
+
+            if (count($departmentsInDiv) == $totalDeptsInDiv) {
+                $selectedDivisiIds[] = $divisiId;
+            } else {
+                $remainingDepartmentIds = array_merge($remainingDepartmentIds, $departmentsInDiv->pluck('id')->toArray());
+            }
+        }
+
+        return [
+            'divisi' => $selectedDivisiIds,
+            'departments' => $remainingDepartmentIds,
+            'sections' => $remainingSectionIds,
+            'units' => $remainingUnitIds,
+            'users' => $remainingUserIds,
+        ];
+    }
+    public function collapseRecipients2(array $selectedUserIds)
+    {
+        $selected = collect($selectedUserIds)->map(fn($id) => (int)$id);
+
+        // Start from users and move up
+        $collapsed = $this->collapseAtLevel($selected, 'unit_id_unit', 'unit');
+        $collapsed = $this->collapseAtLevel($collapsed, 'section_id_section', 'section');
+        $collapsed = $this->collapseAtLevel($collapsed, 'department_id_department', 'department');
+        $collapsed = $this->collapseAtLevel($collapsed, 'divisi_id_divisi', 'divisi');
+
+        return $collapsed->implode(';'); // return string
     }
 
-    return $collapsed;
-}
-protected function collapseHierarchies($selectedUserIds)
-{
-    $levels = [
-        'unit_id_unit' => 'unit',
-        'section_id_section' => 'section',
-        'department_id_department' => 'department',
-        'divisi_id_divisi' => 'divisi',
-    ];
+    protected function collapseAtLevel2(Collection $items, string $parentKey, string $table)
+    {
+        // Group by parent
+        $grouped = DB::table('users')
+            ->whereIn('id', $items)
+            ->get()
+            ->groupBy($parentKey);
 
-    $userTable = 'users';
-    $selected = collect($selectedUserIds); // These are user IDs (integers)
+        $collapsed = collect();
 
-    // Step 1: Collapse at each level progressively from bottom to top
-    foreach ($levels as $levelKey => $levelName) {
-        $selected = $this->collapseAtLevel($selected, $levelKey, $userTable);
+        foreach ($grouped as $parentId => $children) {
+            $allUserIds = DB::table('users')
+                ->where($parentKey, $parentId)
+                ->pluck('id');
+
+            $selectedIds = $children->pluck('id');
+
+            if ($selectedIds->sort()->values()->all() === $allUserIds->sort()->values()->all()) {
+                // All children under this parent are selected → collapse
+                $collapsed->push($parentKey . ':' . $parentId);
+            } else {
+                $collapsed = $collapsed->merge($selectedIds);
+            }
+        }
+
+        return $collapsed;
     }
 
-    return $selected;
-}
-protected function collapseAtLevel($items, $levelKey, $userTable)
-{
-    $grouped = collect();
+    public function collapseRecipients3(array $selectedUserIds)
+    {
+        $selected = collect($selectedUserIds)->map(fn($id) => (int)$id);
 
-    foreach ($items as $item) {
-        if (is_int($item)) {
-            $user = DB::table($userTable)->where('id', $item)->first([$levelKey, 'id']);
-            if ($user && $user->$levelKey !== null) {
+        // Load all user data with parent info
+        $users = DB::table('users')
+            ->whereIn('id', $selected)
+            ->get(['id', 'unit_id_unit', 'section_id_section', 'department_id_department', 'divisi_id_divisi']);
+
+        // Collapse upward
+        $result = $this->collapseAtLevel($users, 'unit_id_unit', 'users');
+        $result = $this->collapseAtLevel($result, 'section_id_section', 'users');
+        $result = $this->collapseAtLevel($result, 'department_id_department', 'users');
+        $result = $this->collapseAtLevel($result, 'divisi_id_divisi', 'users');
+
+        // Final clean-up: extract IDs or tags like "unit:5"
+        return $result->map(fn($item) => is_array($item) ? "{$item['level']}:{$item['id']}" : $item)->implode(';');
+    }
+
+    protected function collapseAtLevel3($items, $levelKey, $userTable)
+    {
+        $grouped = collect();
+
+        foreach ($items as $item) {
+            // item can be user_id (int) or ['level' => ..., 'id' => ...]
+            if (is_int($item)) {
+                $user = DB::table($userTable)->where('id', $item)->first([$levelKey, 'id']);
                 $grouped[$user->$levelKey][] = $user->id;
-            }
-        } elseif (is_array($item) && isset($item['level'], $item['id'])) {
-            // Already collapsed at higher level, just push as-is
-            $grouped[] = $item;
-        }
-    }
-
-    $collapsed = collect();
-
-    foreach ($grouped as $parentId => $userIds) {
-        if (is_numeric($parentId)) {
-            $allUsersUnderParent = DB::table($userTable)->where($levelKey, $parentId)->pluck('id')->all();
-
-            // Sort both arrays for accurate comparison
-            sort($allUsersUnderParent);
-            sort($userIds);
-
-            if ($userIds == $allUsersUnderParent) {
-                $collapsed->push([
-                    'level' => str_replace(['_id_', '_id'], '', $levelKey), // handles `unit_id_unit` etc.
-                    'id' => $parentId
-                ]);
             } else {
-                $collapsed = $collapsed->merge($userIds);
+                // Already collapsed higher — pass through
+                $grouped[] = $item;
             }
-        } else {
-            $collapsed->push($userIds); // $userIds is actually a collapsed object here
         }
+
+        $collapsed = collect();
+
+        foreach ($grouped as $parentId => $userIds) {
+            if (is_numeric($parentId)) {
+                $allUsersUnderParent = DB::table($userTable)->where($levelKey, $parentId)->pluck('id')->all();
+
+                sort($allUsersUnderParent);
+                sort($userIds);
+
+                if ($userIds == $allUsersUnderParent) {
+                    // All users selected — collapse
+                    $collapsed->push(['level' => str_replace('_id', '', $levelKey), 'id' => $parentId]);
+                } else {
+                    $collapsed = $collapsed->merge($userIds);
+                }
+            } else {
+                // This is already collapsed at a higher level
+                $collapsed->push($parentId);
+            }
+        }
+
+        return $collapsed;
+    }
+    protected function collapseHierarchies($selectedUserIds)
+    {
+        $levels = [
+            'unit_id_unit' => 'unit',
+            'section_id_section' => 'section',
+            'department_id_department' => 'department',
+            'divisi_id_divisi' => 'divisi',
+        ];
+
+        $userTable = 'users';
+        $selected = collect($selectedUserIds); // These are user IDs (integers)
+
+        // Step 1: Collapse at each level progressively from bottom to top
+        foreach ($levels as $levelKey => $levelName) {
+            $selected = $this->collapseAtLevel($selected, $levelKey, $userTable);
+        }
+
+        return $selected;
+    }
+    protected function collapseAtLevel($items, $levelKey, $userTable)
+    {
+        $grouped = collect();
+
+        foreach ($items as $item) {
+            if (is_int($item)) {
+                $user = DB::table($userTable)->where('id', $item)->first([$levelKey, 'id']);
+                if ($user && $user->$levelKey !== null) {
+                    $grouped[$user->$levelKey][] = $user->id;
+                }
+            } elseif (is_array($item) && isset($item['level'], $item['id'])) {
+                // Already collapsed at higher level, just push as-is
+                $grouped[] = $item;
+            }
+        }
+
+        $collapsed = collect();
+
+        foreach ($grouped as $parentId => $userIds) {
+            if (is_numeric($parentId)) {
+                $allUsersUnderParent = DB::table($userTable)->where($levelKey, $parentId)->pluck('id')->all();
+
+                // Sort both arrays for accurate comparison
+                sort($allUsersUnderParent);
+                sort($userIds);
+
+                if ($userIds == $allUsersUnderParent) {
+                    $collapsed->push([
+                        'level' => str_replace(['_id_', '_id'], '', $levelKey), // handles `unit_id_unit` etc.
+                        'id' => $parentId
+                    ]);
+                } else {
+                    $collapsed = $collapsed->merge($userIds);
+                }
+            } else {
+                $collapsed->push($userIds); // $userIds is actually a collapsed object here
+            }
+        }
+
+        return $collapsed;
     }
 
-    return $collapsed;
-}
 
-
-    private function convertToRoman($number) {
+    private function convertToRoman($number)
+    {
         $map = [
-            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI',
-            7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
+            1 => 'I',
+            2 => 'II',
+            3 => 'III',
+            4 => 'IV',
+            5 => 'V',
+            6 => 'VI',
+            7 => 'VII',
+            8 => 'VIII',
+            9 => 'IX',
+            10 => 'X',
+            11 => 'XI',
+            12 => 'XII'
         ];
         return $map[$number];
     }
-    public function updateDocumentStatus(Memo $memo) {
+    public function updateDocumentStatus(Memo $memo)
+    {
         $recipients = $memo->recipients;
-    
+
         if ($recipients->every(fn($recipient) => $recipient->status === 'approve')) {
             $memo->update(['status' => 'approve']);
         } elseif ($recipients->contains(fn($recipient) => $recipient->status === 'reject')) {
@@ -1016,8 +1054,9 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
             $memo->update(['status' => 'pending']);
         }
     }
-    
-    public function updateDocumentApprovalDate(Memo $memo) {
+
+    public function updateDocumentApprovalDate(Memo $memo)
+    {
         if ($memo->status !== 'pending') {
             $memo->update(['tanggal_disahkan' => now()]);
         }
@@ -1043,93 +1082,98 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
 
 
         if ($userDivDeptKode == $memo->kode) {
-        // Update status
+            // Update status
             $memo->status = $request->status;
             $currentKirim = Kirim_document::where('id_document', $id)
                 ->where('jenis_document', 'memo')
                 ->where('id_penerima', $userId)
                 ->first();
-                
+
             if ($currentKirim) {
                 $currentKirim->status = $request->status;
                 $currentKirim->updated_at = now();
                 $currentKirim->save();
-            
-            // Jika status 'approve', simpan tanggal pengesahan
-            if ($request->status == 'approve') {
-                $memo->tgl_disahkan = now();
-                $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
-                $qrImage = QrCode::format('svg')->generate($qrText);
-                $qrBase64 = base64_encode($qrImage);
-                $memo->qr_approved_by = $qrBase64;
 
-                // Kirim otomatis ke tujuan jika status approve
-                $tujuanUserIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
+                // Jika status 'approve', simpan tanggal pengesahan
+                if ($request->status == 'approve') {
+                    $memo->tgl_disahkan = now();
+                    $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
+                    $qrImage = QrCode::format('svg')->generate($qrText);
+                    $qrBase64 = base64_encode($qrImage);
+                    $memo->qr_approved_by = $qrBase64;
 
-            foreach ($tujuanUserIds as $userId) {
-                $userId = trim($userId);
+                    // Kirim otomatis ke tujuan jika status approve
+                    $tujuanUserIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
 
-                // Lewati jika sama dengan divisi pengirim
-                if ($userId == Auth::user()->id) {
-                    continue;
-                }
-               // SETELAH DI APPROVE MANAGER DIVISI SENDIRI, LANGSUNG KIRIM KE SEMUA USER DI TUJUAN DENGAN STATUS APPROVE
-                // Ambil semua user di divisi terkait
-                $penerima = \App\Models\User::where('id', $userId)
-                    ->get();
-            
-                foreach ($penerima as $penerima) {
-                    if (Auth::user()->position_id_position  )
-                    \App\Models\Kirim_Document::create([
-                        'id_document' => $memo->id_memo,
-                        'jenis_document' => 'memo',
-                        'id_pengirim' => $currentKirim->id_pengirim,
-                        'id_penerima' => $penerima->id,
-                        'status' => 'approve',
-                        'created_at' => now(),
-                        'updated_at' => now(),
+                    foreach ($tujuanUserIds as $userId) {
+                        $userId = trim($userId);
+
+                        // Lewati jika sama dengan divisi pengirim
+                        if ($userId == Auth::user()->id) {
+                            continue;
+                        }
+                        // SETELAH DI APPROVE MANAGER DIVISI SENDIRI, LANGSUNG KIRIM KE SEMUA USER DI TUJUAN DENGAN STATUS APPROVE
+                        // Ambil semua user di divisi terkait
+                        $penerima = \App\Models\User::where('id', $userId)
+                            ->get();
+
+                        foreach ($penerima as $penerima) {
+                            if (Auth::user()->position_id_position)
+                                \App\Models\Kirim_Document::create([
+                                    'id_document' => $memo->id_memo,
+                                    'jenis_document' => 'memo',
+                                    'id_pengirim' => $currentKirim->id_pengirim,
+                                    'id_penerima' => $penerima->id,
+                                    'status' => 'approve',
+                                    'created_at' => now(),
+                                    'updated_at' => now(),
+                                ]);
+                            Notifikasi::create([
+                                'judul' => "Memo Masuk",
+                                'judul_document' => $memo->judul,
+                                'id_user' => $penerima->id,
+                                'updated_at' => now()
+                            ]);
+                        }
+                    }
+
+
+
+                    Notifikasi::create([
+                        'judul' => "Memo Disetujui",
+                        'judul_document' => $memo->judul,
+                        'id_user' => $memo->pembuat,
+                        'updated_at' => now()
                     ]);
+                } elseif ($request->status == 'reject') {
+                    $memo->tgl_disahkan = now();
+                    Notifikasi::create([
+                        'judul' => "Memo Ditolak",
+                        'judul_document' => $memo->judul,
+                        'id_user' => $memo->pembuat,
+                        'updated_at' => now()
+                    ]);
+                } elseif ($request->status == 'correction') {
+                    Notifikasi::create([
+                        'judul' => "Memo Perlu Revisi",
+                        'judul_document' => $memo->judul,
+                        'id_user' => $memo->pembuat,
+                        'updated_at' => now()
+                    ]);
+                } else {
+                    $memo->tgl_disahkan = null;
                 }
+
+
+                // Simpan catatan jika ada
+                $memo->catatan = $request->catatan;
+
+                // Simpan perubahan
+                $memo->save();
             }
-
-
-
-                Notifikasi::create([
-                    'judul' => "Memo Disetujui",
-                    'judul_document' => $memo->judul,
-                    'id_user' => $memo->pembuat,
-                    'updated_at' => now()
-                ]);
-            } elseif ($request->status == 'reject') {
-                $memo->tgl_disahkan = now();
-                Notifikasi::create([
-                    'judul' => "Memo Ditolak",
-                    'judul_document' => $memo->judul,
-                    'id_user' => $memo->pembuat,
-                    'updated_at' => now()
-                ]);
-            } elseif ($request->status == 'correction') {
-                Notifikasi::create([
-                    'judul' => "Memo Perlu Revisi",
-                    'judul_document' => $memo->judul,
-                    'id_user' => $memo->pembuat,
-                    'updated_at' => now()
-                ]);
-            }else{
-                $memo->tgl_disahkan = null;
-            }
-            
-
-            // Simpan catatan jika ada
-            $memo->catatan = $request->catatan;
-
-            // Simpan perubahan
-            $memo->save();
-        }
-            
         } else {
-                // Jika user dari divisi lain, update status di tabel kirim_document
-                $currentKirim = Kirim_document::where('id_document', $id)
+            // Jika user dari divisi lain, update status di tabel kirim_document
+            $currentKirim = Kirim_document::where('id_document', $id)
                 ->where('jenis_document', 'memo')
                 ->where('id_penerima', $userId)
                 ->first();
@@ -1138,7 +1182,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
                 $currentKirim->status = $request->status;
                 $currentKirim->updated_at = now();
                 $currentKirim->save();
-                
+
 
                 // Update juga status record kiriman sebelumnya (pengirim sebelumnya)
                 Kirim_document::where('id_document', $id)
@@ -1149,78 +1193,74 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
                         'status' => $request->status,
                         'updated_at' => now()
                     ]);
-                    if(($request->status == 'approve')){
-                        Notifikasi::create([
-                            'judul' => "Memo Ditindak Lanjuti",
-                            'judul_document' => $memo->judul,
-                            'id_divisi' => $memo->divisi_id_divisi,
-                            'updated_at' => now()
-                        ]);
+                if (($request->status == 'approve')) {
+                    Notifikasi::create([
+                        'judul' => "Memo Ditindak Lanjuti",
+                        'judul_document' => $memo->judul,
+                        'id_divisi' => $memo->divisi_id_divisi,
+                        'updated_at' => now()
+                    ]);
 
-                        $adminDivisiId = Auth::user()->divisi_id_divisi;
+                    $adminDivisiId = Auth::user()->divisi_id_divisi;
 
-                        $admins = \App\Models\User::where('divisi_id_divisi', $adminDivisiId)
-                            ->where('position_id_position', 1)
-                            ->get();
+                    $admins = \App\Models\User::where('divisi_id_divisi', $adminDivisiId)
+                        ->where('position_id_position', 1)
+                        ->get();
 
-                        foreach ($admins as $admin) {
-                            \App\Models\Kirim_Document::create([
-                                'id_document' => $memo->id_memo,
-                                'jenis_document' => 'memo',
-                                'id_pengirim' => $currentKirim->id_pengirim,
-                                'id_penerima' => $admin->id,
-                                'status' => 'approve',
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ]);
-                        }
-                        
-                    }
-                
-                    if ($request->status == 'reject') {
-                        $memo->status = 'reject';
-                        $memo->tgl_disahkan = now();
-                        $memo->catatan = $request->catatan ?? $memo->catatan;
-                        $memo->save();
-                        
-                        Notifikasi::create([
-                            'judul' => "Memo Tidak Ditindak Lanjuti",
-                            'judul_document' => $memo->judul,
-                            'id_divisi' => $memo->divisi_id_divisi,
-                            'updated_at' => now()
+                    foreach ($admins as $admin) {
+                        \App\Models\Kirim_Document::create([
+                            'id_document' => $memo->id_memo,
+                            'jenis_document' => 'memo',
+                            'id_pengirim' => $currentKirim->id_pengirim,
+                            'id_penerima' => $admin->id,
+                            'status' => 'approve',
+                            'created_at' => now(),
+                            'updated_at' => now(),
                         ]);
                     }
-                    
+                }
+
+                if ($request->status == 'reject') {
+                    $memo->status = 'reject';
+                    $memo->tgl_disahkan = now();
+                    $memo->catatan = $request->catatan ?? $memo->catatan;
+                    $memo->save();
+
+                    Notifikasi::create([
+                        'judul' => "Memo Tidak Ditindak Lanjuti",
+                        'judul_document' => $memo->judul,
+                        'id_divisi' => $memo->divisi_id_divisi,
+                        'updated_at' => now()
+                    ]);
+                }
             }
-            
-            
         }
 
-        
+
 
         return redirect()->route('memo.terkirim')->with('success', 'Status memo berhasil diperbarui.');
     }
 
     public function edit($id)
-     {
-         $memo = Memo::findOrFail($id);
-         $divisi = Divisi::all();
-         $divisiId = auth()->user()->divisi_id_divisi;
-         $seri = Seri::all(); 
-         
-         
-         $managers = User::where('role_id_role', 3)
-        ->get(['id', 'firstname', 'lastname']);
-         
+    {
+        $memo = Memo::findOrFail($id);
+        $divisi = Divisi::all();
+        $divisiId = auth()->user()->divisi_id_divisi;
+        $seri = Seri::all();
+
+
+        $managers = User::where('role_id_role', 3)
+            ->get(['id', 'firstname', 'lastname']);
+
         $orgTree = $this->getOrgTreeWithUsers();
         $jsTreeData = $this->convertToJsTree($orgTree);
         $mainDirector = $orgTree[0] ?? null;
 
         $tujuanArray = $memo->tujuan_string ? explode(';', $memo->tujuan_string) : [];
-         return view(Auth::user()->role->nm_role. '.memo.edit-memo', compact('memo', 'divisi', 'seri', 'managers', 'orgTree', 'jsTreeData', 'mainDirector', 'tujuanArray'));
-     }
-     public function update(Request $request, $id)
-     {
+        return view(Auth::user()->role->nm_role . '.memo.edit-memo', compact('memo', 'divisi', 'seri', 'managers', 'orgTree', 'jsTreeData', 'mainDirector', 'tujuanArray'));
+    }
+    public function update(Request $request, $id)
+    {
         $memo = Memo::findOrFail($id);
 
         $request->validate([
@@ -1248,7 +1288,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
             $memo->tujuan_string = implode(';', $request->tujuanString);
         }
         if ($request->filled('nomor_memo')) {
-            $memo->nomor_memo = $request->nomor_memo    ;
+            $memo->nomor_memo = $request->nomor_memo;
         }
         if ($request->filled('nama_bertandatangan')) {
             $memo->nama_bertandatangan = $request->nama_bertandatangan;
@@ -1289,22 +1329,22 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
                             'satuan' => $dataBarang['satuan'],
                         ]);
                     }
-                } 
+                }
             }
         }
 
-        
-         return redirect()->route('memo.'.Auth::user()->role->nm_role)->with('success', 'User updated successfully');
-     }
-     //PENGHAPUSAN SEMENTARA
-     public function delete($id)
-     {
+
+        return redirect()->route('memo.' . Auth::user()->role->nm_role)->with('success', 'User updated successfully');
+    }
+    //PENGHAPUSAN SEMENTARA
+    public function delete($id)
+    {
         $memo = Memo::findOrFail($id);
         $memo->delete();
-        Kirim_Document::where('id_document', $id)->where('jenis_document','memo')->delete();
-        return redirect()->route('memo.' .Auth::user()->role->nm_role)->with('success', 'Memo berhasil dihapus.');
-     }
-     
+        Kirim_Document::where('id_document', $id)->where('jenis_document', 'memo')->delete();
+        return redirect()->route('memo.' . Auth::user()->role->nm_role)->with('success', 'Memo berhasil dihapus.');
+    }
+
     //  menampilkan file yang disimpan dalam database
     public function showFile($id)
     {
@@ -1330,7 +1370,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
             'image/jpeg' => 'jpg',
             'image/png' => 'png'
         ];
-        
+
         if (!isset($validMimeTypes[$mimeType])) {
             return response()->json(['error' => 'Format file tidak didukung.'], 400);
         }
@@ -1344,7 +1384,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
     {
         // Valid MIME types for PDF, JPG, PNG, JPEG
         $validMimeTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-        
+
         if (in_array($mimeType, $validMimeTypes)) {
             return $mimeType;
         }
@@ -1382,8 +1422,8 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
             echo $fileData;
         }, "memo_{$id}.$extension", ['Content-Type' => $mimeType]);
     }
-    
-     public function showTerkirim($id)
+
+    public function showTerkirim($id)
     {
         $memo = Kirim_Document::where('jenis_document', 'memo')
             ->where('id_document', $id)
@@ -1441,7 +1481,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
         $memo = Memo::findOrFail($id);
         $memo->status = $request->status;
         $memo->save();
-    
+
         // Simpan notifikasi
         Notifikasi::create([
             'judul' => "Memo {$request->status}",
@@ -1450,8 +1490,7 @@ protected function collapseAtLevel($items, $levelKey, $userTable)
             'dibaca'         => false,
             'updated_at' => now()
         ]);
-    
+
         return redirect()->back()->with('success', 'Status memo berhasil diperbarui.');
     }
-    
 }

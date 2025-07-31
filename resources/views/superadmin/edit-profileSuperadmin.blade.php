@@ -118,8 +118,8 @@ input[readonly] {
             <div id="profileEdit">
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label class="form-label">ID User</label>
-                        <input type="text" class="form-control" value="{{ Auth::user()->id }}" readonly>
+                        <label class="form-label">Posisi</label>
+                        <input type="text" class="form-control" value="{{ $position }}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Email</label>
@@ -143,7 +143,7 @@ input[readonly] {
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Nomor Telepon</label>
-                        <input type="text" name="phone_number" class="form-control profile-input" value="{{ Auth::user()->phone_number }}" readonly>
+                        <input type="text" name="phone_number" class="form-control profile-input" value="{{ Auth::user()->phone_number }}" required readonly>
                     </div>
                 </div>
 
