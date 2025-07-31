@@ -650,6 +650,13 @@ class UndanganController extends Controller
                             'updated_at' => now(),
                         ]);
                     }
+                    //Notifikasi
+                    Notifikasi::create([
+                        'judul' => "Undangan Masuk",
+                        'judul_document' => $undangan->judul,
+                        'id_user' => $recipient->id,
+                        'updated_at' => now()
+                    ]);
                 }
             }
 
