@@ -108,7 +108,12 @@ class RisalahController extends Controller
         $divisi = Divisi::all();
         $seri = SeriRisalah::all();
         $userId = Auth::id();
-
+        $kode = Risalah::withTrashed()
+            ->whereNotNull('kode')
+            ->pluck('kode')
+            ->filter()
+            ->unique()
+            ->values();
 
         $risalahDiarsipkan = Arsip::where('user_id', Auth::id())->pluck('document_id')->toArray();
         $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
@@ -148,6 +153,9 @@ class RisalahController extends Controller
         if ($request->filled('divisi_id_divisi') && $request->divisi_id_divisi != 'pilih') {
             $query->where('divisi_id_divisi', $request->divisi_id_divisi);
         }
+        if ($request->filled('kode') && $request->kode != 'pilih') {
+            $query->where('kode', $request->kode);
+        }
 
         // Pencarian berdasarkan nama dokumen atau nomor memo
         if ($request->filled('search')) {
@@ -159,7 +167,7 @@ class RisalahController extends Controller
         $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
         $risalahs = $query->paginate($perPage);
 
-        return view('superadmin.risalah.risalah-superadmin', compact('risalahs', 'divisi', 'seri', 'sortDirection'));
+        return view('superadmin.risalah.risalah-superadmin', compact('risalahs', 'divisi', 'seri', 'sortDirection', 'kode'));
     }
 
     public function create()

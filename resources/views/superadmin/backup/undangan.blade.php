@@ -163,10 +163,10 @@
                             {{ $undangan->judul }}
                         </td>
                         <td>{{ \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') }}</td>
-                        <td>{{ $undangan->seri_document }}</td>
-                        <td>{{ $undangan->nomor_document }}</td>
+                        <td>{{ $undangan->seri_surat }}</td>
+                        <td>{{ $undangan->nomor_undangan }}</td>
                         <td>{{ $undangan->tgl_disahkan ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                        <td>{{ $undangan->divisi->nm_divisi ?? 'No Divisi Assigned' }}</td>
+                        <td>{{ $undangan->kode }}</td>
                         <td>
                             @if ($undangan->status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
@@ -261,11 +261,11 @@
                     <span class="text-danger"><strong>PERHATIAN:</strong> </span>Surat yang telah dihapus <strong>TIDAK
                         DAPAT</strong> dipulihkan.
                 </p>
-                <div class="d-flex justify-content-center mt-3">
                     <form method="POST" id="deleteUndanganForm">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-outline-secondary me-2">Hapus</button>
+                                        <div class="d-flex justify-content-center mt-3">
+                        <button type="submit" class="btn btn-danger me-2" style="padding-inline: 25px;">Hapus</button>
                     </form>
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
                 </div>
