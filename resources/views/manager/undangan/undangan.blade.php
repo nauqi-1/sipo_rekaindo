@@ -17,18 +17,33 @@
                 <div class="breadcrumb" style="gap: 5px; width: 83%;">
                     <a href="#">Beranda</a>/<a href="#" style="color: #565656;">Undangan Rapat</a>
                 </div>
-                <form method="GET" action="{{ route('undangan.manager') }}" class="d-flex gap-2">
-                    <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
-                        Show
-                        <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
+                <form method="GET" action="{{ route('undangan.manager') }}" class="d-flex align-items-center gap-2 mb-3">
+                    <label class="d-flex align-items-center" style="font-size: 14px; color: #333; margin-bottom: 0;">
+                        <span style="margin-right: 6px;">Show</span>
+                        <select name="per_page" onchange="this.form.submit()" style="
+                    padding: 4px 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 6px;
+                    background-color: #fff;
+                    color: #333;
+                    font-size: 14px;
+                    outline: none;
+                    appearance: none;
+                    background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2710%27 height=%275%27%3E%3Cpath fill=%27%23000%27 d=%27M0 0l5 5 5-5z%27/%3E%3C/svg%3E');
+                    background-repeat: no-repeat;
+                    background-position: right 8px center;
+                    background-size: 10px 6px;
+                    padding-right: 30px;
+                ">
                             <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
                             <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                             <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                             <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                         </select>
-                        entries
+                        <span style="margin-left: 6px;">entries</span>
                     </label>
-                </form>
+                    </form>
+
             </div>
         </div>
 
@@ -129,10 +144,10 @@
                     <tr>
                         <td class="nomor">{{ $index + 1 }}</td>
                         <td class="nama-dokumen 
-                        {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'correction' ? 'text-warning' : ($undangan->status == 'approve' ? 'text-success' : '')) }}"
-                             style="{{ $undangan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                        {{ $undangan->judul }}
-                    </td>
+                                {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'correction' ? 'text-warning' : ($undangan->status == 'approve' ? 'text-success' : '')) }}"
+                            style="{{ $undangan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
+                            {{ $undangan->judul }}
+                        </td>
                         <td>{{ isset($undangan->tgl_rapat) ? \Carbon\Carbon::parse($undangan->tgl_rapat)->format('d-m-Y') : '-' }}
                         </td>
                         <td>{{ $undangan->seri_surat ?? '-' }}</td>
