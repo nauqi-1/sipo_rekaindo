@@ -53,7 +53,7 @@
                     </div>
                     <div  class="dropdown">
                     <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
-                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Pilih Divisi</option>
+                        <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
                         @foreach($kode as $k)
                             <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
                                 {{ $k }}
@@ -219,11 +219,11 @@
                 <span class="text-danger"><strong>PERHATIAN:</strong></span> Surat yang telah dihapus <strong>TIDAK DAPAT</strong> dipulihkan.
             </p>
             
-            <div class="d-flex justify-content-center mt-3">
                 <form method="POST" id="deleteMemoForm">
                     @csrf
                     @method('DELETE')
-                <button type="submit" class="btn btn-danger me-2" id="confirmDeleteBtn">Hapus</button>
+                <div class="d-flex justify-content-center mt-3">
+                <button type="submit" class="btn btn-danger me-2" id="confirmDeleteBtn" style="padding-inline: 25px;">Hapus</button>
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
                 </form>
             </div>
@@ -245,7 +245,7 @@
                 <form method="POST" id="restoreMemoForm">
                     @csrf
                     <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary" >Pulihkan</button>
+                    <button type="submit" class="btn btn-primary">Pulihkan</button>
                 </form>
             </div>
         </div>
