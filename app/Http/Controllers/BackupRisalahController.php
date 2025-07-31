@@ -13,6 +13,12 @@ class BackupRisalahController extends Controller
     {
         $divisi = Divisi::all();
         $risalahs = Risalah::onlyTrashed();
+        $kode = Risalah::withTrashed()
+            ->whereNotNull('kode')
+            ->pluck('kode')
+            ->filter()
+            ->unique()
+            ->values();
 
         // Filter berdasarkan status
         if ($request->filled('status')) {
@@ -38,11 +44,14 @@ class BackupRisalahController extends Controller
                   ->orWhere('nomor_document', 'like', '%' . $request->search . '%');
             });
         }
+         if ($request->filled('kode') && $request->kode != 'pilih') {
+            $risalahs->where('kode', $request->kode);
+        }
     
         // Ambil hasil paginate
         $risalahs = $risalahs->paginate(6);
 
-        return view('superadmin.backup.risalah', compact('risalahs','divisi', 'sortDirection'));
+        return view('superadmin.backup.risalah', compact('risalahs','divisi', 'sortDirection', 'kode'));
     }
 
     public function RestoreRisalah($id)

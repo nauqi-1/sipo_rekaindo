@@ -1,7 +1,7 @@
 @extends('layouts.superadmin')
 
 @section('title', 'Risalah Rapat')
-      
+
 @section('content')
 <div class="container">
     <div class="header">
@@ -10,23 +10,23 @@
             <a href="{{route('superadmin.dashboard')}}"><img src="/img/undangan/Vector_back.png" alt=""></a>
         </div>
         <h1>Risalah Rapat</h1>
-    </div>        
+    </div>
     <div class="row">
         <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="breadcrumb" style="gap: 5px; width: 82%;">
                 <a href="{{route('superadmin.dashboard')}}">Beranda</a>/<a href="#" style="color: #565656;">Risalah Rapat</a>
             </div>
             <form method="GET" action="{{ route('risalah.superadmin') }}" class="search-filter d-flex gap-2">
-            <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
-                Show
-                <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
-                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                </select>
-                entries
-            </label>
+                <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
+                    Show
+                    <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
+                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                    </select>
+                    entries
+                </label>
             </form>
         </div>
     </div>
@@ -35,17 +35,17 @@
     <div class="surat">
         <div class="header-tools">
             <div class="search-filter">
-            <form method="GET" action="{{ route('risalah.superadmin') }}" class="search-filter d-flex gap-2">
-                <div class="dropdown">
-                    <select name="status" class="form-select" onchange="this.form.submit()">
-                        <option value="">Status</option>
-                        <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
-                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
-                        <option value="pending" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi</option>
-                        <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
-                    </select>
-                </div>
-                <div class="input-icon-wrapper" style="position: relative; width: 150px;">
+                <form method="GET" action="{{ route('risalah.superadmin') }}" class="search-filter d-flex gap-2">
+                    <div class="dropdown">
+                        <select name="status" class="form-select" onchange="this.form.submit()">
+                            <option value="">Status</option>
+                            <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
+                            <option value="pending" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi</option>
+                            <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
+                        </select>
+                    </div>
+                    <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                         <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}" placeholder="Tanggal Awal" onfocus="this.type='date'" onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Awal'; }" onchange="this.form.submit()">
                     </div>
                     <i class="bi bi-arrow-right"></i>
@@ -60,9 +60,20 @@
                             <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                         </div>
                     </div>
+                    <div class="dropdown">
+                        <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
+                                <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Pilih Divisi
+                                </option>
+                                @foreach($kode as $k)
+                                    <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
+                                        {{ $k }}
+                                    </option>
+                                @endforeach
+                            </select>
+                    </div>
                 </form>
                 <!-- Add User Button to Open Modal -->
-                
+
             </div>
         </div>
     </div>
@@ -76,9 +87,9 @@
                 <th>Tanggal Risalah
                     <button class="data-md">
                         <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
-                                style="color:rgb(135, 135, 148); text-decoration: none;">
-                                <span class="bi-arrow-down-up"></span>
-                            </a>
+                            style="color:rgb(135, 135, 148); text-decoration: none;">
+                            <span class="bi-arrow-down-up"></span>
+                        </a>
                     </button>
                 </th>
                 <th>Seri</th>
@@ -109,37 +120,37 @@
                 <td>{{ $risalah->seri_surat }}</td>
                 <td>{{ $risalah->nomor_risalah }}</td>
                 <td>{{ $risalah->tgl_disahkan ? \Carbon\Carbon::parse($risalah->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                <td>{{ $risalah->user->department->kode_department ?? $risalah->user->divisi->kode_divisi ?? '-' }}</td>
+                <td>{{ $risalah->kode }}</td>
                 </td>
                 <td>
                     @if ($risalah->status == 'reject')
-                        <span class="badge bg-danger">Ditolak</span>
+                    <span class="badge bg-danger">Ditolak</span>
                     @elseif ($risalah->status == 'pending')
-                        <span class="badge bg-info">Diproses</span>
+                    <span class="badge bg-info">Diproses</span>
                     @elseif ($risalah->status == 'correction')
-                        <span class="badge bg-warning">Dikoreksi</span>
+                    <span class="badge bg-warning">Dikoreksi</span>
                     @else
-                        <span class="badge bg-success">Diterima</span>
+                    <span class="badge bg-success">Diterima</span>
                     @endif
                 </td>
                 <td>
-                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteRisalahModal" data-memo-id="{{ $risalah->id_risalah }}"  data-route="{{ route('superadmin.risalah.destroy', [$risalah->id_risalah, 'jenis_document' => 'risalah']) }}">
+                    <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteRisalahModal" data-memo-id="{{ $risalah->id_risalah }}" data-route="{{ route('superadmin.risalah.destroy', [$risalah->id_risalah, 'jenis_document' => 'risalah']) }}">
                         <img src="/img/undangan/Delete.png" alt="delete">
                     </button>
-                    
-                    @if ($risalah->status == 'approve') 
+
+                    @if ($risalah->status == 'approve')
                     <form action="{{ route('arsip.archive', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}" method="POST" style="display: inline;">
-                    @csrf
-                    @method('POST')
+                        @csrf
+                        @method('POST')
                         <button class="btn btn-sm3 submitArsip">
                             <img src="/img/undangan/arsip.png" alt="arsip">
                         </button>
                     </form>
 
                     @else
-                        <a href="{{route ('risalah.edit',$risalah->id_risalah)}}" class="btn btn-sm3">
-                            <img src="/img/undangan/edit.png" alt="edit">
-                        </a>
+                    <a href="{{route ('risalah.edit',$risalah->id_risalah)}}" class="btn btn-sm3">
+                        <img src="/img/undangan/edit.png" alt="edit">
+                    </a>
                     @endif
                 </td>
             </tr>
@@ -171,16 +182,12 @@
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
             <img src="/img/memo-superadmin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px; height: 80px;">
             <h5 class="modal-title mb-2" id="deleteModalLabel">Yakin ingin menghapus risalah ini?</h5>
-            <p class="text-muted mb-4" style="font-size: 0.95rem;">
-                Risalah yang dihapus akan masuk ke menu <strong>Pemulihan</strong> dan dapat dikembalikan sewaktu-waktu.
-            </p>
+            <!-- Tombol -->
+            <div class="d-flex justify-content-center mt-3">
+                <button type="button" class="btn btn-outline-secondary me-2" id="openConfirmDeleteBtn" data-route="">Oke</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
 
-                <!-- Tombol -->
-                <div class="d-flex justify-content-center mt-3">
-                    <button type="button" class="btn btn-outline-secondary me-2" id="openConfirmDeleteBtn" data-route="">Oke</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
-                    
-                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -192,6 +199,9 @@
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
             <img src="/img/memo-superadmin/warning.png" alt="Warning Icon" class="mb-3" style="width: 80px; height: 80px;">
             <h5 class="modal-title mb-4" id="confirmDeleteLabel">Yakin ingin menghapus risalah ini?</h5>
+            <p class="text-muted mb-4" style="font-size: 0.95rem;">
+                Risalah yang dihapus akan masuk ke menu <strong>Pemulihan</strong> dan dapat dikembalikan sewaktu-waktu.
+            </p>
             <form id="deleteRisalahForm" method="POST">
                 @csrf
                 @method('DELETE')
@@ -252,7 +262,7 @@
 
 <script>
     // Event listener untuk modal hapus undangan
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const deleteRisalahModal = document.getElementById("deleteRisalahModal");
         const confirmDeleteModalElement = document.getElementById("confirmDeleteModal");
         const confirmDeleteModal = new bootstrap.Modal(confirmDeleteModalElement);
@@ -263,7 +273,7 @@
         let routeToDelete = "";
 
         // Ketika modal pertama ditampilkan
-        deleteRisalahModal.addEventListener("show.bs.modal", function (event) {
+        deleteRisalahModal.addEventListener("show.bs.modal", function(event) {
             const triggerButton = event.relatedTarget;
             routeToDelete = triggerButton.getAttribute("data-route");
 
@@ -275,7 +285,7 @@
         });
 
         // Saat tombol konfirmasi di klik
-        openConfirmDeleteBtn.addEventListener("click", function () {
+        openConfirmDeleteBtn.addEventListener("click", function() {
             // Tutup modal awal
             const deleteModalInstance = bootstrap.Modal.getInstance(deleteRisalahModal);
             if (deleteModalInstance) deleteModalInstance.hide();
@@ -288,39 +298,41 @@
         });
 
         // Submit form untuk hapus data
-        deleteRisalahForm.addEventListener("submit", function (event) {
+        deleteRisalahForm.addEventListener("submit", function(event) {
             event.preventDefault();
             const formAction = deleteRisalahForm.getAttribute("action");
 
             fetch(formAction, {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ _method: "DELETE" })
-            })
-            .then(response => {
-                if (response.ok) {
-                    confirmDeleteModal.hide();
-                    setTimeout(() => {
-                        deleteRisalahSuccessModal.show();
-                        setTimeout(() => location.reload(), 1500);
-                    }, 500);
-                } else {
-                    alert("Gagal menghapus data.");
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("Terjadi kesalahan saat menghapus.");
-            });
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        _method: "DELETE"
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        confirmDeleteModal.hide();
+                        setTimeout(() => {
+                            deleteRisalahSuccessModal.show();
+                            setTimeout(() => location.reload(), 1500);
+                        }, 500);
+                    } else {
+                        alert("Gagal menghapus data.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Terjadi kesalahan saat menghapus.");
+                });
         });
     });
 
 
     // Event listener arsip Undangan
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const arsipButtons = document.querySelectorAll(".submitArsip");
         const confirmArsipButton = document.getElementById("confirmArsip");
         const cancelArsipButton = document.querySelector("#arsipRisalahModal .btn-outline-secondary");
@@ -331,25 +343,25 @@
 
         // Saat tombol arsip ditekan, simpan form yang akan dikirim
         arsipButtons.forEach(button => {
-            button.addEventListener("click", function (event) {
+            button.addEventListener("click", function(event) {
                 event.preventDefault(); // Mencegah submit langsung
-                currentForm = this.closest("form"); 
+                currentForm = this.closest("form");
                 arsipRisalahModal.show(); // Tampilkan modal konfirmasi
             });
         });
 
         // Saat tombol "Batal" ditekan, tutup modal konfirmasi
-        cancelArsipButton.addEventListener("click", function () {
+        cancelArsipButton.addEventListener("click", function() {
             arsipRisalahModal.hide();
         });
 
         // Saat tombol "OK" ditekan, submit form dan tampilkan modal sukses
-        confirmArsipButton.addEventListener("click", function () {
+        confirmArsipButton.addEventListener("click", function() {
             if (currentForm) {
                 arsipRisalahModal.hide(); // Tutup modal konfirmasi
                 setTimeout(() => {
                     successArsipRisalahModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
-                }, 300); 
+                }, 300);
 
                 setTimeout(() => {
                     successArsipRisalahModal.hide();
@@ -360,14 +372,14 @@
     });
 
     // Event listener untuk modal sukses tambah Undangan
-    document.addEventListener("DOMContentLoaded", function () {
-    @if(session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller Undangan store
+    document.addEventListener("DOMContentLoaded", function() {
+        @if(session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller Undangan store
         var successModal = new bootstrap.Modal(document.getElementById("successAddRisalahModal"));
         successModal.show();
-        setTimeout(function () {
+        setTimeout(function() {
             successModal.hide();
         }, 1500);
-    @endif
+        @endif
     });
 </script>
 @endsection
