@@ -8,6 +8,7 @@ use App\Models\Undangan;
 use App\Models\Risalah;
 use App\Models\Divisi;
 use App\Models\Backup_Document;
+use App\Models\kategori_barang;
 use App\Models\Kirim_Document;
 use Illuminate\Support\Facades\Auth;
 
@@ -143,10 +144,15 @@ class BackupController extends Controller
 
         $memo = Memo::onlyTrashed()->findOrFail($id);
         $kirim_document = Kirim_Document::onlyTrashed()->where('id_document', $id)->where('jenis_document', 'memo')->get();
+        $barang = kategori_barang::where('memo_id_memo', $id)->get();
         if ($memo) {
             $memo->forceDelete();
             foreach ($kirim_document as $kirim_memo) {
                 $kirim_memo->forceDelete();
+            }
+
+            foreach ($barang as $b) {
+                $b->delete();
             }
         } else {
             return redirect()->route('memo.backup')->with('failure', 'Memo tidak ditemukan.');
@@ -158,6 +164,7 @@ class BackupController extends Controller
         $ids = $request->input('selected_ids', []);
         Memo::onlyTrashed()->whereIn('id_memo', $ids)->forceDelete();
         Kirim_Document::onlyTrashed()->whereIn('id_document', $ids)->where('jenis_document', 'memo')->forceDelete();
+        kategori_barang::whereIn('memo_id_memo', $ids)->delete();
         return redirect()->back()->with('success', 'Memo terpilih berhasil dihapus permanen.');
     }
 
@@ -171,6 +178,7 @@ class BackupController extends Controller
             ->where('id_document', $id)
             ->where('jenis_document', 'undangan')
             ->get();
+        
         if ($undangan) {
             $undangan->restore();
             foreach ($kirim_documents as $kirim_undangan) {

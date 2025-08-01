@@ -35,7 +35,7 @@
         <div class="surat">
             <div class="header-tools">
                 <div class="search-filter">
-                    <form method="GET" action="{{ route('memo.terkirim', Auth::user()->id) }}" class="d-flex align-items-center gap-3 flex-wrap w-100">
+                    <form method="GET" action="{{ route('memo.terkirim', Auth::user()->id) }}" class="d-flex align-items-center gap-3 w-100">
                         <div class="dropdown">
                             <select name="status" class="form-select" onchange="this.form.submit()">
                                 <option value="">Status</option>

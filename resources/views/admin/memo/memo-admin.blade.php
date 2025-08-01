@@ -62,7 +62,7 @@
                 </div>
                 </div>
                 <div class="d-flex gap-2">
-                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px; position: relative; width: 150px;">
                         <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
                         <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                     </div>
