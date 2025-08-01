@@ -574,7 +574,6 @@ class MemoController extends Controller
             'lampiran.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
             'lampiran.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
         ]);
-
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
