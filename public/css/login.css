@@ -25,7 +25,6 @@ body {
   align-items: center;
 }
 
-
 .card.login-card {
   width: 40%;
   min-width: 320px;
@@ -84,33 +83,64 @@ body {
 form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px; /* Reduced gap between form elements */
 }
 
-.input-group {
+/* Fixed form-group positioning */
+.form-group {
   position: relative;
   width: 100%;
+  overflow: hidden; /* Prevent icons from extending outside */
 }
 
-.input-group i {
+.form-control {
+  width: 100%;
+  padding: 15px 45px 15px 45px; /* Increased height with more padding */
+  font-size: 12px; /* Reduced font size for input text */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box; /* Ensure padding is included in width */
+  height: 48px; /* Set fixed height for better consistency */
+}
+
+/* Left icon (user/lock) */
+.form-group > span:first-of-type {
   position: absolute;
   top: 50%;
   left: 15px;
   transform: translateY(-50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.form-group > span:first-of-type i {
   font-size: 16px;
   color: #1E4178;
 }
 
-.input-group input {
-  width: 100%;
-  padding: 10px 10px 10px 40px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+/* Right icon (eye) - Fixed positioning */
+.form-group > span:last-of-type {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 1;
+  color: #1E4178; /* Changed to match other icons */
 }
 
-.input-group input:focus {
+.form-group > span:last-of-type i {
+  font-size: 16px;
+}
+
+.form-control:focus {
   border-color: #007BFF;
+  outline: none;
+}
+
+.form-control::placeholder {
+  font-size: 14px; /* Increased placeholder font size to match input */
+  color: #aaa;
 }
 
 .col {
