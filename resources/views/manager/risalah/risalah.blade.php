@@ -91,7 +91,7 @@
                             </a>
                         </button>
                     </th>
-                    <th>Divisi</th>
+                    <th>Pengirim</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>

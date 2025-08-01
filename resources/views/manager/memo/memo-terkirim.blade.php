@@ -89,7 +89,7 @@
                         </a>
                         </button>
                     </th>
-                    <th>Divisi</th>
+                    <th>Pengirim</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
@@ -115,7 +115,7 @@
                     <td>{{ $kirim->memo->seri_surat }}</td>
                     <td>{{ $kirim->memo->nomor_memo }}</td>
                     <td>{{ $kirim->memo->tgl_disahkan ? \Carbon\Carbon::parse($kirim->memo->tgl_disahkan)->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $kirim->memo->kode ?? 'No Divisi Assigned' }}</td>
+                    <td>{{ $kirim->memo->kode ?? '-' }}</td>
                     <td>
                     @if(Auth::user()->divisi_id_divisi == $kirim->memo->divisi_id_divisi)
                             @if ($kirim->memo->status == 'reject')

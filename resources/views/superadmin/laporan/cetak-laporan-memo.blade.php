@@ -62,7 +62,7 @@
                 </th>
                 <th>Seri</th>
                 <th>Dokumen</th>
-                <th>Divisi</th>
+                <th>Pengirim</th>
                 <th>Tanggal Disahkan
                     <button class="data-md">
                         <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>

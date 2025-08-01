@@ -204,7 +204,7 @@ class BackupController extends Controller
     {
         $ids = $request->input('selected_ids', []);
         Undangan::onlyTrashed()->whereIn('id_undangan', $ids)->restore();
-        Kirim_Document::onlyTrashed()->whereIn('id_document', $ids)->where('jenis_document', 'undangan')->forceDelete();
+        Kirim_Document::onlyTrashed()->whereIn('id_document', $ids)->where('jenis_document', 'undangan')->restore();
         return redirect()->back()->with('success', 'Pemulihan Undangan Berhasil.');
     }
 
