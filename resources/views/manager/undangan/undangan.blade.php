@@ -51,8 +51,8 @@
         <div class="surat">
             <div class="header-tools">
                 <div class="search-filter">
-                    <form method="GET" action="{{ route('undangan.manager', Auth::user()->id) }}"
-                        class="d-flex align-items-center gap-3 flex-wrap w-100">
+                    <form method="GET" action="{{ route('undangan.manager', Auth::user()->id) }}" 
+                        class="d-flex align-items-center gap-2 w-100">
                         <div class="dropdown">
                             <select name="status" class="form-select" onchange="this.form.submit()">
                                 <option value="">Status</option>
@@ -89,7 +89,7 @@
                                 onblur="if(!this.value){ this.type='text'; this.placeholder='Tanggal Akhir'; }"
                                 onchange="this.form.submit()">
                         </div>
-                        <div class="d-flex gap-2">
+                        <div class="d-flex">
                             <div class="btn btn-search d-flex align-items-center"
                                 style="gap: 5px; position: relative; width: 150px;">
                                 <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
@@ -99,7 +99,6 @@
                             </div>
                         </div>
                     </form>
-                    <!-- Add User Button to Open Modal -->
                     <a href="{{route('undangan-admin/add')}}" class="btn btn-add">+ <span>Tambah Undangan Rapat</span></a>
                 </div>
             </div>
