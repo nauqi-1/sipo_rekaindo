@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
@@ -42,24 +44,30 @@
                     <!-- Session Status -->
                     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-                    <!-- Email Address -->
-                    <div class="input-group">
-                        <i class="bi bi-person-fill"></i>
-                        <input type="email" id="email" name="email" placeholder="Enter email" value="{{ old('email') }}"
-                            required autofocus autocomplete="email">
-                        {{-- <x-input-error :messages="$errors->get('email')" class="mt-2" /> --}}
+                    <div class="form-group mt-3 position-relative">
+                        <span>
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="email" class="form-control ps-5" name="email" placeholder="Enter email" required
+                            autofocus>
                     </div>
 
-                    <!-- Password -->
-                    <!-- Password -->
-                    <div class="input-group position-relative">
-                        <i class="bi bi-lock me-2"></i>
-                        <input type="password" id="password" name="password" placeholder="Enter password" required
-                            autocomplete="current-password" class="form-control pe-5">
-                        <i class="bi bi-eye-slash toggle-password position-absolute"
-                            style="top: 50%; right: 10px; transform: translateY(-50%); cursor: pointer;"
-                            onclick="togglePassword()"></i>
+                    <div class="form-group mt-3 position-relative">
+                        <span>
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" class="form-control ps-5 pe-5" name="password"
+                            placeholder="Enter password" required>
+                        <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                            style="cursor: pointer;" onclick="togglePassword(this)">
+                            <i class="fas fa-eye"></i>
+                        </span>
                     </div>
+
+
+
+
+
 
 
                     <!-- Forgot Password -->
@@ -85,21 +93,22 @@
         integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
         crossorigin="anonymous"></script>
     <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById("password");
-            const toggleIcon = document.querySelector(".toggle-password");
-
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                toggleIcon.classList.remove("bi-eye-slash");
-                toggleIcon.classList.add("bi-eye");
-            } else {
-                passwordInput.type = "password";
-                toggleIcon.classList.remove("bi-eye");
-                toggleIcon.classList.add("bi-eye-slash");
-            }
+    function togglePassword(el) {
+        const input = el.previousElementSibling;
+        if (input.type === "password") {
+            input.type = "text";
+            el.querySelector('i').classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = "password";
+            el.querySelector('i').classList.replace('fa-eye-slash', 'fa-eye');
         }
-    </script>
+    }
+</script>
+
+
+
+
+
 
 </body>
 
