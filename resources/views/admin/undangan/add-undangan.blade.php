@@ -289,6 +289,10 @@
                                         style="max-width: 18px; max-height: 18px; object-fit: contain; margin-right: 5px; display: none;">
                                     <span id="modalFileName"></span>
                                 </div>
+                                @error('lampiran')
+    <div class="text-danger">{{ $message }}</div>
+@enderror
+
                             </div>
                         </div>
                     </div>
@@ -306,7 +310,10 @@
             tujuanContainer.html(''); // bersihkan sebelum nambah
 
             const selected = $('#org-tree').jstree('get_selected', true);
+            const fileInput = document.getElementById('lampiran');
+            const file = fileInput.files[0];
 
+    
             const userIds = selected
                 .filter(node => node.id.startsWith('user-'))
                 .map(node => node.id.replace('user-', ''));
@@ -320,6 +327,10 @@
                 e.preventDefault();
                 return false;
             }
+            if (file && file.size > 2 * 1024 * 1024) {
+        e.preventDefault();
+        alert("File gagal diunggah. Pastikan ukuran file tidak lebih dari 2MB dengan Tipe File PDF.");
+    }
         });
         // Modal Upload File - Menampilkan Modal
         document.getElementById('openUploadModal').addEventListener('click', function () {
