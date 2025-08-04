@@ -143,16 +143,16 @@
                                     class="text-danger">*</span>
                                 <div class="d-flex align-items-center">
                                     <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2"
-                                        placeholder="09.00" required>
+                                        placeholder="09.00" value="{{ old('waktu_mulai') }}" required>
                                     <span class="fw-bold">s/d</span>
                                     <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2"
-                                        placeholder="Selesai" required>
+                                        placeholder="Selesai" value="{{ old('waktu_selesai') }}"required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
                                 <input type="text" name="tempat" id="tempat" class="form-control"
-                                    placeholder="Ruang Rapat" required>
+                                    placeholder="Ruang Rapat" value="{{ old('tempat') }}" required>
                             </div>
                         </div>
                         <div class="mb-3 row">
@@ -189,7 +189,7 @@
                                     <button type="button" class="btn btn-primary upload-button" id="openUploadModal"
                                         style="margin-left: 30px;">Pilih File</button>
                                     <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png"
-                                        style="display: none;">
+                                        style="display: none;" onchange="if(this.files[0].size > 2097152){ alert('Ukuran maksimal 2MB'); this.value=''; }">
                                     <div id="filePreview" style="display: none; text-align: center">
                                         <img id="previewIcon" src="" alt="Preview"
                                             style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
