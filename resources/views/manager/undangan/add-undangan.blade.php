@@ -143,16 +143,16 @@
                                     class="text-danger">*</span>
                                 <div class="d-flex align-items-center">
                                     <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2"
-                                        placeholder="09.00" required>
+                                        placeholder="09.00" value="{{ old('waktu_mulai') }}" required>
                                     <span class="fw-bold">s/d</span>
                                     <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2"
-                                        placeholder="Selesai" required>
+                                        placeholder="Selesai" value="{{ old('waktu_selesai') }}"required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
                                 <input type="text" name="tempat" id="tempat" class="form-control"
-                                    placeholder="Ruang Rapat" required>
+                                    placeholder="Ruang Rapat" value="{{ old('tempat') }}" required>
                             </div>
                         </div>
                         <div class="mb-3 row">
