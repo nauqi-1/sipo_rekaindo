@@ -273,7 +273,7 @@
         }
 
         .date {
-            margin-right: 2cm;
+            margin-right: 20px;
             margin-top: 10%;
             justify-items: end;
         }
@@ -385,14 +385,14 @@
                             <tr>
                                 <td>Tempat</td>
                                 <td style="text-align: center;">:</td>
-                                <td>
+                                <td style="text-align: justify; padding-right: 20px;">
                                     {!! nl2br(e($undangan->tempat)) !!}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Agenda</td>
                                 <td style="text-align: center;">:</td>
-                                <td>{{ $cleanTag }}</td>
+                                <td style="text-align: justify; padding-right: 20px;">{{ $cleanTag }}</td>
                             </tr>
                         </table>
                         <p style="margin-top: 10px; text-align: justify;">
