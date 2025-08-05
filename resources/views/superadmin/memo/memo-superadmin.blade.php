@@ -46,6 +46,7 @@
                             <option value="approve" {{ request('status') == 'approve' ? 'selected' : '' }}>Diterima</option>
                             <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses</option>
                             <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
+                            <option value="correction" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi</option>
                         </select>
                     </div>
                     <div class="input-icon-wrapper" style="position: relative; width: 150px;">
