@@ -264,9 +264,9 @@
                             <!-- Success Message -->
                             <h5 class="modal-title"><b>Sukses</b></h5>
                             <p class="mt-2">Berhasil Mengirimkan Undangan</p>
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a
+                            {{-- <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a
                                     href="{{route('undangan.manager')}}"
-                                    style="color: white; text-decoration: none">Kembali ke Halaman Undangan</a></button>
+                                    style="color: white; text-decoration: none">Kembali ke Halaman Undangan</a></button> --}}
                         </div>
                     </div>
                 </div>
