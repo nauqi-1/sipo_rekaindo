@@ -66,7 +66,6 @@
             border-collapse: collapse;
             width: 100%;
             table-layout: auto;
-            /* Ini biarkan auto jika tidak ingin fixed untuk tabel header2 */
         }
 
         .header2 th {
@@ -89,7 +88,6 @@
             margin: 0;
             text-align: left;
             white-space: nowrap;
-            /* Cegah teks turun ke bawah */
         }
 
         .header2 td:first-child {
@@ -101,7 +99,6 @@
         .fill {
             margin-top: 1px;
             width: 95%;
-            /* Atau bisa 100% jika ingin full lebar `letter` */
             margin: 0 auto;
         }
 
@@ -109,14 +106,12 @@
             text-align: left;
         }
 
-        /* ---- Mulai Perubahan Penting untuk Tabel Detail Undangan ---- */
         .fill table {
             border-collapse: collapse;
             width: 100%;
             table-layout: fixed;
             background-color: white;
             margin-left: 20px;
-
         }
 
         .fill table td {
@@ -128,7 +123,6 @@
 
         .fill table tr td:first-child {
             width: 15%;
-
         }
 
         .fill table tr td:nth-child(2) {
@@ -140,10 +134,41 @@
             width: 82%;
         }
 
-
         .contents {
             text-align: justify;
             line-height: 0.7cm;
+        }
+
+        /* PERBAIKAN UTAMA: SIGNATURE PROTECTION */
+        .signature-container {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            margin-top: 30px;
+            min-height: 120px;
+            position: relative;
+            clear: both;
+        }
+
+        /* PERBAIKAN: Pastikan konten sebelum signature bisa break */
+        .content-section {
+            page-break-inside: auto;
+            overflow: visible;
+        }
+
+        /* PERBAIKAN: Agenda cell yang bisa wrap dan break */
+        .agenda-cell {
+            text-align: justify !important; 
+            padding-right: 20px !important;
+            word-wrap: break-word !important;
+            word-break: break-word !important;
+            white-space: normal !important;
+            line-height: 1.4 !important;
+            page-break-inside: auto !important;
+        }
+
+        /* Force new page jika diperlukan */
+        .signature-new-page {
+            page-break-before: always !important;
         }
 
         .signature {
@@ -209,7 +234,6 @@
         .view-mode .fill {
             position: relative;
             width: 100%;
-            /* Sesuaikan dengan kebutuhan layout utama Diva */
             margin-left: auto;
             margin-right: auto;
             text-align: justify;
@@ -223,9 +247,8 @@
             margin-left: auto;
             margin-right: auto;
             text-align: justify;
-            overflow-y: auto;
-            max-height: calc(100vh - 9cm);
-
+            overflow-y: visible !important;
+            max-height: none !important;
         }
 
         .pdf-mode header img,
@@ -265,11 +288,10 @@
             margin-left: 2.5px;
             margin-right: auto;
             text-align: justify;
-            overflow-y: auto;
-            max-height: calc(100vh - 12cm);
+            overflow-y: visible !important;
+            max-height: none !important;
             padding: 0;
             margin-top: 0;
-
         }
 
         .date {
@@ -286,7 +308,60 @@
         .header2 p,
         .header2 table td {
             line-height: 1.5;
+        }
 
+        .allow-page-break {
+            page-break-inside: auto;
+        }
+
+        .no-page-break {
+            page-break-inside: avoid;
+            page-break-before: auto;
+        }
+
+        .ttd {
+            margin-top: 40px;
+            text-align: right;
+        }
+
+        /* MEDIA QUERY UNTUK PRINT */
+        @media print {
+            .signature-container {
+                min-height: 100px;
+                page-break-inside: avoid;
+                margin-top: 20px;
+            }
+            
+            .signature-new-page {
+                page-break-before: always;
+            }
+
+            .content-section {
+                page-break-inside: auto;
+            }
+
+            .agenda-cell {
+                page-break-inside: auto !important;
+            }
+        }
+
+        /* CLEAR FLOAT UTILITY */
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* PERBAIKAN: QR Code container */
+        .qr-container {
+            margin: 8px 0;
+            text-align: center;
+            page-break-inside: avoid;
+        }
+
+        .qr-container img {
+            max-width: 80px;
+            height: auto;
         }
     </style>
 </head>
@@ -305,7 +380,7 @@
     </footer>
 
     <main>
-        <div class="content">
+        <div class="content; no-page-break ttd">
             <div class="date">
                 <p>Madiun, {{ $undangan->tgl_dibuat?->translatedFormat('d F Y') }}</p>
             </div>
@@ -326,24 +401,21 @@
                 <div class="collab">
                     <div class="header2">
                         <h4 style="margin-bottom: 0;"><b>Kepada Yth. :</b></h4>
-                        <table style="margin-top: 3px;">
+                        <table style="margin-top: 3px; page-break-inside: auto;">
                             @foreach($tujuanUsers as $index => $user)
                                 <tr>
                                     <td>{{ $index + 1 }}.</td>
                                     <td>{{ $user->position->nm_position ?? '-' }}
                                         {{ $user->bagian_text ?? '-' }}
                                         ({{  $user->firstname }} {{ $user->lastname }})
-
-
                                     </td>
                                 </tr>
                             @endforeach
-
                         </table>
                         <p style="margin-top: 3px;">Di Tempat</p>
                     </div>
 
-                    <div class="fill">
+                    <div class="fill content-section">
                         <p style="margin-top: 1px;">Dengan hormat,</p>
                         <p class="contents">Bersama ini kami mengharapkan kehadiran Bapak / Ibu pada:</p>
                         <table style="
@@ -353,9 +425,9 @@
                         border-collapse: collapse; 
                         background-color: white; 
                         margin-left: 20px; 
-                        table-layout: fixed; 
-                        
-                    ">
+                        table-layout: fixed;
+                        page-break-inside: auto;
+                        ">
                             <tr>
                                 <td style="width: 15%;">Hari/Tanggal</td>
                                 <td style="width: 3%; text-align: center;">:</td>
@@ -363,7 +435,6 @@
                                     {{ \Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l / d F Y') }}
                                 </td>
                             </tr>
-                            <tr>
                             <tr>
                                 <td>Pukul</td>
                                 <td style="text-align: center;">:</td>
@@ -379,9 +450,6 @@
                                     @endif
                                 </td>
                             </tr>
-
-                            </tr>
-
                             <tr>
                                 <td>Tempat</td>
                                 <td style="text-align: center;">:</td>
@@ -390,9 +458,9 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Agenda</td>
-                                <td style="text-align: center;">:</td>
-                                <td style="text-align: justify; padding-right: 20px;">{{ $cleanTag }}</td>
+                                <td style="vertical-align: top;">Agenda</td>
+                                <td style="text-align: center; vertical-align: top;">:</td>
+                                <td class="agenda-cell">{{ $cleanTag }}</td>
                             </tr>
                         </table>
                         <p style="margin-top: 10px; text-align: justify;">
@@ -400,6 +468,7 @@
                             terima kasih.
                         </p>
                     </div>
+
                     {{-- PENGECEKAN APAKAH DIA DIREKTUR --}}
                     @php
                         $bagian = optional($manager->unit)->name_unit
@@ -412,35 +481,41 @@
                             && is_null($manager->department_id_department)
                             && is_null($manager->section_id_section)
                             && is_null($manager->unit_id_unit);
+
+                        // DETEKSI OTOMATIS APAKAH PERLU PAGE BREAK
+                        $agendaLength = strlen($cleanTag ?? '');
+                        $tujuanCount = count($tujuanUsers ?? []);
+                        $totalContent = $agendaLength + ($tujuanCount * 60);
+                        $needsPageBreak = $totalContent > 1500 || $tujuanCount > 12 || $agendaLength > 800;
                     @endphp
-                    <div
-                        style="width: 40%; float: right; text-align: left; margin-right: 3%; line-height: 1.3; margin-top: 1px;">
-                        <p style="text-align: center; margin-bottom: 5px;"><b>Hormat kami,</b></p>
-                        {{-- MENAMPILKAN POSISI DARI TABEL POSITION --}}
-                        @if($isDirektur)
-                            <p style="text-align: center; margin: 0; font-weight: bold;">
-                                {{ optional($manager->director)->name_director }}
-                            </p>
-                        @else
-                            {{-- MENAMPILKAN POSISI DARI TABEL POSITION SERTA ASAL UNIT/SECTION/DEPARTMENT/DIVISI--}}
-                            <p style="text-align: center; margin: 0; font-weight: bold;">
-                                {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }} {{ $bagian }}
-                            </p>
-                        @endif
 
-                        {{-- QR CODE --}}
-                        @if(!empty($undangan->qr_approved_by))
-                            <div style="margin: 10px 0; text-align: center;">
-                                <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" width="100">
-                            </div>
-                        @endif
-                        {{-- NAMA BERTANDA TANGAN --}}
-                        <p style="margin: 0; text-align: center;"><b><u>{{ $manager->firstname }}
-                                    {{ $manager->lastname }}</u></b></p>
+                    {{-- SIGNATURE CONTAINER WITH PAGE BREAK PROTECTION --}}
+                    <div class="signature-container {{ $needsPageBreak ? 'signature-new-page' : '' }} clearfix">
+                        <div style="width: 40%; float: right; text-align: left; margin-right: 3%; line-height: 1.3; margin-top: 1px;">
+                            <p style="text-align: center; margin-bottom: 5px;"><b>Hormat kami,</b></p>
+                            {{-- MENAMPILKAN POSISI DARI TABEL POSITION --}}
+                            @if($isDirektur)
+                                <p style="text-align: center; margin: 0; font-weight: bold;">
+                                    {{ optional($manager->director)->name_director }}
+                                </p>
+                            @else
+                                {{-- MENAMPILKAN POSISI DARI TABEL POSITION SERTA ASAL UNIT/SECTION/DEPARTMENT/DIVISI--}}
+                                <p style="text-align: center; margin: 0; font-weight: bold;">
+                                    {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }} {{ $bagian }}
+                                </p>
+                            @endif
+
+                            {{-- QR CODE --}}
+                            @if(!empty($undangan->qr_approved_by))
+                                <div class="qr-container">
+                                    <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" alt="QR Code">
+                                </div>
+                            @endif
+                            {{-- NAMA BERTANDA TANGAN --}}
+                            <p style="margin: 0; text-align: center;"><b><u>{{ $manager->firstname }}
+                                        {{ $manager->lastname }}</u></b></p>
+                        </div>
                     </div>
-                    <div style="clear: both;"></div>
-
-
 
                 </div> {{-- Close collab --}}
             </div> {{-- Close letter --}}
