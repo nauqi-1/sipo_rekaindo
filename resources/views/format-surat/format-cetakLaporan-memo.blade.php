@@ -268,7 +268,7 @@
                 </div>
             </div>
         </div>
-        <div >
+        <div>
             <table class="signature">
                 <tr>
                     <td>
