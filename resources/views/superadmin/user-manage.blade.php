@@ -193,7 +193,7 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="password"  class="form-label">Kata Sandi :<span style="color : red;"> *</span></label>
-                            <input type="text" name="password" id="password" class="form-control" required autocomplete="new-password" placeholder="Masukkan Min. 8 karakter">
+                            <input type="password" name="password" id="password" class="form-control" required autocomplete="new-password" placeholder="Masukkan Min. 8 karakter">
                             <x-input-error :messages="$errors->get('password')" class="mt-2" />
                         </div>
                         <div class="col-md-6">

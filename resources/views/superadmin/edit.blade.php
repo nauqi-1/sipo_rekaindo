@@ -176,7 +176,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-cancel" onclick="window.location='#'">Batal</button>
+                            <button type="button" class="btn btn-cancel" onclick="window.location='{{ route('user.manage') }}'">Batal</button>
                             <button type="submit" class="btn btn-save">Simpan</button>
                         </div>
                     </form>
