@@ -77,7 +77,9 @@ class LaporanController extends Controller
 
         $memoController = new MemoController();
         $kodeUser = null;
-
+        if (Auth::user()->role->nm_role == 'admin') {
+            $kodeUser = $memoController->getDivDeptKode(Auth::user());
+        }
         // Store dates in session
         $request->session()->put('filter_dates', [
             'tgl_awal' => $request->tgl_awal,
@@ -119,19 +121,35 @@ class LaporanController extends Controller
             'tgl_awal' => $request->tgl_awal,
             'tgl_akhir' => $request->tgl_akhir
         ]);
+        $kode = Risalah::whereNotNull('kode')
+            ->pluck('kode')
+            ->unique();
 
+        $memoController = new MemoController();
+        $kodeUser = null;
+        if (Auth::user()->role->nm_role == 'admin') {
+            $kodeUser = $memoController->getDivDeptKode(Auth::user());
+        }
         // Get filtered memos
-        $risalahs = Risalah::where(function ($query) {
-            $query->where('status', 'diterima')
-                ->orWhere('status', 'approve');
+        $risalahs = Risalah::where(function ($query) use ($request, $kodeUser) {
+
+            if (!$kodeUser) {
+                if ($request->filled('kode') && $request->kode != 'pilih') {
+                    $query->where('kode', $request->kode);
+                    $kodeUser = $request->kode;
+                }
+            } else {
+                $query->where('kode', $kodeUser);
+            }
         })->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
             ->whereDate('tgl_dibuat', '<=', $request->tgl_akhir)
-            ->orderBy('tgl_dibuat', 'desc')
+            ->orderBy('tgl_dibuat', 'asc')
             ->get();
 
         return view('superadmin.laporan.cetak-laporan-risalah', [
             'risalahs' => $risalahs,
-            'divisi' => $divisi
+            'divisi' => $divisi,
+            'kode' => $kode
         ]);
     }
 
@@ -205,13 +223,13 @@ class LaporanController extends Controller
     public function undangan(Request $request)
     {
         $divisi = Divisi::all();
-         $kode = Undangan::whereNotNull('kode')
+        $kode = Undangan::whereNotNull('kode')
             ->pluck('kode')
             ->filter()
             ->unique()
             ->values();
         $seri = Seri::all();
-         $memoController = new MemoController();
+        $memoController = new MemoController();
         $kodeUser = null;
         $user = Auth::user();
         if (!$user) {
@@ -262,16 +280,33 @@ class LaporanController extends Controller
     public function risalah(Request $request)
     {
         $divisi = Divisi::all();
+        $kode = Undangan::whereNotNull('kode')
+            ->pluck('kode')
+            ->filter()
+            ->unique()
+            ->values();
         $seri = Seri::all();
+        $memoController = new MemoController();
+        $kodeUser = null;
         $user = Auth::user();
         if (!$user) {
             return redirect('/');
         }
 
+        if ($user->role->nm_role == 'admin') {
+            $kodeUser = $memoController->getDivDeptKode(Auth::user());
+        }
+
         $risalahs = Risalah::query()
-            ->where(function ($query) {
-                $query->where('status', 'diterima')
-                    ->orWhere('status', 'approve');
+            ->where(function ($query) use ($request, $kodeUser) {
+                if (!$kodeUser) {
+                    if ($request->filled('kode') && $request->kode != 'pilih') {
+                        $query->where('kode', $request->kode);
+                        $kodeUser = $request->kode;
+                    }
+                } else {
+                    $query->where('kode', $kodeUser);
+                }
             });
 
         // Filter tanggal dari session
@@ -281,23 +316,19 @@ class LaporanController extends Controller
                 ->whereDate('tgl_dibuat', '<=', $dates['tgl_akhir']);
         }
 
-        // Filter divisi jika ada
-        if ($request->filled('divisi_id_divisi')) {
-            $risalahs->where('divisi_id_divisi', $request->divisi_id_divisi);
-        }
-
         // Filter search jika ada
         if ($request->filled('search')) {
             $risalahs->where('judul', 'like', '%' . $request->search . '%');
         }
 
-        $risalahs = $risalahs->orderBy('tgl_dibuat', 'desc')->get();
+        $risalahs = $risalahs->orderBy('tgl_dibuat', 'asc')->get();
 
         // Jika masuk route cetak, tampilkan cetak-laporan-undangan
         if (request()->route()->getName() === 'cetak-laporan-risalah.superadmin' || request()->is('cetak-laporan-risalah')) {
             return view('superadmin.laporan.cetak-laporan-risalah', [
                 'risalahs' => $risalahs,
-                'divisi' => $divisi
+                'divisi' => $divisi,
+                'kode' => $kode
             ]);
         }
     }
