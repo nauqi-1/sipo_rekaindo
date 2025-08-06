@@ -44,7 +44,7 @@
                             <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                         </div>
                     </div>
-                    
+
                     <input type="hidden" name="tgl_awal" value="{{ request('tgl_awal', session('filter_dates.tgl_awal')) }}">
                     <input type="hidden" name="tgl_akhir" value="{{ request('tgl_akhir', session('filter_dates.tgl_akhir')) }}">
 
@@ -85,8 +85,8 @@
             @foreach ($memos as $index => $laporan)
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
-                <td class="nama-dokumen 
-                    {{ $laporan->status == 'reject' ? 'text-danger' : ($laporan->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                <td class="nama-dokumen {{ ($laporan->status == 'reject' || $laporan->status == 'correction') ? 'text-danger' : ($laporan->status == 'pending' ? '' : 'text-success') }}"
+                    style="{{ $laporan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                     {{ $laporan->judul }}
                 </td>
                 <td>{{ $laporan->tgl_dibuat->format('d-m-Y') }}</td>
@@ -94,19 +94,19 @@
                 <td>{{ $laporan->nomor_memo }}</td>
                 <td>{{ $laporan->kode ?? '-' }}</td>
                 <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-                 <td>
-                        
-                            @if ($laporan->status == 'reject')
-                                <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($laporan->status == 'pending')
-                                <span class="badge bg-warning">Diproses</span>
-                            @elseif ($laporan->status == 'correction')
-                                <span class="badge bg-danger">Dikoreksi</span>
-                            @else
-                                <span class="badge bg-success">Diterima</span>
-                            @endif
-                        
-                    </td>
+                <td>
+
+                    @if ($laporan->status == 'reject')
+                    <span class="badge bg-danger">Ditolak</span>
+                    @elseif ($laporan->status == 'pending')
+                    <span class="badge bg-info">Diproses</span>
+                    @elseif ($laporan->status == 'correction')
+                    <span class="badge bg-warning">Dikoreksi</span>
+                    @else
+                    <span class="badge bg-success">Diterima</span>
+                    @endif
+
+                </td>
                 <!-- <td>
                     <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
                     <button class="btn btn-sm2" data-bs-toggle="modal" data-bs-target="#deleteModal">
