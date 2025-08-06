@@ -19,7 +19,7 @@ class CetakPDFController extends Controller
     {
         // Ambil data dari database
         $memo = Memo::findOrFail($id); // Sesuaikan dengan model yang benar
-        
+
         $tujuanNames = explode(';', $memo->tujuan_string);
 
         $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
@@ -85,13 +85,13 @@ class CetakPDFController extends Controller
 
     public function viewmemoPDF($id_memo)
 
-{
-    // Ambil data memo berdasarkan ID
-    $memo = Memo::findOrFail($id_memo);
+    {
+        // Ambil data memo berdasarkan ID
+        $memo = Memo::findOrFail($id_memo);
 
-    $tujuanNames = explode(';', $memo->tujuan_string);
+        $tujuanNames = explode(';', $memo->tujuan_string);
 
-    $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$memo->nama_bertandatangan])
             ->first();
 
@@ -101,53 +101,52 @@ class CetakPDFController extends Controller
             $manager->bagian_text = $this->getBagianText($manager, $level);
         }
 
-    $headerPath = public_path('img/bheader.png');
-    $footerPath = public_path('img/bfooter.png');
+        $headerPath = public_path('img/bheader.png');
+        $footerPath = public_path('img/bfooter.png');
 
 
 
-    // Konversi gambar ke base64
-    $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
-    $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
+        // Konversi gambar ke base64
+        $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
+        $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
 
-    // Generate PDF halaman pertama (format memo)
-    $formatMemoPdf = PDF::loadView('format-surat.format-memo', [
-        'memo' => $memo,
-        'headerImage' => $headerBase64,
-        'footerImage' => $footerBase64,
-        'tujuanNames' => $tujuanNames,
-        'manager' => $manager,
-        'isPdf' => true
-    ])->setPaper('A4', 'portrait');
+        // Generate PDF halaman pertama (format memo)
+        $formatMemoPdf = PDF::loadView('format-surat.format-memo', [
+            'memo' => $memo,
+            'headerImage' => $headerBase64,
+            'footerImage' => $footerBase64,
+            'tujuanNames' => $tujuanNames,
+            'manager' => $manager,
+            'isPdf' => true
+        ])->setPaper('A4', 'portrait');
 
-    // Simpan PDF memo sementara
-    $formatMemoPath = storage_path('app/temp_format_memo_' . $memo->id . '.pdf');
-    $formatMemoPdf->save($formatMemoPath);
+        // Simpan PDF memo sementara
+        $formatMemoPath = storage_path('app/temp_format_memo_' . $memo->id . '.pdf');
+        $formatMemoPdf->save($formatMemoPath);
 
-    // Jika ada lampiran, gabungkan PDF-nya
-    if (!empty($memo->lampiran)) {
-        $lampiranTempPath = storage_path('app/temp_lampiran_' . $memo->id . '.pdf');
-        file_put_contents($lampiranTempPath, base64_decode($memo->lampiran));
+        // Jika ada lampiran, gabungkan PDF-nya
+        if (!empty($memo->lampiran)) {
+            $lampiranTempPath = storage_path('app/temp_lampiran_' . $memo->id . '.pdf');
+            file_put_contents($lampiranTempPath, base64_decode($memo->lampiran));
 
-        $pdfMerger = new \Clegginabox\PDFMerger\PDFMerger;
-        $pdfMerger->addPDF($formatMemoPath, 'all');
-        $pdfMerger->addPDF($lampiranTempPath, 'all');
+            $pdfMerger = new \Clegginabox\PDFMerger\PDFMerger;
+            $pdfMerger->addPDF($formatMemoPath, 'all');
+            $pdfMerger->addPDF($lampiranTempPath, 'all');
 
-        $outputPath = storage_path('app/view_memo_' . $memo->id . '.pdf');
-        $pdfMerger->merge('file', $outputPath);
+            $outputPath = storage_path('app/view_memo_' . $memo->id . '.pdf');
+            $pdfMerger->merge('file', $outputPath);
 
-        // Hapus file sementara setelah digabung
-        if (file_exists($formatMemoPath)) unlink($formatMemoPath);
-        if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
+            // Hapus file sementara setelah digabung
+            if (file_exists($formatMemoPath)) unlink($formatMemoPath);
+            if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
 
-        // Tampilkan file hasil merge
-        return response()->file($outputPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
-    } else {
-        // Kalau tidak ada lampiran, tampilkan risalah langsung
-        return response()->file($formatMemoPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
-
+            // Tampilkan file hasil merge
+            return response()->file($outputPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
+        } else {
+            // Kalau tidak ada lampiran, tampilkan risalah langsung
+            return response()->file($formatMemoPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
+        }
     }
-}
     public function cetakundanganPDF($id)
     {
         // Ambil data dari database
@@ -336,7 +335,6 @@ class CetakPDFController extends Controller
     public function laporanmemoPDF(Request $request)
     {
         $memos = Memo::query();
-
         // Filter berdasarkan divisi jika ada
         if ($request->filled('divisi_id_divisi')) {
             $memos->where('divisi_id_divisi', $request->divisi_id_divisi);
@@ -347,7 +345,13 @@ class CetakPDFController extends Controller
             $memos->where('judul', 'like', '%' . $request->search . '%');
         }
 
-        $memos->where('status', 'approve');
+        if ($request->filled('kode')) {
+            $memos->where('kode', $request->kode);
+        }
+
+        $memos->where('status', 'approve')
+            ->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
+            ->whereDate('tgl_dibuat', '<=', $request->tgl_akhir);
 
         // Ambil semua data yang sudah difilter
         $memos = $memos->orderBy('tgl_dibuat', 'desc')->get();
