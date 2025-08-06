@@ -21,6 +21,7 @@ use App\Models\Divisi;
 use App\Models\Undangan;
 use App\Models\Department;
 use App\Models\Director;
+use App\Http\Controllers\MemoController;
 
 class RisalahController extends Controller
 {
@@ -265,6 +266,7 @@ class RisalahController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
+        $memoController = new MemoController();
         $request->validate([
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|string',
@@ -294,7 +296,7 @@ class RisalahController extends Controller
             $file = $request->file('lampiran');
             $filePath = base64_encode(file_get_contents($file->getRealPath()));
         }
-
+        $divDeptKode = $memoController->getDivDeptKode(Auth::user());
         $divisiId = auth()->user()->divisi_id_divisi;
         $seri = SeriRisalah::getNextSeri(true);
         $seri = SeriRisalah::where('tahun', now()->year)
@@ -318,6 +320,7 @@ class RisalahController extends Controller
             'pembuat' => $request->pembuat,
             'lampiran' => $filePath,
             'nama_bertandatangan' => $request->nama_bertandatangan,
+            'kode' => $divDeptKode,
             'risalah_id_risalah' => $request->id_risalah
         ]);
 
