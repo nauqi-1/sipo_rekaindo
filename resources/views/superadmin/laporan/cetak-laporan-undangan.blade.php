@@ -26,14 +26,14 @@
             <div class="d-flex gap-2">
             <form method="GET" action="{{ route('cetak-laporan-undangan.superadmin') }}" class="search-filter d-flex gap-2">
                 <div  class="dropdown" style="margin-bottom: 8px;">
-                    <select name="divisi_id_divisi" id="divisi_id_divisi" class="form-select" onchange="this.form.submit()">
-                        <option value="pilih" disabled {{ !request()->filled('divisi_id_divisi') ? 'selected' : '' }}>Pilih Divisi</option>
-                        @foreach($divisi as $d)
-                            <option value="{{ $d->id_divisi }}" {{ request('divisi_id_divisi') == $d->id_divisi ? 'selected' : '' }}>
-                                {{ $d->nm_divisi }}
+                    <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
+                            <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
+                            @foreach($kode as $k)
+                            <option value="{{ $k }}" {{ request('kode') == $k ? 'selected' : '' }}>
+                                {{ $k }}
                             </option>
-                        @endforeach
-                    </select>
+                            @endforeach
+                        </select>
                 </div>
                 <div class="d-flex gap-2">
                     <div class="btn btn-search d-flex align-items-center" style="gap: 5px; width: 200px; height: 80%; border: 1px solid #E5E5E5;">

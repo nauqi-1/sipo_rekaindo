@@ -180,6 +180,16 @@ class LaporanController extends Controller
     public function undangan(Request $request)
     {
         $divisi = Divisi::all();
+        $kode = Undangan::whereNotNull('kode')
+        ->pluck('kode')
+        ->filter()
+        ->unique()
+        ->values();
+        $seri = Seri::all();  
+        $user = Auth::user();
+        if (!$user) {
+            return redirect('/');
+        }
         $seri = Seri::all();  
         $user = Auth::user();
         if (!$user) {
@@ -203,7 +213,9 @@ class LaporanController extends Controller
         if ($request->filled('divisi_id_divisi')) {
             $undangans->where('divisi_id_divisi', $request->divisi_id_divisi);
         }
-
+        if ($request->filled('kode') && $request->kode != 'pilih') {
+            $undangans->where('kode', $request->kode);
+        }
         // Filter search jika ada
         if ($request->filled('search')) {
             $undangans->where('judul', 'like', '%' . $request->search . '%');
@@ -215,11 +227,10 @@ class LaporanController extends Controller
         if (request()->route()->getName() === 'cetak-laporan-undangan.superadmin' || request()->is('cetak-laporan-undangan')) {
             return view('superadmin.laporan.cetak-laporan-undangan', [
                 'undangans' => $undangans,
-                'divisi' => $divisi
+                'divisi' => $divisi,
+                'kode' => $kode
             ]);
         }
-
-        
     }
 
     public function risalah(Request $request)
