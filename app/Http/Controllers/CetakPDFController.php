@@ -431,18 +431,32 @@ class CetakPDFController extends Controller
     {
         // Ambil data divisi
         $undangans = Undangan::query();
+        $memoController = new MemoController();
 
-        // Filter berdasarkan divisi jika ada
-        if ($request->filled('divisi_id_divisi')) {
-            $undangans->where('divisi_id_divisi', $request->divisi_id_divisi);
-        }
-
-        // Filter berdasarkan pencarian judul jika ada
         if ($request->filled('search')) {
             $undangans->where('judul', 'like', '%' . $request->search . '%');
         }
 
-        $undangans->where('status', 'approve');
+        $kodeUser = null;
+        if (Auth::user()->role->nm_role == 'admin') {
+            $kodeUser = $memoController->getDivDeptKode(Auth::user());
+        }
+
+        if (!$kodeUser && $request->filled('kode') && $request->kode != 'pilih') {
+            $kodeUser = $request->kode;
+        }
+
+        if ($kodeUser) {
+            $undangans->where(function ($query) use ($kodeUser) {
+                $query->where('kode', $kodeUser);
+            });
+        }
+
+        if ($kodeUser) {
+            $manager = $this->getGMFromKode($kodeUser);
+        } else {
+            $manager = Auth::user();
+        }
 
         // Ambil semua data yang sudah difilter
         $undangans = $undangans->orderBy('tgl_dibuat', 'asc')->get();
@@ -462,6 +476,7 @@ class CetakPDFController extends Controller
             'tgl_akhir' => $request->tgl_akhir,
             'headerImage' => $headerBase64,
             'footerImage' => $footerBase64,
+            'manager' => $manager,
             'isPdf' => true
         ])->setPaper('A4', 'portrait');
 

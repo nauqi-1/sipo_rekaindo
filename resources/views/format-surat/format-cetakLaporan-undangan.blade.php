@@ -256,9 +256,15 @@
                                     <td>{{ $laporan->judul ?? '-' }}</td>
                                     <td>{{ $laporan->nomor_undangan ?? '-' }}</td>
                                     <td>
-                                        <span class="badge bg-{{ $laporan->status == 'approve' ? 'success' : 'warning' }}">
-                                            {{ $laporan->status == 'approve' ? 'Diterima' : 'Pending' }}
-                                        </span>
+                                        @if ($laporan->status == 'reject')
+                                        <span class="badge bg-danger">Ditolak</span>
+                                        @elseif ($laporan->status == 'pending')
+                                        <span class="badge bg-info">Diproses</span>
+                                        @elseif ($laporan->status == 'correction')
+                                        <span class="badge bg-warning">Dikoreksi</span>
+                                        @else
+                                        <span class="badge bg-success">Diterima</span>
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach
@@ -267,15 +273,45 @@
                     </div>
                 </div>
             </div>
-            <div >
-                <table class="signature">
-                    <tr>
-                        <td>
-                            <p><b>Kepala Divisi</b></p><br><br><br>
-                            <p><b>Hisyam Syafiq A. A</b></p>
-                        </td>
-                    </tr>
-                </table>
+            <div><div>
+                {{-- PENGECEKAN APAKAH DIA DIREKTUR --}}
+                @php
+                $bagian = optional($manager->unit)->name_unit
+                ?? optional($manager->section)->name_section
+                ?? optional($manager->department)->name_department
+                ?? optional($manager->divisi)->nm_divisi
+                ?? optional($manager->director)->name_director;
+
+                $isDirektur = is_null($manager->divisi_id_divisi)
+                && is_null($manager->department_id_department)
+                && is_null($manager->section_id_section)
+                && is_null($manager->unit_id_unit);
+                @endphp
+                <div style="width: 40%; margin-left: auto; text-align: left; line-height: 1.3; margin-top: 20px;">
+                    {{-- MENAMPILKAN POSISI DARI TABEL POSITION --}}
+                    @if($isDirektur)
+                    <p style="text-align: center; margin: 0; font-weight: bold;">
+                        {{ optional($manager->director)->name_director }}
+                    </p>
+                    @else
+                    {{-- MENAMPILKAN POSISI DARI TABEL POSITION SERTA ASAL UNIT/SECTION/DEPARTMENT/DIVISI--}}
+                    <p style="text-align: center; margin: 0; font-weight: bold;">
+                        {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }} {{ $bagian }}
+                    </p>
+                    @endif
+
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br> {{-- sangat tidak elegan 😭😭😭 --}}
+                    {{-- NAMA BERTANDA TANGAN --}}
+
+                    <p style="margin: 0; text-align: center;"><b><u>{{ $manager->firstname }} {{ $manager->lastname }}</u></b></p>
+                </div>
+                <div style="clear: both;"></div>
+
+            </div>
             </div>
         </div>
     </main>
