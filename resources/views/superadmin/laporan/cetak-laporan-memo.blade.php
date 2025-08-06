@@ -25,6 +25,8 @@
             <h2><b>Laporan Memo</b></h2>
             <div class="d-flex gap-2">
                 <form method="GET" action="{{ route('cetak-laporan-memo.superadmin') }}" class="search-filter d-flex gap-2">
+                    @if(Auth::user()->role_id_role == 1)
+                    @csrf
                     <div class="dropdown" style="margin-bottom: 8px;">
                         <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
                             <option value="pilih" {{ !request()->filled('kode') ? 'selected' : '' }}>Semua Divisi</option>
@@ -35,16 +37,23 @@
                             @endforeach
                         </select>
                     </div>
+                    @endif
                     <div class="d-flex gap-2">
                         <div class="btn btn-search d-flex align-items-center" style="gap: 5px; width: 200px; height: 80%; border: 1px solid #E5E5E5;">
                             <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
                             <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
                         </div>
                     </div>
+
+                    <input type="hidden" name="tgl_awal" value="{{ request('tgl_awal', session('filter_dates.tgl_awal')) }}">
+                    <input type="hidden" name="tgl_akhir" value="{{ request('tgl_akhir', session('filter_dates.tgl_akhir')) }}">
+
                 </form>
+                @if($memos->isNotEmpty())
                 <a href="{{ route('format-cetakLaporan-memo', request()->all()) }}" class="btn btn-primary-print">
                     <img src="{{ asset('img/laporan/print.png') }}" alt="print"> Cetak Data
                 </a>
+                @endif
             </div>
         </div>
     </div>
@@ -76,8 +85,8 @@
             @foreach ($memos as $index => $laporan)
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
-                <td class="nama-dokumen 
-                    {{ $laporan->status == 'reject' ? 'text-danger' : ($laporan->status == 'pending' ? 'text-warning' : 'text-success') }}">
+                <td class="nama-dokumen {{ ($laporan->status == 'reject' || $laporan->status == 'correction') ? 'text-danger' : ($laporan->status == 'pending' ? '' : 'text-success') }}"
+                    style="{{ $laporan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                     {{ $laporan->judul }}
                 </td>
                 <td>{{ $laporan->tgl_dibuat->format('d-m-Y') }}</td>
@@ -86,9 +95,17 @@
                 <td>{{ $laporan->kode ?? '-' }}</td>
                 <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                 <td>
-                    <span class="badge bg-{{ $laporan->status == 'approve' ? 'success' : 'warning' }}">
-                        {{ $laporan->status == 'approve' ? 'Diterima' : 'Pending' }}
-                    </span>
+
+                    @if ($laporan->status == 'reject')
+                    <span class="badge bg-danger">Ditolak</span>
+                    @elseif ($laporan->status == 'pending')
+                    <span class="badge bg-info">Diproses</span>
+                    @elseif ($laporan->status == 'correction')
+                    <span class="badge bg-warning">Dikoreksi</span>
+                    @else
+                    <span class="badge bg-success">Diterima</span>
+                    @endif
+
                 </td>
                 <!-- <td>
                     <button class="btn btn-sm1"><img src="/img/arsip/unduh.png" alt="unduh"></button>
