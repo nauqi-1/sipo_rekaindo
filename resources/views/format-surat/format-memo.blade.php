@@ -37,7 +37,7 @@
 
         main {
             margin-top: 5px; 
-            margin-bottom: 10px;
+            margin-bottom: 3cm;
             text-align: center;
         }
 
@@ -168,7 +168,7 @@
 
         .view-mode .header1,
         .view-mode .header2 {
-            position: fixed; 
+            position: relative; 
             top: 150px; 
             left: 50%;
             transform: translateX(-50%); 
