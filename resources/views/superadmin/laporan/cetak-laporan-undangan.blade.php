@@ -1,7 +1,7 @@
 @extends('layouts.superadmin')
 
 @section('title', 'Laporan Undangan Rapat')
-      
+
 @section('content')
 <div class="container">
     <div class="header">
@@ -10,7 +10,7 @@
             <a href="{{ route('laporan-undangan.superadmin') }}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
         </div>
         <h1>Laporan Undangan Rapat</h1>
-    </div>        
+    </div>
     <div class="row">
         <div class="breadcrumb-wrapper">
             <div class="breadcrumb" style="gap: 5px;">
@@ -24,8 +24,8 @@
         <div class="title d-flex justify-content-between align-items-center mb-3">
             <h2><b>Laporan Undangan Rapat</b></h2>
             <div class="d-flex gap-2">
-            <form method="GET" action="{{ route('cetak-laporan-undangan.superadmin') }}" class="search-filter d-flex gap-2">
-                @if(Auth::user()->role_id_role == 1)
+                <form method="GET" action="{{ route('cetak-laporan-undangan.superadmin') }}" class="search-filter d-flex gap-2">
+                    @if(Auth::user()->role_id_role == 1)
                     @csrf
                     <div class="dropdown" style="margin-bottom: 8px;">
                         <select name="kode" id="kode" class="form-select" onchange="this.form.submit()">
@@ -38,12 +38,12 @@
                         </select>
                     </div>
                     @endif
-                <div class="d-flex gap-2">
-                    <div class="btn btn-search d-flex align-items-center" style="gap: 5px; width: 200px; height: 80%; border: 1px solid #E5E5E5;">
-                        <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
-                        <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
+                    <div class="d-flex gap-2">
+                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px; width: 200px; height: 80%; border: 1px solid #E5E5E5;">
+                            <img src="/img/memo-superadmin/search.png" alt="search" style="width: 20px; height: 20px;">
+                            <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
+                        </div>
                     </div>
-                </div>
 
                     <input type="hidden" name="tgl_awal" value="{{ request('tgl_awal', session('filter_dates.tgl_awal')) }}">
                     <input type="hidden" name="tgl_akhir" value="{{ request('tgl_akhir', session('filter_dates.tgl_akhir')) }}">
@@ -52,7 +52,7 @@
                 <!-- Add User Button to Open Mod    al -->
                 <a href="{{route ('format-cetakLaporan-undangan',request()->all())}}" class="btn btn-primary-print">
                     <img src="/img/laporan/print.png" alt="print"> Cetak Data
-</a>
+                </a>
             </div>
         </div>
     </div>
@@ -80,7 +80,7 @@
             </tr>
         </thead>
         <tbody>
-        @if ($undangans->isNotEmpty())
+            @if ($undangans->isNotEmpty())
             @foreach ($undangans as $index => $laporan)
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
@@ -115,11 +115,11 @@
                 </td> -->
             </tr>
             @endforeach
-        @else
+            @else
             <tr>
                 <td colspan="8">Tidak ada undangan rapat pada tanggal yang dipilih.</td>
             </tr>
-        @endif
+            @endif
         </tbody>
     </table>
 
