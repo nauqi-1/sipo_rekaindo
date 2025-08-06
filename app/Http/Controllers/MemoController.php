@@ -24,7 +24,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class MemoController extends Controller
-{
+{   
     public function index(Request $request)
     {
 

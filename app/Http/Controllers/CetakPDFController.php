@@ -3,14 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Clegginabox\PDFMerger\PDFMerger;
 use App\Models\Memo;
 use App\Models\Undangan;
 use App\Models\Risalah;
 use App\Models\Divisi;
+use App\Models\Department;
+use App\Models\Director;
 use App\Models\Section;
+use App\Models\Unit;
 use App\Models\User;
+use FontLib\TrueType\Collection;
 use Illuminate\Support\Str;
 
 class CetakPDFController extends Controller
@@ -332,29 +337,72 @@ class CetakPDFController extends Controller
         }
     }
 
+    public function getGMFromKode($kode)
+    {
+        $divisi = Divisi::where('kode_divisi', $kode)->first();
+        $users = collect();
+
+        if ($divisi) {
+            $users = User::where('divisi_id_divisi', $divisi->id_divisi)->get();
+        } else {
+            $department = Department::where('kode_department', $kode)->first();
+            if ($department) {
+                $users = User::where('department_id_department', $department->id_department)->get();
+            } else {
+                $director = Director::where('kode_director', $kode)->first();
+                if ($director) {
+                    $users = User::where('director_id_director', $director->id_director)->get();
+                } else {
+                    return response()->json(['error' => 'Kode tidak valid'], 404);
+                }
+            }
+        }
+
+        for ($i = 1; $i <= 9; $i++) {
+            $user = $users->firstWhere('position_id_position', $i);
+            if ($user) {
+                return $user;
+            }
+        }
+
+        return null;
+    }
     public function laporanmemoPDF(Request $request)
     {
         $memos = Memo::query();
-        // Filter berdasarkan divisi jika ada
-        if ($request->filled('divisi_id_divisi')) {
-            $memos->where('divisi_id_divisi', $request->divisi_id_divisi);
-        }
-
+        $memoController = new MemoController();
+        $kodeUser = null;
         // Filter berdasarkan pencarian judul jika ada
         if ($request->filled('search')) {
             $memos->where('judul', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->filled('kode')) {
-            $memos->where('kode', $request->kode);
+        $kodeUser = null;
+        if (Auth::user()->role->nm_role == 'admin') {
+            $kodeUser = $memoController->getDivDeptKode(Auth::user());
         }
 
-        $memos->where('status', 'approve')
-            ->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
+        if (!$kodeUser && $request->filled('kode') && $request->kode != 'pilih') {
+            $kodeUser = $request->kode;
+        }
+
+        if ($kodeUser) {
+            $memos->where(function ($query) use ($kodeUser) {
+                $query->where('kode', $kodeUser);
+            });
+        }
+
+        if ($kodeUser) {
+            $manager = $this->getGMFromKode($kodeUser);
+        } else {
+            $manager = Auth::user();
+        }
+
+        $memos->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
             ->whereDate('tgl_dibuat', '<=', $request->tgl_akhir);
 
         // Ambil semua data yang sudah difilter
-        $memos = $memos->orderBy('tgl_dibuat', 'desc')->get();
+        $memos = $memos->orderBy('tgl_dibuat', 'asc')->get();
 
         // Ambil path gambar header dan footer
         $headerPath = public_path('img/bheader.png');
@@ -370,6 +418,7 @@ class CetakPDFController extends Controller
             'tgl_akhir' => $request->tgl_akhir,
             'headerImage' => $headerBase64,
             'footerImage' => $footerBase64,
+            'manager' => $manager,
             'isPdf' => true
         ])->setPaper('A4', 'portrait');
 
@@ -396,7 +445,8 @@ class CetakPDFController extends Controller
         $undangans->where('status', 'approve');
 
         // Ambil semua data yang sudah difilter
-        $undangans = $undangans->orderBy('tgl_dibuat', 'desc')->get();
+        $undangans = $undangans->orderBy('tgl_dibuat', 'asc')->get();
+
 
         // Ambil path gambar header dan footer
         $headerPath = public_path('img/bheader.png');

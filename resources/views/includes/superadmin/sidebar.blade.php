@@ -78,7 +78,7 @@
           </ul>
         </li>
         @endif
-        @if(Auth::user()->role->nm_role == 'superadmin')
+        @if(Auth::user()->role->nm_role == 'superadmin' || Auth::user()->role->nm_role == 'admin')
         <li class="pc-item pc-hasmenu">
           <a href="#!" class="pc-link"
             ><span class="pc-micon"><img src="/assets/images/ikon6.png" alt="" srcset=""></span><span class="pc-mtext">Laporan</span
