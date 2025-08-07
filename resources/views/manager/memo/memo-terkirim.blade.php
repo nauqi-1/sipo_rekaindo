@@ -105,7 +105,8 @@
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
                 @if (Auth::user()->divisi_id_divisi == $kirim->memo->divisi_id_divisi)
-                <td class="nama-dokumen {{ ($kirim->memo->status == 'reject' || $kirim->memo->status == 'correction') ? 'text-danger' : ($kirim->memo->status == 'pending' ? '' : 'text-success') }}"
+               <td class="nama-dokumen 
+                        {{ $kirim->memo->status == 'reject' ? 'text-danger' : ($kirim->memo->status == 'correction' ? 'text-warning' : ($kirim->memo->status == 'approve' ? 'text-success' : '')) }}"
                     style="{{ $kirim->memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                     {{ $kirim->memo->judul }}
                 </td>

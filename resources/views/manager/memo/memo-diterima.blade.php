@@ -99,7 +99,6 @@
                 <td class="nama-dokumen {{ $kirim->status == 'reject' ? 'text-danger' : ($kirim->status == 'pending' ? 'text-warning' : 'text-success') }}">
                     {{ $kirim->memo->judul }}
                 </td>
-
                 <!-- <td>{{ $kirim->memo->tgl_dibuat }}</td> -->
                 <td>{{ $kirim->memo->tgl_dibuat ? \Carbon\Carbon::parse($kirim->memo->tgl_dibuat)->format('d-m-Y') : '-' }}</td>
                 <td>{{ $kirim->memo->seri_surat }}</td>
