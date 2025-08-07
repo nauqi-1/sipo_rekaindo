@@ -65,7 +65,7 @@
                     <div class="card-white">
                         <label for="pembuat">Pembuat</label>
                         <div class="separator"></div>
-                        <input type="text" id="pembuat" value="{{$undangan->pembuat}}" readonly>
+                         <input type="text" id="pembuat" value="{{ $undangan->user ? $undangan->user->firstname . ' ' . $undangan->user->lastname : 'N/A' }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="status">Status</label>
