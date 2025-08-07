@@ -24,7 +24,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class MemoController extends Controller
-{   
+{
     public function index(Request $request)
     {
 
@@ -308,7 +308,6 @@ class MemoController extends Controller
         $orgTree = $this->getOrgTreeWithUsers();
         $jsTreeData = $this->convertToJsTree($orgTree);
         $mainDirector = $orgTree[0] ?? null; // assuming the first node is the main director
-
         return view(Auth::user()->role->nm_role . '.memo.add-memo', [
             'nomorSeriTahunan' => $nextSeri['seri_tahunan'],
             'nomorDokumen' => $nomorDokumen,
@@ -358,8 +357,36 @@ class MemoController extends Controller
 
     private function getUserText($user, $context)
     {
+        $rawPosition = isset($user['position']['nm_position']) ? $user['position']['nm_position'] : '-';
 
-        $position = isset($user['position']['nm_position']) ? $user['position']['nm_position'] : '-';
+        // Format position - remove parentheses and create abbreviations
+        if ($rawPosition !== '-') {
+            // Remove parentheses and content inside them, then clean up extra spaces
+            $position = preg_replace('/\s*\([^)]*\)\s*/', ' ', $rawPosition);
+            $position = trim(preg_replace('/\s+/', ' ', $position));
+
+            // Create abbreviations for common positions
+            if (!in_array($position, ['Staff', 'Direktur'])) {
+                $abbreviations = [
+                    'Penanggung Jawab Senior Manager' => 'PJ SM',
+                    'Penanggung Jawab Manager' => 'PJ M',
+                    'Penanggung Jawab Supervisor' => 'PJ SPV',
+                    'Senior Manager' => 'SM',
+                    'General Manager' => 'GM',
+                    'Manager' => 'M',
+                    'Supervisor' => 'SPV'
+                ];
+
+                foreach ($abbreviations as $full => $abbrev) {
+                    if (strpos($position, $full) !== false) {
+                        $position = str_replace($full, $abbrev, $position);
+                        break;
+                    }
+                }
+            }
+        } else {
+            $position = '-';
+        }
 
         $hierarki = collect([
             $context['unit'] ?? null,
@@ -374,7 +401,6 @@ class MemoController extends Controller
 
         return "$position $hierarki ($firstname $lastname)";
     }
-
     private function convertToJsTree($tree)
     {
         $result = [];
@@ -382,7 +408,9 @@ class MemoController extends Controller
             $dirNode = [
                 'id' => 'director-' . $director['id_director'],
                 'text' => $director['name_director'],
-                'children' => []
+                'children' => [],
+                'state' => ['disabled' => true], // matikan root nodes
+                'checkbox_disabled' => true // disable checkbox for director nodes
             ];
 
             // Filter user hanya yang di level director saja

@@ -426,7 +426,7 @@ class CetakPDFController extends Controller
         if ($kodeUser) {
             $manager = $this->getGMFromKode($kodeUser);
         } else {
-            $manager = Auth::user();
+            $manager = null;
         }
 
         $memos->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
@@ -486,7 +486,7 @@ class CetakPDFController extends Controller
         if ($kodeUser) {
             $manager = $this->getGMFromKode($kodeUser);
         } else {
-            $manager = Auth::user();
+            $manager = null;
         }
 
         // Ambil semua data yang sudah difilter
@@ -669,7 +669,7 @@ class CetakPDFController extends Controller
         if ($kodeUser) {
             $manager = $this->getGMFromKode($kodeUser);
         } else {
-            $manager = Auth::user();
+            $manager = null;
         }
         // Ambil semua data yang sudah difilter
         $risalahs = $risalahs->orderBy('tgl_dibuat', 'desc')->get();

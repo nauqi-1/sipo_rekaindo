@@ -282,6 +282,7 @@
                     </div>
                 </div>
             </div>
+            @if(isset($manager))
             <div>
                 {{-- PENGECEKAN APAKAH DIA DIREKTUR --}}
                 @php
@@ -321,6 +322,7 @@
                 <div style="clear: both;"></div>
 
             </div>
+            @endif
         </div>
     </main>
 </body>

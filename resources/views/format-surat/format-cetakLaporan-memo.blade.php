@@ -283,6 +283,7 @@
                     </div>
                 </div>
             </div>
+            @if(isset($manager))
             <div>
                 {{-- PENGECEKAN APAKAH DIA DIREKTUR --}}
                 @php
@@ -320,8 +321,9 @@
                     <p style="margin: 0; text-align: center;"><b><u>{{ $manager->firstname }} {{ $manager->lastname }}</u></b></p>
                 </div>
                 <div style="clear: both;"></div>
-
+            
             </div>
+            @endif
         </div>
     </main>
 </body>

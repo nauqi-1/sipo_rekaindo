@@ -84,7 +84,7 @@
             @foreach ($risalahs as $index => $laporan)
             <tr>
                 <td class="nomor">{{ $index + 1 }}</td>
-                <td class="nama-dokumen {{ ($laporan->status == 'reject' || $laporan->status == 'correction') ? 'text-danger' : ($laporan->status == 'pending' ? '' : 'text-success') }}"
+                <td class="nama-dokumen {{ $laporan->status == 'reject' ? 'text-danger' : ($laporan->status == 'correction' ? 'text-warning' : ($laporan->status == 'approve' ? 'text-success' : '')) }}"
                     style="{{ $laporan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                     {{ $laporan->judul }}
                 </td>

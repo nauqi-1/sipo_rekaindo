@@ -97,13 +97,21 @@
                                                 'core': {
                                                     'data': @json(json_decode($jsTreeData))
                                                 },
-                                                "plugins": ["checkbox", "search"],
+                                                'plugins': ["checkbox", "search"],
                                                 'checkbox': {
                                                     'three_state': false,
                                                     'cascade': 'none'
                                                 }
+                                            }).on('ready.jstree', function(e, data) {
+                                                // hide checkboxes for top-level nodes
+                                                $('#org-tree li').each(function() {
+                                                    var node = data.instance.get_node(this.id);
+                                                    if (node && node.parent === "#") {
+                                                        // hide checkbox using CSS
+                                                        $(this).find('.jstree-checkbox').css('display', 'none');
+                                                    }
+                                                });
                                             });
-
                                         });
                                     </script>
 
@@ -253,9 +261,9 @@
                             <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
                             <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
                             <p class="upload-note">Ukuran file PDF tidak lebih dari 2MB</p>
-                                        <div class="d-flex justify-content-center mt-2">
-                            <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
-                                        </div>
+                            <div class="d-flex justify-content-center mt-2">
+                                <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
+                            </div>
                             <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
                             <div id="fileInfo" style="display: none; text-align: center ">
                                 <div id="fileInfoWrapper" style="display: flex; align-items: center; justify-content: center">
@@ -332,40 +340,40 @@
             });
         });
         // Modal Upload File - Menampilkan Modal
-        document.getElementById('openUploadModal').addEventListener('click', function () {
-    // Reset modal content before showing
-    const fileInput = document.getElementById('fileInput');
-    const uploadBtn = document.getElementById('uploadBtn');
-    const fileInfo = document.getElementById('fileInfo');
-    const modalFileName = document.getElementById('modalFileName');
-    const modalPreviewIcon = document.getElementById('modalPreviewIcon');
-    const uploadText = document.querySelector('.upload-text');
-    const uploadNote = document.querySelector('.upload-note');
-    const selectFileBtn = document.getElementById('selectFileBtn');
+        document.getElementById('openUploadModal').addEventListener('click', function() {
+            // Reset modal content before showing
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const fileInfo = document.getElementById('fileInfo');
+            const modalFileName = document.getElementById('modalFileName');
+            const modalPreviewIcon = document.getElementById('modalPreviewIcon');
+            const uploadText = document.querySelector('.upload-text');
+            const uploadNote = document.querySelector('.upload-note');
+            const selectFileBtn = document.getElementById('selectFileBtn');
 
-    // Reset file input
-    fileInput.value = '';
-    fileInfo.style.display = 'none';
-    modalFileName.textContent = '';
-    modalPreviewIcon.style.display = 'none';
-    uploadBtn.disabled = true;
-    uploadBtn.style.opacity = '1'; // ensure it's not faded
+            // Reset file input
+            fileInput.value = '';
+            fileInfo.style.display = 'none';
+            modalFileName.textContent = '';
+            modalPreviewIcon.style.display = 'none';
+            uploadBtn.disabled = true;
+            uploadBtn.style.opacity = '1'; // ensure it's not faded
 
-    // Reset upload box text/button
-    uploadText.style.display = 'block';
-    uploadNote.style.display = 'block';
-    selectFileBtn.style.display = 'block';
-    selectFileBtn.style.display = 'flex';
-    selectFileBtn.style.justifyContent = 'center';
-    selectFileBtn.style.alignItems = 'center';
+            // Reset upload box text/button
+            uploadText.style.display = 'block';
+            uploadNote.style.display = 'block';
+            selectFileBtn.style.display = 'block';
+            selectFileBtn.style.display = 'flex';
+            selectFileBtn.style.justifyContent = 'center';
+            selectFileBtn.style.alignItems = 'center';
 
-    // Reset dropzone border just in case
-    document.getElementById('uploadBox').style.border = '2px dashed #ccc';
+            // Reset dropzone border just in case
+            document.getElementById('uploadBox').style.border = '2px dashed #ccc';
 
-    // Finally show modal
-    var uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
-    uploadModal.show();
-});
+            // Finally show modal
+            var uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
+            uploadModal.show();
+        });
         // Membuka file input ketika tombol "Pilih File" di klik
         document.getElementById('selectFileBtn').addEventListener('click', function() {
             document.getElementById('fileInput').click();
@@ -485,7 +493,7 @@
             }
         });
 
-       
+
 
         // Raroh iki opo
         $(document).ready(function() {

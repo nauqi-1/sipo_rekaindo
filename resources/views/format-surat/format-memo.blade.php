@@ -7,8 +7,8 @@
     
     <style>        
         @page {
-            margin-top: 20px;
-            margin-bottom: 0;
+            margin-top: 120px;
+            margin-bottom: 120px;
             margin-left: 0;
             margin-right: 0;
         }
@@ -21,7 +21,7 @@
 
         header {
             position: fixed;
-            top: 0;
+            top: -90px;
             left: 0;
             right: 0;
             width: 100%;
@@ -29,15 +29,15 @@
 
         footer {
             position: fixed;
-            bottom: 0;
+            bottom: -120px;
             left: 0;
             right: 0;
             width: 100%;
         }
 
         main {
-            margin-top: 5px; 
-            margin-bottom: 3cm;
+            margin-top: 0px; 
+            margin-bottom: 0px;
             text-align: center;
         }
 
@@ -53,7 +53,7 @@
             font-size: 26px;
             font-weight: bold;
             color: black; 
-            margin-top: 3cm; 
+ 
         }
 
         .letter {
