@@ -279,14 +279,52 @@ class CetakPDFController extends Controller
                 $level = $this->detectLevel($user);
                 $user->level_kerja = $level;
                 $user->bagian_text = $this->getBagianText($user, $level);
+
+                // Format position name - remove parentheses and create abbreviations
+                if (isset($user->position->nm_position)) {
+                    $rawPosition = $user->position->nm_position;
+
+                    // Remove parentheses and content inside them, then clean up extra spaces
+                    $formattedPosition = preg_replace('/\s*\([^)]*\)\s*/', ' ', $rawPosition);
+                    $formattedPosition = trim(preg_replace('/\s+/', ' ', $formattedPosition));
+
+                    // Create abbreviations for common positions
+                    if (!in_array($formattedPosition, ['Staff', 'Direktur'])) {
+                        $abbreviations = [
+                            'Senior Manager' => 'SM',
+                            'General Manager' => 'GM',
+                            'Manager' => 'M',
+                            'Supervisor' => 'SPV',
+                            'Penanggung Jawab Senior Manager' => 'PJ SM',
+                            'Penanggung Jawab Manager' => 'PJ M',
+                            'Penanggung Jawab Supervisor' => 'PJ SPV'
+                        ];
+
+                        foreach ($abbreviations as $full => $abbrev) {
+                            if (strpos($formattedPosition, $full) !== false) {
+                                $formattedPosition = str_replace($full, $abbrev, $formattedPosition);
+                                break;
+                            }
+                        }
+
+                        // Fallback for any remaining Manager/Supervisor that wasn't caught above
+                        if (strpos($formattedPosition, 'Manager') !== false) {
+                            $formattedPosition = str_replace('Manager', 'M', $formattedPosition);
+                        } elseif (strpos($formattedPosition, 'Supervisor') !== false) {
+                            $formattedPosition = str_replace('Supervisor', 'SPV', $formattedPosition);
+                        }
+                    }
+
+                    // Update the position name with formatted version
+                    $user->position->nm_position = $formattedPosition;
+                }
+
                 return $user;
             })
             ->sortBy(function ($user) {
                 return optional($user->position)->id_position; // urutkan by ID posisi
             })
             ->values(); // reset index array
-
-
 
         $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$undangan->nama_bertandatangan])
@@ -613,7 +651,7 @@ class CetakPDFController extends Controller
     {
         // Ambil data divisi
         $risalahs = Risalah::query();
-                $memoController = new MemoController();
+        $memoController = new MemoController();
         $kodeUser = null;
 
         // Filter berdasarkan pencarian judul jika ada
@@ -621,7 +659,7 @@ class CetakPDFController extends Controller
             $risalahs->where('judul', 'like', '%' . $request->search . '%');
         }
 
-       if (Auth::user()->role->nm_role == 'admin') {
+        if (Auth::user()->role->nm_role == 'admin') {
             $kodeUser = $memoController->getDivDeptKode(Auth::user());
         }
 

@@ -320,8 +320,43 @@ class UndanganController extends Controller
 
     private function getUserText($user, $context)
     {
+        $rawPosition = isset($user['position']['nm_position']) ? $user['position']['nm_position'] : '-';
 
-        $position = isset($user['position']['nm_position']) ? $user['position']['nm_position'] : '-';
+        // Format position - remove parentheses and create abbreviations
+        if ($rawPosition !== '-') {
+            // Remove parentheses and content inside them, then clean up extra spaces
+            $position = preg_replace('/\s*\([^)]*\)\s*/', ' ', $rawPosition);
+            $position = trim(preg_replace('/\s+/', ' ', $position));
+
+            // Create abbreviations for common positions
+            if (!in_array($position, ['Staff', 'Direktur'])) {
+                $abbreviations = [
+                    'Senior Manager' => 'SM',
+                    'General Manager' => 'GM',
+                    'Manager' => 'M',
+                    'Supervisor' => 'SPV',
+                    'Penanggung Jawab Senior Manager' => 'PJ SM',
+                    'Penanggung Jawab Manager' => 'PJ M',
+                    'Penanggung Jawab Supervisor' => 'PJ SPV'
+                ];
+
+                foreach ($abbreviations as $full => $abbrev) {
+                    if (strpos($position, $full) !== false) {
+                        $position = str_replace($full, $abbrev, $position);
+                        break;
+                    }
+                }
+
+                // Fallback for any remaining Manager/Supervisor that wasn't caught above
+                if (strpos($position, 'Manager') !== false) {
+                    $position = str_replace('Manager', 'M', $position);
+                } elseif (strpos($position, 'Supervisor') !== false) {
+                    $position = str_replace('Supervisor', 'SPV', $position);
+                }
+            }
+        } else {
+            $position = '-';
+        }
 
         $hierarki = collect([
             $context['unit'] ?? null,
@@ -541,7 +576,7 @@ class UndanganController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        
+
 
         // Proses file lampiran (jika ada)
         $filePath = null;

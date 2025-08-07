@@ -139,23 +139,25 @@
             line-height: 0.7cm;
         }
 
-        /* PERBAIKAN UTAMA: SIGNATURE PROTECTION */
+        /* IMPROVED SIGNATURE PROTECTION */
         .signature-container {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
-            margin-top: 30px;
+            margin-top: 40px !important; /* INCREASED from 30px */
             min-height: 120px;
             position: relative;
             clear: both;
+            padding-top: 10px; /* ADDED padding top */
         }
 
-        /* PERBAIKAN: Pastikan konten sebelum signature bisa break */
+        /* Content section before signature */
         .content-section {
             page-break-inside: auto;
             overflow: visible;
+            margin-bottom: 20px; /* ADDED margin bottom */
         }
 
-        /* PERBAIKAN: Agenda cell yang bisa wrap dan break */
+        /* Agenda cell styling */
         .agenda-cell {
             text-align: justify !important; 
             padding-right: 20px !important;
@@ -166,22 +168,54 @@
             page-break-inside: auto !important;
         }
 
-        /* Force new page jika diperlukan */
+        /* Force new page when needed */
         .signature-new-page {
             page-break-before: always !important;
         }
 
         .signature {
-            margin-top: 5%;
+            margin-top: 8% !important; /* INCREASED from 5% */
             text-align: left !important;
             width: fit-content;
             margin-left: auto;
             margin-right: 3%;
+            padding-top: 15px; /* ADDED padding top */
         }
 
         .signature p {
             text-align: center;
             margin: 0;
+        }
+
+        /* IMPROVED: Signature content styling */
+        .signature-content {
+            width: 40%; 
+            float: right; 
+            text-align: left; 
+            margin-right: 3%; 
+            line-height: 1.3; 
+            margin-top: 20px !important; /* INCREASED from 1px */
+            padding-top: 10px; /* ADDED */
+            border-top: none; /* Optional: remove if you don't want a subtle separator */
+        }
+
+        .signature-title {
+            text-align: center; 
+            margin-bottom: 15px !important; /* INCREASED from 5px */
+            font-weight: bold;
+            padding-bottom: 5px; /* ADDED */
+        }
+
+        .signature-position {
+            text-align: center; 
+            margin: 10px 0 !important; /* INCREASED margins */
+            font-weight: bold;
+        }
+
+        .signature-name {
+            margin: 15px 0 0 0 !important; /* INCREASED top margin */
+            text-align: center;
+            font-weight: bold;
         }
 
         .view-mode header img,
@@ -324,12 +358,13 @@
             text-align: right;
         }
 
-        /* MEDIA QUERY UNTUK PRINT */
+        /* PRINT MEDIA QUERIES */
         @media print {
             .signature-container {
-                min-height: 100px;
+                min-height: 120px !important; /* INCREASED */
                 page-break-inside: avoid;
-                margin-top: 20px;
+                margin-top: 30px !important; /* INCREASED */
+                padding-top: 15px; /* ADDED */
             }
             
             .signature-new-page {
@@ -338,10 +373,16 @@
 
             .content-section {
                 page-break-inside: auto;
+                margin-bottom: 25px; /* ADDED */
             }
 
             .agenda-cell {
                 page-break-inside: auto !important;
+            }
+
+            .signature-content {
+                margin-top: 25px !important; /* INCREASED for print */
+                padding-top: 15px !important; /* ADDED for print */
             }
         }
 
@@ -352,11 +393,12 @@
             clear: both;
         }
 
-        /* PERBAIKAN: QR Code container */
+        /* QR Code container */
         .qr-container {
-            margin: 8px 0;
+            margin: 12px 0 8px 0 !important; /* INCREASED top margin */
             text-align: center;
             page-break-inside: avoid;
+            padding: 5px 0; /* ADDED padding */
         }
 
         .qr-container img {
@@ -489,18 +531,19 @@
                         $needsPageBreak = $totalContent > 1500 || $tujuanCount > 12 || $agendaLength > 800;
                     @endphp
 
-                    {{-- SIGNATURE CONTAINER WITH PAGE BREAK PROTECTION --}}
+                    {{-- IMPROVED SIGNATURE CONTAINER --}}
                     <div class="signature-container {{ $needsPageBreak ? 'signature-new-page' : '' }} clearfix">
-                        <div style="width: 40%; float: right; text-align: left; margin-right: 3%; line-height: 1.3; margin-top: 1px;">
-                            <p style="text-align: center; margin-bottom: 5px;"><b>Hormat kami,</b></p>
+                        <div class="signature-content">
+                            <p class="signature-title">Hormat kami,</p>
+                            
                             {{-- MENAMPILKAN POSISI DARI TABEL POSITION --}}
                             @if($isDirektur)
-                                <p style="text-align: center; margin: 0; font-weight: bold;">
+                                <p class="signature-position">
                                     {{ optional($manager->director)->name_director }}
                                 </p>
                             @else
                                 {{-- MENAMPILKAN POSISI DARI TABEL POSITION SERTA ASAL UNIT/SECTION/DEPARTMENT/DIVISI--}}
-                                <p style="text-align: center; margin: 0; font-weight: bold;">
+                                <p class="signature-position">
                                     {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }} {{ $bagian }}
                                 </p>
                             @endif
@@ -511,9 +554,9 @@
                                     <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" alt="QR Code">
                                 </div>
                             @endif
+                            
                             {{-- NAMA BERTANDA TANGAN --}}
-                            <p style="margin: 0; text-align: center;"><b><u>{{ $manager->firstname }}
-                                        {{ $manager->lastname }}</u></b></p>
+                            <p class="signature-name"><u>{{ $manager->firstname }} {{ $manager->lastname }}</u></p>
                         </div>
                     </div>
 
