@@ -291,13 +291,13 @@ class CetakPDFController extends Controller
                     // Create abbreviations for common positions
                     if (!in_array($formattedPosition, ['Staff', 'Direktur'])) {
                         $abbreviations = [
+                            'Penanggung Jawab Senior Manager' => 'PJ SM',
+                            'Penanggung Jawab Manager' => 'PJ M',
+                            'Penanggung Jawab Supervisor' => 'PJ SPV',
                             'Senior Manager' => 'SM',
                             'General Manager' => 'GM',
                             'Manager' => 'M',
-                            'Supervisor' => 'SPV',
-                            'Penanggung Jawab Senior Manager' => 'PJ SM',
-                            'Penanggung Jawab Manager' => 'PJ M',
-                            'Penanggung Jawab Supervisor' => 'PJ SPV'
+                            'Supervisor' => 'SPV'
                         ];
 
                         foreach ($abbreviations as $full => $abbrev) {
@@ -305,13 +305,6 @@ class CetakPDFController extends Controller
                                 $formattedPosition = str_replace($full, $abbrev, $formattedPosition);
                                 break;
                             }
-                        }
-
-                        // Fallback for any remaining Manager/Supervisor that wasn't caught above
-                        if (strpos($formattedPosition, 'Manager') !== false) {
-                            $formattedPosition = str_replace('Manager', 'M', $formattedPosition);
-                        } elseif (strpos($formattedPosition, 'Supervisor') !== false) {
-                            $formattedPosition = str_replace('Supervisor', 'SPV', $formattedPosition);
                         }
                     }
 
