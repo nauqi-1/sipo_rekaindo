@@ -27,7 +27,12 @@
                     </select>
                     entries
                 </label>
-
+                <input type="hidden" name="search" value="{{ request('search') }}">
+                <input type="hidden" name="kode" value="{{ request('kode') }}">
+                <input type="hidden" name="status" value="{{ request('status') }}">
+                <input type="hidden" name="tgl_dibuat_awal" value="{{ request('tgl_dibuat_awal') }}">
+                <input type="hidden" name="tgl_dibuat_akhir" value="{{ request('tgl_dibuat_akhir') }}">
+                <input type="hidden" name="page" value="{{ request('page') }}">
                 @foreach(request()->except('per_page', 'page') as $key => $value)
                 <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                 @endforeach
@@ -40,6 +45,7 @@
         <div class="header-tools">
             <div class="search-filter">
                 <form method="GET" action="{{ route('memo.superadmin') }}" class="search-filter d-flex gap-2">
+                    <input type="hidden" name="per_page" value="{{ request('per_page') }}">
                     <div class="dropdown">
                         <select name="status" class="form-select" onchange="this.form.submit()">
                             <option value="">Status</option>

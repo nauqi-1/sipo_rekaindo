@@ -71,10 +71,30 @@
                     <div class="card-blue">
                         <label for="tgl_surat" class="form-label">Status Surat</label>
                     </div>
-                    <div class="card-white">
+                     <div class="card-white">
+                        @php
+                            $status = $memo->status;
+                            $statusClass = match($status) {
+                                'reject' => 'bg-danger',
+                                'pending' => 'bg-info',
+                                'correction' => 'bg-warning',
+                                default => 'bg-success',
+                            };
+                        @endphp
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        <button class="status" >Diterima</button>
+                        <button class="status {{ $statusClass }}">
+                        @if ($memo->status == 'reject')
+                            <span>Ditolak</span>
+                           
+                        @elseif ($memo->status == 'pending')
+                            <span>Diproses</span>
+                            
+                        @else
+                            <span>Diterima</span>
+                         
+                        @endif
+                        </button>
                     </div>
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
