@@ -331,13 +331,13 @@ class UndanganController extends Controller
             // Create abbreviations for common positions
             if (!in_array($position, ['Staff', 'Direktur'])) {
                 $abbreviations = [
+                    'Penanggung Jawab Senior Manager' => 'PJ SM',
+                    'Penanggung Jawab Manager' => 'PJ M',
+                    'Penanggung Jawab Supervisor' => 'PJ SPV',
                     'Senior Manager' => 'SM',
                     'General Manager' => 'GM',
                     'Manager' => 'M',
-                    'Supervisor' => 'SPV',
-                    'Penanggung Jawab Senior Manager' => 'PJ SM',
-                    'Penanggung Jawab Manager' => 'PJ M',
-                    'Penanggung Jawab Supervisor' => 'PJ SPV'
+                    'Supervisor' => 'SPV'
                 ];
 
                 foreach ($abbreviations as $full => $abbrev) {
@@ -345,13 +345,6 @@ class UndanganController extends Controller
                         $position = str_replace($full, $abbrev, $position);
                         break;
                     }
-                }
-
-                // Fallback for any remaining Manager/Supervisor that wasn't caught above
-                if (strpos($position, 'Manager') !== false) {
-                    $position = str_replace('Manager', 'M', $position);
-                } elseif (strpos($position, 'Supervisor') !== false) {
-                    $position = str_replace('Supervisor', 'SPV', $position);
                 }
             }
         } else {
