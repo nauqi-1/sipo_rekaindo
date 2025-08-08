@@ -15,7 +15,7 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: Arial, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
             font-size: 12px;
             padding: 0;
         }
@@ -143,23 +143,26 @@
         .signature-container {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
-            margin-top: 40px !important; /* INCREASED from 30px */
+            margin-top: 40px !important;
+            /* INCREASED from 30px */
             min-height: 120px;
             position: relative;
             clear: both;
-            padding-top: 10px; /* ADDED padding top */
+            padding-top: 10px;
+            /* ADDED padding top */
         }
 
         /* Content section before signature */
         .content-section {
             page-break-inside: auto;
             overflow: visible;
-            margin-bottom: 20px; /* ADDED margin bottom */
+            margin-bottom: 20px;
+            /* ADDED margin bottom */
         }
 
         /* Agenda cell styling */
         .agenda-cell {
-            text-align: justify !important; 
+            text-align: justify !important;
             padding-right: 20px !important;
             word-wrap: break-word !important;
             word-break: break-word !important;
@@ -174,12 +177,14 @@
         }
 
         .signature {
-            margin-top: 8% !important; /* INCREASED from 5% */
+            margin-top: 8% !important;
+            /* INCREASED from 5% */
             text-align: left !important;
             width: fit-content;
             margin-left: auto;
             margin-right: 3%;
-            padding-top: 15px; /* ADDED padding top */
+            padding-top: 15px;
+            /* ADDED padding top */
         }
 
         .signature p {
@@ -189,31 +194,38 @@
 
         /* IMPROVED: Signature content styling */
         .signature-content {
-            width: 40%; 
-            float: right; 
-            text-align: left; 
-            margin-right: 3%; 
-            line-height: 1.3; 
-            margin-top: 20px !important; /* INCREASED from 1px */
-            padding-top: 10px; /* ADDED */
-            border-top: none; /* Optional: remove if you don't want a subtle separator */
+            width: 40%;
+            float: right;
+            text-align: left;
+            margin-right: 3%;
+            line-height: 1.3;
+            margin-top: 20px !important;
+            /* INCREASED from 1px */
+            padding-top: 10px;
+            /* ADDED */
+            border-top: none;
+            /* Optional: remove if you don't want a subtle separator */
         }
 
         .signature-title {
-            text-align: center; 
-            margin-bottom: 15px !important; /* INCREASED from 5px */
+            text-align: center;
+            margin-bottom: 15px !important;
+            /* INCREASED from 5px */
             font-weight: bold;
-            padding-bottom: 5px; /* ADDED */
+            padding-bottom: 5px;
+            /* ADDED */
         }
 
         .signature-position {
-            text-align: center; 
-            margin: 10px 0 !important; /* INCREASED margins */
+            text-align: center;
+            margin: 10px 0 !important;
+            /* INCREASED margins */
             font-weight: bold;
         }
 
         .signature-name {
-            margin: 15px 0 0 0 !important; /* INCREASED top margin */
+            margin: 15px 0 0 0 !important;
+            /* INCREASED top margin */
             text-align: center;
             font-weight: bold;
         }
@@ -361,19 +373,23 @@
         /* PRINT MEDIA QUERIES */
         @media print {
             .signature-container {
-                min-height: 120px !important; /* INCREASED */
+                min-height: 120px !important;
+                /* INCREASED */
                 page-break-inside: avoid;
-                margin-top: 30px !important; /* INCREASED */
-                padding-top: 15px; /* ADDED */
+                margin-top: 30px !important;
+                /* INCREASED */
+                padding-top: 15px;
+                /* ADDED */
             }
-            
+
             .signature-new-page {
                 page-break-before: always;
             }
 
             .content-section {
                 page-break-inside: auto;
-                margin-bottom: 25px; /* ADDED */
+                margin-bottom: 25px;
+                /* ADDED */
             }
 
             .agenda-cell {
@@ -381,8 +397,10 @@
             }
 
             .signature-content {
-                margin-top: 25px !important; /* INCREASED for print */
-                padding-top: 15px !important; /* ADDED for print */
+                margin-top: 25px !important;
+                /* INCREASED for print */
+                padding-top: 15px !important;
+                /* ADDED for print */
             }
         }
 
@@ -395,10 +413,12 @@
 
         /* QR Code container */
         .qr-container {
-            margin: 12px 0 8px 0 !important; /* INCREASED top margin */
+            margin: 12px 0 8px 0 !important;
+            /* INCREASED top margin */
             text-align: center;
             page-break-inside: avoid;
-            padding: 5px 0; /* ADDED padding */
+            padding: 5px 0;
+            /* ADDED padding */
         }
 
         .qr-container img {
@@ -535,7 +555,7 @@
                     <div class="signature-container {{ $needsPageBreak ? 'signature-new-page' : '' }} clearfix">
                         <div class="signature-content">
                             <p class="signature-title">Hormat kami,</p>
-                            
+
                             {{-- MENAMPILKAN POSISI DARI TABEL POSITION --}}
                             @if($isDirektur)
                                 <p class="signature-position">
@@ -544,7 +564,8 @@
                             @else
                                 {{-- MENAMPILKAN POSISI DARI TABEL POSITION SERTA ASAL UNIT/SECTION/DEPARTMENT/DIVISI--}}
                                 <p class="signature-position">
-                                    {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }} {{ $bagian }}
+                                    {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }}
+                                    {{ $bagian }}
                                 </p>
                             @endif
 
@@ -554,7 +575,7 @@
                                     <img src="data:image/png;base64,{{ $undangan->qr_approved_by }}" alt="QR Code">
                                 </div>
                             @endif
-                            
+
                             {{-- NAMA BERTANDA TANGAN --}}
                             <p class="signature-name"><u>{{ $manager->firstname }} {{ $manager->lastname }}</u></p>
                         </div>

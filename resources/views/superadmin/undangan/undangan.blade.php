@@ -21,20 +21,20 @@
                     <label class="d-flex align-items-center" style="font-size: 14px; color: #333; margin-bottom: 0;">
                         <span style="margin-right: 6px;">Show</span>
                         <select name="per_page" onchange="this.form.submit()" style="
-                        padding: 4px 10px;
-                        border: 1px solid #ccc;
-                        border-radius: 6px;
-                        background-color: #fff;
-                        color: #333;
-                        font-size: 14px;
-                        outline: none;
-                        appearance: none;
-                        background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2710%27 height=%275%27%3E%3Cpath fill=%27%23000%27 d=%27M0 0l5 5 5-5z%27/%3E%3C/svg%3E');
-                        background-repeat: no-repeat;
-                        background-position: right 8px center;
-                        background-size: 10px 6px;
-                        padding-right: 30px;
-                    ">
+                            padding: 4px 10px;
+                            border: 1px solid #ccc;
+                            border-radius: 6px;
+                            background-color: #fff;
+                            color: #333;
+                            font-size: 14px;
+                            outline: none;
+                            appearance: none;
+                            background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2710%27 height=%275%27%3E%3Cpath fill=%27%23000%27 d=%27M0 0l5 5 5-5z%27/%3E%3C/svg%3E');
+                            background-repeat: no-repeat;
+                            background-position: right 8px center;
+                            background-size: 10px 6px;
+                            padding-right: 30px;
+                        ">
                             <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
                             <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                             <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
@@ -66,8 +66,8 @@
                         </div>
 
                         <!-- <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                                <input type="date" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}"  onchange="this.form.submit()" placeholder="Tanggal Awal" style="width: 100%;">
-                            </div> -->
+                                    <input type="date" name="tgl_dibuat_awal" class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}"  onchange="this.form.submit()" placeholder="Tanggal Awal" style="width: 100%;">
+                                </div> -->
                         <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                             <input type="text" id="tgl_dibuat_awal" name="tgl_dibuat_awal"
                                 class="form-control date-placeholder" value="{{ request('tgl_dibuat_awal') }}"
@@ -77,8 +77,8 @@
                         </div>
                         <i class="bi bi-arrow-right"></i>
                         <!-- <div class="input-icon-wrapper" style="position: relative; width: 150px;">
-                            <input type="date" name="tgl_dibuat_akhir" class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" onchange="this.form.submit()" placeholder="Tanggal Akhir" style="width: 100%;">
-                            </div> -->
+                                <input type="date" name="tgl_dibuat_akhir" class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}" onchange="this.form.submit()" placeholder="Tanggal Akhir" style="width: 100%;">
+                                </div> -->
                         <div class="input-icon-wrapper" style="position: relative; width: 150px;">
                             <input type="text" id="tgl_dibuat_akhir" name="tgl_dibuat_akhir"
                                 class="form-control date-placeholder" value="{{ request('tgl_dibuat_akhir') }}"
@@ -149,7 +149,7 @@
                     <tr>
                         <td class="nomor">{{ $index + 1 }}</td>
                         <td class="nama-dokumen 
-                                                {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'correction' ? 'text-warning' : ($undangan->status == 'approve' ? 'text-success' : '')) }}"
+                                                        {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'correction' ? 'text-warning' : ($undangan->status == 'approve' ? 'text-success' : '')) }}"
                             style="{{ $undangan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                             {{ $undangan->judul }}
                         </td>
@@ -181,13 +181,13 @@
                             </button>
 
 
-                            @if ($undangan->status == 'approve')
+                            @if ($undangan->status == 'approve' || $undangan->status == 'reject')
                                 <form
                                     action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}"
                                     method="POST" style="display: inline;">
                                     @csrf
                                     @method('POST')
-                                    <button class="btn btn-sm3 submitArsip">
+                                    <button class="btn btn-sm3 submitArsipUndangan">
                                         <img src="/img/undangan/arsip.png" alt="arsip">
                                     </button>
                                 </form>
@@ -312,7 +312,7 @@
                 <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"
                     aria-label="Close"></button>
                 <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
-                <h5 class="modal-title mb-4"><b>Arsip Undangann?</b></h5>
+                <h5 class="modal-title mb-4"><b>Arsip Undangan?</b></h5>
                 <!-- Tombol -->
                 <div class="d-flex justify-content-center mt-3">
                     <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
@@ -346,7 +346,7 @@
                     successModal.hide();
                 }, 1500);
             @endif
-        });
+            });
 
         // Event listener untuk modal hapus undangan
         document.addEventListener("DOMContentLoaded", function () {
@@ -412,7 +412,7 @@
                     successEditUndanganModal.hide();
                 }, 1500);
             @endif
-        });
+            });
 
         // Event Listener Arsip undangan
         document.addEventListener("DOMContentLoaded", function () {

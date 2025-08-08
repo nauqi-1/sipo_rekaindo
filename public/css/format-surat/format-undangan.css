@@ -1,5 +1,7 @@
 .container {
-    font-family: arial;
+    
+    font-family: Arial, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+
     width: 21cm;
     height: 29.7cm;
     margin: 0 auto;
