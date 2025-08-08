@@ -216,7 +216,7 @@
         <form action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}" method="POST" style="display: inline;">
             @csrf
             @method('POST')
-            <button type="submit" class="btn btn-sm3">
+            <button type="submit" class="btn btn-sm3  submitArsipUndangan">
                 <img src="/img/undangan/arsip.png" alt="arsip">
             </button>
         </form>
@@ -275,7 +275,7 @@
             <!-- Close Button -->
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
             <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
-            <h5 class="modal-title mb-4"><b>Arsip Undangann?</b></h5>
+            <h5 class="modal-title mb-4"><b>Arsip Undangan?</b></h5>
             <!-- Tombol -->
             <div class="d-flex justify-content-center mt-3">
                 <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
