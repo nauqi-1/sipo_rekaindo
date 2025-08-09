@@ -111,16 +111,40 @@
                                                         $(this).find('.jstree-checkbox').css('display', 'none');
                                                     }
                                                 });
+                                            }).on('changed.jstree', function(e, data) {
+                                                let selectedNodes = data.instance.get_selected(true)
+                                                    .map(node => node.text);
+
+                                                let list = $('#selected-recipients');
+                                                let section = $('#selected-section');
+                                                list.empty();
+
+                                                if (selectedNodes.length) {
+                                                    selectedNodes.forEach(name => {
+                                                        list.append(`<li>${name}</li>`);
+                                                    });
+                                                    section.show();
+                                                } else {
+                                                    section.hide();
+                                                }
                                             });
                                         });
                                     </script>
-
+                                    <div style="display: none;" id="selected-section">
+                                        <label style="font-size: small;" class="form-label">
+                                            Daftar Penerima:
+                                        </label>
+                                        <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                                            <ul id="selected-recipients" style="font-size: small; padding-left: 15px; margin: 0;"></ul>
+                                        </div>
+                                    </div>
                                 </div>
                                 @error('tujuan[]')
                                 <div class="form-control text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
+
                         <div class="col-md-6">
 
                             <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
