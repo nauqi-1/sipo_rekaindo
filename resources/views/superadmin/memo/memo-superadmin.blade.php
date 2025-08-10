@@ -153,7 +153,7 @@
                     <form action="{{ route('arsip.archive', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
                         @csrf
                         @method('POST')
-                        <button type="submit" class="btn btn-sm3 submitArsip">
+                        <button type="submit" class="btn btn-sm3 submitArsipMemo">
                             <img src="/img/memo-superadmin/arsip.png" alt="arsip">
                         </button>
                     </form>

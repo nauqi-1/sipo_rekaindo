@@ -80,11 +80,11 @@ class CetakPDFController extends Controller
             if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
             return response()->download($outputPath)->deleteFileAfterSend(true);
         } else {
-            // Jika tidak ada lampiran, langsung download PDF memo saja
+            $fileName = Str::slug($memo->judul) . '-' . $memo->id . '.pdf';
             return response()->streamDownload(function () use ($formatMemoPdf, $formatMemoPath) {
                 echo $formatMemoPdf->output();
                 if (file_exists($formatMemoPath)) unlink($formatMemoPath);
-            }, $memo->judul . '_' . $memo->id_memo . '.pdf');
+            }, $fileName);
         }
     }
 
