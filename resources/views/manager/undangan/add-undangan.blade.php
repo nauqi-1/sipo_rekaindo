@@ -117,11 +117,96 @@
                                                 'data': @json(json_decode($jsTreeData))
                                             },
                                             "plugins": ["checkbox", "search"]
+                                        }).on('changed.jstree', function (e, data) {
+                                            let allSelectedNodes = data.instance.get_selected(true);
+                                            let selectedNodes = [];
+
+                                            allSelectedNodes.forEach(function (node) {
+                                                // Check if node has 'fa fa-user' icon (which indicates it's a user)
+                                                if (node.icon && node.icon === 'fa fa-user') {
+                                                    selectedNodes.push(node.text);
+                                                }
+
+                                                // Auto expand selected nodes to show their children
+                                                if (data.instance.is_selected(node.id)) {
+                                                    data.instance.open_node(node.id);
+                                                }
+                                            });
+
+                                            // Sort selectedNodes by position hierarchy (Direktur first, Staff last)
+                                            selectedNodes.sort(function (a, b) {
+                                                // Define position hierarchy order
+                                                const positionOrder = {
+                                                    'Direktur': 1,
+                                                    'GM': 2, 'General Manager': 2,
+                                                    'SM': 3, 'Senior Manager': 3,
+                                                    'M': 4, 'Manager': 4,
+                                                    'PJ SM': 5, 'Penanggung Jawab Senior Manager': 5,
+                                                    'PJ M': 6, 'Penanggung Jawab Manager': 6,
+                                                    'SPV': 7, 'Supervisor': 7,
+                                                    'PJ SPV': 8, 'Penanggung Jawab Supervisor': 8,
+                                                    'Staff': 9
+                                                };
+
+                                                // Extract position from text (position is at the beginning)
+                                                const getPositionPriority = function (text) {
+                                                    for (let pos in positionOrder) {
+                                                        if (text.startsWith(pos)) {
+                                                            return positionOrder[pos];
+                                                        }
+                                                    }
+                                                    return 999; // Unknown positions go last
+                                                };
+
+                                                return getPositionPriority(a) - getPositionPriority(b);
+                                            });
+
+                                            let list = $('#selected-recipients');
+                                            let section = $('#selected-section');
+                                            list.empty();
+
+                                            if (selectedNodes.length) {
+                                                selectedNodes.forEach(name => {
+                                                    list.append(`<li>${name}</li>`);
+                                                });
+                                                section.show();
+                                            } else {
+                                                section.hide();
+                                            }
                                         });
                                         // Listen for changes and update tujuanInput as array of user IDs
 
                                     });
                                 </script>
+
+                                <!-- Added section for displaying selected recipients -->
+
+                                @error('tujuan[]')
+                                    <div class="form-control text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <!-- Added section for displaying selected recipients -->
+                            <div style="display: none;" id="selected-section">
+                                <label style="font-size: small;" class="form-label">
+                                    Daftar Penerima:
+                                </label>
+                                <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                                    <ul id="selected-recipients"
+                                        style="font-size: small; padding-left: 15px; margin: 0; counter-reset: item; list-style-type: none;">
+                                    </ul>
+                                    <style>
+                                        #selected-recipients li {
+                                            display: block;
+                                            margin-bottom: 0.2em;
+                                        }
+
+                                        #selected-recipients li:before {
+                                            content: counter(item, decimal) ". ";
+                                            counter-increment: item;
+                                            font-weight: bold;
+                                        }
+                                    </style>
+                                </div>
                             </div>
                         </div>
 
@@ -219,25 +304,6 @@
                         </div>
                     </div>
                 </div>
-                <!--Permohonan Approval disini yah-->
-                {{-- <div class="row mb-4" style="gap: 20px;">
-                    <div class="col">
-                        <div class="card-blue1">
-                            <label for="tindakan">Undangan Akan Diajukan untuk Proses Approval</label>
-                            <label for="isi" style="color: #FF000080; font-size: 10px; margin-left: 5px;">
-                                *Undangan akan diapprove oleh :
-                            </label>
-                        </div>
-                        <div class="separator"></div>
-                        @foreach($managers as $manager)
-                        <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname .
-                            ' ' . $manager->lastname }}</option>
-                        @endforeach
-
-
-                        <!---->
-                    </div>
-                </div> --}}
                 <div class="card-footer">
                     <button type="button" class="btn btn-cancel"><a
                             href="{{route('undangan.superadmin')}}">Batal</a></button>

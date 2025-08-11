@@ -117,11 +117,96 @@
                                                 'data': @json(json_decode($jsTreeData))
                                             },
                                             "plugins": ["checkbox", "search"]
+                                        }).on('changed.jstree', function (e, data) {
+                                            let allSelectedNodes = data.instance.get_selected(true);
+                                            let selectedNodes = [];
+
+                                            allSelectedNodes.forEach(function (node) {
+                                                // Check if node has 'fa fa-user' icon (which indicates it's a user)
+                                                if (node.icon && node.icon === 'fa fa-user') {
+                                                    selectedNodes.push(node.text);
+                                                }
+
+                                                // Auto expand selected nodes to show their children
+                                                if (data.instance.is_selected(node.id)) {
+                                                    data.instance.open_node(node.id);
+                                                }
+                                            });
+
+                                            // Sort selectedNodes by position hierarchy (Direktur first, Staff last)
+                                            selectedNodes.sort(function (a, b) {
+                                                // Define position hierarchy order
+                                                const positionOrder = {
+                                                    'Direktur': 1,
+                                                    'GM': 2, 'General Manager': 2,
+                                                    'SM': 3, 'Senior Manager': 3,
+                                                    'M': 4, 'Manager': 4,
+                                                    'PJ SM': 5, 'Penanggung Jawab Senior Manager': 5,
+                                                    'PJ M': 6, 'Penanggung Jawab Manager': 6,
+                                                    'SPV': 7, 'Supervisor': 7,
+                                                    'PJ SPV': 8, 'Penanggung Jawab Supervisor': 8,
+                                                    'Staff': 9
+                                                };
+
+                                                // Extract position from text (position is at the beginning)
+                                                const getPositionPriority = function (text) {
+                                                    for (let pos in positionOrder) {
+                                                        if (text.startsWith(pos)) {
+                                                            return positionOrder[pos];
+                                                        }
+                                                    }
+                                                    return 999; // Unknown positions go last
+                                                };
+
+                                                return getPositionPriority(a) - getPositionPriority(b);
+                                            });
+
+                                            let list = $('#selected-recipients');
+                                            let section = $('#selected-section');
+                                            list.empty();
+
+                                            if (selectedNodes.length) {
+                                                selectedNodes.forEach(name => {
+                                                    list.append(`<li>${name}</li>`);
+                                                });
+                                                section.show();
+                                            } else {
+                                                section.hide();
+                                            }
                                         });
                                         // Listen for changes and update tujuanInput as array of user IDs
 
                                     });
                                 </script>
+
+                                <!-- Added section for displaying selected recipients -->
+
+                                @error('tujuan[]')
+                                    <div class="form-control text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <!-- Added section for displaying selected recipients -->
+                            <div style="display: none;" id="selected-section">
+                                <label style="font-size: small;" class="form-label">
+                                    Daftar Penerima:
+                                </label>
+                                <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                                    <ul id="selected-recipients"
+                                        style="font-size: small; padding-left: 15px; margin: 0; counter-reset: item; list-style-type: none;">
+                                    </ul>
+                                    <style>
+                                        #selected-recipients li {
+                                            display: block;
+                                            margin-bottom: 0.2em;
+                                        }
+
+                                        #selected-recipients li:before {
+                                            content: counter(item, decimal) ". ";
+                                            counter-increment: item;
+                                            font-weight: bold;
+                                        }
+                                    </style>
+                                </div>
                             </div>
                         </div>
 
@@ -146,7 +231,7 @@
                                         placeholder="09.00" value="{{ old('waktu_mulai') }}" required>
                                     <span class="fw-bold">s/d</span>
                                     <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2"
-                                        placeholder="Selesai" value="{{ old('waktu_selesai') }}"required>
+                                        placeholder="Selesai" value="{{ old('waktu_selesai') }}" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -163,20 +248,14 @@
                                 <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control">
                                     <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                                     @foreach($managers as $manager)
-        @php
-            preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
-            $kode_position = $matches[1] ?? '';
-        @endphp
-        <option value="{{ $manager->id }}">
-            ({{ $kode_position }}) {{ $manager->firstname }} {{ $manager->lastname }}
-        </option>
-    @endforeach
-
-
-
-
+                                        @php
+                                            preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
+                                            $kode_position = $matches[1] ?? '';
+                                        @endphp
+                                        <option value="{{ $manager->id }}">
+                                            ({{ $kode_position }}) {{ $manager->firstname }} {{ $manager->lastname }}
                                         </option>
-                                    
+                                    @endforeach
                                 </select>
                                 @error('nama_bertandatangan')
                                     <div class="form-control text-danger">{{ $message }}</div>
@@ -189,7 +268,8 @@
                                     <button type="button" class="btn btn-primary upload-button" id="openUploadModal"
                                         style="margin-left: 30px;">Pilih File</button>
                                     <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png"
-                                        style="display: none;" onchange="if(this.files[0].size > 2097152){ alert('Ukuran maksimal 2MB'); this.value=''; }">
+                                        style="display: none;"
+                                        onchange="if(this.files[0].size > 2097152){ alert('Ukuran maksimal 2MB'); this.value=''; }">
                                     <div id="filePreview" style="display: none; text-align: center">
                                         <img id="previewIcon" src="" alt="Preview"
                                             style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
@@ -290,8 +370,8 @@
                                     <span id="modalFileName"></span>
                                 </div>
                                 @error('lampiran')
-    <div class="text-danger">{{ $message }}</div>
-@enderror
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
 
                             </div>
                         </div>
@@ -313,7 +393,7 @@
             const fileInput = document.getElementById('lampiran');
             const file = fileInput.files[0];
 
-    
+
             const userIds = selected
                 .filter(node => node.id.startsWith('user-'))
                 .map(node => node.id.replace('user-', ''));
@@ -328,9 +408,9 @@
                 return false;
             }
             if (file && file.size > 2 * 1024 * 1024) {
-        e.preventDefault();
-        alert("File gagal diunggah. Pastikan ukuran file tidak lebih dari 2MB dengan Tipe File PDF.");
-    }
+                e.preventDefault();
+                alert("File gagal diunggah. Pastikan ukuran file tidak lebih dari 2MB dengan Tipe File PDF.");
+            }
         });
         // Modal Upload File - Menampilkan Modal
         document.getElementById('openUploadModal').addEventListener('click', function () {
