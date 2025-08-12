@@ -151,7 +151,7 @@
             <div class="modal-body">
                 <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
                 <h5 class="modal-title"><b>Sukses</b></h5>
-                <p class="mt-2">Keluarkan Risalah Rapat dari Arsip?</p>
+                <p class="mt-2">Berhasil Keluarkan Risalah Rapat dari Arsip</p>
             </div>
         </div>
     </div>

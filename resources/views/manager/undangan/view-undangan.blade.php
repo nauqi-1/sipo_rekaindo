@@ -52,7 +52,7 @@
                         <input type="text" id="tanggal"
                             value="{{$undangan->tgl_dibuat ? \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') : '-'  }}"
                             readonly>
-                        </div>
+                    </div>
                 </div>
                 <div class="col">
                     <div class="card-blue">
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </div>
-              
+
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="card-blue">
@@ -118,15 +118,17 @@
                         <button class="btn-file"
                             onclick="window.location.href='{{ route('view-undanganPDF', $undangan->id_undangan) }}'"><img
                                 src="/img/mata.png" alt="view">Lihat</button>
-                        @if ($undangan->status=='approve')
-                        <a style="text-decoration: none;" class="btn-file" onclick="window.location.href='{{ route('cetakundangan',['id' => $undangan->id_undangan]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
+                        @if ($undangan->status == 'approve')
+                            <a style="text-decoration: none;" class="btn-file"
+                                onclick="window.location.href='{{ route('cetakundangan', ['id' => $undangan->id_undangan]) }}'"><img
+                                    src="/img/memo-admin/down.png" alt="down">Unduh</a>
                         @endif
                     </div>
                 </div>
             </div>
             <div class="row mb-4" style="gap: 20px;">
-                <div class="col"> 
-                   <div class="card-blue">
+                <div class="col">
+                    <div class="card-blue">
                         <label for="diterima" class="form-label">
                             <img src="/img/memo-admin/detail.png" alt="date" style="margin-right: 5px;">Daftar Tujuan
                         </label>
@@ -134,10 +136,11 @@
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
-                        <pre style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
-                    </div>  
+                        <pre
+                            style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
+                    </div>
                 </div>
-            </div>   
+            </div>
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="card-blue">
@@ -175,103 +178,108 @@
             </div>
             {{-- --}}
             @if ($undangan->status === 'pending' || $undangan->status === 'correction')
-                <form id="approvalForm" method="POST" action="{{ route('undangan.updateStatus', $undangan->id_undangan) }}">
-                    @csrf
-                    @method('PUT')
+                    <form id="approvalForm" method="POST" action="{{ route('undangan.updateStatus', $undangan->id_undangan) }}">
+                        @csrf
+                        @method('PUT')
 
-                    <div class="row mb-4" style="gap: 20px;">
-                        <div class="col">
-                            <div class="label1 card-blue1">
-                                <label for="pengesahan" class="label">Pengesahan</label>
-                                <div class="form-check1">
-                                    <label class="form-check-label" for="approve">Diterima</label>
-                                    <input type="radio" class="form-check-input approval-checkbox" id="approve"
-                                        name="status" value="approve">
-                                </div>
-                                <div class="form-check2">
-                                    <label class="form-check-label" for="reject">Ditolak</label>
-                                    <input type="radio" class="form-check-input approval-checkbox" id="reject" name="status"
-                                        value="reject">
-                                </div>
-                                <div class="form-check3">
-                                    <label class="form-check-label" for="correction">Dikoreksi</label>
-                                    <input type="radio" class="form-check-input approval-checkbox" id="correction"
-                                        name="status" value="correction">
+                        <div class="row mb-4" style="gap: 20px;">
+                            <div class="col">
+                                <div class="label1 card-blue1">
+                                    <label for="pengesahan" class="label">Pengesahan</label>
+                                    <div class="form-check1">
+                                        <label class="form-check-label" for="approve">Diterima</label>
+                                        <input type="radio" class="form-check-input approval-checkbox" id="approve"
+                                            name="status" value="approve">
+                                    </div>
+                                    <div class="form-check2">
+                                        <label class="form-check-label" for="reject">Ditolak</label>
+                                        <input type="radio" class="form-check-input approval-checkbox" id="reject" name="status"
+                                            value="reject">
+                                    </div>
+                                    <div class="form-check3">
+                                        <label class="form-check-label" for="correction">Dikoreksi</label>
+                                        <input type="radio" class="form-check-input approval-checkbox" id="correction"
+                                            name="status" value="correction">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="col" id="catatanCol" style="display:none;">
-                            <div class="card-blue1">Catatan <span class="text-danger">*</span></div>
-                            <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4" id="tujuanDivisiRow" style="display:none;">
-                        <div class="col">
-                            <div class="card-blue1">
-                                <label for="tindakan">Konfirmasi Daftar Penerima</label>
-                                <label for="isi" style="color: #FF000080; font-size: 10px; margin-left: 5px;">
-                                    *Berikut adalah daftar divisi tujuan yang akan menerima undangan.
-                                </label>
-                            </div>
-                            <div class="card-white">
-                                <label for="diterima">Diterima</label>
-                                <div class="separator"></div>
-                                <pre style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
+                            <div class="col" id="catatanCol" style="display:none;">
+                                <div class="card-blue1">
+                                    Catatan <span class="text-danger">*</span>
+                                </div>
+                                <textarea id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>
+                                <small id="catatanError" class="text-danger" style="display:none;">Catatan wajib diisi</small>
                             </div>
                         </div>
-                    </div>
+                </div>
 
-                    <div class="footer">
-                        <button type="button" class="btn back" id="backBtn"
-                            onclick="window.location.href='{{ route('undangan.manager') }}'">Kembali</button>
-                        <button type="button" class="btn submit" id="submitBtn">Kirim</button>
+                <div class="row mb-4" id="tujuanDivisiRow" style="display:none;">
+                    <div class="col">
+                        <div class="card-blue1">
+                            <label for="tindakan">Konfirmasi Daftar Penerima</label>
+                            <label for="isi" style="color: #FF000080; font-size: 10px; margin-left: 5px;">
+                                *Berikut adalah daftar divisi tujuan yang akan menerima undangan.
+                            </label>
+                        </div>
+                        <div class="card-white">
+                            <label for="diterima">Diterima</label>
+                            <div class="separator"></div>
+                            <pre
+                                style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
+                        </div>
                     </div>
+                </div>
+
+                <div class="footer">
+                    <button type="button" class="btn back" id="backBtn"
+                        onclick="window.location.href='{{ route('undangan.manager') }}'">Kembali</button>
+                    <button type="button" class="btn submit" id="submitBtn">Kirim</button>
+                </div>
                 </form>
             @endif
 
 
 
-            <!-- Modal kirim -->
-            <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content text-center p-4">
-                        <div class="modal-body">
-                            <!-- Close Button -->
-                            <button type="button" class="btn-close position-absolute top-0 end-0 m-3"
-                                data-bs-dismiss="modal" aria-label="Close"></button>
-                            <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3"
-                                style="width: 80px;">
-                            <h5 class="modal-title mb-4"><b>Kirim Undangan Rapat?</b></h5>
-                            <div class="d-flex justify-content-center mt-3">
-                                <button type="button" class="btn btn-outline-secondary me-2"
-                                    data-bs-dismiss="modal">Batal</button>
-                                <button type="button" class="btn btn-primary" id="confirmSubmit"
-                                    data-bs-toggle="modal">Oke</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal Berhasil -->
-            <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content text-center p-4">
-                        <div class="modal-body">
-                            <img src="/img/undangan/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
-                            <!-- Success Message -->
-                            <h5 class="modal-title"><b>Sukses</b></h5>
-                            <p class="mt-2">Berhasil Mengirimkan Undangan</p>
-                            {{-- <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a
-                                    href="{{route('undangan.manager')}}"
-                                    style="color: white; text-decoration: none">Kembali ke Halaman Undangan</a></button> --}}
+        <!-- Modal kirim -->
+        <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content text-center p-4">
+                    <div class="modal-body">
+                        <!-- Close Button -->
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3"
+                            data-bs-dismiss="modal" aria-label="Close"></button>
+                        <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3"
+                            style="width: 80px;">
+                        <h5 class="modal-title mb-4"><b>Kirim Undangan Rapat?</b></h5>
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="button" class="btn btn-outline-secondary me-2"
+                                data-bs-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-primary" id="confirmSubmit"
+                                data-bs-toggle="modal">Oke</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Modal Berhasil -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content text-center p-4">
+                    <div class="modal-body">
+                        <img src="/img/undangan/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
+                        <!-- Success Message -->
+                        <h5 class="modal-title"><b>Sukses</b></h5>
+                        <p class="mt-2">Berhasil Mengirimkan Undangan</p>
+                        {{-- <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a
+                                href="{{route('undangan.manager')}}" style="color: white; text-decoration: none">Kembali
+                                ke Halaman Undangan</a></button> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     </div>
@@ -323,7 +331,14 @@
                     successModal.show();
                 }, 300);
             } else {
-                // Untuk reject/correction, submit lalu redirect manual ke halaman undangan manager setelah submit
+                // Validasi catatan untuk reject/correction
+                if ((statusValue === 'reject' || statusValue === 'correction') && catatanInput.value.trim() === '') {
+                    document.getElementById('catatanError').style.display = 'block';
+                    catatanInput.focus();
+                    return; // stop proses submit & redirect
+                }
+
+                // Kalau lolos validasi, submit lalu redirect
                 document.getElementById('approvalForm').submit();
                 setTimeout(function () {
                     window.location.href = "{{ route('undangan.manager') }}";
