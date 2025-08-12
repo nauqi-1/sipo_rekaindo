@@ -598,10 +598,26 @@ class MemoController extends Controller
             'tgl_disahkan' => 'nullable|date',
             'divisi_id_divisi' => 'nullable',
             'lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // 2MB max
+            'barang' => 'sometimes|required|array',
+            'barang.*' => 'required|string', // each item required if array exists
+
+            'qty' => 'sometimes|required|array',
+            'qty.*' => 'required|numeric|min:1',
+
+            'satuan' => 'sometimes|required|array',
+            'satuan.*' => 'required|string'
         ], [
             'lampiran.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
             'lampiran.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
+            'barang.required' => 'Nama barang harus diisi.',
+            'qty.required' => 'Qty barang harus diisi.',
+            'satuan.required' => 'Satuan barang harus diisi.',
+
+            'barang.*.required' => 'Nama barang harus diisi.',
+            'qty.*.required' => 'Qty barang harus diisi.',
+            'satuan.*.required' => 'Satuan barang harus diisi.'
         ]);
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
@@ -722,7 +738,8 @@ class MemoController extends Controller
             $tujuanUserIds = is_array($memo->tujuan) ? $memo->tujuan : explode(';', $memo->tujuan);
             //dd($tujuanUserIds);
             foreach ($tujuanUserIds as $userId) {
-                if ($userId == $creator->id) continue;
+                if ($userId == $creator->id)
+                    continue;
                 $recipients = User::where('id', $userId)->get();
                 foreach ($recipients as $recipient) {
                     Kirim_document::create([
@@ -891,7 +908,7 @@ class MemoController extends Controller
     }
     public function collapseRecipients2(array $selectedUserIds)
     {
-        $selected = collect($selectedUserIds)->map(fn($id) => (int)$id);
+        $selected = collect($selectedUserIds)->map(fn($id) => (int) $id);
 
         // Start from users and move up
         $collapsed = $this->collapseAtLevel($selected, 'unit_id_unit', 'unit');
@@ -932,7 +949,7 @@ class MemoController extends Controller
 
     public function collapseRecipients3(array $selectedUserIds)
     {
-        $selected = collect($selectedUserIds)->map(fn($id) => (int)$id);
+        $selected = collect($selectedUserIds)->map(fn($id) => (int) $id);
 
         // Load all user data with parent info
         $users = DB::table('users')
@@ -1514,7 +1531,7 @@ class MemoController extends Controller
             'judul' => "Memo {$request->status}",
             'jenis_document' => 'memo',
             'id_divisi' => $memo->divisi_id,
-            'dibaca'         => false,
+            'dibaca' => false,
             'updated_at' => now()
         ]);
 

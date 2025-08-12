@@ -224,11 +224,13 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="row mb-4 need-row">
                     <div class="col-md-12">
                         <label for="need" class="need">Keperluan Barang</label>
                         <label for="isi" class="fill">*Isi keperluan barang jika dibutuhkan</label>
                     </div>
+
                 </div>
                 <div class="row mb-4 need-row" style="width: 90.5%;">
                     <div class="col">
@@ -251,8 +253,20 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
+
+                </div>
+                <div class="row mb-4">
+                    @if ($errors->any())
+                        <div class="col-md-6 alert alert-danger">
+                            <ul>
+                                @foreach (array_unique($errors->all()) as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
                 <div id="jumlahKategoriDiv" class="card-body2" style="display: none;">
 
                     <div class="col-12">
@@ -263,6 +277,7 @@
                     </div>
 
                 </div>
+
                 <div id="barangTable"></div>
 
                 <div class="card-footer">
