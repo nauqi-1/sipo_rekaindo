@@ -621,7 +621,7 @@ class MemoController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+        dd($request->all());
         $tujuanId = $this->convertTujuanToUserId($request->tujuan);
         $filePath = null;
         if ($request->hasFile('lampiran')) {

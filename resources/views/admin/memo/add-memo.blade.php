@@ -120,16 +120,21 @@
                                                     }
                                                 });
                                             }).on('changed.jstree', function (e, data) {
+                                                let sortOrder = ['div', 'dept', 'section', 'unit', 'user'];
                                                 let selectedNodes = data.instance.get_selected(true)
-                                                    .map(node => node.text);
+                                                    .sort((a, b) => {
+                                                        let aType = a.id.split('-')[0]; // prefix before "-"
+                                                        let bType = b.id.split('-')[0];
+                                                        return sortOrder.indexOf(aType) - sortOrder.indexOf(bType);
+                                                    });
 
                                                 let list = $('#selected-recipients');
                                                 let section = $('#selected-section');
                                                 list.empty();
 
                                                 if (selectedNodes.length) {
-                                                    selectedNodes.forEach(name => {
-                                                        list.append(`<li>${name}</li>`);
+                                                    selectedNodes.forEach(node => {
+                                                        list.append(`<li>${node.text}</li>`);
                                                     });
                                                     section.show();
                                                 } else {
@@ -327,7 +332,7 @@
                             <div class="d-flex justify-content-center mt-2">
                                 <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
                             </div>
-                            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                            <input type="file" id="fileInput" style="display: none;">
                             <div id="fileInfo" style="display: none; text-align: center ">
                                 <div id="fileInfoWrapper"
                                     style="display: flex; align-items: center; justify-content: center">
@@ -357,16 +362,17 @@
             // Get selected nodes
             const selectedNodes = $('#org-tree').jstree('get_selected', true);
             const tujuan = selectedNodes;
-            //.filter(node => node.id.startsWith('user-')) // adjust prefix if needed
-            //.map(node => ({
-            //  id: parseInt(node.id.replace('user-', '')), // Extract user ID from node ID
-            //}));
             if (selectedNodes.length === 0) {
                 alert("Minimal pilih satu tujuan!");
                 e.preventDefault();
                 return false;
             }
-
+            let sortOrder = ['div', 'dept', 'section', 'unit', 'user'];
+            selectedNodes.sort((a, b) => {
+                let aType = a.id.split('-')[0];
+                let bType = b.id.split('-')[0];
+                return sortOrder.indexOf(aType) - sortOrder.indexOf(bType);
+            });
             tujuan.forEach(node => {
                 const nodeId = node.id
                 const nodeText = node.text;
@@ -470,6 +476,35 @@
         // Menangani pemilihan file melalui file input
         document.getElementById('fileInput').addEventListener('change', function () {
             const file = this.files[0];
+            if (!file) return;
+            const MAXSIZE = 2 * 1024 * 1024; // 2MB
+            if (file.size > MAXSIZE) {
+                alert('Ukuran file terlalu besar.');
+                document.getElementById('fileInput').value = '';
+                return;
+            }
+            // Read first 5 bytes to check for "%PDF-"
+            const reader = new FileReader();
+            reader.onloadend = function (e) {
+                const arr = new Uint8Array(e.target.result).subarray(0, 5);
+                let header = "";
+                for (let i = 0; i < arr.length; i++) {
+                    header += String.fromCharCode(arr[i]);
+                }
+
+                if (header === "%PDF-") {
+                    setupFileUI(file);
+                } else {
+                    alert('File ini bukan PDF yang valid.');
+                    document.getElementById('fileInput').value = '';
+                }
+            };
+
+            // Read only first 5 bytes (fast)
+            reader.readAsArrayBuffer(file.slice(0, 5));
+        });
+
+        function setupFileUI(file) {
             const uploadBtn = document.getElementById('uploadBtn');
             const fileInfo = document.getElementById('fileInfo');
             const modalFileName = document.getElementById('modalFileName');
@@ -478,22 +513,16 @@
             const uploadNote = document.querySelector('.upload-note');
             const selectFileBtn = document.getElementById('selectFileBtn');
 
-            if (file) {
-                modalFileName.textContent = file.name;
-                fileInfo.style.display = 'block';
-                uploadBtn.disabled = false;
-                uploadText.style.display = 'none';
-                uploadNote.style.display = 'none';
-                selectFileBtn.style.display = 'none';
+            modalFileName.textContent = file.name;
+            fileInfo.style.display = 'block';
+            uploadBtn.disabled = false;
+            uploadText.style.display = 'none';
+            uploadNote.style.display = 'none';
+            selectFileBtn.style.display = 'none';
+            modalPreviewIcon.src = '/img/pdf.png';
+            modalPreviewIcon.style.display = 'block';
+        }
 
-                if (file.type.startsWith('image/')) {
-                    modalPreviewIcon.src = '/img/image.png'; // Ikon gambar
-                } else if (file.type === 'application/pdf') {
-                    modalPreviewIcon.src = '/img/pdf.png'; // Ikon PDF
-                }
-                modalPreviewIcon.style.display = 'block';
-            }
-        });
 
         // Meng-upload file setelah tombol "Unggah" di klik di modal
         document.getElementById('uploadBtn').addEventListener('click', function () {
@@ -514,12 +543,7 @@
                 fileNameDisplay.textContent = file.name;
                 filePreview.style.display = 'block';
                 uploadButton.style.display = 'none';
-
-                if (file.type.startsWith('image/')) {
-                    previewIcon.src = '/img/image.png'; // Ikon gambar
-                } else if (file.type === 'application/pdf') {
-                    previewIcon.src = '/img/pdf.png'; // Ikon PDF
-                }
+                previewIcon.src = '/img/pdf.png'; // Ikon PDF
                 previewIcon.style.display = 'inline-block'; // Menampilkan ikon preview
             }
 
