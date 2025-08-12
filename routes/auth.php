@@ -59,9 +59,11 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('logout');
-
+        Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+            ->name('logout');
+        Route::get('/logout', function () {
+            return redirect()->route('login');
+        });
         Route::post('/documents/send', [KirimController::class, 'sendDocument'])->name('documents.send');
         Route::get('/documents/sent', [KirimController::class, 'sentDocuments'])->name('documents.sent');
         Route::get('/documents/received', [KirimController::class, 'receivedDocuments'])->name('documents.received');
