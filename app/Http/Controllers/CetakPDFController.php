@@ -152,6 +152,30 @@ class CetakPDFController extends Controller
             return response()->file($formatMemoPath, ['Content-Type' => 'application/pdf'])->deleteFileAfterSend(true);
         }
     }
+    // Tambahkan method helper untuk sanitize filename
+    private function sanitizeFileName($filename, $maxLength = 80)
+    {
+        // Remove HTML tags dan decode entities
+        $filename = html_entity_decode(strip_tags($filename), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // Replace karakter yang tidak diizinkan di nama file dengan underscore
+        // Karakter yang tidak diizinkan: \ / : * ? " < > |
+        $filename = preg_replace('/[\\\\\/:\*\?"<>\|]/', '_', $filename);
+
+        // Replace multiple spaces dengan single space
+        $filename = preg_replace('/\s+/', ' ', $filename);
+
+        // Trim whitespace
+        $filename = trim($filename);
+
+        // Limit panjang filename
+        if (strlen($filename) > $maxLength) {
+            $filename = substr($filename, 0, $maxLength);
+        }
+
+        // Jika kosong, berikan nama default
+        return $filename ?: 'undangan';
+    }
     public function cetakundanganPDF($id)
     {
         // Ambil data dari database
@@ -179,8 +203,6 @@ class CetakPDFController extends Controller
             })
             ->values(); // reset index array
 
-
-
         $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$undangan->nama_bertandatangan])
             ->first();
@@ -191,7 +213,7 @@ class CetakPDFController extends Controller
             $manager->bagian_text = $this->getBagianText($manager, $level);
         }
 
-        $cleanTag = strip_tags($undangan->isi_undangan);
+        $cleanTag = html_entity_decode(strip_tags($undangan->isi_undangan), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $formatUndanganPdf = PDF::loadView('format-surat.format-undangan', [
             'undangan' => $undangan,
             'tujuanUsers' => $tujuanUsers,
@@ -215,7 +237,8 @@ class CetakPDFController extends Controller
             $pdfMerger->addPDF($formatUndanganPath, 'all');
             $pdfMerger->addPDF($lampiranTempPath, 'all');
 
-            $fileName = Str::slug($undangan->judul) . '-' . $undangan->id . '.pdf'; //NAMA FILE KALAU ADA LAMPIRAN
+            // BAGIAN YANG DIPERBAIKI UNTUK NAMA FILE
+            $fileName = $this->sanitizeFileName($undangan->judul) . ' - ' . $undangan->id . '.pdf';
             $outputPath = storage_path('app/' . $fileName);
             $pdfMerger->merge('file', $outputPath);
 
@@ -225,15 +248,16 @@ class CetakPDFController extends Controller
             return response()->download($outputPath, $fileName)->deleteFileAfterSend(true);
         } else {
             // Jika tidak ada lampiran, langsung download PDF undangan saja
-            $fileName = Str::slug($undangan->judul) . '-' . $undangan->id . '.pdf';
+            // BAGIAN YANG DIPERBAIKI UNTUK NAMA FILE
+            $fileName = $this->sanitizeFileName($undangan->judul) . ' - ' . $undangan->id . '.pdf';
+
             return response()->streamDownload(function () use ($formatUndanganPdf, $formatUndanganPath) {
                 echo $formatUndanganPdf->output();
 
                 if (file_exists($formatUndanganPath)) unlink($formatUndanganPath);
-            }, $fileName); //NAMA FILE KALAU GA ADA LAMPIRAN
+            }, $fileName);
         }
     }
-
 
     public function detectLevel($user)
     {
@@ -329,7 +353,7 @@ class CetakPDFController extends Controller
             $manager->bagian_text = $this->getBagianText($manager, $level);
         }
 
-        $cleanTag = strip_tags($undangan->isi_undangan);
+        $cleanTag = html_entity_decode(strip_tags($undangan->isi_undangan), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $formatUndanganPdf = PDF::loadView('format-surat.format-undangan', [
             'undangan' => $undangan,
             'tujuanUsers' => $tujuanUsers,
