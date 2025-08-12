@@ -24,14 +24,15 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('memo.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route('memo.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Tambah Memo</h1>
         </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="{{route('memo.admin')}}">Memo</a>/<a href="#" style="color: #565656;">Tambah Memo</a>
+                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="{{route('memo.admin')}}">Memo</a>/<a
+                        href="#" style="color: #565656;">Tambah Memo</a>
                 </div>
             </div>
         </div>
@@ -47,31 +48,36 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label for="tgl_surat" class="form-label">
-                                <img src="/img/memo-admin/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
+                                <img src="/img/memo-admin/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat
+                                <span class="text-danger">*</span>
                             </label>
-                            <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ old('tgl_dibuat', \Carbon\Carbon::now()->format('Y-m-d')) }}">
+                            <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control"
+                                value="{{ old('tgl_dibuat', \Carbon\Carbon::now()->format('Y-m-d')) }}">
                             @error('tgl_dibuat')
-                            <div class="form-control text-danger">{{ $message }}</div>
+                                <div class="form-control text-danger">{{ $message }}</div>
                             @enderror
                             <input type="hidden" name="tgl_disahkan">
                             <input type="hidden" name="catatan">
                         </div>
                         <div class="col-md-6">
                             <label for="seri_surat" class="form-label">Seri Surat</label>
-                            <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan ?? '' }}" readonly>
+                            <input type="text" name="seri_surat" id="seri_surat" class="form-control"
+                                value="{{ $nomorSeriTahunan ?? '' }}" readonly>
                             <input type="hidden" name="pembuat" value="{{ auth()->user()->id }}">
                         </div>
                     </div>
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label for="nomor_memo" class="form-label">Nomor Surat</label>
-                            <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $nomorDokumen }}" readonly>
+                            <input type="text" name="nomor_memo" id="nomor_memo" class="form-control"
+                                value="{{ $nomorDokumen }}" readonly>
                         </div>
                         <div class="col-md-6">
                             <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
-                            <input type="text" name="judul" id="judul" class="form-control" placeholder="Masukkan Perihal / Judul Surat" value="{{ old('judul') }}">
+                            <input type="text" name="judul" id="judul" class="form-control"
+                                placeholder="Masukkan Perihal / Judul Surat" value="{{ old('judul') }}">
                             @error('judul')
-                            <div class="form-control text-danger">{{ $message }}</div>
+                                <div class="form-control text-danger">{{ $message }}</div>
                             @enderror
                         </div>
 
@@ -81,8 +87,10 @@
                         <div class="d-flex justify-content-center">
                             <div style="width: 95%;">
                                 <label style="font-size: small;" for="kepada" class="form-label">
-                                    <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                                    <span class="text-danger" style="font-size: x-small;">Cukup pilih Divisi / Departemen / Bagian / Unit / Karyawan yang dituju.</span>
+                                    <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada
+                                    <span class="text-danger">*</span>
+                                    <span class="text-danger" style="font-size: x-small;">Cukup pilih Divisi /
+                                        Departemen / Bagian / Unit / Karyawan yang dituju.</span>
                                 </label>
 
                                 <div id="orgTreeError" class="form-control text-danger" style="display:none;"></div>
@@ -92,7 +100,7 @@
                                         <div style=" font-size: small;" id="org-tree"></div>
                                     </div>
                                     <script>
-                                        $(function() {
+                                        $(function () {
                                             $('#org-tree').jstree({
                                                 'core': {
                                                     'data': @json(json_decode($jsTreeData))
@@ -102,26 +110,31 @@
                                                     'three_state': false,
                                                     'cascade': 'none'
                                                 }
-                                            }).on('ready.jstree', function(e, data) {
+                                            }).on('ready.jstree', function (e, data) {
                                                 // hide checkboxes for top-level nodes
-                                                $('#org-tree li').each(function() {
+                                                $('#org-tree li').each(function () {
                                                     var node = data.instance.get_node(this.id);
                                                     if (node && node.parent === "#") {
                                                         // hide checkbox using CSS
                                                         $(this).find('.jstree-checkbox').css('display', 'none');
                                                     }
                                                 });
-                                            }).on('changed.jstree', function(e, data) {
+                                            }).on('changed.jstree', function (e, data) {
+                                                let sortOrder = ['div', 'dept', 'section', 'unit', 'user'];
                                                 let selectedNodes = data.instance.get_selected(true)
-                                                    .map(node => node.text);
+                                                    .sort((a, b) => {
+                                                        let aType = a.id.split('-')[0]; // prefix before "-"
+                                                        let bType = b.id.split('-')[0];
+                                                        return sortOrder.indexOf(aType) - sortOrder.indexOf(bType);
+                                                    });
 
                                                 let list = $('#selected-recipients');
                                                 let section = $('#selected-section');
                                                 list.empty();
 
                                                 if (selectedNodes.length) {
-                                                    selectedNodes.forEach(name => {
-                                                        list.append(`<li>${name}</li>`);
+                                                    selectedNodes.forEach(node => {
+                                                        list.append(`<li>${node.text}</li>`);
                                                     });
                                                     section.show();
                                                 } else {
@@ -135,29 +148,31 @@
                                             Daftar Penerima:
                                         </label>
                                         <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
-                                            <ul id="selected-recipients" style="font-size: small; padding-left: 15px; margin: 0;"></ul>
+                                            <ul id="selected-recipients"
+                                                style="font-size: small; padding-left: 15px; margin: 0;"></ul>
                                         </div>
                                     </div>
                                 </div>
                                 @error('tujuan[]')
-                                <div class="form-control text-danger">{{ $message }}</div>
+                                    <div class="form-control text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
 
                         <div class="col-md-6">
 
-                            <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
+                            <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span
+                                    class="text-danger">*</span></label>
                             <select name="manager_user_id" required id="managerDropdown" class="form-control">
                                 <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                                 @foreach($managers as $manager)
-                                @php
-                                preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
-                                $kode_position = $matches[1] ?? '';
-                                @endphp
-                                <option value="{{ $manager->id }}">
-                                    ({{ $kode_position }}) {{ $manager->firstname }} {{ $manager->lastname }}
-                                </option>
+                                    @php
+                                        preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
+                                        $kode_position = $matches[1] ?? '';
+                                    @endphp
+                                    <option value="{{ $manager->id }}">
+                                        ({{ $kode_position }}) {{ $manager->firstname }} {{ $manager->lastname }}
+                                    </option>
                                 @endforeach
 
                                 </option>
@@ -167,7 +182,7 @@
                             <input type="hidden" name="nama_bertandatangan" id="namaBertandatangan">
 
                             @error('nama_bertandatangan')
-                            <div class="form-control text-danger">{{ $message }}</div>
+                                <div class="form-control text-danger">{{ $message }}</div>
                             @enderror
 
                         </div>
@@ -178,12 +193,16 @@
                             <label for="lampiran" class="form-label">Lampiran</label>
                             <div class="separator"></div>
                             <div class="upload-wrapper">
-                                <button type="button" class="btn btn-primary upload-button" id="openUploadModal" style="margin-left: 30px;">Pilih File</button>
-                                <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                                <button type="button" class="btn btn-primary upload-button" id="openUploadModal"
+                                    style="margin-left: 30px;">Pilih File</button>
+                                <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png"
+                                    style="display: none;">
                                 <div id="filePreview" style="display: none; text-align: center">
-                                    <img id="previewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
+                                    <img id="previewIcon" src="" alt="Preview"
+                                        style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
                                     <span id="fileName"></span>
-                                    <button type="button" id="removeFile" class="bi bi-x remove-btn" style="border: none; color:red; background-color: white;"></button>
+                                    <button type="button" id="removeFile" class="bi bi-x remove-btn"
+                                        style="border: none; color:red; background-color: white;"></button>
                                 </div>
                             </div>
                         </div>
@@ -200,7 +219,7 @@
                         <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_memo" value="{{ old('isi_memo') }}"></textarea>
                             @error('isi_memo')
-                            <div class=" text-danger">{{ $message }}</div>
+                                <div class=" text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
@@ -213,18 +232,21 @@
                 </div>
                 <div class="row mb-4 need-row" style="width: 90.5%;">
                     <div class="col">
-                        <label for="need" class="need" style="font-size: 14px; color: #1E4178">Tambah Kategori Barang</label>
+                        <label for="need" class="need" style="font-size: 14px; color: #1E4178">Tambah Kategori
+                            Barang</label>
                     </div>
                     <div class="col">
                         <div class="cek d-flex" style="font-size: 14px;">
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="opsi" id="ya" value="ya" onclick="toggleKategoriBarang()" style="margin-right: 15px;"> Ya
+                                    <input type="radio" name="opsi" id="ya" value="ya" onclick="toggleKategoriBarang()"
+                                        style="margin-right: 15px;"> Ya
                                 </label>
                             </div>
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="opsi" id="tidak" value="tidak" onclick="toggleKategoriBarang()" style="margin-right: 15px;" checked> Tidak
+                                    <input type="radio" name="opsi" id="tidak" value="tidak"
+                                        onclick="toggleKategoriBarang()" style="margin-right: 15px;" checked> Tidak
                                 </label>
                             </div>
                         </div>
@@ -235,7 +257,9 @@
 
                     <div class="col-12">
                         <label for="jumlahKategori" class="form-label">Jumlah Kategori Barang</label>
-                        <input type="number" id="jumlahKategori" name="jumlah_kolom" class="form-control" placeholder="Masukkan jumlah kategori barang yang ingin diinput" min="1" oninput="generateBarangFields()">
+                        <input type="number" id="jumlahKategori" name="jumlah_kolom" class="form-control"
+                            placeholder="Masukkan jumlah kategori barang yang ingin diinput" min="1"
+                            oninput="generateBarangFields()">
                     </div>
 
                 </div>
@@ -243,7 +267,8 @@
 
                 <div class="card-footer">
                     <a href="{{route('memo.admin')}}" type="button" class="btn back" id="backBtn">Batal</a>
-                    <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Simpan</button>
+                    <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal"
+                        data-bs-target="#submit">Simpan</button>
                 </div>
 
                 <div id="tujuan-container"></div>
@@ -261,7 +286,9 @@
                     <!-- Success Message -->
                     <h5 class="modal-title"><b>Sukses</b></h5>
                     <p class="mt-2">Berhasil Mengirimkan Memo</p>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}" style="color: white; text-decoration: none">Kembali ke Halaman Memo</a></button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a
+                            href="{{route('memo.admin')}}" style="color: white; text-decoration: none">Kembali ke
+                            Halaman Memo</a></button>
                 </div>
             </div>
         </div>
@@ -273,7 +300,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="uploadModalLabel">
-                        <img src="/img/memo-superadmin/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
+                        <img src="/img/memo-superadmin/cloud-add.png" alt="Icon"
+                            style="width: 24px; margin-right: 10px;">
                         Unggah file
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -282,16 +310,19 @@
                     <p class="modal-subtitle">Pilih dan unggah file pilihan Anda</p>
                     <div class="upload-container">
                         <div class="upload-box" id="uploadBox">
-                            <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
+                            <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon"
+                                style="width: 40px; margin-bottom: 10px;">
                             <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
                             <p class="upload-note">Ukuran file PDF tidak lebih dari 2MB</p>
                             <div class="d-flex justify-content-center mt-2">
                                 <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
                             </div>
-                            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                            <input type="file" id="fileInput" style="display: none;">
                             <div id="fileInfo" style="display: none; text-align: center ">
-                                <div id="fileInfoWrapper" style="display: flex; align-items: center; justify-content: center">
-                                    <img id="modalPreviewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; margin-right: 5px; display: none;">
+                                <div id="fileInfoWrapper"
+                                    style="display: flex; align-items: center; justify-content: center">
+                                    <img id="modalPreviewIcon" src="" alt="Preview"
+                                        style="max-width: 18px; max-height: 18px; object-fit: contain; margin-right: 5px; display: none;">
                                     <span id="modalFileName"></span>
                                 </div>
                             </div>
@@ -309,23 +340,24 @@
     <script>
         let clickedNodeIds = [];
 
-        $('#addMemoForm').on('submit', function(e) {
+        $('#addMemoForm').on('submit', function (e) {
             // Clear existing tujuan[] inputs
             $('#tujuan-container').empty();
 
             // Get selected nodes
             const selectedNodes = $('#org-tree').jstree('get_selected', true);
             const tujuan = selectedNodes;
-            //.filter(node => node.id.startsWith('user-')) // adjust prefix if needed
-            //.map(node => ({
-            //  id: parseInt(node.id.replace('user-', '')), // Extract user ID from node ID
-            //}));
             if (selectedNodes.length === 0) {
                 alert("Minimal pilih satu tujuan!");
                 e.preventDefault();
                 return false;
             }
-
+            let sortOrder = ['div', 'dept', 'section', 'unit', 'user'];
+            selectedNodes.sort((a, b) => {
+                let aType = a.id.split('-')[0];
+                let bType = b.id.split('-')[0];
+                return sortOrder.indexOf(aType) - sortOrder.indexOf(bType);
+            });
             tujuan.forEach(node => {
                 const nodeId = node.id
                 const nodeText = node.text;
@@ -341,18 +373,18 @@
             console.log("Submitting form with tujuan:", nodeId); // <--- debug
         });
 
-        $('#org-tree').on('select_node.jstree', function(e, data) {
+        $('#org-tree').on('select_node.jstree', function (e, data) {
             const id = data.node.id;
             // Only add if not already in the list
             if (!clickedNodeIds.includes(id)) {
                 clickedNodeIds.push(id);
             }
         });
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const dropdown = document.getElementById('managerDropdown');
             const namaField = document.getElementById('namaBertandatangan');
 
-            dropdown.addEventListener('change', function() {
+            dropdown.addEventListener('change', function () {
                 const selectedOption = dropdown.options[dropdown.selectedIndex];
                 const text = selectedOption.textContent || selectedOption.innerText;
 
@@ -364,7 +396,7 @@
             });
         });
         // Modal Upload File - Menampilkan Modal
-        document.getElementById('openUploadModal').addEventListener('click', function() {
+        document.getElementById('openUploadModal').addEventListener('click', function () {
             // Reset modal content before showing
             const fileInput = document.getElementById('fileInput');
             const uploadBtn = document.getElementById('uploadBtn');
@@ -399,23 +431,23 @@
             uploadModal.show();
         });
         // Membuka file input ketika tombol "Pilih File" di klik
-        document.getElementById('selectFileBtn').addEventListener('click', function() {
+        document.getElementById('selectFileBtn').addEventListener('click', function () {
             document.getElementById('fileInput').click();
         });
 
         // Menangani dragover event untuk upload box
-        document.getElementById('uploadBox').addEventListener('dragover', function(e) {
+        document.getElementById('uploadBox').addEventListener('dragover', function (e) {
             e.preventDefault();
             this.style.border = '2px dashed #007bff';
         });
 
         // Menangani dragleave event untuk upload box
-        document.getElementById('uploadBox').addEventListener('dragleave', function() {
+        document.getElementById('uploadBox').addEventListener('dragleave', function () {
             this.style.border = '2px dashed #ccc';
         });
 
         // Menangani drop event untuk upload box
-        document.getElementById('uploadBox').addEventListener('drop', function(e) {
+        document.getElementById('uploadBox').addEventListener('drop', function (e) {
             e.preventDefault();
             this.style.border = '2px dashed #ccc';
             document.getElementById('fileInput').files = e.dataTransfer.files;
@@ -427,8 +459,37 @@
 
 
         // Menangani pemilihan file melalui file input
-        document.getElementById('fileInput').addEventListener('change', function() {
+        document.getElementById('fileInput').addEventListener('change', function () {
             const file = this.files[0];
+            if (!file) return;
+            const MAXSIZE = 2 * 1024 * 1024; // 2MB
+            if (file.size > MAXSIZE) {
+                alert('Ukuran file terlalu besar.');
+                document.getElementById('fileInput').value = '';
+                return;
+            }
+            // Read first 5 bytes to check for "%PDF-"
+            const reader = new FileReader();
+            reader.onloadend = function (e) {
+                const arr = new Uint8Array(e.target.result).subarray(0, 5);
+                let header = "";
+                for (let i = 0; i < arr.length; i++) {
+                    header += String.fromCharCode(arr[i]);
+                }
+
+                if (header === "%PDF-") {
+                    setupFileUI(file);
+                } else {
+                    alert('File ini bukan PDF yang valid.');
+                    document.getElementById('fileInput').value = '';
+                }
+            };
+
+            // Read only first 5 bytes (fast)
+            reader.readAsArrayBuffer(file.slice(0, 5));
+        });
+
+        function setupFileUI(file) {
             const uploadBtn = document.getElementById('uploadBtn');
             const fileInfo = document.getElementById('fileInfo');
             const modalFileName = document.getElementById('modalFileName');
@@ -437,25 +498,19 @@
             const uploadNote = document.querySelector('.upload-note');
             const selectFileBtn = document.getElementById('selectFileBtn');
 
-            if (file) {
-                modalFileName.textContent = file.name;
-                fileInfo.style.display = 'block';
-                uploadBtn.disabled = false;
-                uploadText.style.display = 'none';
-                uploadNote.style.display = 'none';
-                selectFileBtn.style.display = 'none';
+            modalFileName.textContent = file.name;
+            fileInfo.style.display = 'block';
+            uploadBtn.disabled = false;
+            uploadText.style.display = 'none';
+            uploadNote.style.display = 'none';
+            selectFileBtn.style.display = 'none';
+            modalPreviewIcon.src = '/img/pdf.png';
+            modalPreviewIcon.style.display = 'block';
+        }
 
-                if (file.type.startsWith('image/')) {
-                    modalPreviewIcon.src = '/img/image.png'; // Ikon gambar
-                } else if (file.type === 'application/pdf') {
-                    modalPreviewIcon.src = '/img/pdf.png'; // Ikon PDF
-                }
-                modalPreviewIcon.style.display = 'block';
-            }
-        });
 
         // Meng-upload file setelah tombol "Unggah" di klik di modal
-        document.getElementById('uploadBtn').addEventListener('click', function() {
+        document.getElementById('uploadBtn').addEventListener('click', function () {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
             const lampiran = document.getElementById('lampiran');
@@ -473,12 +528,7 @@
                 fileNameDisplay.textContent = file.name;
                 filePreview.style.display = 'block';
                 uploadButton.style.display = 'none';
-
-                if (file.type.startsWith('image/')) {
-                    previewIcon.src = '/img/image.png'; // Ikon gambar
-                } else if (file.type === 'application/pdf') {
-                    previewIcon.src = '/img/pdf.png'; // Ikon PDF
-                }
+                previewIcon.src = '/img/pdf.png'; // Ikon PDF
                 previewIcon.style.display = 'inline-block'; // Menampilkan ikon preview
             }
 
@@ -488,14 +538,14 @@
         });
 
         // Menghapus file yang dipilih dan menyembunyikan preview
-        document.getElementById('removeFile').addEventListener('click', function() {
+        document.getElementById('removeFile').addEventListener('click', function () {
             document.getElementById('lampiran').value = ''; // Menghapus file yang dipilih
             document.getElementById('filePreview').style.display = 'none'; // Menyembunyikan preview
             document.getElementById('openUploadModal').style.display = 'block'; // Menampilkan tombol upload lagi
         });
 
         // Menangani pemilihan file di input lampiran
-        document.getElementById('lampiran').addEventListener('change', function() {
+        document.getElementById('lampiran').addEventListener('change', function () {
             const file = this.files[0];
             const filePreview = document.getElementById('filePreview');
             const fileName = document.getElementById('fileName');
@@ -520,8 +570,8 @@
 
 
         // Raroh iki opo
-        $(document).ready(function() {
-            $('#dropdownMenuButton').on('change', function() {
+        $(document).ready(function () {
+            $('#dropdownMenuButton').on('change', function () {
                 // Saat opsi dipilih, teks akan ke kiri
                 $(this).css('text-align', 'left');
 
@@ -598,12 +648,12 @@
         }
     </script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#summernote').summernote({
                 height: 300,
                 toolbar: [
                     //['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'clear', ]],
+                    ['font', ['bold', 'italic', 'underline', 'clear',]],
                     ['para', ['ul', 'ol', 'paragraph']],
                     //['insert', ['link', 'picture', 'video']],
                     //['view', ['fullscreen', 'codeview', 'help']],
