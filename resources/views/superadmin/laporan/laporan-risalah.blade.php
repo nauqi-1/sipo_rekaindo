@@ -52,4 +52,42 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handler untuk tombol Batal
+    document.getElementById('cancel-button').addEventListener('click', function() {
+        // Reset nilai input tanggal
+        document.getElementById('tgl_awal').value = '';
+        document.getElementById('tgl_akhir').value = '';
+        
+        // Optional: Reset form validation state
+        const form = document.getElementById('filter-form');
+        form.classList.remove('was-validated');
+        
+        // Optional: Remove any error messages if using Bootstrap validation
+        const invalidFeedbacks = form.querySelectorAll('.invalid-feedback');
+        invalidFeedbacks.forEach(feedback => feedback.style.display = 'none');
+        
+        // Optional: Reset input classes
+        const inputs = form.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.classList.remove('is-invalid', 'is-valid');
+        });
+        
+        console.log('Filter tanggal telah direset');
+    });
+    
+    // Optional: Tambahkan validasi saat submit
+    document.getElementById('filter-form').addEventListener('submit', function(e) {
+        const tglAwal = document.getElementById('tgl_awal').value;
+        const tglAkhir = document.getElementById('tgl_akhir').value;
+        
+        if (tglAwal && tglAkhir && tglAwal > tglAkhir) {
+            e.preventDefault();
+            alert('Tanggal awal tidak boleh lebih besar dari tanggal akhir!');
+            return false;
+        }
+    });
+});
+</script>
 @endsection
