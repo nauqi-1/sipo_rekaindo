@@ -538,9 +538,58 @@ class UndanganController extends Controller
 
         return ($divisiName);
     }
+    private function containsEmoji($text)
+    {
+        if (empty($text)) return false;
+
+        // Regex pattern untuk detect emoji
+        $emojiPattern = '/[\x{1F600}-\x{1F64F}]|[\x{1F300}-\x{1F5FF}]|[\x{1F680}-\x{1F6FF}]|[\x{1F1E0}-\x{1F1FF}]|[\x{2600}-\x{26FF}]|[\x{2700}-\x{27BF}]/u';
+
+        // Pattern tambahan untuk emoji lainnya
+        $additionalEmojiPattern = '/[\x{1F900}-\x{1F9FF}]|[\x{1FA70}-\x{1FAFF}]|[\x{1F780}-\x{1F7FF}]|[\x{1F800}-\x{1F8FF}]/u';
+
+        return preg_match($emojiPattern, $text) || preg_match($additionalEmojiPattern, $text);
+    }
+
+    // Method helper untuk validasi emoji pada field tertentu
+    private function validateNoEmoji($request)
+    {
+        $fieldsToCheck = ['judul', 'isi_undangan', 'waktu_mulai', 'waktu_selesai', 'tempat'];
+        $errors = [];
+
+        foreach ($fieldsToCheck as $field) {
+            if ($request->filled($field) && $this->containsEmoji($request->input($field))) {
+                $fieldName = $this->getFieldDisplayName($field);
+                $errors[$field] = "Field {$fieldName} tidak boleh mengandung emoji.";
+            }
+        }
+
+        return $errors;
+    }
+
+    // Helper untuk nama field yang user-friendly sesuai label di form
+    private function getFieldDisplayName($field)
+    {
+        $names = [
+            'judul' => 'Judul',
+            'isi_undangan' => 'Agenda',  // Sesuai label yang user lihat
+            'waktu_mulai' => 'Waktu Mulai',
+            'waktu_selesai' => 'Waktu Selesai',
+            'tempat' => 'Tempat'
+        ];
+
+        return $names[$field] ?? ucfirst($field);
+    }
+
     public function store(Request $request)
     {
         //dd($request->all());
+        $emojiErrors = $this->validateNoEmoji($request);
+        if (!empty($emojiErrors)) {
+            return redirect()->back()
+                ->withErrors($emojiErrors)
+                ->withInput();
+        }
         // Ubah validasi tujuan jadi array
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:70',
@@ -930,6 +979,15 @@ class UndanganController extends Controller
         $undangan = Undangan::findOrFail($id);
         //dd('Update function masuk');
         //dd($request->all()); 
+
+        // VALIDASI EMOJI DULU SEBELUM VALIDASI LAINNYA
+        $emojiErrors = $this->validateNoEmoji($request);
+        if (!empty($emojiErrors)) {
+            return redirect()->back()
+                ->withErrors($emojiErrors)
+                ->withInput();
+        }
+        // Validasi input
         $request->validate([
             'judul' => 'required|string|max:255',
             'isi_undangan' => 'required|string',
@@ -1008,63 +1066,63 @@ class UndanganController extends Controller
         return redirect()->route('undangan.' . Auth::user()->role->nm_role)->with('success', 'Undangan deleted successfully.');
     }
     public function view($id)
-{
-    $userId = Auth::id(); // Ambil ID user yang sedang login
-    $undangan = Undangan::where('id_undangan', $id)->firstOrFail();
-    $divDeptKode = $this->getDivDeptKode(Auth::user());
+    {
+        $userId = Auth::id(); // Ambil ID user yang sedang login
+        $undangan = Undangan::where('id_undangan', $id)->firstOrFail();
+        $divDeptKode = $this->getDivDeptKode(Auth::user());
 
-    // EDIT: Tambahkan eager loading untuk relationship pembuat
-    $undangan = Undangan::with('user')->findOrFail($id);
+        // EDIT: Tambahkan eager loading untuk relationship pembuat
+        $undangan = Undangan::with('user')->findOrFail($id);
 
-    // Konversi tujuan ID menjadi array
-    $idArray = is_array($undangan->tujuan)
-        ? $undangan->tujuan
-        : explode(';', $undangan->tujuan);
+        // Konversi tujuan ID menjadi array
+        $idArray = is_array($undangan->tujuan)
+            ? $undangan->tujuan
+            : explode(';', $undangan->tujuan);
 
-    $users = User::whereIn('id', $idArray)->with('position')->get();
-    $pdfController = new CetakPDFController();
-    // Ambil user lengkap beserta relasi organisasi
-    $listNama = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
-        ->whereIn('id', $idArray)
-        ->get()
-        ->map(function ($user, $key) use ($pdfController) {
-            $level = $pdfController->detectLevel($user);
-            $user->level_kerja = $level;
-            $user->bagian_text = $pdfController->getBagianText($user, $level);
-            return $user;
-        })
-        ->sortBy(function ($user) {
-            return optional($user->position)->id_position;
-        })
-        ->values();
+        $users = User::whereIn('id', $idArray)->with('position')->get();
+        $pdfController = new CetakPDFController();
+        // Ambil user lengkap beserta relasi organisasi
+        $listNama = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+            ->whereIn('id', $idArray)
+            ->get()
+            ->map(function ($user, $key) use ($pdfController) {
+                $level = $pdfController->detectLevel($user);
+                $user->level_kerja = $level;
+                $user->bagian_text = $pdfController->getBagianText($user, $level);
+                return $user;
+            })
+            ->sortBy(function ($user) {
+                return optional($user->position)->id_position;
+            })
+            ->values();
 
-    $undangan->tujuan = $listNama->map(function ($user, $index) {
-        return ($index + 1) . '. '
-            . $user->position->nm_position . ' '
-            . $user->bagian_text . ' '
-            . '(' . $user->firstname . ' ' . $user->lastname . ')';
-    })->implode("\n");
+        $undangan->tujuan = $listNama->map(function ($user, $index) {
+            return ($index + 1) . '. '
+                . $user->position->nm_position . ' '
+                . $user->bagian_text . ' '
+                . '(' . $user->firstname . ' ' . $user->lastname . ')';
+        })->implode("\n");
 
-    $undanganCollection = collect([$undangan]); // Bungkus dalam collection
+        $undanganCollection = collect([$undangan]); // Bungkus dalam collection
 
-    $undanganCollection->transform(function ($undangan) use ($userId) {
-        if ($undangan->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
-            $undangan->final_status = $undangan->status; // Undangan dari divisi sendiri
-        } else {
-            $statusKirim = Kirim_Document::where('id_document', $undangan->id_undangan)
-                ->where('jenis_document', 'undangan')
-                ->where('id_penerima', $userId)
-                ->first();
-            $undangan->final_status = $statusKirim ? $statusKirim->status : '-';
-        }
-        return $undangan;
-    });
+        $undanganCollection->transform(function ($undangan) use ($userId) {
+            if ($undangan->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $undangan->final_status = $undangan->status; // Undangan dari divisi sendiri
+            } else {
+                $statusKirim = Kirim_Document::where('id_document', $undangan->id_undangan)
+                    ->where('jenis_document', 'undangan')
+                    ->where('id_penerima', $userId)
+                    ->first();
+                $undangan->final_status = $statusKirim ? $statusKirim->status : '-';
+            }
+            return $undangan;
+        });
 
-    // Karena hanya satu memo, kita bisa mengambil dari collection lagi
-    $undangan = $undanganCollection->first();
+        // Karena hanya satu memo, kita bisa mengambil dari collection lagi
+        $undangan = $undanganCollection->first();
 
-    return view(Auth::user()->role->nm_role . '.undangan.view-undangan', compact('undangan'));
-}
+        return view(Auth::user()->role->nm_role . '.undangan.view-undangan', compact('undangan'));
+    }
     public function updateStatus(Request $request, $id)
     {
         $undangan = Undangan::findOrFail($id);

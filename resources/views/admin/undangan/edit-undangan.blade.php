@@ -66,45 +66,174 @@
                     </div>
                 </div>
                 <!--Checkboxes kepada (tujuan)-->
-                <div class="row mb-4">
-                            <div class="col-md-12 d-flex justify-content-center">
-                                <div style="width: 95%">
-                                    <label for="kepada" class="form-label">
-                                        <img src="/img/undangan/kepada.png" alt="kepada" class="form-label"
-                                            style="margin-right: 5px; color: #1f4178;">Kepada <span class="text-danger">*</span>
-                                        <span class="label-kepada">Pilih user atau struktur, semua user di bawah
-                                            struktur akan otomatis terpilih</span>
-                                    </label>
-                                    <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto; font">
-                                        <div style="font-size: small" class="form-label" id="org-tree"></div>
-                                        <style>
-                                            #org-tree .jstree-anchor {
-                                                color: #1f4178;
-                                                font-weight: 500;
-                                            }
-                                        </style>
-                                    </div>
-                                </div>
-                                <script>
-                                    $(function () {
-                                        const selectedTujuan = @json($tujuanArray);
+               <div class="row mb-4">
+    <div class="col-md-12 d-flex justify-content-center">
+        <div style="width: 95%">
+            <label for="kepada" class="form-label">
+                <img src="/img/undangan/kepada.png" alt="kepada" class="form-label"
+                    style="margin-right: 5px; color: #1f4178;">Kepada <span class="text-danger">*</span>
+                <span class="label-kepada">Pilih user atau struktur, semua user di bawah
+                    struktur akan otomatis terpilih</span>
+            </label>
+            <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto; font">
+                <div style="font-size: small" class="form-label" id="org-tree"></div>
+                <style>
+                    #org-tree .jstree-anchor {
+                        color: #1f4178;
+                        font-weight: 500;
+                    }
+                </style>
+            </div>
+        </div>
+        <script>
+            $(function () {
+                const selectedTujuan = @json($tujuanArray);
 
-                                        $('#org-tree').jstree({
-                                            'core': {
-                                                'data': @json($jsTreeData)
-                                            },
-                                            'plugins': ['checkbox', 'search']
-                                        });
+                $('#org-tree').jstree({
+                    'core': {
+                        'data': @json($jsTreeData)
+                    },
+                    'plugins': ['checkbox', 'search']
+                }).on('ready.jstree', function (e, data) {
+                    // Check the saved user checkboxes
+                    selectedTujuan.forEach(id => {
+                        $('#org-tree').jstree('check_node', '#user-' + id);
+                    });
+                    
+                    // Initial display of selected recipients
+                    let selectedNodes = data.instance.get_selected(true)
+                        .filter(node => node.icon && node.icon === 'fa fa-user')
+                        .map(node => node.text);
+                    
+                    // Sort selectedNodes by position hierarchy
+                    selectedNodes.sort(function(a, b) {
+                        const positionOrder = {
+                            'Direktur': 1,
+                            'GM': 2, 'General Manager': 2,
+                            'SM': 3, 'Senior Manager': 3,
+                            'M': 4, 'Manager': 4,
+                            'PJ SM': 5, 'Penanggung Jawab Senior Manager': 5,
+                            'PJ M': 6, 'Penanggung Jawab Manager': 6,
+                            'SPV': 7, 'Supervisor': 7,
+                            'PJ SPV': 8, 'Penanggung Jawab Supervisor': 8,
+                            'Staff': 9
+                        };
+                        
+                        const getPositionPriority = function(text) {
+                            for (let pos in positionOrder) {
+                                if (text.startsWith(pos)) {
+                                    return positionOrder[pos];
+                                }
+                            }
+                            return 999;
+                        };
+                        
+                        return getPositionPriority(a) - getPositionPriority(b);
+                    });
+                    
+                    // Display initial selected recipients
+                    let list = $('#selected-recipients');
+                    let section = $('#selected-section');
+                    list.empty();
+                    
+                    if (selectedNodes.length) {
+                        selectedNodes.forEach(name => {
+                            list.append(`<li>${name}</li>`);
+                        });
+                        section.show();
+                    }
+                    
+                    // Auto expand nodes that have selected users
+                    data.instance.get_selected(true).forEach(function(node) {
+                        // Open parent nodes of selected users
+                        let parentId = data.instance.get_parent(node.id);
+                        while (parentId && parentId !== '#') {
+                            data.instance.open_node(parentId);
+                            parentId = data.instance.get_parent(parentId);
+                        }
+                    });
+                }).on('changed.jstree', function(e, data) {
+                    let allSelectedNodes = data.instance.get_selected(true);
+                    let selectedNodes = [];
+                    
+                    allSelectedNodes.forEach(function(node) {
+                        // Check if node has 'fa fa-user' icon (which indicates it's a user)
+                        if (node.icon && node.icon === 'fa fa-user') {
+                            selectedNodes.push(node.text);
+                        }
+                        
+                        // Auto expand selected nodes to show their children
+                        if (data.instance.is_selected(node.id)) {
+                            data.instance.open_node(node.id);
+                        }
+                    });
+                    
+                    // Sort selectedNodes by position hierarchy (Direktur first, Staff last)
+                    selectedNodes.sort(function(a, b) {
+                        // Define position hierarchy order
+                        const positionOrder = {
+                            'Direktur': 1,
+                            'GM': 2, 'General Manager': 2,
+                            'SM': 3, 'Senior Manager': 3,
+                            'M': 4, 'Manager': 4,
+                            'PJ SM': 5, 'Penanggung Jawab Senior Manager': 5,
+                            'PJ M': 6, 'Penanggung Jawab Manager': 6,
+                            'SPV': 7, 'Supervisor': 7,
+                            'PJ SPV': 8, 'Penanggung Jawab Supervisor': 8,
+                            'Staff': 9
+                        };
+                        
+                        // Extract position from text (position is at the beginning)
+                        const getPositionPriority = function(text) {
+                            for (let pos in positionOrder) {
+                                if (text.startsWith(pos)) {
+                                    return positionOrder[pos];
+                                }
+                            }
+                            return 999; // Unknown positions go last
+                        };
+                        
+                        return getPositionPriority(a) - getPositionPriority(b);
+                    });
 
-                                        $('#org-tree').on('ready.jstree', function () {
-                                            selectedTujuan.forEach(id => {
-                                                $('#org-tree').jstree('check_node', '#user-' + id);
-                                            });
-                                        });
-                                    });
-                                </script>
-                            </div>
-                        </div>
+                    let list = $('#selected-recipients');
+                    let section = $('#selected-section');
+                    list.empty();
+
+                    if (selectedNodes.length) {
+                        selectedNodes.forEach(name => {
+                            list.append(`<li>${name}</li>`);
+                        });
+                        section.show();
+                    } else {
+                        section.hide();
+                    }
+                });
+            });
+        </script>
+    </div>
+</div>
+
+<!-- Added section for displaying selected recipients -->
+<div style="display: none;" id="selected-section">
+    <label style="font-size: small;" class="form-label">
+        Daftar Penerima:
+    </label>
+    <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+        <ul id="selected-recipients" style="font-size: small; padding-left: 15px; margin: 0; counter-reset: item; list-style-type: none;"></ul>
+        <style>
+            #selected-recipients li {
+                display: block;
+                margin-bottom: 0.2em;
+            }
+            #selected-recipients li:before {
+                content: counter(item, decimal) ". ";
+                counter-increment: item;
+                font-weight: bold;
+            }
+        </style>
+    </div>
+</div>
                     <div class="mb-3 row">
                 <!-- Tanggal Rapat -->
                     <div class="col-md-6">
