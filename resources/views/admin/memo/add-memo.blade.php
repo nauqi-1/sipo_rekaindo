@@ -691,15 +691,15 @@
                         </div>
                         <div class="col-md-6">
                             <label for="barang_${i}">Barang</label>
-                            <input type="text" id="barang_${i}" name="barang[]" class="form-control" placeholder="Masukkan barang">
+                            <input type="text" id="barang_${i}" name="barang[]" class="form-control" placeholder="Masukkan barang" required>
                         </div>
                         <div class="col-md-6">
                             <label for="qty_${i}">Qty</label>
-                            <input type="number" id="qty_${i}" name="qty[]" class="form-control" placeholder="Masukkan jumlah">
+                            <input type="number" id="qty_${i}" name="qty[]" class="form-control" placeholder="Masukkan jumlah" required>
                         </div>
                         <div class="col-md-6">
                             <label for="satuan_${i}">Satuan</label>
-                            <input type="text" id="satuan_${i}" name="satuan[]" class="form-control" placeholder="Masukkan satuan">
+                            <input type="text" id="satuan_${i}" name="satuan[]" class="form-control" placeholder="Masukkan satuan" required>
                         </div>
                     `;
 
