@@ -145,9 +145,7 @@
                                     </script>
                                     <div style="display: none;" id="selected-section">
                                         <label style="font-size: small;" class="form-label">
-                                            <img src="/img/memo-admin/detail.png" alt="tujuan"
-                                                style="margin-right: 5px;">
-                                            Daftar Penerima:
+                                            Tujuan Terpilih:
                                         </label>
                                         <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
                                             <ul id="selected-recipients"
@@ -691,15 +689,15 @@
                         </div>
                         <div class="col-md-6">
                             <label for="barang_${i}">Barang</label>
-                            <input type="text" id="barang_${i}" name="barang[]" class="form-control" placeholder="Masukkan barang">
+                            <input type="text" id="barang_${i}" name="barang[]" class="form-control" placeholder="Masukkan barang" required>
                         </div>
                         <div class="col-md-6">
                             <label for="qty_${i}">Qty</label>
-                            <input type="number" id="qty_${i}" name="qty[]" class="form-control" placeholder="Masukkan jumlah">
+                            <input type="number" id="qty_${i}" name="qty[]" class="form-control" placeholder="Masukkan jumlah" required>
                         </div>
                         <div class="col-md-6">
                             <label for="satuan_${i}">Satuan</label>
-                            <input type="text" id="satuan_${i}" name="satuan[]" class="form-control" placeholder="Masukkan satuan">
+                            <input type="text" id="satuan_${i}" name="satuan[]" class="form-control" placeholder="Masukkan satuan" required>
                         </div>
                     `;
 

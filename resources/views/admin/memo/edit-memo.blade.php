@@ -27,14 +27,16 @@
                 <div class="header">
                     <!-- Back Button -->
                     <div class="back-button">
-                        <a href="{{route ('memo.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                        <a href="{{route('memo.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
                     </div>
                     <h1>Edit Memo</h1>
                 </div>
                 <div class="row">
                     <div class="breadcrumb-wrapper">
                         <div class="breadcrumb" style="gap: 5px;">
-                            <a href="{{ route('admin.dashboard') }}">Home</a>/<a href="{{ route('memo.admin') }}">Memo</a>/<a href="#" style="color: #565656;">Edit Memo</a>
+                            <a href="{{ route('admin.dashboard') }}">Home</a>/<a
+                                href="{{ route('memo.admin') }}">Memo</a>/<a href="#" style="color: #565656;">Edit
+                                Memo</a>
                         </div>
                     </div>
                 </div>
@@ -51,45 +53,58 @@
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <label for="tgl_dibuat" class="form-label">
-                                        <img src="/img/memo-superadmin/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
+                                        <img src="/img/memo-superadmin/date.png" alt="date"
+                                            style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
                                     </label>
-                                    <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ $memo->tgl_dibuat->format('Y-m-d') }}" required>
+                                    <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control"
+                                        value="{{ $memo->tgl_dibuat->format('Y-m-d') }}" required>
                                     <input type="hidden" name="tgl_disahkan">
-                                    <input type="hidden" name="divisi_id_divisi" value="{{ auth()->user()->divisi_id_divisi }}">
+                                    <input type="hidden" name="divisi_id_divisi"
+                                        value="{{ auth()->user()->divisi_id_divisi }}">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="seri_surat" class="form-label">Seri Surat</label>
-                                    <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $memo->seri_surat }}" readonly>
+                                    <input type="text" name="seri_surat" id="seri_surat" class="form-control"
+                                        value="{{ $memo->seri_surat }}" readonly>
                                 </div>
                             </div>
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <label for="nomor_memo" class="form-label">Nomor Surat</label>
-                                    <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $memo->nomor_memo }}" readonly>
+                                    <input type="text" name="nomor_memo" id="nomor_memo" class="form-control"
+                                        value="{{ $memo->nomor_memo }}" readonly>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
-                                    <input type="text" name="judul" id="judul" class="form-control" value="{{ $memo->judul }}" required>
+                                    <label for="judul" class="form-label">Perihal <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" name="judul" id="judul" class="form-control"
+                                        value="{{ $memo->judul }}">
+                                    @error('judul')
+                                        <div class="form-control text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
-
                             </div>
                             <div class="row mb-4">
                                 <div class="d-flex justify-content-center">
                                     <div style="width: 95%;">
                                         <label style="font-size: small;" for="kepada" class="form-label">
-                                            <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                                            <span class="text-danger" style="font-size: x-small;">Cukup pilih Divisi / Departemen / Bagian / Unit / Karyawan yang dituju.</span>
+                                            <img src="/img/undangan/kepada.png" alt="kepada"
+                                                style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
+                                            <span class="text-danger" style="font-size: x-small;">Cukup pilih Divisi /
+                                                Departemen / Bagian / Unit / Karyawan yang dituju.</span>
                                         </label>
 
-                                        <div id="orgTreeError" class="form-control text-danger" style="display:none;"></div>
+                                        <div id="orgTreeError" class="form-control text-danger" style="display:none;">
+                                        </div>
 
                                         <div class="col-md-12">
-                                            <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                                            <div class="border rounded p-2"
+                                                style="max-height: 300px; overflow-y: auto;">
                                                 <div style=" font-size: small;" id="org-tree"></div>
                                             </div>
                                             <script>
                                                 const tujuanNameArray = @json($tujuanArray);
-                                                $(function() {
+                                                $(function () {
                                                     $('#org-tree').jstree({
                                                         'core': {
                                                             'data': @json(json_decode($jsTreeData))
@@ -100,16 +115,16 @@
                                                             "three_state": false,
                                                             "cascade": 'none',
                                                         },
-                                                    }).on('ready.jstree', function(e, data) {
+                                                    }).on('ready.jstree', function (e, data) {
                                                         // hide checkboxes for top-level nodes
-                                                        $('#org-tree li').each(function() {
+                                                        $('#org-tree li').each(function () {
                                                             var node = data.instance.get_node(this.id);
                                                             if (node && node.parent === "#") {
                                                                 // hide checkbox using CSS
                                                                 $(this).find('.jstree-checkbox').css('display', 'none');
                                                             }
                                                         });
-                                                    }).on('changed.jstree', function(e, data) {
+                                                    }).on('changed.jstree', function (e, data) {
                                                         let selectedNodes = data.instance.get_selected(true)
                                                             .map(node => node.text);
 
@@ -127,7 +142,7 @@
                                                         }
                                                     });
 
-                                                    $('#org-tree').on('ready.jstree', function() {
+                                                    $('#org-tree').on('ready.jstree', function () {
                                                         const treeInstance = $('#org-tree').jstree(true); // ✅ get jsTree instance
                                                         const allNodes = treeInstance.get_json('#', {
                                                             flat: true
@@ -146,10 +161,12 @@
                                             </script>
                                             <div style="display: none;" id="selected-section">
                                                 <label style="font-size: small;" class="form-label">
-                                                    Daftar Penerima:
+                                                    Tujuan Terpilih:
                                                 </label>
-                                                <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
-                                                    <ul id="selected-recipients" style="font-size: small; padding-left: 15px; margin: 0;"></ul>
+                                                <div class="border rounded p-2"
+                                                    style="max-height: 300px; overflow-y: auto;">
+                                                    <ul id="selected-recipients"
+                                                        style="font-size: small; padding-left: 15px; margin: 0;"></ul>
                                                 </div>
                                             </div>
                                         </div>
@@ -157,14 +174,16 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger"></span></label>
-                                    <input type="hidden" name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" value="{{ $memo->nama_bertandatangan }}" required>
-                                    <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" disabled>
+                                    <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span
+                                            class="text-danger"></span></label>
+                                    <input type="hidden" name="nama_bertandatangan" id="nama_bertandatangan"
+                                        class="form-control" value="{{ $memo->nama_bertandatangan }}" required>
+                                    <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control"
+                                        disabled>
                                         @foreach($managers as $manager)
-                                        <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}"
-                                            {{ $memo->nama_bertandatangan == ($manager->firstname . ' ' . $manager->lastname) ? 'selected' : '' }}>
+                                            <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">
                                             {{ $manager->firstname . ' ' . $manager->lastname }}
-                                        </option>
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -173,44 +192,82 @@
 
                             <div class="row mb-4 isi-surat-row">
                                 <div class="col-md-12">
-                                    <img src="\img\memo-superadmin\isi-surat.png" alt="isiSurat" style=" margin-left: 10px;">
+                                    <img src="\img\memo-superadmin\isi-surat.png" alt="isiSurat"
+                                        style=" margin-left: 10px;">
                                     <label for="isi-memo">Isi Surat <span class="text-danger">*</span></label>
                                 </div>
                                 <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                                     <textarea id="summernote" name="isi_memo">{{ $memo->isi_memo }}</textarea>
+                                    @error('isi_memo')
+                                        <div class=" text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row mb-4 need-row">
-                            <div class="col-md-12">
-                                <label for="need" class="need">Keperluan Barang</label>
-                                <label for="isi" class="fill">*Isi keperluan barang jika dibutuhkan</label>
 
                             </div>
+                        </div>
+                        @php                    
+                                    // Collect only errors for barang, qty, satuan (including array indices)
+                                    $barangQtySatuanErrors = collect($errors->getMessages())
+                                        ->filter(function ($messages, $key) {
+                                            return Str::startsWith($key, ['barang', 'qty', 'satuan']);
+                                        })
+                                        ->flatten() // turn arrays of messages into a single list
+                                        ->unique(); // remove duplicates
+                                @endphp
+                        @if($memo->kategoriBarang->isNotEmpty())
+                            <div class="row mb-4 need-row">
+                                <div class="col-md-12">
+                                    <label for="need" class="need">Keperluan Barang</label>
+                                    <label for="isi" class="fill">*Isi keperluan barang jika dibutuhkan</label>
+                                </div>
+                                
+                                <div class="row mb-4" id="errorKategoriBarang">
+                                    @if ($barangQtySatuanErrors->isNotEmpty())
+                                        <div class="col-md-6 alert alert-danger">
+                                            <ul>
+                                                @foreach ($barangQtySatuanErrors as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+                                </div>
+                        @else
+                            @endif
                             @foreach ($memo->kategoriBarang as $index => $barang)
-                            <div class="row mb-4 isi">
-                                <input type="hidden" name="kategori_barang[{{ $index }}][id_kategori_barang]" value="{{ $barang->id_kategori_barang }}">
-                                <div class="col-md-6">
-                                    <label for="kategori_barang_{{ $index }}_nomor">Nomor</label>
-                                    <input type="text" id="kategori_barang_{{ $index }}_nomor" name="kategori_barang[{{ $index }}][nomor]" class="form-control" value="{{ $barang->nomor }}">
+                                <div class="row mb-4 isi">
+                                    <input type="hidden" name="kategori_barang[{{ $index }}][id_kategori_barang]"
+                                        value="{{ $barang->id_kategori_barang }}">
+                                    <div class="col-md-6">
+                                        <label for="kategori_barang_{{ $index }}_nomor">Nomor</label>
+                                        <input type="text" id="kategori_barang_{{ $index }}_nomor"
+                                            name="kategori_barang[{{ $index }}][nomor]" class="form-control"
+                                            value="{{ $barang->nomor }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="kategori_barang_{{ $index }}_nama_barang">Barang</label>
+                                        <input type="text" id="kategori_barang_{{ $index }}_nama_barang"
+                                            name="kategori_barang[{{ $index }}][barang]" class="form-control"
+                                            value="{{ $barang->barang }}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="kategori_barang_{{ $index }}_qty">Qty</label>
+                                        <input type="number" id="kategori_barang_{{ $index }}_qty"
+                                            name="kategori_barang[{{ $index }}][qty]" class="form-control"
+                                            value="{{ $barang->qty }}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="kategori_barang_{{ $index }}_satuan">Satuan</label>
+                                        <input type="text" id="kategori_barang_{{ $index }}_satuan"
+                                            name="kategori_barang[{{ $index }}][satuan]" class="form-control"
+                                            value="{{ $barang->satuan }}" required>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="kategori_barang_{{ $index }}_nama_barang">Barang</label>
-                                    <input type="text" id="kategori_barang_{{ $index }}_nama_barang" name="kategori_barang[{{ $index }}][barang]" class="form-control" value="{{ $barang->barang }}">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="kategori_barang_{{ $index }}_qty">Qty</label>
-                                    <input type="number" id="kategori_barang_{{ $index }}_qty" name="kategori_barang[{{ $index }}][qty]" class="form-control" value="{{ $barang->qty }}">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="kategori_barang_{{ $index }}_satuan">Satuan</label>
-                                    <input type="text" id="kategori_barang_{{ $index }}_satuan" name="kategori_barang[{{ $index }}][satuan]" class="form-control" value="{{ $barang->satuan }}">
-                                </div>
-                            </div>
                             @endforeach
                         </div>
                         <div class="card-footer">
-                            <button type="button" class="btn btn-cancel"><a href="{{route ('memo.admin')}}">Batal</a></button>
+                            <button type="button" class="btn btn-cancel"><a
+                                    href="{{route('memo.admin')}}">Batal</a></button>
                             <button type="submit" class="btn btn-save">Simpan</button>
                         </div>
                         <div id="tujuan-container"></div>
@@ -235,7 +292,8 @@
                     <p class="modal-subtitle">Pilih dan unggah file pilihan Anda</p>
                     <div class="upload-container">
                         <div class="upload-box" id="uploadBox">
-                            <img src="/img/memo-admin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
+                            <img src="/img/memo-admin/cloud-add.png" alt="Cloud Icon"
+                                style="width: 40px; margin-bottom: 10px;">
                             <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
                             <p class="upload-note">Ukuran file PDF tidak lebih dari 20MB</p>
                             <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
@@ -252,7 +310,7 @@
     </div>
 
     <script>
-        $('#editMemoForm').on('submit', function(e) {
+        $('#editMemoForm').on('submit', function (e) {
 
             // Get selected nodes
             const selectedNodes = $('#org-tree').jstree('get_selected', true);
@@ -267,15 +325,15 @@
                     `<input type="hidden" name="tujuanString[]" value="${node.text}">`
                 );
             });
-            if (userIds.length === 0) {
+            if (selectedNodes.length === 0) {
                 alert("Minimal pilih satu tujuan!");
                 e.preventDefault();
                 return false;
             }
             console.log("Submitting form with tujuan:", tujuan); // <--- debug
         });
-        $(document).ready(function() {
-            $('#dropdownMenuButton').on('change', function() {
+        $(document).ready(function () {
+            $('#dropdownMenuButton').on('change', function () {
                 // Saat opsi dipilih, teks akan ke kiri
                 $(this).css('text-align', 'left');
 
@@ -287,12 +345,12 @@
         });
 
         // Hubungkan tombol "Select File" dengan input file
-        document.getElementById('selectFileBtn').addEventListener('click', function() {
+        document.getElementById('selectFileBtn').addEventListener('click', function () {
             document.getElementById('fileInput').click();
         });
 
         // Deteksi perubahan file dan aktifkan tombol Upload
-        document.getElementById('fileInput').addEventListener('change', function() {
+        document.getElementById('fileInput').addEventListener('change', function () {
             const uploadBtn = document.getElementById('uploadBtn');
             if (this.files.length > 0) {
                 uploadBtn.disabled = false;
@@ -301,7 +359,7 @@
             }
         });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#summernote').summernote({
                 height: 300,
                 toolbar: [
