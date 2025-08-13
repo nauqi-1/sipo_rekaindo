@@ -288,7 +288,7 @@
                     <label for="jumlahKategori" class="form-label">Jumlah Kategori Barang</label>
                     <input type="number" id="jumlahKategori" name="jumlah_kolom" class="form-control"
                         placeholder="Masukkan jumlah kategori barang yang ingin diinput" min="1"
-                        oninput="generateBarangFields()" oninvalid="this.setCustomValidity('Kolom ini wajib diisi.')">
+                        oninput="generateBarangFields();">
                 </div>
 
             </div>
@@ -627,7 +627,13 @@
             var jumlahKategoriInput = document.getElementById("jumlahKategori");
             var barangTable = document.getElementById("barangTable");
             var errorKategoriBarang = document.getElementById("errorKategoriBarang");
+            jumlahKategoriInput.addEventListener('invalid', function () {
+                this.setCustomValidity('Kolom ini wajib diisi.');
+            });
 
+            jumlahKategoriInput.addEventListener('input', function () {
+                this.setCustomValidity('');
+            });
             if (yaRadio.checked) {
                 jumlahKategoriDiv.style.display = "block";
                 jumlahKategoriInput.required = true;
