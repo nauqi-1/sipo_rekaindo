@@ -145,6 +145,8 @@
                                     </script>
                                     <div style="display: none;" id="selected-section">
                                         <label style="font-size: small;" class="form-label">
+                                            <img src="/img/memo-admin/detail.png" alt="tujuan"
+                                                style="margin-right: 5px;">
                                             Daftar Penerima:
                                         </label>
                                         <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
@@ -163,7 +165,8 @@
 
                             <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span
                                     class="text-danger">*</span></label>
-                            <select name="manager_user_id" required id="managerDropdown" class="form-control">
+                            <select name="manager_user_id" oninvalid="this.setCustomValidity('Kolom ini wajib diisi.')"
+                                id="managerDropdown" class="form-control">
                                 <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                                 @foreach($managers as $manager)
                                     @php
@@ -237,7 +240,7 @@
                         <label for="need" class="need" style="font-size: 14px; color: #1E4178">Tambah Kategori
                             Barang</label>
                     </div>
-                    <div class="col">
+                    <span class="col">
                         <div class="cek d-flex" style="font-size: 14px;">
                             <div class="radio">
                                 <label>
@@ -252,41 +255,53 @@
                                 </label>
                             </div>
                         </div>
+                </div>
+
+
+            </div>
+            @php
+                use Illuminate\Support\Str;
+
+                // Collect only errors for barang, qty, satuan (including array indices)
+                $barangQtySatuanErrors = collect($errors->getMessages())
+                    ->filter(function ($messages, $key) {
+                        return Str::startsWith($key, ['barang', 'qty', 'satuan']);
+                    })
+                    ->flatten() // turn arrays of messages into a single list
+                    ->unique(); // remove duplicates
+            @endphp
+
+            <div class="row mb-4" id="errorKategoriBarang">
+                @if ($barangQtySatuanErrors->isNotEmpty())
+                    <div class="col-md-6 alert alert-danger">
+                        <ul>
+                            @foreach ($barangQtySatuanErrors as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
+                @endif
+            </div>
+            <div id="jumlahKategoriDiv" class="card-body2" style="display: none;">
 
-
-                </div>
-                <div class="row mb-4">
-                    @if ($errors->any())
-                        <div class="col-md-6 alert alert-danger">
-                            <ul>
-                                @foreach (array_unique($errors->all()) as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                </div>
-                <div id="jumlahKategoriDiv" class="card-body2" style="display: none;">
-
-                    <div class="col-12">
-                        <label for="jumlahKategori" class="form-label">Jumlah Kategori Barang</label>
-                        <input type="number" id="jumlahKategori" name="jumlah_kolom" class="form-control"
-                            placeholder="Masukkan jumlah kategori barang yang ingin diinput" min="1"
-                            oninput="generateBarangFields()">
-                    </div>
-
+                <div class="col-12">
+                    <label for="jumlahKategori" class="form-label">Jumlah Kategori Barang</label>
+                    <input type="number" id="jumlahKategori" name="jumlah_kolom" class="form-control"
+                        placeholder="Masukkan jumlah kategori barang yang ingin diinput" min="1"
+                        oninput="generateBarangFields()" oninvalid="this.setCustomValidity('Kolom ini wajib diisi.')">
                 </div>
 
-                <div id="barangTable"></div>
+            </div>
 
-                <div class="card-footer">
-                    <a href="{{route('memo.admin')}}" type="button" class="btn back" id="backBtn">Batal</a>
-                    <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal"
-                        data-bs-target="#submit">Simpan</button>
-                </div>
+            <div id="barangTable"></div>
 
-                <div id="tujuan-container"></div>
+            <div class="card-footer">
+                <a href="{{route('memo.admin')}}" type="button" class="btn back" id="backBtn">Batal</a>
+                <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal"
+                    data-bs-target="#submit">Simpan</button>
+            </div>
+
+            <div id="tujuan-container"></div>
 
         </form>
     </div>
@@ -611,13 +626,18 @@
             var jumlahKategoriDiv = document.getElementById("jumlahKategoriDiv");
             var jumlahKategoriInput = document.getElementById("jumlahKategori");
             var barangTable = document.getElementById("barangTable");
+            var errorKategoriBarang = document.getElementById("errorKategoriBarang");
 
             if (yaRadio.checked) {
                 jumlahKategoriDiv.style.display = "block";
+                jumlahKategoriInput.required = true;
+                errorKategoriBarang.style.display = "none";
             } else {
                 jumlahKategoriDiv.style.display = "none";
                 jumlahKategoriInput.value = "";
                 barangTable.innerHTML = "";
+                jumlahKategoriInput.required = false;
+                errorKategoriBarang.style.display = "none";
             }
         }
 
