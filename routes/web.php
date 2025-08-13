@@ -258,6 +258,7 @@ Route::get('/manager/undangan', [UndanganController::class, 'index'])->name('und
 Route::get('/risalah/Admin', [RisalahController::class, 'index'])->name('risalah.admin');
 Route::get('/manager/undangan', [KirimController::class, 'undangan'])->name('undangan.manager');
 Route::get('/manager/risalah', [KirimController::class, 'risalah'])->name('risalah.manager');
+Route::get('/edit-profileSuperadmin', [ProfileController::class, 'editProfile'])->name('edit-profile.superadmin');
 });
 
 Route::get('/info', function() {
@@ -279,8 +280,8 @@ Route::get('/data-perusahaan', [PerusahaanController::class, 'index'])->name('da
 Route::post('/data-perusahaan/update', [PerusahaanController::class, 'update'])->name('data-perusahaan.update');
 
 // edit profile
-Route::get('/edit-profileSuperadmin', [ProfileController::class, 'editProfile'])->name('edit-profile.superadmin');
-Route::post('/update-profileSuperadmin', [ProfileController::class, 'updateProfile'])->name('superadmin.updateProfile');
+Route::get('/edit-profile', [ProfileController::class, 'editProfile'])->name('edit-profile.');
+Route::post('/update-profile', [ProfileController::class, 'updateProfile'])->name('superadmin.updateProfile');
 Route::get('/edit-profileAdmin', function() {
     return view('admin.edit-profileAdmin'); })->name('edit-profile.admin');
 Route::get('/edit-profileSupervisor', function() {
@@ -334,7 +335,7 @@ Route::get('/format-risalah', function() {
 })->name('format-risalah');
 
 // edit profile
-Route::get('/edit-profileSuperadmin', [ProfileController::class, 'editProfile'])->name('edit-profile.superadmin');
+
 Route::post('/superadmin/delete-photo', [ProfileController::class, 'deletePhoto'])->name('superadmin.deletePhoto');
 Route::post('/update-profileSuperadmin', [ProfileController::class, 'updateProfile'])->name('superadmin.updateProfile');
 

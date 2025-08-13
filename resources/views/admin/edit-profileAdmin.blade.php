@@ -56,21 +56,21 @@
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <label for="first_name" class="form-label">Nama Depan :</label>
-                                    <input type="text" name="first_name" id="first_name" class="form-control" required autocomplete="firstname">
+                                    <input type="text" name="first_name" id="first_name" class="form-control" required autocomplete="firstname" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="last_name" class="form-label">Nama Akhir :</label>
-                                    <input type="text" name="last_name" id="last_name" class="form-control" required autocomplete="lastname">
+                                    <input type="text" name="last_name" id="last_name" class="form-control" required autocomplete="lastname" required>
                                 </div>
                             </div>
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <label for="username" class="form-label">Nama Pengguna :</label>
-                                    <input type="text" name="username" id="username" class="form-control" required autocomplete="username">
+                                    <input type="text" name="username" id="username" class="form-control" required autocomplete="username" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="phone_number" class="form-label">No. Telepon :</label>
-                                    <input type="text" name="phone_number" id="phone_number" class="form-control" required autocomplete="phone_number">
+                                    <input type="text" name="phone_number" id="phone_number" class="form-control" required autocomplete="phone_number" required>
                                 </div>
                             </div>
                             <div class="row mb-4">
@@ -122,6 +122,36 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="uploadBtn" disabled>Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SUKSES -->
+    <div class="modal fade" id="successEditProfileModal" tabindex="-1" aria-labelledby="successModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3"
+                        style="width: 80px; height: 80px;">
+                    <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
+                    <p class="mt-2">Profil berhasil diperbarui</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL GAGAL -->
+    <div class="modal fade" id="failedEditProfileModal" tabindex="-1" aria-labelledby="failedModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <img src="/img/user-manage/error icon component.png" alt="Error Icon" class="mb-3"
+                        style="width: 80px; height: 80px;">
+                    <h5 class="modal-title" id="failedModalLabel"><b>Gagal</b></h5>
+                    <p class="mt-2" id="failedMessage">Terjadi kesalahan saat menyimpan profil</p>
                 </div>
             </div>
         </div>
@@ -239,6 +269,51 @@
             handleFileChange({ target: { files } });
         } else {
             alert("Only image files are allowed.");
+        }
+    });
+
+    // Event submit form
+    document.getElementById("editProfileForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const password = document.getElementById("password").value.trim();
+        const confirmPassword = document.getElementById("confirm_password").value.trim();
+
+        // Validasi konfirmasi password
+        if (password !== "" && confirmPassword === "") {
+            alert("Konfirmasi kata sandi harus diisi.");
+            return;
+        }
+
+        if (password !== "" && confirmPassword !== "" && password !== confirmPassword) {
+            alert("Konfirmasi kata sandi tidak sama.");
+            return;
+        }
+
+        // Ambil data form
+        const formData = new FormData(this);
+
+        try {
+            // Kirim data ke backend (ubah URL sesuai endpoint update profil)
+            const response = await fetch("/profil/update", {
+                method: "POST",
+                body: formData
+            });
+
+            if (response.ok) {
+                // Profil berhasil diupdate
+                const successModal = new bootstrap.Modal(document.getElementById('successEditProfileModal'));
+                successModal.show();
+            } else {
+                // Profil gagal diupdate
+                document.getElementById("failedMessage").innerText = "Gagal memperbarui profil.";
+                const failedModal = new bootstrap.Modal(document.getElementById('failedEditProfileModal'));
+                failedModal.show();
+            }
+        } catch (error) {
+            document.getElementById("failedMessage").innerText = "Terjadi kesalahan koneksi.";
+            const failedModal = new bootstrap.Modal(document.getElementById('failedEditProfileModal'));
+            failedModal.show();
         }
     });
     </script>

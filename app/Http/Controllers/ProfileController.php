@@ -25,10 +25,10 @@ class ProfileController extends Controller
 
         // Validasi data input
         $request->validate([
-            'firstname'         => 'required|string|max:50',
-            'lastname'          => 'required|string|max:50',
+            'firstname'         => 'required|string|max:50|regex:/^[A-Za-z\s]+$/|not_regex:/[\x{1F600}-\x{1F64F}]/u|not_regex:/[\x{1F300}-\x{1F5FF}]/u|not_regex:/[\x{1F680}-\x{1F6FF}]/u|not_regex:/[\x{2600}-\x{26FF}]/u|not_regex:/[\x{2700}-\x{27BF}]/u',
+            'lastname'          => 'required|string|max:50|regex:/^[A-Za-z\s]+$/|not_regex:/[\x{1F600}-\x{1F64F}]/u|not_regex:/[\x{1F300}-\x{1F5FF}]/u|not_regex:/[\x{1F680}-\x{1F6FF}]/u|not_regex:/[\x{2600}-\x{26FF}]/u|not_regex:/[\x{2700}-\x{27BF}]/u',
             'username'          => 'required|string|max:255|unique:users,username,' . $user->id,
-            'phone_number'      => 'nullable|string|max:15',
+            'phone_number'      => 'nullable|string|max:15|regex:/^[0-9\+]+$/',
             'password'          => 'nullable|min:6|confirmed',
             'profile_image'     => 'nullable|image|max:2048', // pastikan sesuai name input
         ]);
