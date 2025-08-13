@@ -287,7 +287,7 @@
                 <div class="col-12">
                     <label for="jumlahKategori" class="form-label">Jumlah Kategori Barang</label>
                     <input type="number" id="jumlahKategori" name="jumlah_kolom" class="form-control"
-                        placeholder="Masukkan jumlah kategori barang yang ingin diinput" min="1"
+                        placeholder="Masukkan jumlah kategori barang yang ingin diinput" min="1" max="50"
                         oninput="generateBarangFields();">
                 </div>
 
@@ -621,47 +621,68 @@
             }
         }
 
-        function toggleKategoriBarang() {
-            var yaRadio = document.getElementById("ya");
-            var jumlahKategoriDiv = document.getElementById("jumlahKategoriDiv");
-            var jumlahKategoriInput = document.getElementById("jumlahKategori");
-            var barangTable = document.getElementById("barangTable");
-            var errorKategoriBarang = document.getElementById("errorKategoriBarang");
+        window.addEventListener('DOMContentLoaded', function () {
+            var jumlahKategoriInput = document.getElementById('jumlahKategori');
+
+            let max = parseInt(jumlahKategoriInput.max, 10);
+            let min = parseInt(jumlahKategoriInput.min, 10);
+
             jumlahKategoriInput.addEventListener('invalid', function () {
                 this.setCustomValidity('Kolom ini wajib diisi.');
             });
 
             jumlahKategoriInput.addEventListener('input', function () {
+                if (this.value !== '') {
+                    if (parseInt(this.value, 50) > max) {
+                        this.value = max;
+                    } else if (parseInt(this.value, 50) < min) {
+                        this.value = min;
+                    }
+                }
                 this.setCustomValidity('');
             });
+        });
+        function toggleKategoriBarang() {
+            var yaRadio = document.getElementById('ya');
+            var jumlahKategoriDiv = document.getElementById('jumlahKategoriDiv');
+            var jumlahKategoriInput = document.getElementById('jumlahKategori');
+            var barangTable = document.getElementById('barangTable');
+            var errorKategoriBarang = document.getElementById('errorKategoriBarang');
+
             if (yaRadio.checked) {
-                jumlahKategoriDiv.style.display = "block";
+                jumlahKategoriDiv.style.display = 'block';
                 jumlahKategoriInput.required = true;
-                errorKategoriBarang.style.display = "none";
+                errorKategoriBarang.style.display = 'none';
             } else {
-                jumlahKategoriDiv.style.display = "none";
-                jumlahKategoriInput.value = "";
-                barangTable.innerHTML = "";
+                jumlahKategoriDiv.style.display = 'none';
+                jumlahKategoriInput.value = '';
+                barangTable.innerHTML = '';
                 jumlahKategoriInput.required = false;
-                errorKategoriBarang.style.display = "none";
+                jumlahKategoriInput.setCustomValidity(''); // CLEAR custom validity here
+                errorKategoriBarang.style.display = 'none';
             }
         }
-
         function generateBarangFields() {
-            const jumlahKategori = document.getElementById("jumlahKategori").value;
+            const jumlahKategoriInput = document.getElementById("jumlahKategori");
+            let jumlahKategori = parseInt(jumlahKategoriInput.value, 10) || 0; // use base 10
+            let max = parseInt(jumlahKategoriInput.max, 10) || 20; // fallback to 20 if no max attribute
+
+            if (jumlahKategori > max) {
+                jumlahKategori = max;
+                jumlahKategoriInput.value = max; // also fix the displayed value
+            }
+
             const barangTable = document.getElementById("barangTable");
             barangTable.innerHTML = ""; // Hapus isi sebelumnya
 
             if (jumlahKategori > 0) {
                 for (let i = 0; i < jumlahKategori; i++) {
-                    // Buat row baru untuk setiap kolom
                     const row = document.createElement('div');
                     row.classList.add('row', 'mb-3');
                     row.style.display = 'flex';
                     row.style.gap = '10px';
                     row.style.margin = '10px 47px';
 
-                    // Template untuk input field
                     row.innerHTML = `
                         <div class="col-md-6">
                             <label for="nomor_${i}">Nomor</label>
@@ -682,11 +703,11 @@
                         </div>
                     `;
 
-                    // Tambahkan row ke dalam barangTable
                     barangTable.appendChild(row);
                 }
             }
         }
+
     </script>
     <script>
         $(document).ready(function () {
