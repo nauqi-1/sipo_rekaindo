@@ -145,9 +145,7 @@
                                     </script>
                                     <div style="display: none;" id="selected-section">
                                         <label style="font-size: small;" class="form-label">
-                                            <img src="/img/memo-admin/detail.png" alt="tujuan"
-                                                style="margin-right: 5px;">
-                                            Daftar Penerima:
+                                            Tujuan Terpilih:
                                         </label>
                                         <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
                                             <ul id="selected-recipients"

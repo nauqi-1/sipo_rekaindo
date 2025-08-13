@@ -133,7 +133,7 @@
                                     </script>
                                     <div style="display: none;" id="selected-section">
                                         <label style="font-size: small;" class="form-label">
-                                            Daftar Penerima:
+                                            Tujuan Terpilih:
                                         </label>
                                         <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
                                             <ul id="selected-recipients" style="font-size: small; padding-left: 15px; margin: 0;"></ul>

@@ -581,11 +581,88 @@ class MemoController extends Controller
         return ($divisiName);
     }
 
+    private function containsEmoji($text)
+    {
+        if (empty($text))
+            return false;
+
+        // Regex pattern untuk detect emoji
+        $emojiPattern = '/[\x{1F600}-\x{1F64F}]|[\x{1F300}-\x{1F5FF}]|[\x{1F680}-\x{1F6FF}]|[\x{1F1E0}-\x{1F1FF}]|[\x{2600}-\x{26FF}]|[\x{2700}-\x{27BF}]/u';
+
+        // Pattern tambahan untuk emoji lainnya
+        $additionalEmojiPattern = '/[\x{1F900}-\x{1F9FF}]|[\x{1FA70}-\x{1FAFF}]|[\x{1F780}-\x{1F7FF}]|[\x{1F800}-\x{1F8FF}]/u';
+
+        return preg_match($emojiPattern, $text) || preg_match($additionalEmojiPattern, $text);
+    }
+    private function validateNoEmoji($request)
+    {
+        // Fields you want to check
+        $fieldsToCheck = ['judul', 'isi_memo', 'barang', 'satuan', 'barang*', 'satuan*'];
+        $errors = [];
+
+        foreach ($fieldsToCheck as $field) {
+            if ($request->has($field)) {
+                $value = $request->input($field);
+
+                // If it's an array (like barang[]), loop through each value
+                if (is_array($value)) {
+                    foreach ($value as $index => $item) {
+                        if ($this->containsEmoji($item)) {
+                            $fieldName = $this->getFieldDisplayName($field);
+                            $errors["{$field}.{$index}"] = "Kolom {$fieldName} nomor " . ($index + 1) . " tidak boleh mengandung emoji.";
+                        }
+                    }
+                }
+                // If it's a single string, check directly
+                else {
+                    if ($this->containsEmoji($value)) {
+                        $fieldName = $this->getFieldDisplayName($field);
+                        $errors[$field] = "Kolom {$fieldName} tidak boleh mengandung emoji.";
+                    }
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+
+    private function getFieldDisplayName($field)
+    {
+        $names = [
+            'judul' => 'perihal',
+            'isi_memo' => 'isi memo',  // Sesuai label yang user lihat
+            'barang' => 'barang',
+            'satuan' => 'satuan',
+            'barang*' => 'barang',
+            'satuan*' => 'satuan'
+        ];
+
+        return $names[$field] ?? ucfirst($field);
+    }
     public function store(Request $request)
     {
+        $emojiErrors = $this->validateNoEmoji($request);
+        if (!empty($emojiErrors)) {
+            return redirect()->back()
+                ->withErrors($emojiErrors)
+                ->withInput();
+        }
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
-            'isi_memo' => 'required|string',
+            'isi_memo' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $clean = strip_tags($value);
+
+                    $clean = html_entity_decode($clean, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+                    $clean = preg_replace('/\xc2\xa0|\s+/u', '', $clean);
+                    if ($clean === '') {
+                        $fail('Isi memo tidak boleh kosong.');
+                    }
+                }
+            ],
             'tujuan' => 'required|array|min:1',
             'tujuanString' => 'required|array|min:1',
             'nomor_memo' => 'required|string|max:255',
@@ -617,10 +694,10 @@ class MemoController extends Controller
             'qty.*.required' => 'Qty barang harus diisi.',
             'satuan.*.required' => 'Satuan barang harus diisi.'
         ]);
-
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
         $tujuanId = $this->convertTujuanToUserId($request->tujuan);
         $filePath = null;
         if ($request->hasFile('lampiran')) {
@@ -1305,10 +1382,27 @@ class MemoController extends Controller
     public function update(Request $request, $id)
     {
         $memo = Memo::findOrFail($id);
-
+        $emojiErrors = $this->validateNoEmoji($request);
+        if (!empty($emojiErrors)) {
+            return redirect()->back()
+                ->withErrors($emojiErrors)
+                ->withInput();
+        }
         $request->validate([
             'judul' => 'required|string|max:255',
-            'isi_memo' => 'required|string',
+            'isi_memo' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $clean = strip_tags($value);
+
+                    $clean = html_entity_decode($clean, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+                    $clean = preg_replace('/\xc2\xa0|\s+/u', '', $clean);
+                    if ($clean === '') {
+                        $fail('Isi memo tidak boleh kosong.');
+                    }
+                }
+            ],
             'tujuan' => 'required|array|min:1',
             'tujuanString' => 'required|array|min:1',
             'nomor_memo' => 'required|string|max:255',
@@ -1316,8 +1410,15 @@ class MemoController extends Controller
             'tgl_dibuat' => 'required|date',
             'seri_surat' => 'required|numeric',
             'tgl_disahkan' => 'nullable|date',
+            'kategori_barang' => 'sometimes|required|array|min:1',
+            'kategori_barang.*.barang' => 'sometimes|required|string',
+            'kategori_barang.*.qty' => 'sometimes|required|integer|min:1',
+            'kategori_barang.*.satuan' => 'sometimes|required|string',
+        ], [
+            'kategori_barang.*.barang.required' => 'Nama barang harus diisi.',
+            'kategori_barang.*.qty.required' => 'Qty barang harus diisi.',
+            'kategori_barang.*.satuan.required' => 'Satuan barang harus diisi.'
         ]);
-
         if ($request->filled('judul')) {
             $memo->judul = $request->judul;
         }
