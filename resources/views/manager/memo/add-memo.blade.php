@@ -154,7 +154,9 @@
                                         </div>
                                     </div>
                                     <div style="display: none;" id="errorTujuan" class="form-control text-danger">
-                                        Minimal pilih satu tujuan!
+                                        <div style="font-size: small;">
+                                            Minimal pilih satu tujuan!
+                                        </div>
                                     </div>
                                 </div>
                                 @error('tujuan[]')
@@ -273,7 +275,7 @@
                 <div id="barangTable"></div>
 
                 <div class="card-footer">
-                    <a href="{{route('memo.admin')}}" type="button" class="btn back" id="backBtn">Batal</a>
+                    <a href="{{route('memo.terkirim')}}" type="button" class="btn back" id="backBtn">Batal</a>
                     <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal"
                         data-bs-target="#submit">Simpan</button>
                 </div>
@@ -692,15 +694,15 @@
                         </div>
                         <div class="col-md-6">
                             <label for="barang_${i}">Barang</label>
-                            <input type="text" id="barang_${i}" name="barang[]" class="form-control" placeholder="Masukkan barang" required>
+                            <input type="text" id="barang_${i}" name="barang[]" class="form-control" placeholder="Masukkan barang" required oninvalid="this.setCustomValidity('Kolom ini wajib diisi.');" oninput="this.setCustomValidity('');">
                         </div>
                         <div class="col-md-6">
                             <label for="qty_${i}">Qty</label>
-                            <input type="number" id="qty_${i}" name="qty[]" class="form-control" placeholder="Masukkan jumlah" required>
+                            <input type="number" id="qty_${i}" name="qty[]" class="form-control" placeholder="Masukkan jumlah" required oninvalid="this.setCustomValidity('Kolom ini wajib diisi.');" oninput="this.setCustomValidity('');">
                         </div>
                         <div class="col-md-6">
                             <label for="satuan_${i}">Satuan</label>
-                            <input type="text" id="satuan_${i}" name="satuan[]" class="form-control" placeholder="Masukkan satuan" required>
+                            <input type="text" id="satuan_${i}" name="satuan[]" class="form-control" placeholder="Masukkan satuan" required oninvalid="this.setCustomValidity('Kolom ini wajib diisi.');" oninput="this.setCustomValidity('');">
                         </div>
                     `;
                     barangTable.appendChild(row);

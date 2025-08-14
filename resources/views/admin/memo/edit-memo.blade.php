@@ -125,6 +125,7 @@
                                                             }
                                                         });
                                                     }).on('changed.jstree', function (e, data) {
+                                                        document.getElementById('errorTujuan').style.display = 'none';
                                                         let selectedNodes = data.instance.get_selected(true)
                                                             .map(node => node.text);
 
@@ -169,6 +170,11 @@
                                                         style="font-size: small; padding-left: 15px; margin: 0;"></ul>
                                                 </div>
                                             </div>
+                                            <div style="display: none;" id="errorTujuan" class="form-control text-danger">
+                                        <div style="font-size: small;">
+                                            Minimal pilih satu tujuan!
+                                        </div>
+                                    </div>
                                         </div>
                                     </div>
                                 </div>
@@ -248,19 +254,19 @@
                                         <label for="kategori_barang_{{ $index }}_nama_barang">Barang</label>
                                         <input type="text" id="kategori_barang_{{ $index }}_nama_barang"
                                             name="kategori_barang[{{ $index }}][barang]" class="form-control"
-                                            value="{{ $barang->barang }}" required>
+                                            value="{{ $barang->barang }}"  required oninvalid="this.setCustomValidity('Kolom ini wajib diisi.');" oninput="this.setCustomValidity('');" >
                                     </div>
                                     <div class="col-md-6">
                                         <label for="kategori_barang_{{ $index }}_qty">Qty</label>
                                         <input type="number" id="kategori_barang_{{ $index }}_qty"
                                             name="kategori_barang[{{ $index }}][qty]" class="form-control"
-                                            value="{{ $barang->qty }}" required>
+                                            value="{{ $barang->qty }}"  required oninvalid="this.setCustomValidity('Kolom ini wajib diisi.');" oninput="this.setCustomValidity('');">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="kategori_barang_{{ $index }}_satuan">Satuan</label>
                                         <input type="text" id="kategori_barang_{{ $index }}_satuan"
                                             name="kategori_barang[{{ $index }}][satuan]" class="form-control"
-                                            value="{{ $barang->satuan }}" required>
+                                            value="{{ $barang->satuan }}"  required oninvalid="this.setCustomValidity('Kolom ini wajib diisi.');" oninput="this.setCustomValidity('');">
                                     </div>
                                 </div>
                             @endforeach
@@ -326,7 +332,8 @@
                 );
             });
             if (selectedNodes.length === 0) {
-                alert("Minimal pilih satu tujuan!");
+                document.getElementById('errorTujuan').style.display = 'block';
+                document.getElementById('errorTujuan').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 e.preventDefault();
                 return false;
             }

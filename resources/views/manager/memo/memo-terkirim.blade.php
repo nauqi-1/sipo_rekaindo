@@ -163,4 +163,127 @@
     </table>
     {{ $memoTerkirim->appends(request()->query())->links('pagination::bootstrap-5') }}
 </div>
+
+<!-- Overlay Add Memo Success -->
+<div class="modal fade" id="successAddMemoModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <!-- Success Icon -->
+                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
+                <!-- Success Message -->
+                <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
+                <p class="mt-2">Berhasil Menambahkan Memo</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay Edit Memo Success -->
+<div class="modal fade" id="successEditMemoModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <!-- Success Icon -->
+                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3" style="width: 80px; height: 80px;">
+                <!-- Success Message -->
+                <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
+                <p class="mt-2">Berhasil Mengubah Memo</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Arsip -->
+<div class="modal fade" id="arsipMemoModal" tabindex="-1" aria-labelledby="arsipMemoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <!-- Close Button -->
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            <img src="/img/memo-admin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
+            <h5 class="modal-title mb-4"><b>Arsip Memo?</b></h5>
+            <!-- Tombol -->
+            <div class="d-flex justify-content-center mt-3">
+                <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="confirmArsipMemo">Oke</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Arsip Berhasil -->
+<div class="modal fade" id="successArsipMemoModal" tabindex="-1" aria-labelledby="successArsipMemoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title"><b>Sukses</b></h5>
+                <p class="mt-2">Berhasil Arsip Memo</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Event listener untuk modal sukses tambah memo
+    document.addEventListener("DOMContentLoaded", function() {
+        @if(session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller memo store
+        var successModal = new bootstrap.Modal(document.getElementById("successAddMemoModal"));
+        successModal.show();
+        setTimeout(function() {
+            successModal.hide();
+        }, 1500);
+        @endif
+    });
+
+    // Event listener untuk modal sukses edit memo
+    document.addEventListener("DOMContentLoaded", function() {
+        @if(session('success') === 'User updated successfully') // merujuk ke parameter controller memo update
+        var successModal = new bootstrap.Modal(document.getElementById("successEditMemoModal"));
+        successModal.show();
+        setTimeout(function() {
+            successModal.hide();
+        }, 1500);
+        @endif
+    });
+
+    // Event Listener Arsip Memo
+    document.addEventListener("DOMContentLoaded", function() {
+        const arsipButtons = document.querySelectorAll(".submitArsipMemo");
+        const confirmArsipButton = document.getElementById("confirmArsipMemo");
+        const cancelArsipButton = document.querySelector("#arsipMemoModal .btn-outline-secondary");
+        const arsipMemoModal = new bootstrap.Modal(document.getElementById("arsipMemoModal"));
+        const successArsipMemoModal = new bootstrap.Modal(document.getElementById("successArsipMemoModal"));
+
+        let currentForm = null;
+
+        // Saat tombol arsip ditekan, simpan form yang akan dikirim
+        arsipButtons.forEach(button => {
+            button.addEventListener("click", function(event) {
+                event.preventDefault(); // Mencegah submit langsung
+                currentForm = this.closest("form");
+                arsipMemoModal.show(); // Tampilkan modal konfirmasi
+            });
+        });
+
+        // Saat tombol "Batal" ditekan, tutup modal konfirmasi
+        cancelArsipButton.addEventListener("click", function() {
+            arsipMemoModal.hide();
+        });
+
+        // Saat tombol "OK" ditekan, submit form dan tampilkan modal sukses
+        confirmArsipButton.addEventListener("click", function() {
+            if (currentForm) {
+                arsipMemoModal.hide(); // Tutup modal konfirmasi
+                setTimeout(() => {
+                    successArsipMemoModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
+                }, 300);
+
+                setTimeout(() => {
+                    successArsipMemoModal.hide();
+                    currentForm.submit(); // Submit form setelah modal sukses ditutup
+                }, 1500);
+            }
+        });
+    });
+</script>
 @endsection
