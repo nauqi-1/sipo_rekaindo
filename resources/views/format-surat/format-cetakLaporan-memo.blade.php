@@ -9,8 +9,8 @@
 </head>
 <style>
     @page {
-        margin-top: 20px;
-        margin-bottom: 0;
+        margin-top: 120px;
+        margin-bottom: 120px;
         margin-left: 0;
         margin-right: 0;
     }
@@ -23,7 +23,7 @@
 
     header {
         position: fixed;
-        top: 0;
+        top: -100px;
         left: 0;
         right: 0;
         width: 100%;
@@ -31,15 +31,17 @@
 
     footer {
         position: fixed;
-        bottom: 0;
+        bottom: -100;
         left: 0;
         right: 0;
         width: 100%;
     }
 
     main {
-        margin-top: 5px;
-        margin-bottom: 10px;
+        margin-top: 0px;
+        margin-bottom: 20px;
+        margin-right: 60px;
+        margin-left: 60px;
         text-align: center;
     }
 
@@ -47,6 +49,7 @@
         width: 100%;
         margin: auto;
         text-align: center;
+        border: 1px solid black;
     }
 
     .memo-title {
@@ -55,11 +58,12 @@
         font-size: 26px;
         font-weight: bold;
         color: black;
-        margin-top: 3cm;
+        margin-top: 0px;
     }
 
     .letter {
-        margin: 0 auto;
+        margin: auto;
+        margin-left: -30px;
         background-color: #ffffff;
         line-height: 0.7cm;
         position: relative;
@@ -221,6 +225,7 @@
     .pdf-mode .content {
         width: 100%;
     }
+                                                                                   
 </style>
 </head>
 
