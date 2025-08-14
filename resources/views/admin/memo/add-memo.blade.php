@@ -120,6 +120,7 @@
                                                     }
                                                 });
                                             }).on('changed.jstree', function (e, data) {
+                                                document.getElementById('errorTujuan').style.display = 'none';
                                                 let sortOrder = ['div', 'dept', 'section', 'unit', 'user'];
                                                 let selectedNodes = data.instance.get_selected(true)
                                                     .sort((a, b) => {
@@ -152,6 +153,11 @@
                                                 style="font-size: small; padding-left: 15px; margin: 0;"></ul>
                                         </div>
                                     </div>
+                                    <div style="display: none;" id="errorTujuan" class="form-control text-danger">
+                                        <div style="font-size: small;">
+                                            Minimal pilih satu tujuan!
+                                        </div>
+                                    </div>
                                 </div>
                                 @error('tujuan[]')
                                     <div class="form-control text-danger">{{ $message }}</div>
@@ -164,7 +170,7 @@
                             <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span
                                     class="text-danger">*</span></label>
                             <select name="manager_user_id" oninvalid="this.setCustomValidity('Kolom ini wajib diisi.')"
-                                id="managerDropdown" class="form-control">
+                                oninput="this.setCustomValidity('')" id="managerDropdown" class="form-control">
                                 <option value="" disabled selected style="text-align: left;">--Pilih--</option>
                                 @foreach($managers as $manager)
                                     @php
@@ -282,11 +288,14 @@
             </div>
             <div id="jumlahKategoriDiv" class="card-body2" style="display: none;">
 
-                <div class="col-12">
-                    <label for="jumlahKategori" class="form-label">Jumlah Kategori Barang</label>
-                    <input type="number" id="jumlahKategori" name="jumlah_kolom" class="form-control"
-                        placeholder="Masukkan jumlah kategori barang yang ingin diinput" min="1" max="50"
-                        oninput="generateBarangFields();">
+                <div class="row mb-3">
+                    <div class="colom">
+                        <label for="jumlahKategori" class="form-label">Jumlah Kategori Barang</label>
+                        <input type="number" id="jumlahKategori" name="jumlah_kolom" class="form-control"
+                            placeholder="Masukkan jumlah kategori barang yang ingin diinput" min="1" max="50"
+                            oninput="generateBarangFields()"
+                            style="width: 100%; border-radius: 8px; border: 1px solid #CED4DA; box-shadow: none; font-size: 14px; padding: 8px 12px;">
+                    </div>
                 </div>
 
             </div>
@@ -376,7 +385,8 @@
             const selectedNodes = $('#org-tree').jstree('get_selected', true);
             const tujuan = selectedNodes;
             if (selectedNodes.length === 0) {
-                alert("Minimal pilih satu tujuan!");
+                document.getElementById('errorTujuan').style.display = 'block';
+                document.getElementById('errorTujuan').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 e.preventDefault();
                 return false;
             }
@@ -689,15 +699,15 @@
                         </div>
                         <div class="col-md-6">
                             <label for="barang_${i}">Barang</label>
-                            <input type="text" id="barang_${i}" name="barang[]" class="form-control" placeholder="Masukkan barang" required>
+                            <input type="text" id="barang_${i}" name="barang[]" class="form-control" placeholder="Masukkan barang" required oninvalid="this.setCustomValidity('Kolom ini wajib diisi.');" oninput="this.setCustomValidity('');">
                         </div>
                         <div class="col-md-6">
                             <label for="qty_${i}">Qty</label>
-                            <input type="number" id="qty_${i}" name="qty[]" class="form-control" placeholder="Masukkan jumlah" required>
+                            <input type="number" id="qty_${i}" name="qty[]" class="form-control" placeholder="Masukkan jumlah" required oninvalid="this.setCustomValidity('Kolom ini wajib diisi.');" oninput="this.setCustomValidity('');">
                         </div>
                         <div class="col-md-6">
                             <label for="satuan_${i}">Satuan</label>
-                            <input type="text" id="satuan_${i}" name="satuan[]" class="form-control" placeholder="Masukkan satuan" required>
+                            <input type="text" id="satuan_${i}" name="satuan[]" class="form-control" placeholder="Masukkan satuan" required oninvalid="this.setCustomValidity('Kolom ini wajib diisi.');" oninput="this.setCustomValidity('');">
                         </div>
                     `;
 
