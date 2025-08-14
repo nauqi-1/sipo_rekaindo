@@ -116,6 +116,19 @@ input[readonly] {
             </div>
 
             <div id="profileEdit">
+                @if ($errors->any())
+                    <div class="alert alert-danger d-flex align-items-center">
+                        <i class="fa-solid fa-xmark me-2" style="color: #ff0000; font-size: 20px;"></i>
+                        <div>
+                            <strong>Perhatian!</strong> Terdapat kesalahan input:
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                @endif
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Posisi</label>
@@ -157,6 +170,7 @@ input[readonly] {
                                     <i class="fa fa-eye-slash"></i>
                                 </span>
                             </div>
+                            <div class="invalid-feedback" id="passwordError" style="display: none;"></div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Konfirmasi Password</label>
@@ -166,6 +180,7 @@ input[readonly] {
                                     <i class="fa fa-eye-slash"></i>
                                 </span>
                             </div>
+                            <div class="invalid-feedback" id="passwordConfirmError" style="display: block;"></div>
                         </div>
                     </div>
                 </div>
@@ -211,7 +226,117 @@ input[readonly] {
     </div>
 </div>
 
+<div class="modal fade" id="successAddProfilModal" tabindex="-1" aria-labelledby="successModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <!-- Success Icon -->
+                <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3"
+                    style="width: 80px; height: 80px;">
+                <!-- Success Message -->
+                <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
+                <p class="mt-2">Berhasil Mengubah Profil</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="errorPasswordModal" tabindex="-1" aria-labelledby="errorModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4" style="border: 2px solid #dc3545; border-radius: 12px;">
+            <div class="modal-body">
+                <!-- Error Icon -->
+                <i class="fa-solid fa-xmark" style="color: #ff0000; font-size: 80px;"></i>
+                <!-- Error Message -->
+                <h5 class="modal-title text-danger" id="errorModalLabel"><b>Gagal</b></h5>
+                <p class="mt-2 text-dark" id="errorPasswordMessage">Terjadi kesalahan pada input password</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    const passwordInput = document.getElementById('password');
+    const passwordConfirmInput = document.getElementById('password_confirmation');
+    const passwordError = document.getElementById('passwordError');
+    const passwordConfirmError = document.getElementById('passwordConfirmError');
+
+    function validatePasswords() {
+    let valid = true;
+
+    // validasi password minimal 6 karakter jika ada isian
+    if (passwordInput.value.length > 0 && passwordInput.value.length < 6) {
+        passwordError.textContent = 'Password minimal 6 karakter.';
+        passwordInput.classList.add('is-invalid');
+        passwordError.style.display = 'block';
+        valid = false;
+    } else {
+        passwordError.textContent = '';
+        passwordInput.classList.remove('is-invalid');
+        passwordError.style.display = 'none';
+    }
+
+    // validasi konfirmasi password
+    if (passwordInput.value.length > 0 && passwordConfirmInput.value.length === 0) {
+        // password diisi, tapi konfirmasi kosong
+        passwordConfirmError.textContent = 'Field wajib diisi.';
+        passwordConfirmInput.classList.add('is-invalid');
+        passwordConfirmError.style.display = 'block';
+        valid = false;
+    } else if (passwordConfirmInput.value.length > 0) {
+        // konfirmasi diisi, cek sama atau tidak
+        if (passwordInput.value !== passwordConfirmInput.value) {
+        passwordConfirmError.textContent = 'Konfirmasi password tidak sama dengan password.';
+        passwordConfirmInput.classList.add('is-invalid');
+        passwordConfirmError.style.display = 'block';
+        valid = false;
+        } else {
+        passwordConfirmError.textContent = '';
+        passwordConfirmInput.classList.remove('is-invalid');
+        passwordConfirmError.style.display = 'none';
+        }
+    } else {
+        // password kosong dan konfirmasi kosong
+        passwordConfirmError.textContent = '';
+        passwordConfirmInput.classList.remove('is-invalid');
+        passwordConfirmError.style.display = 'none';
+    }
+
+    return valid;
+    }
+
+    passwordInput.addEventListener('input', validatePasswords);
+    passwordConfirmInput.addEventListener('input', validatePasswords);
+
+    const form = document.getElementById('formProfile');
+    form.addEventListener('submit', function(event) {
+        if (!validatePasswords()) {
+            event.preventDefault();
+            var errorModal = new bootstrap.Modal(document.getElementById("errorPasswordModal"));
+            errorModal.show();
+            setTimeout(function () {
+                errorModal.hide();
+            }, 1500);
+            if (passwordInput.classList.contains('is-invalid')) {
+                passwordInput.focus();
+            } else {
+                passwordConfirmInput.focus();
+            }
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+            @if(session('success') === 'Profil berhasil diperbarui.') // merujuk ke parameter controller risalah store
+                var successModal = new bootstrap.Modal(document.getElementById("successAddProfilModal"));
+                successModal.show();
+                setTimeout(function () {
+                    successModal.hide();
+                }, 1500);
+            @endif
+            });
+
     function enableEditProfile() {
         const inputs = document.querySelectorAll('.profile-input');
         inputs.forEach(input => input.removeAttribute('readonly'));
