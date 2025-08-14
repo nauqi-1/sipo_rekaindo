@@ -31,7 +31,8 @@
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="{{ route('manager.dashboard') }}">Beranda</a>/<a href="{{route('memo.terkirim')}}">Memo Keluar</a>/<a href="#" style="color: #565656;">Tambah Memo</a>
+                    <a href="{{ route('manager.dashboard') }}">Beranda</a>/<a href="{{route('memo.terkirim')}}">Memo
+                        Keluar</a>/<a href="#" style="color: #565656;">Tambah Memo</a>
                 </div>
             </div>
         </div>
@@ -47,31 +48,36 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label for="tgl_surat" class="form-label">
-                                <img src="/img/memo-admin/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
+                                <img src="/img/memo-admin/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat
+                                <span class="text-danger">*</span>
                             </label>
-                            <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ old('tgl_dibuat', \Carbon\Carbon::now()->format('Y-m-d')) }}">
+                            <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control"
+                                value="{{ old('tgl_dibuat', \Carbon\Carbon::now()->format('Y-m-d')) }}">
                             @error('tgl_dibuat')
-                            <div class="form-control text-danger">{{ $message }}</div>
+                                <div class="form-control text-danger">{{ $message }}</div>
                             @enderror
                             <input type="hidden" name="tgl_disahkan">
                             <input type="hidden" name="catatan">
                         </div>
                         <div class="col-md-6">
                             <label for="seri_surat" class="form-label">Seri Surat</label>
-                            <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $nomorSeriTahunan ?? '' }}" readonly>
+                            <input type="text" name="seri_surat" id="seri_surat" class="form-control"
+                                value="{{ $nomorSeriTahunan ?? '' }}" readonly>
                             <input type="hidden" name="pembuat" value="{{ auth()->user()->id }}">
                         </div>
                     </div>
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label for="nomor_memo" class="form-label">Nomor Surat</label>
-                            <input type="text" name="nomor_memo" id="nomor_memo" class="form-control" value="{{ $nomorDokumen }}" readonly>
+                            <input type="text" name="nomor_memo" id="nomor_memo" class="form-control"
+                                value="{{ $nomorDokumen }}" readonly>
                         </div>
                         <div class="col-md-6">
                             <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
-                            <input type="text" name="judul" id="judul" class="form-control" placeholder="Masukkan Perihal / Judul Surat" value="{{ old('judul') }}">
+                            <input type="text" name="judul" id="judul" class="form-control"
+                                placeholder="Masukkan Perihal / Judul Surat" value="{{ old('judul') }}">
                             @error('judul')
-                            <div class="form-control text-danger">{{ $message }}</div>
+                                <div class="form-control text-danger">{{ $message }}</div>
                             @enderror
                         </div>
 
@@ -81,8 +87,10 @@
                         <div class="d-flex justify-content-center">
                             <div style="width: 95%;">
                                 <label style="font-size: small;" for="kepada" class="form-label">
-                                    <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada <span class="text-danger">*</span>
-                                    <span class="text-danger" style="font-size: x-small;">Cukup pilih Divisi / Departemen / Bagian / Unit / Karyawan yang dituju.</span>
+                                    <img src="/img/undangan/kepada.png" alt="kepada" style="margin-right: 5px;">Kepada
+                                    <span class="text-danger">*</span>
+                                    <span class="text-danger" style="font-size: x-small;">Cukup pilih Divisi /
+                                        Departemen / Bagian / Unit / Karyawan yang dituju.</span>
                                 </label>
 
                                 <div id="orgTreeError" class="form-control text-danger" style="display:none;"></div>
@@ -92,7 +100,7 @@
                                         <div style=" font-size: small;" id="org-tree"></div>
                                     </div>
                                     <script>
-                                        $(function() {
+                                        $(function () {
                                             $('#org-tree').jstree({
                                                 'core': {
                                                     'data': @json(json_decode($jsTreeData))
@@ -102,26 +110,31 @@
                                                     'three_state': false,
                                                     'cascade': 'none'
                                                 }
-                                            }).on('ready.jstree', function(e, data) {
+                                            }).on('ready.jstree', function (e, data) {
                                                 // hide checkboxes for top-level nodes
-                                                $('#org-tree li').each(function() {
+                                                $('#org-tree li').each(function () {
                                                     var node = data.instance.get_node(this.id);
                                                     if (node && node.parent === "#") {
                                                         // hide checkbox using CSS
                                                         $(this).find('.jstree-checkbox').css('display', 'none');
                                                     }
                                                 });
-                                            }).on('changed.jstree', function(e, data) {
-                                                let selectedNodes = data.instance.get_selected(true)
-                                                    .map(node => node.text);
-
+                                            }).on('changed.jstree', function (e, data) {
+                                                document.getElementById('errorTujuan').style.display = 'none';
+                                                let selectedNodes = data.instance.get_selected(true);
+                                                // Sort by type order
+                                                let sortOrder = ['div', 'dept', 'section', 'unit', 'user'];
+                                                selectedNodes.sort((a, b) => {
+                                                    let aType = a.id.split('-')[0];
+                                                    let bType = b.id.split('-')[0];
+                                                    return sortOrder.indexOf(aType) - sortOrder.indexOf(bType);
+                                                });
                                                 let list = $('#selected-recipients');
                                                 let section = $('#selected-section');
                                                 list.empty();
-
                                                 if (selectedNodes.length) {
-                                                    selectedNodes.forEach(name => {
-                                                        list.append(`<li>${name}</li>`);
+                                                    selectedNodes.forEach(node => {
+                                                        list.append(`<li>${node.text}</li>`);
                                                     });
                                                     section.show();
                                                 } else {
@@ -136,41 +149,48 @@
                                             Tujuan Terpilih:
                                         </label>
                                         <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
-                                            <ul id="selected-recipients" style="font-size: small; padding-left: 15px; margin: 0;"></ul>
+                                            <ul id="selected-recipients"
+                                                style="font-size: small; padding-left: 15px; margin: 0;"></ul>
                                         </div>
+                                    </div>
+                                    <div style="display: none;" id="errorTujuan" class="form-control text-danger">
+                                        Minimal pilih satu tujuan!
                                     </div>
                                 </div>
                                 @error('tujuan[]')
-                                <div class="form-control text-danger">{{ $message }}</div>
+                                    <div class="form-control text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
+                            <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span
+                                    class="text-danger">*</span></label>
                             <select name="manager_user_id" required id="managerDropdown" class="form-control" disabled>
                                 <option value="">-- Pilih Penandatangan --</option>
                                 @foreach($managers as $manager)
-                                <option value="{{ $manager->id }}" {{ $manager->id == Auth::id() ? 'selected' : '' }}>
-                                    @php
-                                    if ($manager->position->id_position !== 1) {
-                                    preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
-                                    $kode_position = $matches[1] ?? $manager->position->nm_position;
-                                    } else {
-                                    $kode_position = $manager->position->nm_position;
-                                    }
-                                    @endphp
+                                    <option value="{{ $manager->id }}" {{ $manager->id == Auth::id() ? 'selected' : '' }}>
+                                        @php
+                                            if ($manager->position->id_position !== 1) {
+                                                preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
+                                                $kode_position = $matches[1] ?? $manager->position->nm_position;
+                                            } else {
+                                                $kode_position = $manager->position->nm_position;
+                                            }
+                                        @endphp
 
-                                    ({{ $kode_position }}) {{ $manager->firstname }} {{ $manager->lastname }}
+                                        ({{ $kode_position }}) {{ $manager->firstname }} {{ $manager->lastname }}
 
-                                </option>
+                                    </option>
                                 @endforeach
                             </select>
-                            <input type="hidden" name="manager_user_id" id="managerUserId" class="form-control" value="{{ Auth::user()->id }}">
+                            <input type="hidden" name="manager_user_id" id="managerUserId" class="form-control"
+                                value="{{ Auth::user()->id }}">
 
-                            <input type="hidden" name="nama_bertandatangan" id="namaBertandatangan" class="form-control" value="{{ Auth::user()->firstname }} {{ Auth::user()->lastname}}">
+                            <input type="hidden" name="nama_bertandatangan" id="namaBertandatangan" class="form-control"
+                                value="{{ Auth::user()->firstname }} {{ Auth::user()->lastname}}">
 
                             @error('nama_bertandatangan')
-                            <div class="form-control text-danger">{{ $message }}</div>
+                                <div class="form-control text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-6"></div>
@@ -180,12 +200,16 @@
                             <label for="lampiran" class="form-label">Lampiran</label>
                             <div class="separator"></div>
                             <div class="upload-wrapper">
-                                <button type="button" class="btn btn-primary upload-button" id="openUploadModal" style="margin-left: 30px;">Pilih File</button>
-                                <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                                <button type="button" class="btn btn-primary upload-button" id="openUploadModal"
+                                    style="margin-left: 30px;">Pilih File</button>
+                                <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png"
+                                    style="display: none;">
                                 <div id="filePreview" style="display: none; text-align: center">
-                                    <img id="previewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
+                                    <img id="previewIcon" src="" alt="Preview"
+                                        style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
                                     <span id="fileName"></span>
-                                    <button type="button" id="removeFile" class="bi bi-x remove-btn" style="border: none; color:red; background-color: white;"></button>
+                                    <button type="button" id="removeFile" class="bi bi-x remove-btn"
+                                        style="border: none; color:red; background-color: white;"></button>
                                 </div>
                             </div>
                         </div>
@@ -202,7 +226,7 @@
                         <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_memo" value="{{ old('isi_memo') }}"></textarea>
                             @error('isi_memo')
-                            <div class=" text-danger">{{ $message }}</div>
+                                <div class=" text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
@@ -215,18 +239,21 @@
                 </div>
                 <div class="row mb-4 need-row" style="width: 90.5%;">
                     <div class="col">
-                        <label for="need" class="need" style="font-size: 14px; color: #1E4178">Tambah Kategori Barang</label>
+                        <label for="need" class="need" style="font-size: 14px; color: #1E4178">Tambah Kategori
+                            Barang</label>
                     </div>
                     <div class="col">
                         <div class="cek d-flex" style="font-size: 14px;">
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="opsi" id="ya" value="ya" onclick="toggleKategoriBarang()" style="margin-right: 15px;"> Ya
+                                    <input type="radio" name="opsi" id="ya" value="ya" onclick="toggleKategoriBarang()"
+                                        style="margin-right: 15px;"> Ya
                                 </label>
                             </div>
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="opsi" id="tidak" value="tidak" onclick="toggleKategoriBarang()" style="margin-right: 15px;" checked> Tidak
+                                    <input type="radio" name="opsi" id="tidak" value="tidak"
+                                        onclick="toggleKategoriBarang()" style="margin-right: 15px;" checked> Tidak
                                 </label>
                             </div>
                         </div>
@@ -237,7 +264,9 @@
                     <div class="row mb-3">
                         <div class="colom">
                             <label for="jumlahKategori" class="form-label">Jumlah Kategori Barang</label>
-                            <input type="number" id="jumlahKategori" name="jumlah_kolom" class="form-control" placeholder="Masukkan jumlah kategori barang yang ingin diinput" min="1" oninput="generateBarangFields()">
+                            <input type="number" id="jumlahKategori" name="jumlah_kolom" class="form-control"
+                                placeholder="Masukkan jumlah kategori barang yang ingin diinput" min="1" max="50"
+                                oninput="generateBarangFields()">
                         </div>
                     </div>
                 </div>
@@ -245,7 +274,8 @@
 
                 <div class="card-footer">
                     <a href="{{route('memo.admin')}}" type="button" class="btn back" id="backBtn">Batal</a>
-                    <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Simpan</button>
+                    <button type="submit" class="btn submit" id="submitBtn" data-bs-toggle="modal"
+                        data-bs-target="#submit">Simpan</button>
                 </div>
 
                 <div id="tujuan-container"></div>
@@ -263,7 +293,9 @@
                     <!-- Success Message -->
                     <h5 class="modal-title"><b>Sukses</b></h5>
                     <p class="mt-2">Berhasil Mengirimkan Memo</p>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('memo.admin')}}" style="color: white; text-decoration: none">Kembali ke Halaman Memo</a></button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a
+                            href="{{route('memo.admin')}}" style="color: white; text-decoration: none">Kembali ke
+                            Halaman Memo</a></button>
                 </div>
             </div>
         </div>
@@ -275,7 +307,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="uploadModalLabel">
-                        <img src="/img/memo-superadmin/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
+                        <img src="/img/memo-superadmin/cloud-add.png" alt="Icon"
+                            style="width: 24px; margin-right: 10px;">
                         Unggah file
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -284,7 +317,8 @@
                     <p class="modal-subtitle">Pilih dan unggah file pilihan Anda</p>
                     <div class="upload-container">
                         <div class="upload-box" id="uploadBox">
-                            <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
+                            <img src="/img/memo-superadmin/cloud-add.png" alt="Cloud Icon"
+                                style="width: 40px; margin-bottom: 10px;">
                             <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
                             <p class="upload-note">Ukuran file PDF tidak lebih dari 2MB</p>
                             <div class="d-flex justify-content-center mt-2">
@@ -292,8 +326,10 @@
                             </div>
                             <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
                             <div id="fileInfo" style="display: none; text-align: center ">
-                                <div id="fileInfoWrapper" style="display: flex; align-items: center; justify-content: center">
-                                    <img id="modalPreviewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; margin-right: 5px; display: none;">
+                                <div id="fileInfoWrapper"
+                                    style="display: flex; align-items: center; justify-content: center">
+                                    <img id="modalPreviewIcon" src="" alt="Preview"
+                                        style="max-width: 18px; max-height: 18px; object-fit: contain; margin-right: 5px; display: none;">
                                     <span id="modalFileName"></span>
                                 </div>
                             </div>
@@ -311,29 +347,31 @@
     <script>
         let clickedNodeIds = [];
 
-        $('#addMemoForm').on('submit', function(e) {
+        $('#addMemoForm').on('submit', function (e) {
             // Clear existing tujuan[] inputs
             $('#tujuan-container').empty();
 
             // Get selected nodes
             const selectedNodes = $('#org-tree').jstree('get_selected', true);
-            const tujuan = selectedNodes;
-            //.filter(node => node.id.startsWith('user-')) // adjust prefix if needed
-            //.map(node => ({
-            //  id: parseInt(node.id.replace('user-', '')), // Extract user ID from node ID
-            //}));
             if (selectedNodes.length === 0) {
-                alert("Minimal pilih satu tujuan!");
+                document.getElementById('errorTujuan').style.display = 'block';
+                document.getElementById('errorTujuan').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 e.preventDefault();
                 return false;
             }
-
-            tujuan.forEach(node => {
-                const nodeId = node.id
+            // Sort selectedNodes by type order
+            let sortOrder = ['div', 'dept', 'section', 'unit', 'user'];
+            selectedNodes.sort((a, b) => {
+                let aType = a.id.split('-')[0];
+                let bType = b.id.split('-')[0];
+                return sortOrder.indexOf(aType) - sortOrder.indexOf(bType);
+            });
+            selectedNodes.forEach(node => {
+                const nodeId = node.id;
                 const nodeText = node.text;
                 $('#tujuan-container').append(
-                    `<input type="hidden" name="tujuan[]" value="${node.id}">` +
-                    `<input type="hidden" name="tujuanString[]" value="${node.text}">`
+                    `<input type="hidden" name="tujuan[]" value="${node.id}" required>` +
+                    `<input type="hidden" name="tujuanString[]" value="${node.text}" required>`
                 );
             });
 
@@ -343,18 +381,18 @@
             console.log("Submitting form with tujuan:", nodeId); // <--- debug
         });
 
-        $('#org-tree').on('select_node.jstree', function(e, data) {
+        $('#org-tree').on('select_node.jstree', function (e, data) {
             const id = data.node.id;
             // Only add if not already in the list
             if (!clickedNodeIds.includes(id)) {
                 clickedNodeIds.push(id);
             }
         });
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const dropdown = document.getElementById('managerDropdown');
             const hiddenInput = document.getElementById('namaBertandatangan');
 
-            dropdown.addEventListener('change', function() {
+            dropdown.addEventListener('change', function () {
                 const selectedOption = dropdown.options[dropdown.selectedIndex];
                 const name = selectedOption.getAttribute('data-name');
                 hiddenInput.value = name || '';
@@ -362,7 +400,7 @@
         });
 
         // Modal Upload File - Menampilkan Modal
-        document.getElementById('openUploadModal').addEventListener('click', function() {
+        document.getElementById('openUploadModal').addEventListener('click', function () {
             // Reset modal content before showing
             const fileInput = document.getElementById('fileInput');
             const uploadBtn = document.getElementById('uploadBtn');
@@ -397,23 +435,23 @@
             uploadModal.show();
         });
         // Membuka file input ketika tombol "Pilih File" di klik
-        document.getElementById('selectFileBtn').addEventListener('click', function() {
+        document.getElementById('selectFileBtn').addEventListener('click', function () {
             document.getElementById('fileInput').click();
         });
 
         // Menangani dragover event untuk upload box
-        document.getElementById('uploadBox').addEventListener('dragover', function(e) {
+        document.getElementById('uploadBox').addEventListener('dragover', function (e) {
             e.preventDefault();
             this.style.border = '2px dashed #007bff';
         });
 
         // Menangani dragleave event untuk upload box
-        document.getElementById('uploadBox').addEventListener('dragleave', function() {
+        document.getElementById('uploadBox').addEventListener('dragleave', function () {
             this.style.border = '2px dashed #ccc';
         });
 
         // Menangani drop event untuk upload box
-        document.getElementById('uploadBox').addEventListener('drop', function(e) {
+        document.getElementById('uploadBox').addEventListener('drop', function (e) {
             e.preventDefault();
             this.style.border = '2px dashed #ccc';
             document.getElementById('fileInput').files = e.dataTransfer.files;
@@ -423,9 +461,38 @@
             document.getElementById('fileInput').dispatchEvent(event);
         });
 
-        // Menangani pemilihan file melalui file input
-        document.getElementById('fileInput').addEventListener('change', function() {
+
+        // File input validator (PDF only, max 2MB, valid PDF header)
+        document.getElementById('fileInput').addEventListener('change', function () {
             const file = this.files[0];
+            if (!file) return;
+            const MAXSIZE = 2 * 1024 * 1024; // 2MB
+            if (file.size > MAXSIZE) {
+                alert('Ukuran file terlalu besar.');
+                document.getElementById('fileInput').value = '';
+                return;
+            }
+            // Read first 5 bytes to check for "%PDF-"
+            const reader = new FileReader();
+            reader.onloadend = function (e) {
+                const arr = new Uint8Array(e.target.result).subarray(0, 5);
+                let header = "";
+                for (let i = 0; i < arr.length; i++) {
+                    header += String.fromCharCode(arr[i]);
+                }
+                if (header === "%PDF-") {
+                    setupFileUI(file);
+                } else {
+                    alert('File ini bukan PDF yang valid.');
+                    document.getElementById('fileInput').value = '';
+                    return;
+                }
+            };
+            reader.readAsArrayBuffer(file.slice(0, 5));
+        });
+
+        // Menangani pemilihan file melalui file input
+        function setupFileUI(file) {
             const uploadBtn = document.getElementById('uploadBtn');
             const fileInfo = document.getElementById('fileInfo');
             const modalFileName = document.getElementById('modalFileName');
@@ -434,25 +501,18 @@
             const uploadNote = document.querySelector('.upload-note');
             const selectFileBtn = document.getElementById('selectFileBtn');
 
-            if (file) {
-                modalFileName.textContent = file.name;
-                fileInfo.style.display = 'block';
-                uploadBtn.disabled = false;
-                uploadText.style.display = 'none';
-                uploadNote.style.display = 'none';
-                selectFileBtn.style.display = 'none';
-
-                if (file.type.startsWith('image/')) {
-                    modalPreviewIcon.src = '/img/image.png'; // Ikon gambar
-                } else if (file.type === 'application/pdf') {
-                    modalPreviewIcon.src = '/img/pdf.png'; // Ikon PDF
-                }
-                modalPreviewIcon.style.display = 'block';
-            }
-        });
+            modalFileName.textContent = file.name;
+            fileInfo.style.display = 'block';
+            uploadBtn.disabled = false;
+            uploadText.style.display = 'none';
+            uploadNote.style.display = 'none';
+            selectFileBtn.style.display = 'none';
+            modalPreviewIcon.src = '/img/pdf.png';
+            modalPreviewIcon.style.display = 'block';
+        }
 
         // Meng-upload file setelah tombol "Unggah" di klik di modal
-        document.getElementById('uploadBtn').addEventListener('click', function() {
+        document.getElementById('uploadBtn').addEventListener('click', function () {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
             const lampiran = document.getElementById('lampiran');
@@ -485,14 +545,14 @@
         });
 
         // Menghapus file yang dipilih dan menyembunyikan preview
-        document.getElementById('removeFile').addEventListener('click', function() {
+        document.getElementById('removeFile').addEventListener('click', function () {
             document.getElementById('lampiran').value = '';
             document.getElementById('filePreview').style.display = 'none';
             document.getElementById('openUploadModal').style.display = 'block';
         });
 
         // Menangani pemilihan file di input lampiran
-        document.getElementById('lampiran').addEventListener('change', function() {
+        document.getElementById('lampiran').addEventListener('change', function () {
             const file = this.files[0];
             const filePreview = document.getElementById('filePreview');
             const fileName = document.getElementById('fileName');
@@ -514,7 +574,7 @@
             }
         });
 
-        document.getElementById('removeFile').addEventListener('click', function() {
+        document.getElementById('removeFile').addEventListener('click', function () {
             // Reset input field dan preview pada kolom input
             document.getElementById('lampiran').value = '';
             document.getElementById('filePreview').style.display = 'none';
@@ -544,8 +604,8 @@
         });
 
         // Raroh iki opo
-        $(document).ready(function() {
-            $('#dropdownMenuButton').on('change', function() {
+        $(document).ready(function () {
+            $('#dropdownMenuButton').on('change', function () {
                 // Saat opsi dipilih, teks akan ke kiri
                 $(this).css('text-align', 'left');
 
@@ -565,36 +625,65 @@
             }
         }
 
-        function toggleKategoriBarang() {
-            var yaRadio = document.getElementById("ya");
-            var jumlahKategoriDiv = document.getElementById("jumlahKategoriDiv");
-            var jumlahKategoriInput = document.getElementById("jumlahKategori");
-            var barangTable = document.getElementById("barangTable");
+        // Kategori Barang field min-max validator
+        window.addEventListener('DOMContentLoaded', function () {
+            var jumlahKategoriInput = document.getElementById('jumlahKategori');
+            let max = parseInt(jumlahKategoriInput.max, 10);
+            let min = parseInt(jumlahKategoriInput.min, 10);
+            jumlahKategoriInput.addEventListener('invalid', function () {
+                this.setCustomValidity('Kolom ini wajib diisi.');
+            });
+            jumlahKategoriInput.addEventListener('input', function () {
+                if (this.value !== '') {
+                    if (parseInt(this.value, 10) > max) {
+                        this.value = max;
+                    } else if (parseInt(this.value, 10) < min) {
+                        this.value = min;
+                    }
+                }
+                this.setCustomValidity('');
+            });
+        });
 
+        // Toggle Kategori Barang field and error
+        function toggleKategoriBarang() {
+            var yaRadio = document.getElementById('ya');
+            var jumlahKategoriDiv = document.getElementById('jumlahKategoriDiv');
+            var jumlahKategoriInput = document.getElementById('jumlahKategori');
+            var barangTable = document.getElementById('barangTable');
+            var errorKategoriBarang = document.getElementById('errorKategoriBarang');
             if (yaRadio.checked) {
-                jumlahKategoriDiv.style.display = "block";
+                jumlahKategoriDiv.style.display = 'block';
+                jumlahKategoriInput.required = true;
+                if (errorKategoriBarang) errorKategoriBarang.style.display = 'none';
             } else {
-                jumlahKategoriDiv.style.display = "none";
-                jumlahKategoriInput.value = "";
-                barangTable.innerHTML = "";
+                jumlahKategoriDiv.style.display = 'none';
+                jumlahKategoriInput.value = '';
+                barangTable.innerHTML = '';
+                jumlahKategoriInput.required = false;
+                jumlahKategoriInput.setCustomValidity('');
+                if (errorKategoriBarang) errorKategoriBarang.style.display = 'none';
             }
         }
 
+        // Generate Barang Fields with required attributes
         function generateBarangFields() {
-            const jumlahKategori = document.getElementById("jumlahKategori").value;
+            const jumlahKategoriInput = document.getElementById("jumlahKategori");
+            let jumlahKategori = parseInt(jumlahKategoriInput.value, 10) || 0;
+            let max = parseInt(jumlahKategoriInput.max, 10) || 20;
+            if (jumlahKategori > max) {
+                jumlahKategori = max;
+                jumlahKategoriInput.value = max;
+            }
             const barangTable = document.getElementById("barangTable");
-            barangTable.innerHTML = ""; // Hapus isi sebelumnya
-
+            barangTable.innerHTML = "";
             if (jumlahKategori > 0) {
                 for (let i = 0; i < jumlahKategori; i++) {
-                    // Buat row baru untuk setiap kolom
                     const row = document.createElement('div');
                     row.classList.add('row', 'mb-3');
                     row.style.display = 'flex';
                     row.style.gap = '10px';
                     row.style.margin = '10px 47px';
-
-                    // Template untuk input field
                     row.innerHTML = `
                         <div class="col-md-6">
                             <label for="nomor_${i}">Nomor</label>
@@ -603,31 +692,29 @@
                         </div>
                         <div class="col-md-6">
                             <label for="barang_${i}">Barang</label>
-                            <input type="text" id="barang_${i}" name="barang[]" class="form-control" placeholder="Masukkan barang">
+                            <input type="text" id="barang_${i}" name="barang[]" class="form-control" placeholder="Masukkan barang" required>
                         </div>
                         <div class="col-md-6">
                             <label for="qty_${i}">Qty</label>
-                            <input type="number" id="qty_${i}" name="qty[]" class="form-control" placeholder="Masukkan jumlah">
+                            <input type="number" id="qty_${i}" name="qty[]" class="form-control" placeholder="Masukkan jumlah" required>
                         </div>
                         <div class="col-md-6">
                             <label for="satuan_${i}">Satuan</label>
-                            <input type="text" id="satuan_${i}" name="satuan[]" class="form-control" placeholder="Masukkan satuan">
+                            <input type="text" id="satuan_${i}" name="satuan[]" class="form-control" placeholder="Masukkan satuan" required>
                         </div>
                     `;
-
-                    // Tambahkan row ke dalam barangTable
                     barangTable.appendChild(row);
                 }
             }
         }
     </script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#summernote').summernote({
                 height: 300,
                 toolbar: [
                     //['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'clear', ]],
+                    ['font', ['bold', 'italic', 'underline', 'clear',]],
                     ['para', ['ul', 'ol', 'paragraph']],
                     //['insert', ['link', 'picture', 'video']],
                     //['view', ['fullscreen', 'codeview', 'help']],

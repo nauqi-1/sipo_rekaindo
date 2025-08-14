@@ -1480,7 +1480,7 @@ class MemoController extends Controller
 
         return redirect()->route('memo.' . Auth::user()->role->nm_role)->with('success', 'User updated successfully');
     }
-    //PENGHAPUSAN SEMENTARA
+    //HAPUS SEMENTARA
     public function delete($id)
     {
         $memo = Memo::findOrFail($id);
