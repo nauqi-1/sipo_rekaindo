@@ -1476,9 +1476,7 @@ class MemoController extends Controller
                 }
             }
         }
-
-
-        return redirect()->route('memo.' . Auth::user()->role->nm_role)->with('success', 'User updated successfully');
+        return redirect()->route('memo.' . Auth::user()->role->nm_role)->with('success', 'Memo updated successfully');
     }
     //HAPUS SEMENTARA
     public function delete($id)

@@ -304,7 +304,7 @@
 
     // Event listener untuk modal sukses edit memo
     document.addEventListener("DOMContentLoaded", function() {
-        @if(session('success') === 'User updated successfully') // merujuk ke parameter controller memo update
+        @if(session('success') === 'Memo updated successfully') // merujuk ke parameter controller memo update
         var successModal = new bootstrap.Modal(document.getElementById("successEditMemoModal"));
         successModal.show();
         setTimeout(function() {

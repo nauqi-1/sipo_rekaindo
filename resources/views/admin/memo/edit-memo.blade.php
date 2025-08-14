@@ -125,22 +125,27 @@
                                                             }
                                                         });
                                                     }).on('changed.jstree', function (e, data) {
-                                                        document.getElementById('errorTujuan').style.display = 'none';
-                                                        let selectedNodes = data.instance.get_selected(true)
-                                                            .map(node => node.text);
+                                                         document.getElementById('errorTujuan').style.display = 'none';
+                                                let sortOrder = ['div', 'dept', 'section', 'unit', 'user'];
+                                                let selectedNodes = data.instance.get_selected(true)
+                                                    .sort((a, b) => {
+                                                        let aType = a.id.split('-')[0]; // prefix before "-"
+                                                        let bType = b.id.split('-')[0];
+                                                        return sortOrder.indexOf(aType) - sortOrder.indexOf(bType);
+                                                    });
 
-                                                        let list = $('#selected-recipients');
-                                                        let section = $('#selected-section');
-                                                        list.empty();
+                                                let list = $('#selected-recipients');
+                                                let section = $('#selected-section');
+                                                list.empty();
 
-                                                        if (selectedNodes.length) {
-                                                            selectedNodes.forEach(name => {
-                                                                list.append(`<li>${name}</li>`);
-                                                            });
-                                                            section.show();
-                                                        } else {
-                                                            section.hide();
-                                                        }
+                                                if (selectedNodes.length) {
+                                                    selectedNodes.forEach(node => {
+                                                        list.append(`<li>${node.text}</li>`);
+                                                    });
+                                                    section.show();
+                                                } else {
+                                                    section.hide();
+                                                }
                                                     });
 
                                                     $('#org-tree').on('ready.jstree', function () {
@@ -272,8 +277,7 @@
                             @endforeach
                         </div>
                         <div class="card-footer">
-                            <button type="button" class="btn btn-cancel"><a
-                                    href="{{route('memo.admin')}}">Batal</a></button>
+                            <a class="btn btn-cancel" href="{{route('memo.admin')}}">Batal</a>
                             <button type="submit" class="btn btn-save">Simpan</button>
                         </div>
                         <div id="tujuan-container"></div>
@@ -317,27 +321,31 @@
 
     <script>
         $('#editMemoForm').on('submit', function (e) {
+            // Clear existing tujuan[] inputs
+            $('#tujuan-container').empty();
 
             // Get selected nodes
             const selectedNodes = $('#org-tree').jstree('get_selected', true);
-            const tujuan = selectedNodes;
-            console.log(tujuan);
-            // Append hidden inputs
-            tujuan.forEach(node => {
-                const nodeId = node.id
-                const nodeText = node.text;
-                $('#tujuan-container').append(
-                    `<input type="hidden" name="tujuan[]" value="${node.id}">` +
-                    `<input type="hidden" name="tujuanString[]" value="${node.text}">`
-                );
-            });
             if (selectedNodes.length === 0) {
                 document.getElementById('errorTujuan').style.display = 'block';
                 document.getElementById('errorTujuan').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 e.preventDefault();
                 return false;
             }
-            console.log("Submitting form with tujuan:", tujuan); // <--- debug
+            // Sort selected nodes by type order
+            let sortOrder = ['div', 'dept', 'section', 'unit', 'user'];
+            selectedNodes.sort((a, b) => {
+                let aType = a.id.split('-')[0];
+                let bType = b.id.split('-')[0];
+                return sortOrder.indexOf(aType) - sortOrder.indexOf(bType);
+            });
+            selectedNodes.forEach(node => {
+                $('#tujuan-container').append(
+                    `<input type="hidden" name="tujuan[]" value="${node.id}">` +
+                    `<input type="hidden" name="tujuanString[]" value="${node.text}">`
+                );
+            });
+            console.log("Submitting form with tujuan:", selectedNodes.map(n => n.id)); // <--- debug
         });
         $(document).ready(function () {
             $('#dropdownMenuButton').on('change', function () {

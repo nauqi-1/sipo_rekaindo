@@ -378,6 +378,14 @@
         let clickedNodeIds = [];
 
         $('#addMemoForm').on('submit', function (e) {
+
+            const submitBtn = $(this).find('button[type="submit"]');
+
+            // Disable the button and add spinner
+            submitBtn.prop('disabled', true).html(
+                `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`
+            );
+
             // Clear existing tujuan[] inputs
             $('#tujuan-container').empty();
 
@@ -388,6 +396,7 @@
                 document.getElementById('errorTujuan').style.display = 'block';
                 document.getElementById('errorTujuan').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 e.preventDefault();
+                submitBtn.prop('disabled', false).text('Simpan');
                 return false;
             }
             let sortOrder = ['div', 'dept', 'section', 'unit', 'user'];
