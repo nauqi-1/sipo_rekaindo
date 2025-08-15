@@ -200,6 +200,23 @@
         {{ $undangans->appends(request()->query())->links('pagination::bootstrap-5') }}
     </div>
 
+    <!-- Overlay Add Undangan Success -->
+    <div class="modal fade" id="successAddUndanganModal" tabindex="-1" aria-labelledby="successModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <!-- Success Icon -->
+                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3"
+                        style="width: 80px; height: 80px;">
+                    <!-- Success Message -->
+                    <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
+                    <p class="mt-2">Berhasil Menambahkan Undangan</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Arsip -->
     <div class="modal fade" id="arsipUndanganModal" tabindex="-1" aria-labelledby="arsipUndanganModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -234,6 +251,17 @@
     </form>
 
     <script>
+         // Event listener untuk modal sukses tambah undangan
+        document.addEventListener("DOMContentLoaded", function() {
+            @if (session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller undangan store
+                var successModal = new bootstrap.Modal(document.getElementById("successAddUndanganModal"));
+                successModal.show();
+                setTimeout(function() {
+                    successModal.hide();
+                }, 1500);
+            @endif
+        });
+
         document.addEventListener("DOMContentLoaded", function() {
             console.log("Initializing arsip functionality");
 
