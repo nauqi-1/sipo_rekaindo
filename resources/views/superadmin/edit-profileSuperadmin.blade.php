@@ -5,92 +5,112 @@
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-body {
-    background-color: #f8f9fc;
-    font-family: 'Segoe UI', sans-serif;
-}
-.card {
-    border: none;
-    background-color: #fff;
-}
-h4.fw-semibold {
-    font-weight: 600;
-}
-.form-label {
-    font-weight: 500;
-    color: #6c757d;
-    font-size: 0.875rem;
-}
-input.form-control {
-    font-size: 0.9rem;
-    padding: 0.6rem 0.75rem;
-    border-radius: 0.65rem;
-}
-input.form-control:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
-}
-input[readonly] {
-    background-color: #f1f1f1;
-    color: #888;
-}
-#profileImagePreview {
-    transition: 0.3s ease;
-}
-#profileImagePreview:hover {
-    opacity: 0.8;
-    transform: scale(1.02);
-}
-#photoOverlay,
-#confirmOverlay {
-    backdrop-filter: blur(3px);
-    z-index: 1050;
-}
-.btn {
-    border-radius: 2rem;
-    font-size: 0.875rem;
-}
-.btn-warning {
-    background-color: #fbbf24;
-    border-color: #fbbf24;
-    color: #000;
-}
-.btn-warning:hover {
-    background-color: #f59e0b;
-    border-color: #f59e0b;
-}
-.btn-primary {
-    background-color: #3b82f6;
-    border-color: #3b82f6;
-}
-.btn-primary:hover {
-    background-color: #2563eb;
-    border-color: #2563eb;
-}
-.input-group-text {
-    background-color: #f3f4f6;
-    border: 1px solid #ced4da;
-    padding: 0.55rem 0.75rem;
-    border-radius: 0.65rem;
-}
-.rounded-circle.shadow {
-    border: 3px solid #e2e8f0;
-}
-.w-45 {
-    width: 45%;
-}
-@media (max-width: 768px) {
+    body {
+        background-color: #f8f9fc;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
     .card {
-        padding: 1.5rem;
+        border: none;
+        background-color: #fff;
     }
+
+    h4.fw-semibold {
+        font-weight: 600;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+
+    input.form-control {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.75rem;
+        border-radius: 0.65rem;
+    }
+
+    input.form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+    }
+
+    input[readonly] {
+        background-color: #f1f1f1;
+        color: #888;
+    }
+
+    #profileImagePreview {
+        transition: 0.3s ease;
+    }
+
+    #profileImagePreview:hover {
+        opacity: 0.8;
+        transform: scale(1.02);
+    }
+
+    #photoOverlay,
+    #confirmOverlay {
+        backdrop-filter: blur(3px);
+        z-index: 1050;
+    }
+
     .btn {
-        width: 100%;
-        margin-bottom: 0.5rem;
+        border-radius: 2rem;
+        font-size: 0.875rem;
     }
-    #editButtons {
-        text-align: center;
+
+    .btn-warning {
+        background-color: #fbbf24;
+        border-color: #fbbf24;
+        color: #000;
     }
-}
+
+    .btn-warning:hover {
+        background-color: #f59e0b;
+        border-color: #f59e0b;
+    }
+
+    .btn-primary {
+        background-color: #3b82f6;
+        border-color: #3b82f6;
+    }
+
+    .btn-primary:hover {
+        background-color: #2563eb;
+        border-color: #2563eb;
+    }
+
+    .input-group-text {
+        background-color: #f3f4f6;
+        border: 1px solid #ced4da;
+        padding: 0.55rem 0.75rem;
+        border-radius: 0.65rem;
+    }
+
+    .rounded-circle.shadow {
+        border: 3px solid #e2e8f0;
+    }
+
+    .w-45 {
+        width: 45%;
+    }
+
+    @media (max-width: 768px) {
+        .card {
+            padding: 1.5rem;
+        }
+
+        .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        #editButtons {
+            text-align: center;
+        }
+    }
 </style>
 
 <div class="container mt-4">
@@ -106,9 +126,9 @@ input[readonly] {
             <div class="text-center mb-4">
                 <div class="position-relative d-inline-block" onclick="openOverlay()" style="cursor:pointer;">
                     @if(Auth::user()->profile_image)
-                        <img id="profileImagePreview" src="data:image/jpeg;base64,{{ Auth::user()->profile_image }}" alt="Foto Profil" class="rounded-circle shadow" style="width: 130px; height: 130px; object-fit: cover;">
+                    <img id="profileImagePreview" src="data:image/jpeg;base64,{{ Auth::user()->profile_image }}" alt="Foto Profil" class="rounded-circle shadow" style="width: 130px; height: 130px; object-fit: cover;">
                     @else
-                        <img id="profileImagePreview" src="../assets/images/user/default1.png" alt="No Profile" class="rounded-circle shadow" style="width: 130px; height: 130px; object-fit: cover;">
+                    <img id="profileImagePreview" src="../assets/images/user/default1.png" alt="No Profile" class="rounded-circle shadow" style="width: 130px; height: 130px; object-fit: cover;">
                     @endif
                 </div>
                 <h6 class="mt-3 fw-bold">{{ Auth::user()->username }}</h6>
@@ -117,17 +137,17 @@ input[readonly] {
 
             <div id="profileEdit">
                 @if ($errors->any())
-                    <div class="alert alert-danger d-flex align-items-center">
-                        <i class="fa-solid fa-xmark me-2" style="color: #ff0000; font-size: 20px;"></i>
-                        <div>
-                            <strong>Perhatian!</strong> Terdapat kesalahan input:
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                <div class="alert alert-danger d-flex align-items-center">
+                    <i class="fa-solid fa-xmark me-2" style="color: #ff0000; font-size: 20px;"></i>
+                    <div>
+                        <strong>Perhatian!</strong> Terdapat kesalahan input:
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
+                </div>
                 @endif
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -195,7 +215,7 @@ input[readonly] {
 
 {{-- Overlay Edit Foto --}}
 <div id="photoOverlay" class="position-fixed top-0 start-0 w-100 h-100 d-none justify-content-center align-items-center"
-     style="background: rgba(0,0,0,0.6); z-index: 1050;">
+    style="background: rgba(0,0,0,0.6); z-index: 1050;">
     <div class="bg-white p-4 rounded-4 text-center shadow position-relative" style="width: 300px;">
         <button onclick="closeOverlay()" class="btn-close position-absolute top-0 end-0 m-2"></button>
         <h5 class="mb-3">Ubah Foto Profil</h5>
@@ -215,7 +235,7 @@ input[readonly] {
 
 {{-- Overlay Konfirmasi Foto Baru --}}
 <div id="confirmOverlay" class="position-fixed top-0 start-0 w-100 h-100 d-none justify-content-center align-items-center"
-     style="background: rgba(0,0,0,0.6); z-index: 1051;">
+    style="background: rgba(0,0,0,0.6); z-index: 1051;">
     <div class="bg-white p-4 rounded-4 text-center shadow position-relative" style="width: 300px;">
         <h5 class="mb-3">Gunakan foto ini?</h5>
         <img id="newImagePreview" src="" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
@@ -264,47 +284,47 @@ input[readonly] {
     const passwordConfirmError = document.getElementById('passwordConfirmError');
 
     function validatePasswords() {
-    let valid = true;
+        let valid = true;
 
-    // validasi password minimal 6 karakter jika ada isian
-    if (passwordInput.value.length > 0 && passwordInput.value.length < 6) {
-        passwordError.textContent = 'Password minimal 6 karakter.';
-        passwordInput.classList.add('is-invalid');
-        passwordError.style.display = 'block';
-        valid = false;
-    } else {
-        passwordError.textContent = '';
-        passwordInput.classList.remove('is-invalid');
-        passwordError.style.display = 'none';
-    }
-
-    // validasi konfirmasi password
-    if (passwordInput.value.length > 0 && passwordConfirmInput.value.length === 0) {
-        // password diisi, tapi konfirmasi kosong
-        passwordConfirmError.textContent = 'Field wajib diisi.';
-        passwordConfirmInput.classList.add('is-invalid');
-        passwordConfirmError.style.display = 'block';
-        valid = false;
-    } else if (passwordConfirmInput.value.length > 0) {
-        // konfirmasi diisi, cek sama atau tidak
-        if (passwordInput.value !== passwordConfirmInput.value) {
-        passwordConfirmError.textContent = 'Konfirmasi password tidak sama dengan password.';
-        passwordConfirmInput.classList.add('is-invalid');
-        passwordConfirmError.style.display = 'block';
-        valid = false;
+        // validasi password minimal 6 karakter jika ada isian
+        if (passwordInput.value.length > 0 && passwordInput.value.length < 6) {
+            passwordError.textContent = 'Password minimal 6 karakter.';
+            passwordInput.classList.add('is-invalid');
+            passwordError.style.display = 'block';
+            valid = false;
         } else {
-        passwordConfirmError.textContent = '';
-        passwordConfirmInput.classList.remove('is-invalid');
-        passwordConfirmError.style.display = 'none';
+            passwordError.textContent = '';
+            passwordInput.classList.remove('is-invalid');
+            passwordError.style.display = 'none';
         }
-    } else {
-        // password kosong dan konfirmasi kosong
-        passwordConfirmError.textContent = '';
-        passwordConfirmInput.classList.remove('is-invalid');
-        passwordConfirmError.style.display = 'none';
-    }
 
-    return valid;
+        // validasi konfirmasi password
+        if (passwordInput.value.length > 0 && passwordConfirmInput.value.length === 0) {
+            // password diisi, tapi konfirmasi kosong
+            passwordConfirmError.textContent = 'Field wajib diisi.';
+            passwordConfirmInput.classList.add('is-invalid');
+            passwordConfirmError.style.display = 'block';
+            valid = false;
+        } else if (passwordConfirmInput.value.length > 0) {
+            // konfirmasi diisi, cek sama atau tidak
+            if (passwordInput.value !== passwordConfirmInput.value) {
+                passwordConfirmError.textContent = 'Konfirmasi password tidak sama dengan password.';
+                passwordConfirmInput.classList.add('is-invalid');
+                passwordConfirmError.style.display = 'block';
+                valid = false;
+            } else {
+                passwordConfirmError.textContent = '';
+                passwordConfirmInput.classList.remove('is-invalid');
+                passwordConfirmError.style.display = 'none';
+            }
+        } else {
+            // password kosong dan konfirmasi kosong
+            passwordConfirmError.textContent = '';
+            passwordConfirmInput.classList.remove('is-invalid');
+            passwordConfirmError.style.display = 'none';
+        }
+
+        return valid;
     }
 
     passwordInput.addEventListener('input', validatePasswords);
@@ -316,7 +336,7 @@ input[readonly] {
             event.preventDefault();
             var errorModal = new bootstrap.Modal(document.getElementById("errorPasswordModal"));
             errorModal.show();
-            setTimeout(function () {
+            setTimeout(function() {
                 errorModal.hide();
             }, 1500);
             if (passwordInput.classList.contains('is-invalid')) {
@@ -327,20 +347,20 @@ input[readonly] {
         }
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
-            @if(session('success') === 'Profil berhasil diperbarui.') // merujuk ke parameter controller risalah store
-                var successModal = new bootstrap.Modal(document.getElementById("successAddProfilModal"));
-                successModal.show();
-                setTimeout(function () {
-                    successModal.hide();
-                }, 1500);
-            @endif
-            });
+    document.addEventListener("DOMContentLoaded", function() {
+        @if(session('success') === 'Profil berhasil diperbarui.') // merujuk ke parameter controller risalah store
+        var successModal = new bootstrap.Modal(document.getElementById("successAddProfilModal"));
+        successModal.show();
+        setTimeout(function() {
+            successModal.hide();
+        }, 1500);
+        @endif
+    });
 
     function enableEditProfile() {
         const inputs = document.querySelectorAll('.profile-input');
         inputs.forEach(input => input.removeAttribute('readonly'));
-        
+
         document.getElementById('editButtons').style.display = 'block';
         document.getElementById('passwordFields').style.display = 'block';
     }
@@ -405,7 +425,7 @@ input[readonly] {
         document.getElementById('confirmOverlay').style.display = 'none';
     }
 
-    document.getElementById('photoOverlay').addEventListener('click', function (e) {
+    document.getElementById('photoOverlay').addEventListener('click', function(e) {
         if (e.target === this) closeOverlay();
     });
 </script>
