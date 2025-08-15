@@ -1358,7 +1358,7 @@ class MemoController extends Controller
 
 
 
-        return redirect()->route('memo.terkirim')->with('success', 'Status memo berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Status memo berhasil diperbarui.');
     }
 
     public function edit($id)
