@@ -324,7 +324,7 @@
                     <div style="clear: both;"></div>
 
                 </div>
-                @endif  
+                @endif
             </div>
         </div>
     </main>
