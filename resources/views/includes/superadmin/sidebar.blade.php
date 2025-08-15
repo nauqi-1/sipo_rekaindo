@@ -65,7 +65,7 @@
         </li>
         @endif
 
-        @if(Auth::user()->role->nm_role != 'manager')
+        {{-- @if(Auth::user()->role->nm_role != 'manager') --}}
         <li class="pc-item pc-hasmenu">
           <a href="#!" class="pc-link"
             ><span class="pc-micon"><img src="/assets/images/ikon5.png" alt="" srcset=""></span><span class="pc-mtext">Arsip</span
@@ -77,7 +77,7 @@
             <li class="pc-item pc-hasmenu"><a href="{{ route('arsip.risalah' ) }}" class="pc-link">Risalah Rapat</span></a></li>
           </ul>
         </li>
-        @endif
+        {{-- @endif --}}
         @if(Auth::user()->role->nm_role == 'superadmin' || Auth::user()->role->nm_role == 'admin')
         <li class="pc-item pc-hasmenu">
           <a href="#!" class="pc-link"

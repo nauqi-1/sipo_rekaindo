@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,306 +15,352 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/admin/edit-memo.css') }}">
 </head>
+
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('undangan.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{ route('undangan.admin') }}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Edit Undangan Rapat</h1>
-        </div>        
+        </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="#">Undangan Rapat</a>/<a href="#" style="color: #565656;">Edit Undangan Rapat</a>
+                    <a href="#">Beranda</a>/<a href="#">Undangan Rapat</a>/<a href="#"
+                        style="color: #565656;">Edit Undangan Rapat</a>
                 </div>
             </div>
         </div>
 
         <!-- form edit undangan -->
-        <form method="POST"  id="addUndanganForm" action="{{ route('undangan/update', $undangan->id_undangan) }}" onsubmit="console.log('FORM DIKIRIM'); return true;">
-        @csrf
-        @method('PUT')
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title" style="font-size: 18px;"><b>Formulir Edit Undangan Rapat</b></h5>
-            </div>
-            <div class="card-body">
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="tgl_dibuat" class="form-label">
-                            <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat <span class="text-danger">*</span>
-                        </label>
-                        <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ old('tgl_dibuat',$undangan->tgl_dibuat->format('Y-m-d')) }}"  disabled>
-                        <input type="hidden" name="tgl_dibuat" value="{{ $undangan->tgl_dibuat->format('Y-m-d') }}">
-                        <input type="hidden" name="tgl_disahkan" >
-                        
-                    </div>
-                    <div class="col-md-6">
-                        <label for="seri_surat" class="form-label">Seri Surat</label>
-                        <input type="text" name="seri_surat" id="seri_surat" class="form-control" value="{{ $undangan->seri_surat }}" required readonly>
-                    </div>
+        <form method="POST" id="addUndanganForm" action="{{ route('undangan/update', $undangan->id_undangan) }}"
+            onsubmit="console.log('FORM DIKIRIM'); return true;">
+            @csrf
+            @method('PUT')
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title" style="font-size: 18px;"><b>Formulir Edit Undangan Rapat</b></h5>
                 </div>
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="nomor_undangan" class="form-label">Nomor Surat</label>
-                        <input type="text" name="nomor_undangan" id="nomor_undangan" class="form-control" value="{{ $undangan->nomor_undangan }}" required readonly>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="tgl_dibuat" class="form-label">
+                                <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal
+                                Surat <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control"
+                                value="{{ old('tgl_dibuat', $undangan->tgl_dibuat->format('Y-m-d')) }}" disabled>
+                            <input type="hidden" name="tgl_dibuat"
+                                value="{{ $undangan->tgl_dibuat->format('Y-m-d') }}">
+                            <input type="hidden" name="tgl_disahkan">
+
+                        </div>
+                        <div class="col-md-6">
+                            <label for="seri_surat" class="form-label">Seri Surat</label>
+                            <input type="text" name="seri_surat" id="seri_surat" class="form-control"
+                                value="{{ $undangan->seri_surat }}" required readonly>
+                        </div>
                     </div>
-                    <div class="col-md-6" >
-                        <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
-                        <input type="text" name="judul" id="judul" class="form-control" value="{{ $undangan->judul }}" required>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="nomor_undangan" class="form-label">Nomor Surat</label>
+                            <input type="text" name="nomor_undangan" id="nomor_undangan" class="form-control"
+                                value="{{ $undangan->nomor_undangan }}" required readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
+                            <input type="text" name="judul" id="judul" class="form-control"
+                                value="{{ $undangan->judul }}">
+                            @error('judul')
+                                <div class="form-control text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
-                </div>
-                <!--Checkboxes kepada (tujuan)-->
-               <div class="row mb-4">
-    <div class="col-md-12 d-flex justify-content-center">
-        <div style="width: 95%">
-            <label for="kepada" class="form-label">
-                <img src="/img/undangan/kepada.png" alt="kepada" class="form-label"
-                    style="margin-right: 5px; color: #1f4178;">Kepada <span class="text-danger">*</span>
-                <span class="label-kepada">Pilih user atau struktur, semua user di bawah
-                    struktur akan otomatis terpilih</span>
-            </label>
-            <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto; font">
-                <div style="font-size: small" class="form-label" id="org-tree"></div>
-                <style>
-                    #org-tree .jstree-anchor {
-                        color: #1f4178;
-                        font-weight: 500;
-                    }
-                </style>
-            </div>
-        </div>
-        <script>
-            $(function () {
-                const selectedTujuan = @json($tujuanArray);
+                    <!--Checkboxes kepada (tujuan)-->
+                    <div class="row mb-4">
+                        <div class="col-md-12 d-flex justify-content-center">
+                            <div style="width: 95%">
+                                <label for="kepada" class="form-label">
+                                    <img src="/img/undangan/kepada.png" alt="kepada" class="form-label"
+                                        style="margin-right: 5px; color: #1f4178;">Kepada <span
+                                        class="text-danger">*</span>
+                                    <span class="label-kepada">Pilih user atau struktur, semua user di bawah
+                                        struktur akan otomatis terpilih</span>
+                                </label>
+                                <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto; font">
+                                    <div style="font-size: small" class="form-label" id="org-tree"></div>
+                                    <style>
+                                        #org-tree .jstree-anchor {
+                                            color: #1f4178;
+                                            font-weight: 500;
+                                        }
+                                    </style>
+                                    <small id="tujuanError" class="text-danger" style="display:none;">Minimal pilih
+                                        satu tujuan!</small>
+                                </div>
+                            </div>
+                            <script>
+                                $(function() {
+                                    const selectedTujuan = @json($tujuanArray);
 
-                $('#org-tree').jstree({
-                    'core': {
-                        'data': @json($jsTreeData)
-                    },
-                    'plugins': ['checkbox', 'search']
-                }).on('ready.jstree', function (e, data) {
-                    // Check the saved user checkboxes
-                    selectedTujuan.forEach(id => {
-                        $('#org-tree').jstree('check_node', '#user-' + id);
-                    });
-                    
-                    // Initial display of selected recipients
-                    let selectedNodes = data.instance.get_selected(true)
-                        .filter(node => node.icon && node.icon === 'fa fa-user')
-                        .map(node => node.text);
-                    
-                    // Sort selectedNodes by position hierarchy
-                    selectedNodes.sort(function(a, b) {
-                        const positionOrder = {
-                            'Direktur': 1,
-                            'GM': 2, 'General Manager': 2,
-                            'SM': 3, 'Senior Manager': 3,
-                            'M': 4, 'Manager': 4,
-                            'PJ SM': 5, 'Penanggung Jawab Senior Manager': 5,
-                            'PJ M': 6, 'Penanggung Jawab Manager': 6,
-                            'SPV': 7, 'Supervisor': 7,
-                            'PJ SPV': 8, 'Penanggung Jawab Supervisor': 8,
-                            'Staff': 9
-                        };
-                        
-                        const getPositionPriority = function(text) {
-                            for (let pos in positionOrder) {
-                                if (text.startsWith(pos)) {
-                                    return positionOrder[pos];
-                                }
-                            }
-                            return 999;
-                        };
-                        
-                        return getPositionPriority(a) - getPositionPriority(b);
-                    });
-                    
-                    // Display initial selected recipients
-                    let list = $('#selected-recipients');
-                    let section = $('#selected-section');
-                    list.empty();
-                    
-                    if (selectedNodes.length) {
-                        selectedNodes.forEach(name => {
-                            list.append(`<li>${name}</li>`);
-                        });
-                        section.show();
-                    }
-                    
-                    // Auto expand nodes that have selected users
-                    data.instance.get_selected(true).forEach(function(node) {
-                        // Open parent nodes of selected users
-                        let parentId = data.instance.get_parent(node.id);
-                        while (parentId && parentId !== '#') {
-                            data.instance.open_node(parentId);
-                            parentId = data.instance.get_parent(parentId);
-                        }
-                    });
-                }).on('changed.jstree', function(e, data) {
-                    let allSelectedNodes = data.instance.get_selected(true);
-                    let selectedNodes = [];
-                    
-                    allSelectedNodes.forEach(function(node) {
-                        // Check if node has 'fa fa-user' icon (which indicates it's a user)
-                        if (node.icon && node.icon === 'fa fa-user') {
-                            selectedNodes.push(node.text);
-                        }
-                        
-                        // Auto expand selected nodes to show their children
-                        if (data.instance.is_selected(node.id)) {
-                            data.instance.open_node(node.id);
-                        }
-                    });
-                    
-                    // Sort selectedNodes by position hierarchy (Direktur first, Staff last)
-                    selectedNodes.sort(function(a, b) {
-                        // Define position hierarchy order
-                        const positionOrder = {
-                            'Direktur': 1,
-                            'GM': 2, 'General Manager': 2,
-                            'SM': 3, 'Senior Manager': 3,
-                            'M': 4, 'Manager': 4,
-                            'PJ SM': 5, 'Penanggung Jawab Senior Manager': 5,
-                            'PJ M': 6, 'Penanggung Jawab Manager': 6,
-                            'SPV': 7, 'Supervisor': 7,
-                            'PJ SPV': 8, 'Penanggung Jawab Supervisor': 8,
-                            'Staff': 9
-                        };
-                        
-                        // Extract position from text (position is at the beginning)
-                        const getPositionPriority = function(text) {
-                            for (let pos in positionOrder) {
-                                if (text.startsWith(pos)) {
-                                    return positionOrder[pos];
-                                }
-                            }
-                            return 999; // Unknown positions go last
-                        };
-                        
-                        return getPositionPriority(a) - getPositionPriority(b);
-                    });
+                                    $('#org-tree').jstree({
+                                        'core': {
+                                            'data': @json($jsTreeData)
+                                        },
+                                        'plugins': ['checkbox', 'search']
+                                    }).on('ready.jstree', function(e, data) {
+                                        // Check the saved user checkboxes
+                                        selectedTujuan.forEach(id => {
+                                            $('#org-tree').jstree('check_node', '#user-' + id);
+                                        });
 
-                    let list = $('#selected-recipients');
-                    let section = $('#selected-section');
-                    list.empty();
+                                        // Initial display of selected recipients
+                                        let selectedNodes = data.instance.get_selected(true)
+                                            .filter(node => node.icon && node.icon === 'fa fa-user')
+                                            .map(node => node.text);
 
-                    if (selectedNodes.length) {
-                        selectedNodes.forEach(name => {
-                            list.append(`<li>${name}</li>`);
-                        });
-                        section.show();
-                    } else {
-                        section.hide();
-                    }
-                });
-            });
-        </script>
-    </div>
-</div>
+                                        // Sort selectedNodes by position hierarchy
+                                        selectedNodes.sort(function(a, b) {
+                                            const positionOrder = {
+                                                'Direktur': 1,
+                                                'GM': 2,
+                                                'General Manager': 2,
+                                                'SM': 3,
+                                                'Senior Manager': 3,
+                                                'M': 4,
+                                                'Manager': 4,
+                                                'PJ SM': 5,
+                                                'Penanggung Jawab Senior Manager': 5,
+                                                'PJ M': 6,
+                                                'Penanggung Jawab Manager': 6,
+                                                'SPV': 7,
+                                                'Supervisor': 7,
+                                                'PJ SPV': 8,
+                                                'Penanggung Jawab Supervisor': 8,
+                                                'Staff': 9
+                                            };
 
-<!-- Added section for displaying selected recipients -->
-<div style="display: none;" id="selected-section">
-    <label style="font-size: small;" class="form-label">
-        Daftar Penerima:
-    </label>
-    <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
-        <ul id="selected-recipients" style="font-size: small; padding-left: 15px; margin: 0; counter-reset: item; list-style-type: none;"></ul>
-        <style>
-            #selected-recipients li {
-                display: block;
-                margin-bottom: 0.2em;
-            }
-            #selected-recipients li:before {
-                content: counter(item, decimal) ". ";
-                counter-increment: item;
-                font-weight: bold;
-            }
-        </style>
-    </div>
-</div>
-                    <div class="mb-3 row">
-                <!-- Tanggal Rapat -->
-                    <div class="col-md-6">
-                        <label for="tgl_rapat" class="form-label">
-                            <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Rapat <span class="text-danger">*</span>
+                                            const getPositionPriority = function(text) {
+                                                for (let pos in positionOrder) {
+                                                    if (text.startsWith(pos)) {
+                                                        return positionOrder[pos];
+                                                    }
+                                                }
+                                                return 999;
+                                            };
+
+                                            return getPositionPriority(a) - getPositionPriority(b);
+                                        });
+
+                                        // Display initial selected recipients
+                                        let list = $('#selected-recipients');
+                                        let section = $('#selected-section');
+                                        list.empty();
+
+                                        if (selectedNodes.length) {
+                                            selectedNodes.forEach(name => {
+                                                list.append(`<li>${name}</li>`);
+                                            });
+                                            section.show();
+                                        }
+
+                                        // Auto expand nodes that have selected users
+                                        data.instance.get_selected(true).forEach(function(node) {
+                                            // Open parent nodes of selected users
+                                            let parentId = data.instance.get_parent(node.id);
+                                            while (parentId && parentId !== '#') {
+                                                data.instance.open_node(parentId);
+                                                parentId = data.instance.get_parent(parentId);
+                                            }
+                                        });
+                                    }).on('changed.jstree', function(e, data) {
+                                        let allSelectedNodes = data.instance.get_selected(true);
+                                        let selectedNodes = [];
+
+                                        allSelectedNodes.forEach(function(node) {
+                                            // Check if node has 'fa fa-user' icon (which indicates it's a user)
+                                            if (node.icon && node.icon === 'fa fa-user') {
+                                                selectedNodes.push(node.text);
+                                            }
+
+                                            // Auto expand selected nodes to show their children
+                                            if (data.instance.is_selected(node.id)) {
+                                                data.instance.open_node(node.id);
+                                            }
+                                        });
+
+                                        // Sort selectedNodes by position hierarchy (Direktur first, Staff last)
+                                        selectedNodes.sort(function(a, b) {
+                                            // Define position hierarchy order
+                                            const positionOrder = {
+                                                'Direktur': 1,
+                                                'GM': 2,
+                                                'General Manager': 2,
+                                                'SM': 3,
+                                                'Senior Manager': 3,
+                                                'M': 4,
+                                                'Manager': 4,
+                                                'PJ SM': 5,
+                                                'Penanggung Jawab Senior Manager': 5,
+                                                'PJ M': 6,
+                                                'Penanggung Jawab Manager': 6,
+                                                'SPV': 7,
+                                                'Supervisor': 7,
+                                                'PJ SPV': 8,
+                                                'Penanggung Jawab Supervisor': 8,
+                                                'Staff': 9
+                                            };
+
+                                            // Extract position from text (position is at the beginning)
+                                            const getPositionPriority = function(text) {
+                                                for (let pos in positionOrder) {
+                                                    if (text.startsWith(pos)) {
+                                                        return positionOrder[pos];
+                                                    }
+                                                }
+                                                return 999; // Unknown positions go last
+                                            };
+
+                                            return getPositionPriority(a) - getPositionPriority(b);
+                                        });
+
+                                        let list = $('#selected-recipients');
+                                        let section = $('#selected-section');
+                                        list.empty();
+
+                                        if (selectedNodes.length) {
+                                            selectedNodes.forEach(name => {
+                                                list.append(`<li>${name}</li>`);
+                                            });
+                                            section.show();
+                                        } else {
+                                            section.hide();
+                                        }
+                                    });
+                                });
+                            </script>
+                        </div>
+                    </div>
+
+                    <!-- Added section for displaying selected recipients -->
+                    <div style="display: none;" id="selected-section">
+                        <label style="font-size: small;" class="form-label">
+                            Daftar Penerima:
                         </label>
-                       <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"  
-                        value="{{ old('tgl_rapat', optional(\Carbon\Carbon::parse($undangan->tgl_rapat))->format('Y-m-d')) }}" required>
+                        <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                            <ul id="selected-recipients"
+                                style="font-size: small; padding-left: 15px; margin: 0; counter-reset: item; list-style-type: none;">
+                            </ul>
+                            <style>
+                                #selected-recipients li {
+                                    display: block;
+                                    margin-bottom: 0.2em;
+                                }
 
-                        @error('tgl_rapat')
+                                #selected-recipients li:before {
+                                    content: counter(item, decimal) ". ";
+                                    counter-increment: item;
+                                    font-weight: bold;
+                                }
+                            </style>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row mt-3">
+                        <!-- Tanggal Rapat -->
+                        <div class="col-md-6">
+                            <label for="tgl_rapat" class="form-label">
+                                <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal
+                                Rapat <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"
+                                value="{{ old('tgl_rapat', optional(\Carbon\Carbon::parse($undangan->tgl_rapat))->format('Y-m-d')) }}">
+                            @error('tgl_rapat')
+                                <div class="form-control text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <!-- Waktu Rapat -->
+                        <div class="col-md-6">
+                            <label for="waktu" class="form-label">Waktu Rapat</label> <span
+                                class="text-danger">*</span>
+                            <div class="d-flex align-items-center">
+                                <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2"
+                                    value="{{ old('waktu_mulai', $undangan->waktu_mulai) }}"
+                                    placeholder="Waktu Mulai" required>
+                                <span class="fw-bold">s/d</span>
+                                <input type="text" name="waktu_selesai" id="waktu_selesai"
+                                    class="form-control ms-2"
+                                    value="{{ old('waktu_selesai', $undangan->waktu_selesai) }}"
+                                    placeholder="Waktu Selesai" required>
+                            </div>
+                        </div>
+                        <!-- Tempat Rapat -->
+
+                        <div class="col-md-6">
+                            <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
+                            <input type="text" name="tempat" id="tempat" class="form-control"
+                                value="{{ old('tempat', $undangan->tempat) }}" placeholder="Ruang Rapat">
+                        @error('tempat')
+                            <div class="form-control text-danger">{{ $message }}</div>
+                        @enderror
+                            </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span
+                                class="text-danger">*</span></label>
+                        {{-- Hidden input untuk memastikan data terkirim --}}
+                        <input type="hidden" name="nama_bertandatangan"
+                            value="{{ $undangan->nama_bertandatangan }}">
+                        <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" disabled>
+                            @foreach ($managers as $manager)
+                                <option value="{{ $manager->firstname . ' ' . $manager->lastname }}"
+                                    {{ old('nama_bertandatangan', $undangan->nama_bertandatangan) == $manager->firstname . ' ' . $manager->lastname ? 'selected' : '' }}>
+                                    {{ $manager->firstname . ' ' . $manager->lastname }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('nama_bertandatangan')
                             <div class="form-control text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-
-                    <!-- Tempat Rapat -->
-                    
-                        <div class="col-md-6">
-                            <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
-                            <input type="text" name="tempat" id="tempat" class="form-control" 
-                                value="{{ old('tempat', $undangan->tempat) }}" placeholder="Ruang Rapat" required>
-                        </div>
-
-                        <!-- Waktu Rapat -->
-                        <div class="col-md-6">
-                            <label for="waktu" class="form-label">Waktu Rapat</label> <span class="text-danger">*</span>
-                            <div class="d-flex align-items-center">
-                                <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2" 
-                                    value="{{ old('waktu_mulai', $undangan->waktu_mulai) }}" placeholder="Waktu Mulai" required>
-                                <span class="fw-bold">s/d</span>
-                                <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2" 
-                                    value="{{ old('waktu_selesai', $undangan->waktu_selesai) }}" placeholder="Waktu Selesai" required>
-                            </div>
-                        </div>
-                    </div>
-                <div class="col-md-6">
-                    <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
-                     {{-- Hidden input untuk memastikan data terkirim --}}
-                    <input type="hidden" name="nama_bertandatangan" value="{{ $undangan->nama_bertandatangan }}">
-                    <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" disabled>
-                        @foreach($managers as $manager)
-                            <option value="{{ $manager->firstname . ' ' . $manager->lastname }}" 
-                                {{ old('nama_bertandatangan', $undangan->nama_bertandatangan) == ($manager->firstname . ' ' . $manager->lastname) ? 'selected' : '' }}>
-                                {{ $manager->firstname . ' ' . $manager->lastname }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('nama_bertandatangan')
-                        <div class="form-control text-danger">{{ $message }}</div>
-                    @enderror
                 </div>
-            </div>
-                 
+
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
                         <img src="\img\undangan\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
                         <label for="summernote">Agenda <span class="text-danger">*</span></label>
                     </div>
+                    @error('isi_undangan')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
-                            <textarea id="summernote" name="isi_undangan">{{ $undangan->isi_undangan }}</textarea>
+                        <textarea id="summernote" name="isi_undangan">{{ $undangan->isi_undangan }}</textarea>
                     </div>
-                </div>    
-                
+                </div>
+
             </div>
             <div id="tujuan-container"></div>
 
             <div class="card-footer">
-                <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.admin')}}">Batal</a></button>
+                <button type="button" class="btn btn-cancel"><a
+                        href="{{ route('undangan.admin') }}">Batal</a></button>
                 <button type="submit" class="btn btn-save">Simpan</button>
             </div>
-        </div>
-        </form>
     </div>
-    
+    </form>
+    </div>
+
     <!-- Modal Upload File -->
     <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="uploadModalLabel">
-                        <img src="/img/undangan/cloud-add.png" alt="Icon" style="width: 24px; margin-right: 10px;">
+                        <img src="/img/undangan/cloud-add.png" alt="Icon"
+                            style="width: 24px; margin-right: 10px;">
                         Unggah file
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -322,11 +369,13 @@
                     <p class="modal-subtitle">Pilih dan unggah file pilihan Anda</p>
                     <div class="upload-container">
                         <div class="upload-box" id="uploadBox">
-                            <img src="/img/undangan/cloud-add.png" alt="Cloud Icon" style="width: 40px; margin-bottom: 10px;">
+                            <img src="/img/undangan/cloud-add.png" alt="Cloud Icon"
+                                style="width: 40px; margin-bottom: 10px;">
                             <p class="upload-text">Pilih file atau seret & letakkan di sini</p>
                             <p class="upload-note">Ukuran file PDF tidak lebih dari 20MB</p>
                             <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
-                            <input type="file" id="fileInput" name="fileInput" accept=".pdf" style="display: none;">
+                            <input type="file" id="fileInput" name="fileInput" accept=".pdf"
+                                style="display: none;">
                         </div>
                     </div>
                 </div>
@@ -338,7 +387,7 @@
         </div>
     </div>
     <script>
-        $('#addUndanganForm').on('submit', function (e) {
+        $('#addUndanganForm').on('submit', function(e) {
             const tujuanContainer = $('#tujuan-container');
             tujuanContainer.html(''); // bersihkan sebelum nambah
 
@@ -353,12 +402,22 @@
             });
 
             if (userIds.length === 0) {
-                alert("Minimal pilih satu tujuan!");
+                tujuanError.textContent = "Minimal pilih satu tujuan!";
+                tujuanError.style.display = 'block';
+
+                // Scroll otomatis ke error
+                tujuanError.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
                 e.preventDefault();
                 return false;
+            } else {
+                tujuanError.style.display = 'none';
             }
         });
-        $(function () {
+        $(function() {
             const selectedTujuan = @json($tujuanArray);
             $('#org-tree').on('ready.jstree', function() {
                 selectedTujuan.forEach(id => {
@@ -366,20 +425,19 @@
                 });
             });
         });
-
-        </script>
-        <script>
+    </script>
+    <script>
         $(document).ready(function() {
             $('#summernote').summernote({
                 height: 200,
                 toolbar: [
-                // ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'color']],
-                // ['para', ['ul', 'ol', 'paragraph']],
-                // ['insert', ['link', 'picture', 'video']],
-                // ['view', ['fullscreen', 'codeview', 'help']],
+                    // ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'color']],
+                    // ['para', ['ul', 'ol', 'paragraph']],
+                    // ['insert', ['link', 'picture', 'video']],
+                    // ['view', ['fullscreen', 'codeview', 'help']],
                 ],
-                fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
+                fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'],
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']
             });
         });
@@ -389,4 +447,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
+
 </html>

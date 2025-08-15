@@ -224,7 +224,7 @@ class RisalahController extends Controller
                 AND EXISTS (
                     SELECT 1
                     FROM users
-                    WHERE 
+                    WHERE
                         users.id = undangan.pembuat
                         AND (
                             (users.department_id_department IS NOT NULL AND users.department_id_department = ?)
@@ -427,7 +427,7 @@ class RisalahController extends Controller
         AND EXISTS (
             SELECT 1
             FROM users
-            WHERE 
+            WHERE
                 users.id   = undangan.pembuat
                 AND (
                     (users.department_id_department IS NOT NULL AND users.department_id_department = ?)
@@ -561,16 +561,27 @@ class RisalahController extends Controller
         // Cek apakah undangan dan tujuannya tidak null
         if ($undangan && $undangan->tujuan) {
             $userIds = explode(';', $undangan->tujuan);
-
-            // Ambil nama user (firstname + lastname)
-            $namaUserList = User::whereIn('id', $userIds)
+            $pdfController = new \App\Http\Controllers\CetakPDFController();
+            $listNama = \App\Models\User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+                ->whereIn('id', $userIds)
                 ->get()
-                ->map(function ($user) {
-                    return $user->firstname . ' ' . $user->lastname;
+                ->map(function ($user, $key) use ($pdfController) {
+                    $level = $pdfController->detectLevel($user);
+                    $user->level_kerja = $level;
+                    $user->bagian_text = $pdfController->getBagianText($user, $level);
+                    return $user;
                 })
-                ->toArray();
+                ->sortBy(function ($user) {
+                    return optional($user->position)->id_position;
+                })
+                ->values();
 
-            $tujuanUsernames = implode(', ', $namaUserList);
+            $tujuanUsernames = $listNama->map(function ($user, $index) {
+                return ($index + 1) . '. '
+                    . $user->position->nm_position . ' '
+                    . $user->bagian_text . ' '
+                    . '(' . $user->firstname . ' ' . $user->lastname . ')';
+            })->implode("\n");
         } else {
             $tujuanUsernames = '-';
         }

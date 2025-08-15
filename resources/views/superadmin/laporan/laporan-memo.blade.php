@@ -1,7 +1,7 @@
 @extends('layouts.superadmin')
 
 @section('title', 'Laporan Memo')
-      
+
 @section('content')
 <div class="container">
     <div class="header">
@@ -10,7 +10,7 @@
             <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
         </div>
         <h1>Laporan Memo</h1>
-    </div>        
+    </div>
     <div class="row">
         <div class="breadcrumb-wrapper">
             <div class="breadcrumb" style="gap: 5px;">
@@ -34,7 +34,7 @@
                             </div>
                             <input type="date" name="tgl_awal" id="tgl_awal" class="form-control" required>
                             <p>* Masukkan tanggal awal filter data memo!</p>
-                        </div> 
+                        </div>
                         <div class="col-md-6">
                             <div class="card-blue">
                                 <img src="/img/laporan/tanggal.png" alt="date">
@@ -45,8 +45,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="filter-button">Filter</button>
-                        <button type="button" class="btn btn-secondary" id="cancel-button">Batal</button>
+                        <button type="button" style="width:100px;height:40px;margin-right:12px;vertical-align:middle;font-size:16px;" class="btn btn-secondary" id="cancel-button">Batal</button>
+                        <button type="submit" style="width:100px;height:40px;margin-right:12px;vertical-align:middle;font-size:16px;" class="btn btn-primary" id="filter-button">Filter</button>
                     </div>
                 </form>
             </div>
@@ -60,29 +60,29 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset nilai input tanggal
         document.getElementById('tgl_awal').value = '';
         document.getElementById('tgl_akhir').value = '';
-        
+
         // Optional: Reset form validation state
         const form = document.getElementById('filter-form');
         form.classList.remove('was-validated');
-        
+
         // Optional: Remove any error messages if using Bootstrap validation
         const invalidFeedbacks = form.querySelectorAll('.invalid-feedback');
         invalidFeedbacks.forEach(feedback => feedback.style.display = 'none');
-        
+
         // Optional: Reset input classes
         const inputs = form.querySelectorAll('.form-control');
         inputs.forEach(input => {
             input.classList.remove('is-invalid', 'is-valid');
         });
-        
+
         console.log('Filter tanggal telah direset');
     });
-    
+
     // Optional: Tambahkan validasi saat submit
     document.getElementById('filter-form').addEventListener('submit', function(e) {
         const tglAwal = document.getElementById('tgl_awal').value;
         const tglAkhir = document.getElementById('tgl_akhir').value;
-        
+
         if (tglAwal && tglAkhir && tglAwal > tglAkhir) {
             e.preventDefault();
             alert('Tanggal awal tidak boleh lebih besar dari tanggal akhir!');

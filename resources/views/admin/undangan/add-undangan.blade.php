@@ -22,7 +22,7 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route('undangan.' . Auth::user()->role->nm_role)}}"><img
+                <a href="{{ route('undangan.' . Auth::user()->role->nm_role) }}"><img
                         src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Tambah Undangan Rapat</h1>
@@ -49,7 +49,8 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label for="tgl_surat" class="form-label">
-                                <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Surat
+                                <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal
+                                Surat
                                 <span class="text-danger">*</span>
                             </label>
 
@@ -108,6 +109,8 @@
                                                 font-weight: 500;
                                             }
                                         </style>
+                                        <small id="tujuanError" class="text-danger" style="display:none;">Minimal pilih
+                                            satu tujuan!</small>
                                     </div>
                                 </div>
                                 <script>
@@ -138,13 +141,20 @@
                                                 // Define position hierarchy order
                                                 const positionOrder = {
                                                     'Direktur': 1,
-                                                    'GM': 2, 'General Manager': 2,
-                                                    'SM': 3, 'Senior Manager': 3,
-                                                    'M': 4, 'Manager': 4,
-                                                    'PJ SM': 5, 'Penanggung Jawab Senior Manager': 5,
-                                                    'PJ M': 6, 'Penanggung Jawab Manager': 6,
-                                                    'SPV': 7, 'Supervisor': 7,
-                                                    'PJ SPV': 8, 'Penanggung Jawab Supervisor': 8,
+                                                    'GM': 2,
+                                                    'General Manager': 2,
+                                                    'SM': 3,
+                                                    'Senior Manager': 3,
+                                                    'M': 4,
+                                                    'Manager': 4,
+                                                    'PJ SM': 5,
+                                                    'Penanggung Jawab Senior Manager': 5,
+                                                    'PJ M': 6,
+                                                    'Penanggung Jawab Manager': 6,
+                                                    'SPV': 7,
+                                                    'Supervisor': 7,
+                                                    'PJ SPV': 8,
+                                                    'Penanggung Jawab Supervisor': 8,
                                                     'Staff': 9
                                                 };
 
@@ -178,12 +188,6 @@
 
                                     });
                                 </script>
-
-                                <!-- Added section for displaying selected recipients -->
-
-                                @error('tujuan[]')
-                                    <div class="form-control text-danger">{{ $message }}</div>
-                                @enderror
                             </div>
                             <!-- Added section for displaying selected recipients -->
                             <div style="display: none;" id="selected-section">
@@ -228,16 +232,27 @@
                                     class="text-danger">*</span>
                                 <div class="d-flex align-items-center">
                                     <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2"
-                                        placeholder="09.00" value="{{ old('waktu_mulai') }}" required>
+                                        placeholder="09.00" value="{{ old('waktu_mulai') }}">
+
                                     <span class="fw-bold">s/d</span>
                                     <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2"
-                                        placeholder="Selesai" value="{{ old('waktu_selesai') }}" required>
+                                        placeholder="Selesai" value="{{ old('waktu_selesai') }}">
+
                                 </div>
+                                @error('waktu_mulai')
+                                    <div class="form-control text-danger">{{ $message }}</div>
+                                @enderror
+                                @error('waktu_selesai')
+                                    <div class="form-control text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-6">
                                 <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
                                 <input type="text" name="tempat" id="tempat" class="form-control"
-                                    placeholder="Ruang Rapat" value="{{ old('tempat') }}" required>
+                                    placeholder="Ruang Rapat" value="{{ old('tempat') }}">
+                                @error('tempat')
+                                    <div class="form-control text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 row">
@@ -247,13 +262,14 @@
                                         class="text-danger">*</span></label>
                                 <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control">
                                     <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                                    @foreach($managers as $manager)
+                                    @foreach ($managers as $manager)
                                         @php
                                             preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
                                             $kode_position = $matches[1] ?? '';
                                         @endphp
                                         <option value="{{ $manager->id }}">
-                                            ({{ $kode_position }}) {{ $manager->firstname }} {{ $manager->lastname }}
+                                            ({{ $kode_position }})
+                                            {{ $manager->firstname }} {{ $manager->lastname }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -270,6 +286,7 @@
                                     <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png"
                                         style="display: none;"
                                         onchange="if(this.files[0].size > 2097152){ alert('Ukuran maksimal 2MB'); this.value=''; }">
+
                                     <div id="filePreview" style="display: none; text-align: center">
                                         <img id="previewIcon" src="" alt="Preview"
                                             style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
@@ -278,6 +295,7 @@
                                             style="border: none; color:red; background-color: white;"></button>
                                     </div>
                                 </div>
+                                <small id="fileError" class="text-danger" style="display:none;">File gagal diunggah. Ukuran maksimal 2MB dan harus bertipe PDF.</small>
                             </div>
                         </div>
 
@@ -287,36 +305,18 @@
                             <img src="\img\undangan\isi-surat.png" alt="isiSurat" style=" margin-left: 10px;">
                             <label for="isi_undangan">Agenda <span class="text-danger">*</span></label>
                         </div>
+                        @error('isi_undangan')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_undangan" value="{{ old('isi_undangan') }}"></textarea>
-                            @error('isi_undangan')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+
                         </div>
                     </div>
                 </div>
-                <!--Permohonan Approval disini yah-->
-                {{-- <div class="row mb-4" style="gap: 20px;">
-                    <div class="col">
-                        <div class="card-blue1">
-                            <label for="tindakan">Undangan Akan Diajukan untuk Proses Approval</label>
-                            <label for="isi" style="color: #FF000080; font-size: 10px; margin-left: 5px;">
-                                *Undangan akan diapprove oleh :
-                            </label>
-                        </div>
-                        <div class="separator"></div>
-                        @foreach($managers as $manager)
-                        <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}">{{ $manager->firstname .
-                            ' ' . $manager->lastname }}</option>
-                        @endforeach
-
-
-                        <!---->
-                    </div>
-                </div> --}}
                 <div class="card-footer">
                     <button type="button" class="btn btn-cancel"><a
-                            href="{{route('undangan.superadmin')}}">Batal</a></button>
+                            href="{{ route('undangan.superadmin') }}">Batal</a></button>
                     <button type="submit" class="btn btn-save">Ajukan</button>
                     <div id="tujuan-container"></div> <!--Manggil script dibawah-->
                 </div>
@@ -333,7 +333,8 @@
                     <h5 class="modal-title"><b>Sukses</b></h5>
                     <p class="mt-2">Menunggu Approval dari Manager</p>
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a
-                            href="{{route('undangan.admin')}}" style="color: white; text-decoration: none">Kembali ke
+                            href="{{ route('undangan.admin') }}" style="color: white; text-decoration: none">Kembali
+                            ke
                             Halaman Undangan</a></button>
                 </div>
             </div>
@@ -362,6 +363,7 @@
                             <p class="upload-note">Ukuran file PDF tidak lebih dari 2MB</p>
                             <button class="btn btn-outline-primary" id="selectFileBtn">Pilih File</button>
                             <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+
                             <div id="fileInfo" style="display: none; text-align: center ">
                                 <div id="fileInfoWrapper"
                                     style="display: flex; align-items: center; justify-content: center">
@@ -392,7 +394,7 @@
             const selected = $('#org-tree').jstree('get_selected', true);
             const fileInput = document.getElementById('lampiran');
             const file = fileInput.files[0];
-
+            const fileError = document.getElementById('fileError');
 
             const userIds = selected
                 .filter(node => node.id.startsWith('user-'))
@@ -402,14 +404,36 @@
                 tujuanContainer.append(`<input type="hidden" name="tujuan[]" value="${userId}">`);
             });
 
+            // Validasi minimal pilih satu tujuan
             if (userIds.length === 0) {
-                alert("Minimal pilih satu tujuan!");
+                tujuanError.textContent = "Minimal pilih satu tujuan!";
+                tujuanError.style.display = 'block';
+
+                // Scroll otomatis ke error
+                tujuanError.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
                 e.preventDefault();
                 return false;
+            } else {
+                tujuanError.style.display = 'none';
             }
             if (file && file.size > 2 * 1024 * 1024) {
+                fileError.textContent = "File gagal diunggah. Ukuran maksimal 2MB dan harus bertipe PDF.";
+                fileError.style.display = 'block';
+
+                // Scroll otomatis ke error
+                fileError.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
                 e.preventDefault();
-                alert("File gagal diunggah. Pastikan ukuran file tidak lebih dari 2MB dengan Tipe File PDF.");
+                return false;
+            } else {
+                fileError.style.display = 'none';
             }
         });
         // Modal Upload File - Menampilkan Modal
@@ -583,7 +607,6 @@
                 fields.style.display = 'none'; // Hide additional fields
             }
         }
-
     </script>
     <script>
         $(function () {

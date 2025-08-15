@@ -20,6 +20,7 @@ class ArsipController extends Controller
     // Arsipkan Dokumen (Memo, Undangan, atau Risalah)
     public function archiveDocument($document_id, $jenis_document)
     {
+        //dd($document_id, $jenis_document);
         $user_id = Auth::id();
 
         // Pastikan tipe dokumen valid
@@ -307,6 +308,8 @@ class ArsipController extends Controller
             $arsip->document = $risalahMap->get($arsip->document_id);
         }
 
+
+
         $arsipRisalah->getCollection()->transform(function ($arsip) use ($user_id) {
             $risalah = $arsip->document;
 
@@ -400,6 +403,60 @@ class ArsipController extends Controller
     public function viewRisalah($id)
     {
         $risalah = Risalah::where('id_risalah', $id)->firstOrFail();
+        $userId = Auth::id();
+        $risalah = Risalah::findOrFail($id);
+
+        // Ambil tujuan dari kolom tujuan di tabel undangan (bukan risalah)
+        $undangan = Undangan::where('judul', $risalah->judul)->first();
+        $idArray = [];
+        if ($undangan && $undangan->tujuan) {
+            $idArray = is_array($undangan->tujuan)
+                ? $undangan->tujuan
+                : explode(';', $undangan->tujuan);
+        }
+
+        $pdfController = new CetakPDFController();
+        $listNama = collect();
+        if (!empty($idArray)) {
+            $listNama = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+                ->whereIn('id', $idArray)
+                ->get()
+                ->map(function ($user, $key) use ($pdfController) {
+                    $level = $pdfController->detectLevel($user);
+                    $user->level_kerja = $level;
+                    $user->bagian_text = $pdfController->getBagianText($user, $level);
+                    return $user;
+                })
+                ->sortBy(function ($user) {
+                    return optional($user->position)->id_position;
+                })
+                ->values();
+        }
+
+        $risalah->tujuan = $listNama->map(function ($user, $index) {
+            return ($index + 1) . '. '
+                . $user->position->nm_position . ' '
+                . $user->bagian_text . ' '
+                . '(' . $user->firstname . ' ' . $user->lastname . ')';
+        })->implode("\n");
+
+        $risalahCollection = collect([$risalah]); // Bungkus dalam collection
+
+        $risalahCollection->transform(function ($risalah) use ($userId) {
+            if ($risalah->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $risalah->final_status = $risalah->status; // Risalah dari divisi sendiri
+            } else {
+                $statusKirim = Kirim_Document::where('id_document', $risalah->id_undangan)
+                    ->where('jenis_document', 'undangan')
+                    ->where('id_penerima', $userId)
+                    ->first();
+                $risalah->final_status = $statusKirim ? $statusKirim->status : '-';
+            }
+            return $risalah;
+        });
+
+        // Karena hanya satu risalah, kita bisa mengambil dari collection lagi
+        $risalah = $risalahCollection->first();
 
         return view('arsip.view-arsipRisalah', compact('risalah'));
     }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,19 +12,22 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin/kirim-admin.css') }}">
 </head>
+
 <body>
-<div class="container">
+    <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('undangan.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{route('undangan.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Detail Undangan Rapat</h1>
-        </div>        
+        </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a href="{{ route('undangan.admin') }}">Undangan Rapat</a>/<a href="#" style="color: #565656;">Detail Undangan Rapat</a>
+                    <a href="{{ route('admin.dashboard') }}">Beranda</a>/<a
+                        href="{{ route('undangan.admin') }}">Undangan Rapat</a>/<a href="#"
+                        style="color: #565656;">Detail Undangan Rapat</a>
                 </div>
             </div>
         </div>
@@ -53,7 +57,9 @@
                     <div class="card-white">
                         <label for="tgl_rapat">Hari, tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl_rapat" value="{{\Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l, d F Y')}}" readonly>
+                        <input type="text" id="tgl_rapat"
+                            value="{{\Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l, d F Y')}}"
+                            readonly>
                     </div>
                 </div>
                 <div class="col">
@@ -65,40 +71,46 @@
                     <div class="card-white">
                         <label for="pembuat">Pembuat</label>
                         <div class="separator"></div>
-                         <input type="text" id="pembuat" value="{{ $undangan->user ? $undangan->user->firstname . ' ' . $undangan->user->lastname : 'N/A' }}" readonly>
+                        <input type="text" id="pembuat"
+                            value="{{ $undangan->user ? $undangan->user->firstname . ' ' . $undangan->user->lastname : 'N/A' }}"
+                            readonly>
                     </div>
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        
-                            @if($undangan->pembuat != Auth::user()->id)
+
+                        @if($undangan->pembuat != Auth::user()->id)
                             @if ($undangan->status == 'reject')
-                            <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($undangan->status == 'pending')
-                            <span class="badge bg-info">Diproses</span>
-                        @elseif ($undangan->status == 'correction')
-                            <span class="badge bg-danger">Dikoreksi</span>
-                        @else 
-                            <span class="badge bg-success">Diterima</span>
-                        @endif
+                                <span class="badge bg-danger">Ditolak</span>
+                            @elseif ($undangan->status == 'pending')
+                                <span class="badge bg-info">Diproses</span>
+                            @elseif ($undangan->status == 'correction')
+                                <span class="badge bg-danger">Dikoreksi</span>
+                            @else
+                                <span class="badge bg-success">Diterima</span>
+                            @endif
                         @else
                             @if ($undangan->status == 'reject')
-                            <span class="badge bg-danger">Ditolak</span>
-                        @elseif ($undangan->status == 'pending')
-                            <span class="badge bg-info">Diproses</span>
-                        @elseif ($undangan->status == 'correction')
-                            <span class="badge bg-warning">Dikoreksi</span>
-                        @else 
-                            <span class="badge bg-success">Diterima</span>
+                                <span class="badge bg-danger">Ditolak</span>
+                            @elseif ($undangan->status == 'pending')
+                                <span class="badge bg-info">Diproses</span>
+                            @elseif ($undangan->status == 'correction')
+                                <span class="badge bg-warning">Dikoreksi</span>
+                            @else
+                                <span class="badge bg-success">Diterima</span>
+                            @endif
                         @endif
-                        @endif
-                    </div>                    
+                    </div>
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
-                        <button class="view" onclick="window.location.href='{{ route('view-undanganPDF', $undangan->id_undangan) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
-                        @if ($undangan->status=='approve')
-                        <a style="text-decoration: none;" class="down" onclick="window.location.href='{{ route('cetakundangan',['id' => $undangan->id_undangan]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
+                        <button class="view"
+                            onclick="window.location.href='{{ route('view-undanganPDF', $undangan->id_undangan) }}'">
+                            <img src="/img/memo-admin/view.png" alt="view">Lihat</button>
+                        @if ($undangan->status == 'approve')
+                            <a style="text-decoration: none;" class="down"
+                                onclick="window.location.href='{{ route('cetakundangan', ['id' => $undangan->id_undangan]) }}'"><img
+                                    src="/img/memo-admin/down.png" alt="down">Unduh</a>
                         @endif
                     </div>
                 </div>
@@ -113,16 +125,18 @@
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
-                        <pre style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
-                    </div>   
+                        <pre
+                            style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
+                    </div>
                 </div>
-            <div class="row mb-4" style="gap: 20px;">
-                <div class="col">
-                    <div class="card-blue1">Catatan</div>
-                    <textarea type="text" for="catatan" id="catatan"  readonly>{{$undangan->catatan}}</textarea>        
+                <div class="row mb-4" style="gap: 20px;">
+                    <div class="col">
+                        <div class="card-blue1">Catatan</div>
+                        <textarea type="text" for="catatan" id="catatan" readonly>{{$undangan->catatan}}</textarea>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 </body>
+
 </html>

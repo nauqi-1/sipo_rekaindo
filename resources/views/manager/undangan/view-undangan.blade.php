@@ -20,15 +20,16 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route('undangan.manager')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{ route('undangan.manager') }}"><img src="/img/user-manage/Vector_back.png"
+                        alt=""></a>
             </div>
             <h1>Undangan Rapat</h1>
         </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="#">Beranda</a>/<a href="{{route('undangan.manager')}}">Undangan Rapat</a>/ <a href="#"
-                        style="color: #565656;">Detail Undangan Rapat</a>
+                    <a href="#">Beranda</a>/<a href="{{ route('undangan.manager') }}">Undangan Rapat</a>/ <a
+                        href="#" style="color: #565656;">Detail Undangan Rapat</a>
                 </div>
             </div>
         </div>
@@ -44,13 +45,13 @@
                     <div class="card-white">
                         <label for="seri">No Seri</label>
                         <div class="separator"></div>
-                        <input type="text" id="seri" value="{{$undangan->seri_surat }}" readonly>
+                        <input type="text" id="seri" value="{{ $undangan->seri_surat }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="tgl_dibuat">Tanggal Surat</label>
                         <div class="separator"></div>
                         <input type="text" id="tanggal"
-                            value="{{$undangan->tgl_dibuat ? \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') : '-'  }}"
+                            value="{{ $undangan->tgl_dibuat ? \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') : '-' }}"
                             readonly>
                     </div>
                 </div>
@@ -77,7 +78,7 @@
                         <label for="tanggal">Tanggal Pengesahan</label>
                         <div class="separator"></div>
                         <input type="text" id="tanggal"
-                            value="{{$undangan->tgl_disahkan ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-'  }}"
+                            value="{{ $undangan->tgl_disahkan ? \Carbon\Carbon::parse($undangan->tgl_disahkan)->format('d-m-Y') : '-' }}"
                             readonly>
                     </div>
                 </div>
@@ -93,23 +94,23 @@
                     <div class="card-white">
                         <label for="nomor">No Dokumen</label>
                         <div class="separator"></div>
-                        <input type="text" id="nomor" value="{{$undangan->nomor_undangan }}" readonly>
+                        <input type="text" id="nomor" value="{{ $undangan->nomor_undangan }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="divisi">Pengirim</label>
                         <div class="separator"></div>
-                        <input type="text" id="divisi" value="{{$undangan->kode}}" readonly>
+                        <input type="text" id="divisi" value="{{ $undangan->kode }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
                         <div class="separator"></div>
-                        <input type="text" id="perihal" value="{{$undangan->judul }}" readonly>
+                        <input type="text" id="perihal" value="{{ $undangan->judul }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="tgl_rapat">Hari, tanggal</label>
                         <div class="separator"></div>
                         <input type="text" id="tgl_rapat"
-                            value="{{\Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l, d F Y')}}"
+                            value="{{ \Carbon\Carbon::parse($undangan->tgl_rapat)->translatedFormat('l, d F Y') }}"
                             readonly>
                     </div>
                     <div class="card-white">
@@ -130,14 +131,14 @@
                 <div class="col">
                     <div class="card-blue">
                         <label for="diterima" class="form-label">
-                            <img src="/img/memo-admin/detail.png" alt="date" style="margin-right: 5px;">Daftar Tujuan
+                            <img src="/img/memo-admin/detail.png" alt="date" style="margin-right: 5px;">Daftar
+                            Tujuan
                         </label>
                     </div>
                     <div class="card-white">
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
-                        <pre
-                            style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
+                        <pre style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
                     </div>
                 </div>
             </div>
@@ -151,7 +152,7 @@
                     <div class="card-white">
                         <label for="status">Pengesahan</label>
                         <div class="separator"></div>
-                        @if($undangan->pembuat != Auth::user()->id)
+                        @if ($undangan->pembuat != Auth::user()->id)
                             @if ($undangan->status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
                             @elseif ($undangan->status == 'pending')
@@ -178,66 +179,69 @@
             </div>
             {{-- --}}
             @if ($undangan->status === 'pending' || $undangan->status === 'correction')
-                    <form id="approvalForm" method="POST" action="{{ route('undangan.updateStatus', $undangan->id_undangan) }}">
-                        @csrf
-                        @method('PUT')
+                <form id="approvalForm" method="POST"
+                    action="{{ route('undangan.updateStatus', $undangan->id_undangan) }}">
+                    @csrf
+                    @method('PUT')
 
-                        <div class="row mb-4" style="gap: 20px;">
-                            <div class="col">
-                                <div class="label1 card-blue1">
-                                    <label for="pengesahan" class="label">Pengesahan</label>
-                                    <div class="form-check1">
-                                        <label class="form-check-label" for="approve">Diterima</label>
-                                        <input type="radio" class="form-check-input approval-checkbox" id="approve"
-                                            name="status" value="approve">
-                                    </div>
-                                    <div class="form-check2">
-                                        <label class="form-check-label" for="reject">Ditolak</label>
-                                        <input type="radio" class="form-check-input approval-checkbox" id="reject" name="status"
-                                            value="reject">
-                                    </div>
-                                    <div class="form-check3">
-                                        <label class="form-check-label" for="correction">Dikoreksi</label>
-                                        <input type="radio" class="form-check-input approval-checkbox" id="correction"
-                                            name="status" value="correction">
-                                    </div>
+                    <div class="row mb-4" style="gap: 20px;">
+                        <div class="col">
+                            <div class="label1 card-blue1">
+                                <label for="pengesahan" class="label">Pengesahan</label>
+                                <div class="form-check1">
+                                    <label class="form-check-label" for="approve">Diterima</label>
+                                    <input type="radio" class="form-check-input approval-checkbox" id="approve"
+                                        name="status" value="approve">
+                                </div>
+                                <div class="form-check2">
+                                    <label class="form-check-label" for="reject">Ditolak</label>
+                                    <input type="radio" class="form-check-input approval-checkbox" id="reject"
+                                        name="status" value="reject">
+                                </div>
+                                <div class="form-check3">
+                                    <label class="form-check-label" for="correction">Dikoreksi</label>
+                                    <input type="radio" class="form-check-input approval-checkbox" id="correction"
+                                        name="status" value="correction">
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col" id="catatanCol" style="display:none;">
-                                <div class="card-blue1">
-                                    Catatan <span class="text-danger">*</span>
-                                </div>
-                                <textarea id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>
-                                <small id="catatanError" class="text-danger" style="display:none;">Catatan wajib diisi</small>
+                        <div class="col" id="catatanCol" style="display:none;">
+                            <div class="card-blue1">
+                                Catatan <span class="text-danger">*</span>
                             </div>
-                        </div>
-                </div>
-
-                <div class="row mb-4" id="tujuanDivisiRow" style="display:none;">
-                    <div class="col">
-                        <div class="card-blue1">
-                            <label for="tindakan">Konfirmasi Daftar Penerima</label>
-                            <label for="isi" style="color: #FF000080; font-size: 10px; margin-left: 5px;">
-                                *Berikut adalah daftar divisi tujuan yang akan menerima undangan.
-                            </label>
-                        </div>
-                        <div class="card-white">
-                            <label for="diterima">Diterima</label>
-                            <div class="separator"></div>
-                            <pre
-                                style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
+                            <textarea id="catatan" name="catatan" placeholder="Berikan Catatan"></textarea>
+                            <small id="catatanError" class="text-danger" style="display:none;">Catatan wajib
+                                diisi</small>
                         </div>
                     </div>
-                </div>
+        </div>
 
-                <div class="footer">
-                    <button type="button" class="btn back" id="backBtn"
-                        onclick="window.location.href='{{ route('undangan.manager') }}'">Kembali</button>
-                    <button type="button" class="btn submit" id="submitBtn">Kirim</button>
+        <div class="row mb-4" id="tujuanDivisiRow" style="display:none;">
+            <div class="col">
+                <div class="card-blue1">
+                    <label for="tindakan">Konfirmasi Daftar Penerima</label>
+                    <label for="isi" style="color: #FF000080; font-size: 10px; margin-left: 5px;">
+                        *Berikut adalah daftar divisi tujuan yang akan menerima undangan.
+                    </label>
                 </div>
-                </form>
-            @endif
+                <div class="card-white">
+                    <label for="diterima">Diterima</label>
+                    <div class="separator"></div>
+                    <pre style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button type="button" class="btn back" id="backBtn"
+                style="width:100px;height:40px;margin-right:12px;vertical-align:middle;font-size:16px;"
+                onclick="window.location.href='{{ route('undangan.manager') }}'">Kembali</button>
+            <button type="button" class="btn submit" id="submitBtn"
+                style="width:100px;height:40px;vertical-align:middle;font-size:16px;">Kirim</button>
+        </div>
+        </form>
+        @endif
 
 
 
@@ -286,7 +290,7 @@
     </div>
 </body>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const checkboxes = document.querySelectorAll('.approval-checkbox');
         const catatanCol = document.getElementById('catatanCol');
         const catatanInput = document.getElementById('catatan');
@@ -296,7 +300,7 @@
 
         // Radio button logic
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function () {
+            checkbox.addEventListener('change', function() {
                 checkboxes.forEach(cb => {
                     if (cb !== this) cb.checked = false;
                 });
@@ -318,7 +322,7 @@
         });
 
         // Submit button logic
-        submitBtn.addEventListener('click', function () {
+        submitBtn.addEventListener('click', function() {
             if (!statusValue) {
                 alert('Pilih status pengesahan terlebih dahulu!');
                 return;
@@ -326,13 +330,15 @@
             // Untuk approve, tetap submit dan tampilkan modal sukses (biarkan reload)
             if (statusValue === 'approve') {
                 document.getElementById('approvalForm').submit();
-                setTimeout(function () {
-                    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                setTimeout(function() {
+                    const successModal = new bootstrap.Modal(document.getElementById(
+                        'successModal'));
                     successModal.show();
                 }, 300);
             } else {
                 // Validasi catatan untuk reject/correction
-                if ((statusValue === 'reject' || statusValue === 'correction') && catatanInput.value.trim() === '') {
+                if ((statusValue === 'reject' || statusValue === 'correction') && catatanInput.value
+                    .trim() === '') {
                     document.getElementById('catatanError').style.display = 'block';
                     catatanInput.focus();
                     return; // stop proses submit & redirect
@@ -340,7 +346,7 @@
 
                 // Kalau lolos validasi, submit lalu redirect
                 document.getElementById('approvalForm').submit();
-                setTimeout(function () {
+                setTimeout(function() {
                     window.location.href = "{{ route('undangan.manager') }}";
                 }, 500);
             }
@@ -360,7 +366,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const diterimaCheckbox = document.getElementById('approve');
         const tindakLanjutSelect = document.getElementById('nextAction');
         const formPengiriman = document.getElementById('formPengiriman');
@@ -379,7 +385,7 @@
         diterimaCheckbox.addEventListener('change', togglePengiriman);
         tindakLanjutSelect.addEventListener('change', togglePengiriman);
     });
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const formPengiriman = document.getElementById('formPengiriman');
         if (formPengiriman) {
             formPengiriman.style.display = 'none';

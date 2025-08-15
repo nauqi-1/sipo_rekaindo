@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,19 +12,22 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/supervisor/view-memoDiterima.css') }}">
 </head>
+
 <body>
     <div class="container">
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route ('risalah.manager')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
+                <a href="{{ route('risalah.manager') }}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Kirim Risalah Rapat</h1>
-        </div>        
+        </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
-                    <a href="{{ route('manager.dashboard') }}">Beranda</a>/<a href="{{route ('risalah.manager')}}">Risalah Rapat</a>/<a href="#" style="color: #565656;">Kirim Risalah Rapat</a>
+                    <a href="{{ route('manager.dashboard') }}">Beranda</a>/<a
+                        href="{{ route('risalah.manager') }}">Risalah Rapat</a>/<a href="#"
+                        style="color: #565656;">Kirim Risalah Rapat</a>
                 </div>
             </div>
         </div>
@@ -39,12 +43,10 @@
                         <input type="text" id="seri" value="{{ $risalah->seri_surat }}" readonly>
                     </div>
                     <div class="card-white">
-                        <label for="diterima">Diterima</label>
+                        <label for="pembuat">Pembuat</label>
                         <div class="separator"></div>
-                        <input type="text"
-                            id="kepada"
-                            value="{{ $tujuanUsernames }}"
-                            title="{{ $tujuanUsernames }}"
+                        <input type="text" id="pembuat"
+                            value="{{ $risalah->user ? $risalah->user->firstname . ' ' . $risalah->user->lastname : 'N/A' }}"
                             readonly>
                     </div>
                 </div>
@@ -55,20 +57,22 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        @if($risalah->status == 'pending')
-                            <button class="status">Diproses</button>
-                        @elseif($risalah->status == 'approve')
-                            <button class="status">Diterima</button>
-                        @elseif($risalah->status == 'reject')
-                            <button class="status">Ditolak</button>
-                        @elseif($risalah->status == 'correction')
-                            <button class="status">Dikoreksi</button>
+                        @if ($risalah->status == 'reject')
+                            <a class="status btn bg-danger">Ditolak</a>
+                        @elseif ($risalah->status == 'pending')
+                            <a class="status btn bg-info">Diproses</a>
+                        @elseif ($risalah->status == 'correction')
+                            <a class="status btn bg-warning">Diproses</a>
+                        @else
+                            <a class="status btn bg-success">Diterima</a>
                         @endif
                     </div>
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
                         <div class="separator"></div>
-                        <input type="text" id="tanggal" value="{{ $risalah->tgl_disahkan ? \Carbon\Carbon::parse($risalah->tgl_disahkan)->format('d-m-Y') : '-'  }}" readonly>
+                        <input type="text" id="tanggal"
+                            value="{{ $risalah->tgl_disahkan ? \Carbon\Carbon::parse($risalah->tgl_disahkan)->format('d-m-Y') : '-' }}"
+                            readonly>
                     </div>
                 </div>
             </div>
@@ -87,10 +91,10 @@
                     <div class="card-white">
                         <label for="divisi">Divisi</label>
                         <div class="separator"></div>
-                        <input type="text" id="nomor" value="{{ $risalah->user->department->kode_department 
-                            ?? $risalah->user->divisi->kode_divisi 
-                            ?? '-' }}
-                        " readonly>
+                        <input type="text" id="nomor"
+                            value="{{ $risalah->user->department->kode_department ?? ($risalah->user->divisi->kode_divisi ?? '-') }}
+                        "
+                            readonly>
                     </div>
                     <div class="card-white">
                         <label for="perihal">Perihal</label>
@@ -100,14 +104,19 @@
                     <div class="card-white">
                         <label for="tgl">Tanggal Surat</label>
                         <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{ $risalah->tgl_dibuat->translatedFormat('d F Y')  }}" readonly>
+                        <input type="text" id="tgl"
+                            value="{{ $risalah->tgl_dibuat->translatedFormat('d F Y') }}" readonly>
                     </div>
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
-                        <button class="btn-file"  onclick="window.location.href='{{ route('view-risalahPDF', $risalah->id_risalah) }}'"><img src="/img/mata.png" alt="view">Lihat</button>
-                        @if ($risalah->status=='approve')
-                        <button class="down btn-file" onclick="window.location.href='{{ route('cetakrisalah',['id' => $risalah->id_risalah]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</button>
+                        <button class="btn-file"
+                            onclick="window.location.href='{{ route('view-risalahPDF', $risalah->id_risalah) }}'"><img
+                                src="/img/mata.png" alt="view">Lihat</button>
+                        @if ($risalah->status == 'approve')
+                            <button class="down btn-file"
+                                onclick="window.location.href='{{ route('cetakrisalah', ['id' => $risalah->id_risalah]) }}'"><img
+                                    src="/img/memo-admin/down.png" alt="down">Unduh</button>
                         @endif
                     </div>
                     <!-- <div class="card-white">
@@ -122,6 +131,21 @@
                         <button class="down btn-file"><img src="/img/download.png" alt="down"><a href="#">Unduh</a></button>
                     </div> -->
                 </div>
+                <div class="row mb-4" style="gap: 20px;">
+                <div class="col">
+                    <div class="card-blue">
+                        <label for="diterima" class="form-label">
+                            <img src="/img/memo-admin/detail.png" alt="date" style="margin-right: 5px;">Daftar Tujuan
+                        </label>
+                    </div>
+                    <div class="card-white">
+                        <label for="diterima">Diterima</label>
+                        <div class="separator"></div>
+                        <pre
+                            style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $tujuanUsernames }}</pre>
+                    </div>
+                </div>
+            </div>
             </div>
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -133,7 +157,8 @@
                 </div>
             @endif
             @if ($risalah->status == 'pending' || $risalah->status == 'reject' || $risalah->status == 'correction')
-                <form id="approvalForm" method="POST" action="{{ route('risalah.updateStatus', $risalah->id_risalah) }}">
+                <form id="approvalForm" method="POST"
+                    action="{{ route('risalah.updateStatus', $risalah->id_risalah) }}">
                     @csrf
                     @method('PUT')
 
@@ -141,124 +166,153 @@
                         <div class="col">
                             <div class="label1 card-blue1">
                                 <label for="pengesahan" class="label">Pengesahan</label>
-                                
+
                                 <div class="form-check1">
                                     <label class="form-check-label" for="approve">Diterima</label>
-                                    <input type="radio" class="form-check-input approval-checkbox" id="approve" name="status" value="approve"
+                                    <input type="radio" class="form-check-input approval-checkbox" id="approve"
+                                        name="status" value="approve"
                                         {{ $risalah->status == 'approve' ? 'checked' : '' }}>
                                 </div>
                                 <div class="form-check2">
                                     <label class="form-check-label" for="reject">Ditolak</label>
-                                    <input type="radio" class="form-check-input approval-checkbox" id="reject" name="status" value="reject"
+                                    <input type="radio" class="form-check-input approval-checkbox" id="reject"
+                                        name="status" value="reject"
                                         {{ $risalah->status == 'reject' ? 'checked' : '' }}>
                                 </div>
                                 <div class="form-check3">
                                     <label class="form-check-label" for="correction">Dikoreksi</label>
-                                    <input type="radio" class="form-check-input approval-checkbox" id="correction" name="status" value="correction"
+                                    <input type="radio" class="form-check-input approval-checkbox" id="correction"
+                                        name="status" value="correction"
                                         {{ $risalah->status == 'correction' ? 'checked' : '' }}>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col" id="catatanSection" style="{{ $risalah->status == 'pending' || $risalah->status == 'reject' || $risalah->status == 'correct' ? '' : 'display: none;' }}">
-                            <div class="card-blue1">Catatan</div>
-                            <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan">{{ $risalah->catatan }}</textarea>        
-                        </div>             
+                        <div class="col" id="catatanSection" style="display: none;">
+                            <div class="card-blue1">Catatan <span class="text-danger">*</span></div>
+                            <textarea type="text" id="catatan" name="catatan" placeholder="Berikan Catatan">{{ $risalah->catatan }}</textarea>
+                            <small id="catatanError" style="color: red; display: none;">Catatan wajib diisi untuk
+                                status Ditolak/Dikoreksi.</small>
+                            <small id="catatanError" class="text-danger" style="display:none;">Catatan wajib
+                                diisi</small>
+                        </div>
                     </div>
-                <div class="footer">
-                    <button type="button" class="btn back" id="backBtn" onclick="window.location.href='{{ route('risalah.manager') }}'">Kembali</button>
-                    <button type="button" class="btn submit" id="submitBtn" data-bs-toggle="modal" data-bs-target="#submit">Kirim</button>
+                    <div class="footer">
+                        <button type="button" style="width:100px;height:40px;margin-right:12px;vertical-align:middle;font-size:16px;" class="btn back" id="backBtn"
+                            onclick="window.location.href='{{ route('risalah.manager') }}'">Kembali</button>
+                        <button type="button" style="width:100px;height:40px;margin-right:12px;vertical-align:middle;font-size:16px;" class="btn submit" id="submitBtn" data-bs-toggle="modal"
+                            data-bs-target="#submit">Kirim</button>
+                    </div>
+            @endif
+            </form>
+
+            <!-- Modal kirim -->
+            <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-center p-4">
+                        <div class="modal-body">
+                            <!-- Close Button -->
+                            <button type="button" class="btn-close position-absolute top-0 end-0 m-3"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
+                            <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3"
+                                style="width: 80px;">
+                            <h5 class="modal-title mb-4"><b>Kirim Risalah Rapat?</b></h5>
+                            <div class="d-flex justify-content-center mt-3">
+                                <button type="button" class="btn btn-outline-secondary me-2"
+                                    data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-primary" id="confirmSubmit"
+                                    data-bs-toggle="modal">Oke</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                @endif
-        </form>
-  
-        <!-- Modal kirim -->
-        <div class="modal fade" id="submit" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content text-center p-4">
-                    <div class="modal-body">
-                        <!-- Close Button -->
-                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-                        <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
-                        <h5 class="modal-title mb-4"><b>Kirim Risalah Rapat?</b></h5>
-                        <div class="d-flex justify-content-center mt-3">
-                            <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                            <button type="button" class="btn btn-primary" id="confirmSubmit" data-bs-toggle="modal">Oke</button>
-                        </div>    
+            </div>
+
+            <!-- Modal Berhasil -->
+            <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-center p-4">
+                        <div class="modal-body">
+                            <img src="/img/undangan/success.png" alt="Success Icon" class="my-3"
+                                style="width: 80px;">
+                            <!-- Success Message -->
+                            <h5 class="modal-title"><b>Sukses</b></h5>
+                            <p class="mt-2">Berhasil Mengirimkan Risalah Rapat</p>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a
+                                    href="{{ route('risalah.manager') }}"
+                                    style="color: white; text-decoration: none">Kembali ke Halaman Risalah</a></button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal Berhasil -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content text-center p-4">
-                    <div class="modal-body">
-                        <img src="/img/undangan/success.png" alt="Success Icon" class="my-3" style="width: 80px;">
-                        <!-- Success Message -->
-                        <h5 class="modal-title"><b>Sukses</b></h5>
-                        <p class="mt-2">Berhasil Mengirimkan Risalah Rapat</p>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><a href="{{route ('risalah.manager')}}" style="color: white; text-decoration: none">Kembali ke Halaman Risalah</a></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const radios = document.querySelectorAll('input[name="status"]');
+                const catatanSection = document.getElementById('catatanSection');
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const radios = document.querySelectorAll('input[name="status"]');
-        const catatanSection = document.getElementById('catatanSection');
-
-        radios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === 'correction' || this.value === 'reject') {
-                    catatanSection.style.display = 'block';
-                } else {
-                    catatanSection.style.display = 'none';
-                }
-            });
-        });
-    });
-        
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const checkboxes = document.querySelectorAll('.approval-checkbox');
-
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function () {
-                checkboxes.forEach(cb => {
-                    if (cb !== this) cb.checked = false;
+                radios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        if (this.value === 'correction' || this.value === 'reject') {
+                            catatanSection.style.display = 'block';
+                        } else {
+                            catatanSection.style.display = 'none';
+                        }
+                    });
                 });
             });
-        });
-    });
 
-    // Overlay kirim
-    document.addEventListener('DOMContentLoaded', function () {
-        const approvalForm = document.getElementById('approvalForm');
-        const confirmSubmitButton = document.getElementById('confirmSubmit');
 
-        confirmSubmitButton.addEventListener('click', function (event) {
-            event.preventDefault(); // Mencegah submit default
-            
-            // Kirim form secara normal
-            approvalForm.submit();
-        });
+            document.addEventListener('DOMContentLoaded', function() {
+                const checkboxes = document.querySelectorAll('.approval-checkbox');
 
-        // Jika ada notifikasi sukses dari server, tampilkan modal sukses
-        const successMessage = "{{ session('success') }}";
-        if (successMessage) {
-            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-            successModal.show();
-        }
-    });
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        checkboxes.forEach(cb => {
+                            if (cb !== this) cb.checked = false;
+                        });
+                    });
+                });
+            });
 
-    </script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            // Overlay kirim
+            document.addEventListener('DOMContentLoaded', function() {
+                const approvalForm = document.getElementById('approvalForm');
+                const confirmSubmitButton = document.getElementById('confirmSubmit');
+
+                confirmSubmitButton.addEventListener('click', function(event) {
+                    event.preventDefault(); // Mencegah submit default
+                    const statusValue = document.querySelector('input[name="status"]:checked')?.value;
+                    const catatanInput = document.getElementById('catatan');
+                    const catatanError = document.getElementById('catatanError');
+                    if ((statusValue === 'reject' || statusValue === 'correction') && catatanInput.value
+                    .trim() === '') {
+                        // Tutup modal submit sebelum tampilkan error
+                        const modalSubmit = bootstrap.Modal.getInstance(document.getElementById('submit'));
+                        if (modalSubmit) modalSubmit.hide();
+                        catatanError.style.display = 'block';
+                        catatanInput.focus();
+                        return;
+                    } else {
+                        catatanError.style.display = 'none';
+                    }
+                    approvalForm.submit();
+                });
+
+                // Jika ada notifikasi sukses dari server, tampilkan modal sukses
+                const successMessage = "{{ session('success') }}";
+                if (successMessage) {
+                    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    successModal.show();
+                }
+            });
+        </script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
