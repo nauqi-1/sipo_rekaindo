@@ -136,7 +136,8 @@
                 @endforeach
             </tbody>
         </table>
-        {{ $arsipUndangan->links('pagination::bootstrap-5') }}
+        {{-- {{ $arsipUndangan->links('pagination::bootstrap-5') }} --}}
+        {{ $arsipUndangan->appends(request()->query())->links('pagination::bootstrap-5') }}
     </div>
 
 

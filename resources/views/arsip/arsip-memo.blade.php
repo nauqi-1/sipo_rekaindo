@@ -122,7 +122,8 @@
             @endforeach
         </tbody>
     </table>
-    {{ $arsipMemo->links('pagination::bootstrap-5') }}
+    {{-- {{ $arsipMemo->links('pagination::bootstrap-5') }} --}}
+    {{ $arsipMemo->appends(request()->query())->links('pagination::bootstrap-5') }}
 </div>
 
 <!-- Modal Hapus -->
