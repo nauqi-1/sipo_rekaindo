@@ -5,229 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak Laporan</title>
-    <link rel="stylesheet" href="/css/format-surat/format-cetakLaporan.css">
-</head>
-<style>
-    @page {
-        margin-top: 120px;
-        margin-bottom: 120px;
-        margin-left: 0;
-        margin-right: 0;
-    }
 
-    body {
-        font-family: Arial, sans-serif;
-        font-size: 12px;
-        padding: 0;
-    }
-
-    header {
-        position: fixed;
-        top: -100px;
-        left: 0;
-        right: 0;
-        width: 100%;
-    }
-
-    footer {
-        position: fixed;
-        bottom: -100;
-        left: 0;
-        right: 0;
-        width: 100%;
-    }
-
-    main {
-        margin-top: 0px;
-        margin-bottom: 20px;
-        margin-right: 60px;
-        margin-left: 60px;
-        text-align: center;
-    }
-
-    .content {
-        width: 100%;
-        margin: auto;
-        text-align: center;
-        border: 1px solid black;
-    }
-
-    .memo-title {
-        text-align: center;
-        justify-content: center;
-        font-size: 26px;
-        font-weight: bold;
-        color: black;
-        margin-top: 0px;
-    }
-
-    .letter {
-        margin: auto;
-        margin-left: -30px;
-        margin-right: -30px;
-        background-color: #ffffff;
-        line-height: 0.7cm;
-        position: relative;
-        z-index: 1;
-        width: 90%;
-    }
-
-    .header1 tr td:first-child {
-        width: 20%;
-    }
-
-    .header2 table {
-        margin-top: 15px;
-        border-collapse: collapse;
-        width: 100%;
-        table-layout: fixed;
-    }
-
-    .header2 th {
-        width: 50%;
-        border-top: 3px solid black;
-        border-bottom: 3px solid black;
-        text-align: left;
-        font-weight: normal;
-        padding: 10px;
-        word-wrap: break-word;
-        overflow: hidden;
-    }
-
-    .header2 th+th {
-        border-left: 3px solid black;
-    }
-
-    .fill {
-        margin-top: 5px;
-        width: 95%;
-        margin: 0 auto;
-    }
-
-    .fill p {
-        text-align: left;
-    }
-
-    .fill table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    .fill table th,
-    .fill table td {
-        border: 1px solid black;
-        text-align: center;
-        padding: 5px;
-    }
-
-    .fill table th:first-child,
-    .fill table td:first-child {
-        width: 5%;
-        min-width: 40px;
-    }
-
-    .fill table th:nth-child(3),
-    .fill table td:nth-child(3),
-    .fill table th:nth-child(4),
-    .fill table td:nth-child(4) {
-        width: 10%;
-        min-width: 100px;
-    }
-
-    .contents {
-        text-align: justify;
-        line-height: 0.7cm;
-    }
-
-    .signature {
-        margin-top: 5%;
-        text-align: left !important;
-        width: fit-content;
-        margin-left: auto;
-        margin-right: 10%;
-    }
-
-    .signature p {
-        text-align: center;
-        margin: 0;
-    }
-
-    .view-mode header img,
-    .view-mode footer img,
-    .view-mode .content {
-        width: 50%;
-        margin: auto;
-    }
-
-    .view-mode header,
-    .view-mode footer {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        position: fixed;
-        left: 0;
-        width: 100%;
-        z-index: 100;
-    }
-
-    .view-mode {
-        overflow: hidden;
-    }
-
-    .view-mode header img {
-        display: block;
-        margin: 0 auto;
-        width: 50%;
-    }
-
-    .view-mode .header1,
-    .view-mode .header2 {
-        position: fixed;
-        top: 150px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 40%;
-        background-color: white;
-        padding: 10px;
-        text-align: left;
-        z-index: 1000;
-    }
-
-    .view-mode .header2 {
-        top: 6.5cm;
-        width: 38.5%;
-    }
-
-    .view-mode .fill {
-        position: relative;
-        width: 95%;
-        margin-left: auto;
-        margin-right: auto;
-        text-align: justify;
-        /* overflow-y: auto;  */
-        /* max-height: calc(100vh - 250px);  */
-    }
-
-    .view-mode .collab {
-        position: relative;
-        margin-top: 5.2cm;
-        width: 95%;
-        margin-left: auto;
-        margin-right: auto;
-        text-align: justify;
-        overflow-y: auto;
-        max-height: calc(100vh - 13cm);
-
-    }
-
-    .pdf-mode header img,
-    .pdf-mode footer img,
-    .pdf-mode .content {
-        width: 100%;
-    }
-                                                                                   
-</style>
+    <link rel="stylesheet" href="{{ public_path('css/format-surat/format-cetakLaporan.css') }}">
 </head>
 
 <body class="{{ isset($isPdf) && $isPdf ? 'pdf-mode' : 'view-mode' }}">
@@ -245,8 +24,8 @@
     <main>
         <div class="container">
             <div class="memo-title">
-                <h5>LAPORAN MEMO
-                </h5>
+                LAPORAN MEMO
+                
             </div>
             <div class="letter">
                 <div class="row">
@@ -304,7 +83,7 @@
                 && is_null($manager->section_id_section)
                 && is_null($manager->unit_id_unit);
                 @endphp
-                <div style="width: 40%; margin-left: auto; text-align: left; line-height: 1.3; margin-top: 20px;">
+                <div style="width: 40%; margin-left: auto; text-align: left; line-height: 1; margin-top: 10px;">
                     {{-- MENAMPILKAN POSISI DARI TABEL POSITION --}}
                     @if($isDirektur)
                     <p style="text-align: center; margin: 0; font-weight: bold;">
@@ -316,18 +95,11 @@
                         {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }} {{ $bagian }}
                     </p>
                     @endif
-
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br> {{-- sangat tidak elegan 😭😭😭 --}}
                     {{-- NAMA BERTANDA TANGAN --}}
-
                     <p style="margin: 0; text-align: center;"><b><u>{{ $manager->firstname }} {{ $manager->lastname }}</u></b></p>
                 </div>
                 <div style="clear: both;"></div>
-            
+
             </div>
             @endif
         </div>
