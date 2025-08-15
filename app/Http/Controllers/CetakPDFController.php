@@ -482,99 +482,6 @@ class CetakPDFController extends Controller
         return $pdf->stream('laporan-undangan.pdf');
     }
 
-
-    // public function laporanundanganPDF(Request $request)
-    // {
-
-    //     // Ambil data divisi
-    //     $undangans = Undangan::query();
-    //     $memoController = new MemoController();
-
-    //     if ($request->filled('search')) {
-    //         $undangans->where('judul', 'like', '%' . $request->search . '%');
-    //     }
-
-    //     $kodeUser = null;
-    //     if (Auth::user()->role->nm_role == 'admin') {
-    //         $kodeUser = $memoController->getDivDeptKode(Auth::user());
-    //     }
-
-    //     if (!$kodeUser && $request->filled('kode') && $request->kode != 'pilih') {
-    //         $kodeUser = $request->kode;
-    //     }
-
-    //     if ($kodeUser) {
-    //         $undangans->where(function ($query) use ($kodeUser) {
-    //             $query->where('kode', $kodeUser);
-    //         });
-    //     }
-
-    //     if ($kodeUser) {
-    //         $manager = $this->getGMFromKode($kodeUser);
-    //     } else {
-    //         $manager = null;
-    //     }
-
-    //     // Ambil semua data yang sudah difilter
-    //     $undangans = $undangans->orderBy('tgl_dibuat', 'asc')->get();
-
-    //     // Render Blade ke HTML
-
-
-    //     $headerPath = public_path('img/bheader.png');
-    //     $footerPath = public_path('img/bfooter.png');
-
-    //     // dd([
-    //     //     'header_exists' => file_exists($headerPath),
-    //     //     'footer_exists' => file_exists($footerPath),
-    //     //     'header_path' => $headerPath,
-    //     //     'footer_path' => $footerPath,
-    //     //     'header_size' => file_exists($headerPath) ? filesize($headerPath) : 0,
-    //     //     'footer_size' => file_exists($footerPath) ? filesize($footerPath) : 0
-    //     // ]);
-    //     // mPDF
-    //     $mpdf = new \Mpdf\Mpdf([
-    //         'format' => 'A4',
-    //         'margin_top' => 50,
-    //         'margin_bottom' => 30,
-    //     ]);
-    //     // 1. Load CSS
-    //     $stylesheet = file_get_contents(public_path('css/format-surat/format-cetakLaporan.css'));
-    //     $mpdf->WriteHTML($stylesheet, \Mpdf\HTMLParserMode::HEADER_CSS);
-
-    //     // 2. Set header/footer
-    //     // $mpdf->SetHTMLHeader('<img src="' . public_path('img/bheader.png') . '" style="width:100%;" />');
-    //     // $mpdf->SetHTMLFooter('<img src="' . public_path('img/bfooter.png') . '" style="width:100%;" />');
-
-    //     // 3. Render Blade (mode PDF)
-    //     $html = view('format-surat.format-cetakLaporan-undangan', [
-    //         'undangans' => $undangans,
-    //         'tgl_awal' => $request->tgl_awal,
-    //         'tgl_akhir' => $request->tgl_akhir,
-    //         'manager' => $manager,
-    //         'isPdf' => true
-    //     ])->render();
-
-    //     $headerPath = str_replace('\\', '/', public_path('img/bheader.png'));
-    //     $footerPath = str_replace('\\', '/', public_path('img/bfooter.png'));
-
-    //     // $mpdf->SetHTMLHeader('
-    //     //         <div style="width:100%; text-align:center; border: 2px solid red;">
-    //     //             <img src="file:///' . $headerPath . '" style="width:100%; max-height:80px;" />
-    //     //         </div>
-    //     //         ');
-
-    //     // $mpdf->SetHTMLFooter('
-    //     //         <div style="width:100%; text-align:center; border: 2px solid blue;">
-    //     //             <img src="file:///' . $footerPath . '" style="width:100%; max-height:50px;" />
-    //     //         </div>
-    //     //         ');
-    //     $mpdf->setHTMLHeader('<div style="width:100%;text-align:center;font-size:18px;padding:10px 0;border-bottom:2px solid #333;background:#ffe;">HEADER DEBUG PDF - CETAK UNDANGAN</div>');
-    //     $mpdf->setHTMLFooter('<div style="width:100%;text-align:center;font-size:14px;padding:8px 0;border-top:2px solid #333;background:#eef;">FOOTER DEBUG PDF - CETAK UNDANGAN</div>');
-    //     $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
-
-    //     return response($mpdf->Output('', 'S'))->header('Content-Type', 'application/pdf');
-    // }
     public function laporanundanganPDF(Request $request)
     {
         // Ambil data divisi
@@ -606,6 +513,8 @@ class CetakPDFController extends Controller
             $manager = null;
         }
 
+        $undangans->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
+            ->whereDate('tgl_dibuat', '<=', $request->tgl_akhir);
         // Ambil semua data yang sudah difilter
         $undangans = $undangans->orderBy('tgl_dibuat', 'asc')->get();
 
@@ -771,6 +680,9 @@ class CetakPDFController extends Controller
         } else {
             $manager = null;
         }
+
+        $risalahs->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
+            ->whereDate('tgl_dibuat', '<=', $request->tgl_akhir);
         // Ambil semua data yang sudah difilter
         $risalahs = $risalahs->orderBy('tgl_dibuat', 'desc')->get();
 
