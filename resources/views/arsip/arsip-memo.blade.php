@@ -1,7 +1,7 @@
 @extends('layouts.superadmin')
 
 @section('title', 'Arsip Memo')
-    
+
 @section('content')
 <div class="container">
     <div class="header">
@@ -10,7 +10,7 @@
             <a href="{{route(Auth::user()->role->nm_role.'.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
         </div>
         <h1>Memo</h1>
-    </div>        
+    </div>
     <div class="row">
         <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="breadcrumb" style="gap: 5px; width: 82%;">
@@ -58,7 +58,7 @@
                 <th>Nama Dokumen</th>
                 <th>Tanggal Masuk
                 <button class="data-md">
-                    <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_dibuat', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}" 
+                    <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_dibuat', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}"
                     style="color:rgb(135, 135, 148); text-decoration: none;">
                         <span class="bi-arrow-down-up"></span>
                     </a>
@@ -68,7 +68,7 @@
                 <th>Dokumen</th>
                 <th>Tanggal Disahkan
                 <button class="data-md">
-                    <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}" 
+                    <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}"
                     style="color: rgb(135, 135, 148); text-decoration: none;">
                         <span class="bi-arrow-down-up"></span>
                     </a>
@@ -83,7 +83,7 @@
             @foreach($arsipMemo as  $arsip)
             <tr>
                 <td class="nomor">{{ $loop->iteration }}</td>
-                <td class="nama-dokumen 
+                <td class="nama-dokumen
                         {{ $arsip->document->status == 'reject' ? 'text-danger' : ($arsip->document->status == 'correction' ? 'text-warning' : ($arsip->document->status == 'approve' ? 'text-success' : '')) }}"
                              style="{{ $arsip->document->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
                         {{ $arsip->document->judul }}
