@@ -152,6 +152,13 @@
                         <img src="/img/memo-supervisor/viewBlue.png" alt="view">
                     </a>
                     @else
+                    <form action="{{ route('arsip.archive', ['document_id' => $kirim->memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
+                        @csrf
+                        @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
+                        <button type="submit" class="btn btn-sm3 submitArsipMemo">
+                            <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                        </button>
+                    </form>
                     <a class="btn btn-sm3" href="{{ route('view.memo-terkirim', $kirim->id_document) }}">
                         <img src="/img/memo-supervisor/viewBlue.png" alt="view">
                     </a>
