@@ -197,8 +197,16 @@ class ArsipController extends Controller
         }
 
         // Sorting
+        $sortBy = $request->get('sort_by', 'tgl_dibuat'); // default ke tgl_dibuat
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-        $undanganQuery->orderBy('tgl_dibuat', $sortDirection);
+
+        // Pastikan kolom valid
+        $allowedSorts = ['tgl_dibuat', 'tgl_disahkan'];
+        if (!in_array($sortBy, $allowedSorts)) {
+            $sortBy = 'tgl_dibuat';
+        }
+
+        $undanganQuery->orderBy($sortBy, $sortDirection);
 
         // Ambil hasil undangan yang sudah difilter
         $filteredUndangan = $undanganQuery->get();
