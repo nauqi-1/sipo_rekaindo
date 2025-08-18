@@ -95,6 +95,12 @@
                         {{ preg_replace('/^\([A-Z]+\)\s*/', '', $manager->position->nm_position) }} {{ $bagian }}
                     </p>
                     @endif
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br> {{-- sangat tidak elegan 😭😭😭 --}}
                     {{-- NAMA BERTANDA TANGAN --}}
                     <p style="margin: 0; text-align: center;"><b><u>{{ $manager->firstname }} {{ $manager->lastname }}</u></b></p>
                 </div>
