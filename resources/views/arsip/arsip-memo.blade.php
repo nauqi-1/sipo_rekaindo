@@ -84,25 +84,25 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($arsipMemo as $arsip)
+            @foreach($arsipMemo as $memo)
             <tr>
                 <td class="nomor">{{ $loop->iteration }}</td>
                 <td class="nama-dokumen
-                        {{ $arsip->document->status == 'reject' ? 'text-danger' : ($arsip->document->status == 'correction' ? 'text-warning' : ($arsip->document->status == 'approve' ? 'text-success' : '')) }}"
-                    style="{{ $arsip->document->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                    {{ $arsip->document->judul }}
+                        {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'correction' ? 'text-warning' : ($memo->status == 'approve' ? 'text-success' : '')) }}"
+                    style="{{ $memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
+                    {{ $memo->judul }}
                 </td>
-                <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
-                <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
-                <td>{{ $arsip->document ? $arsip->document->nomor_memo : '-' }}</td>
-                <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-                <td>{{ $arsip->document && $arsip->document->kode ? $arsip->document->kode : '-' }}</td>
+                <td>{{ $memo->tgl_dibuat ? $memo->tgl_dibuat->format('d-m-Y') : '-' }}</td>
+                <td>{{ $memo->seri_surat }}</td>
+                <td>{{ $memo->nomor_memo }}</td>
+                <td>{{ $memo->tgl_disahkan ? $memo->tgl_disahkan->format('d-m-Y') : '-' }}</td>
+                <td>{{ $memo->kode }}</td>
                 <td>
-                    @if ($arsip->document->final_status == 'reject')
+                    @if ($memo->final_status == 'reject')
                     <span class="badge bg-danger">Ditolak</span>
-                    @elseif ($arsip->document->final_status == 'pending')
+                    @elseif ($memo->final_status == 'pending')
                     <span class="badge bg-info">Diproses</span>
-                    @elseif ($arsip->document->final_status == 'correction')
+                    @elseif ($memo->final_status == 'correction')
                     <span class="badge bg-warning">Dikoreksi</span>
                     @else
                     <span class="badge bg-success">Diterima</span>
@@ -110,16 +110,16 @@
                 </td>
                 <td>
                     <!-- Button Unduh -->
-                    <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakmemo',['id' => $arsip->document->id_memo]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
+                    <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakmemo',['id' => $memo->id_memo]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
 
                     <!-- Button Arsip -->
-                    @if ($arsip->document)
-                    <button class="btn btn-sm3" data-bs-toggle="modal" data-bs-target="#deleteArsipMemoModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_memo, 'jenis_document' => 'Memo']) }}">
+                    @if ($memo)
+                    <button class="btn btn-sm3" data-bs-toggle="modal" data-bs-target="#deleteArsipMemoModal" data-route="{{ route('arsip.restore', ['document_id' => $memo->id_memo, 'jenis_document' => 'Memo']) }}">
                         <img src="/img/arsip/unarchive2.png" alt="unarchive" style="height: 16px;">
                     </button>
 
                     <!-- Button View -->
-                    <button class="btn btn-sm3" onclick="window.location.href='{{route('view.memo-arsip',$arsip->document->id_memo)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
+                    <button class="btn btn-sm3" onclick="window.location.href='{{route('view.memo-arsip',$memo->id_memo)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
                     @endif
                 </td>
             </tr>

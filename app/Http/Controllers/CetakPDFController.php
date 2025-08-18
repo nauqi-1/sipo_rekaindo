@@ -28,7 +28,8 @@ class CetakPDFController extends Controller
 
         $tujuanNames = explode(';', $memo->tujuan_string);
 
-        $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        $manager = User::withTrashed()
+            ->with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$memo->nama_bertandatangan])
             ->first();
 
@@ -97,7 +98,8 @@ class CetakPDFController extends Controller
 
         $tujuanNames = explode(';', $memo->tujuan_string);
 
-        $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        $manager = User::withTrashed()
+            ->with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$memo->nama_bertandatangan])
             ->first();
 
@@ -109,8 +111,6 @@ class CetakPDFController extends Controller
 
         $headerPath = public_path('img/bheader.png');
         $footerPath = public_path('img/bfooter.png');
-
-
 
         // Konversi gambar ke base64
         $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
@@ -204,7 +204,8 @@ class CetakPDFController extends Controller
             })
             ->values(); // reset index array
 
-        $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        $manager = User::withTrashed()
+            ->with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$undangan->nama_bertandatangan])
             ->first();
 
@@ -344,7 +345,8 @@ class CetakPDFController extends Controller
             })
             ->values(); // reset index array
 
-        $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        $manager = User::withTrashed()
+            ->with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$undangan->nama_bertandatangan])
             ->first();
 
@@ -399,15 +401,15 @@ class CetakPDFController extends Controller
         $users = collect();
 
         if ($divisi) {
-            $users = User::where('divisi_id_divisi', $divisi->id_divisi)->get();
+            $users = User::withTrashed()->where('divisi_id_divisi', $divisi->id_divisi)->get();
         } else {
             $department = Department::where('kode_department', $kode)->first();
             if ($department) {
-                $users = User::where('department_id_department', $department->id_department)->get();
+                $users = User::withTrashed()->where('department_id_department', $department->id_department)->get();
             } else {
                 $director = Director::where('kode_director', $kode)->first();
                 if ($director) {
-                    $users = User::where('director_id_director', $director->id_director)->get();
+                    $users = User::withTrashed()->where('director_id_director', $director->id_director)->get();
                 } else {
                     return response()->json(['error' => 'Kode tidak valid'], 404);
                 }

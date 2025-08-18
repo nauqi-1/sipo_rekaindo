@@ -87,28 +87,28 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($arsipUndangan as $arsip)
+                @foreach ($arsipUndangan as $undangan)
                     <tr>
                         <td class="nomor">{{ $loop->iteration }}</td>
                         <td class="nama-dokumen
-                        {{ $arsip->document->status == 'reject' ? 'text-danger' : ($arsip->document->status == 'correction' ? 'text-warning' : ($arsip->document->status == 'approve' ? 'text-success' : '')) }}"
-                            style="{{ $arsip->document->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                            {{ $arsip->document->judul }}
+                        {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'correction' ? 'text-warning' : ($undangan->status == 'approve' ? 'text-success' : '')) }}"
+                            style="{{ $undangan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
+                            {{ $undangan->judul }}
                         </td>
-                        <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
-                        <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
-                        <td>{{ $arsip->document ? $arsip->document->nomor_undangan : '-' }}</td>
-                        <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-                        <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}
+                        <td>{{ $undangan ? $undangan->tgl_dibuat->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $undangan ? $undangan->seri_surat : '-' }}</td>
+                        <td>{{ $undangan ? $undangan->nomor_undangan : '-' }}</td>
+                        <td>{{ $undangan ? $undangan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $undangan && $undangan->divisi ? $undangan->divisi->nm_divisi : '-' }}
                         </td>
                         <td>
-                            @if ($arsip->document->final_status == 'reject')
+                            @if ($undangan->final_status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($arsip->document->final_status == 'pending')
+                            @elseif ($undangan->final_status == 'pending')
                                 <span class="badge bg-info">Diproses</span>
-                            @elseif ($arsip->document->final_status == 'pending')
+                            @elseif ($undangan->final_status == 'pending')
                                 <span class="badge bg-warning">Dikoreksi</span>
-                            @elseif ($arsip->document->final_status == 'approve')
+                            @elseif ($undangan->final_status == 'approve')
                                 <span class="badge bg-success">Diterima</span>
                             @else
                                 <span class="badge bg-secondary">-</span>
@@ -116,19 +116,19 @@
                         </td>
                         <td>
                             <button class="btn btn-sm1"
-                                onclick="window.location.href='{{ route('cetakundangan', ['id' => $arsip->document->id_undangan]) }}'"><img
+                                onclick="window.location.href='{{ route('cetakundangan', ['id' => $undangan->id_undangan]) }}'"><img
                                     src="/img/arsip/unduh.png" alt="unduh"></button>
 
                             <!-- Button Arsip -->
-                            @if ($arsip->document)
+                            @if ($undangan)
                                 <button class="btn btn-sm3" data-bs-toggle="modal"
                                     data-bs-target="#deleteArsipUndanganModal"
-                                    data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_undangan, 'jenis_document' => 'Undangan']) }}">
+                                    data-route="{{ route('arsip.restore', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}">
                                     <img src="/img/arsip/unarchive2.png" alt="unarchive" style="height: 16px;">
                                 </button>
 
                                 <button class="btn btn-sm3"
-                                    onclick="window.location.href='{{ route('view.undangan-arsip', $arsip->document->id_undangan) }}'"><img
+                                    onclick="window.location.href='{{ route('view.undangan-arsip', $undangan->id_undangan) }}'"><img
                                         src="/img/arsip/preview.png" alt="preview"></button>
                             @endif
                         </td>
