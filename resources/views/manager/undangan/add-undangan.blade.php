@@ -379,6 +379,13 @@
     </div>
     <script>
         $('#addUndanganForm').on('submit', function (e) {
+            const submitBtn = $(this).find('button[type="submit"]');
+
+            // Disable the button and add spinner
+            submitBtn.prop('disabled', true).html(
+                `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`
+            );
+
             const tujuanContainer = $('#tujuan-container');
             tujuanContainer.html(''); // bersihkan sebelum nambah
 
@@ -403,8 +410,9 @@
                     behavior: 'smooth',
                     block: 'center'
                 });
-
+                
                 e.preventDefault();
+                submitBtn.prop('disabled', false).text('Simpan');
                 return false;
             } else {
                 tujuanError.style.display = 'none';

@@ -58,7 +58,7 @@
                                 value="{{ now()->format('Y-m-d') }}" readonly>
 
                             @error('tgl_dibuat')
-                                <div class="form-control text-danger">{{ $message }}</div>
+                            <div class="form-control text-danger">{{ $message }}</div>
                             @enderror
                             <input type="hidden" name="tgl_disahkan">
                             <input type="hidden" name="catatan">
@@ -84,244 +84,244 @@
                             <input type="text" name="judul" id="judul" class="form-control"
                                 placeholder="Masukkan Perihal / Judul Surat" value="{{ old('judul') }}">
                             @error('judul')
-                                <div class="form-control text-danger">{{ $message }}</div>
+                            <div class="form-control text-danger">{{ $message }}</div>
                             @enderror
                         </div>
 
                     </div>
                     {{-- <div class="row mb-4"> --}}
-                        <!--Checkboxes kepada (tujuan)-->
-                        <div class="row mb-4">
-                            <div class="col-md-12 d-flex justify-content-center">
-                                <div style="width: 95%">
-                                    <label for="kepada" class="form-label">
-                                        <img src="/img/undangan/kepada.png" alt="kepada" class="form-label"
-                                            style="margin-right: 5px; color: #1f4178;">Kepada <span
-                                            class="text-danger">*</span>
-                                        <span class="label-kepada">Pilih user atau struktur, semua user di bawah
-                                            struktur akan otomatis terpilih</span>
-                                    </label>
-                                    <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto; font">
-                                        <div style="font-size: small" class="form-label" id="org-tree"></div>
-                                        <style>
-                                            #org-tree .jstree-anchor {
-                                                color: #1f4178;
-                                                font-weight: 500;
-                                            }
-                                        </style>
-                                        <small id="tujuanError" class="text-danger" style="display:none;">Minimal pilih
-                                            satu tujuan!</small>
-                                    </div>
-                                </div>
-                                <script>
-                                    $(function () {
-                                        $('#org-tree').jstree({
-                                            'core': {
-                                                'data': @json(json_decode($jsTreeData))
-                                            },
-                                            "plugins": ["checkbox", "search"]
-                                        }).on('changed.jstree', function (e, data) {
-                                            let allSelectedNodes = data.instance.get_selected(true);
-                                            let selectedNodes = [];
-
-                                            allSelectedNodes.forEach(function (node) {
-                                                // Check if node has 'fa fa-user' icon (which indicates it's a user)
-                                                if (node.icon && node.icon === 'fa fa-user') {
-                                                    selectedNodes.push(node.text);
-                                                }
-
-                                                // Auto expand selected nodes to show their children
-                                                if (data.instance.is_selected(node.id)) {
-                                                    data.instance.open_node(node.id);
-                                                }
-                                            });
-
-                                            // Sort selectedNodes by position hierarchy (Direktur first, Staff last)
-                                            selectedNodes.sort(function (a, b) {
-                                                // Define position hierarchy order
-                                                const positionOrder = {
-                                                    'Direktur': 1,
-                                                    'GM': 2,
-                                                    'General Manager': 2,
-                                                    'SM': 3,
-                                                    'Senior Manager': 3,
-                                                    'M': 4,
-                                                    'Manager': 4,
-                                                    'PJ SM': 5,
-                                                    'Penanggung Jawab Senior Manager': 5,
-                                                    'PJ M': 6,
-                                                    'Penanggung Jawab Manager': 6,
-                                                    'SPV': 7,
-                                                    'Supervisor': 7,
-                                                    'PJ SPV': 8,
-                                                    'Penanggung Jawab Supervisor': 8,
-                                                    'Staff': 9
-                                                };
-
-                                                // Extract position from text (position is at the beginning)
-                                                const getPositionPriority = function (text) {
-                                                    for (let pos in positionOrder) {
-                                                        if (text.startsWith(pos)) {
-                                                            return positionOrder[pos];
-                                                        }
-                                                    }
-                                                    return 999; // Unknown positions go last
-                                                };
-
-                                                return getPositionPriority(a) - getPositionPriority(b);
-                                            });
-
-                                            let list = $('#selected-recipients');
-                                            let section = $('#selected-section');
-                                            list.empty();
-
-                                            if (selectedNodes.length) {
-                                                selectedNodes.forEach(name => {
-                                                    list.append(`<li>${name}</li>`);
-                                                });
-                                                section.show();
-                                            } else {
-                                                section.hide();
-                                            }
-                                        });
-                                        // Listen for changes and update tujuanInput as array of user IDs
-
-                                    });
-                                </script>
-                            </div>
-                            <!-- Added section for displaying selected recipients -->
-                            <div style="display: none;" id="selected-section">
-                                <label style="font-size: small;" class="form-label">
-                                    Daftar Penerima:
+                    <!--Checkboxes kepada (tujuan)-->
+                    <div class="row mb-4">
+                        <div class="col-md-12 d-flex justify-content-center">
+                            <div style="width: 95%">
+                                <label for="kepada" class="form-label">
+                                    <img src="/img/undangan/kepada.png" alt="kepada" class="form-label"
+                                        style="margin-right: 5px; color: #1f4178;">Kepada <span
+                                        class="text-danger">*</span>
+                                    <span class="label-kepada">Pilih user atau struktur, semua user di bawah
+                                        struktur akan otomatis terpilih</span>
                                 </label>
-                                <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
-                                    <ul id="selected-recipients"
-                                        style="font-size: small; padding-left: 15px; margin: 0; counter-reset: item; list-style-type: none;">
-                                    </ul>
+                                <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto; font">
+                                    <div style="font-size: small" class="form-label" id="org-tree"></div>
                                     <style>
-                                        #selected-recipients li {
-                                            display: block;
-                                            margin-bottom: 0.2em;
-                                        }
-
-                                        #selected-recipients li:before {
-                                            content: counter(item, decimal) ". ";
-                                            counter-increment: item;
-                                            font-weight: bold;
+                                        #org-tree .jstree-anchor {
+                                            color: #1f4178;
+                                            font-weight: 500;
                                         }
                                     </style>
+                                    <small id="tujuanError" class="text-danger" style="display:none;">Minimal pilih
+                                        satu tujuan!</small>
                                 </div>
                             </div>
+                            <script>
+                                $(function() {
+                                    $('#org-tree').jstree({
+                                        'core': {
+                                            'data': @json(json_decode($jsTreeData))
+                                        },
+                                        "plugins": ["checkbox", "search"]
+                                    }).on('changed.jstree', function(e, data) {
+                                        let allSelectedNodes = data.instance.get_selected(true);
+                                        let selectedNodes = [];
+
+                                        allSelectedNodes.forEach(function(node) {
+                                            // Check if node has 'fa fa-user' icon (which indicates it's a user)
+                                            if (node.icon && node.icon === 'fa fa-user') {
+                                                selectedNodes.push(node.text);
+                                            }
+
+                                            // Auto expand selected nodes to show their children
+                                            if (data.instance.is_selected(node.id)) {
+                                                data.instance.open_node(node.id);
+                                            }
+                                        });
+
+                                        // Sort selectedNodes by position hierarchy (Direktur first, Staff last)
+                                        selectedNodes.sort(function(a, b) {
+                                            // Define position hierarchy order
+                                            const positionOrder = {
+                                                'Direktur': 1,
+                                                'GM': 2,
+                                                'General Manager': 2,
+                                                'SM': 3,
+                                                'Senior Manager': 3,
+                                                'M': 4,
+                                                'Manager': 4,
+                                                'PJ SM': 5,
+                                                'Penanggung Jawab Senior Manager': 5,
+                                                'PJ M': 6,
+                                                'Penanggung Jawab Manager': 6,
+                                                'SPV': 7,
+                                                'Supervisor': 7,
+                                                'PJ SPV': 8,
+                                                'Penanggung Jawab Supervisor': 8,
+                                                'Staff': 9
+                                            };
+
+                                            // Extract position from text (position is at the beginning)
+                                            const getPositionPriority = function(text) {
+                                                for (let pos in positionOrder) {
+                                                    if (text.startsWith(pos)) {
+                                                        return positionOrder[pos];
+                                                    }
+                                                }
+                                                return 999; // Unknown positions go last
+                                            };
+
+                                            return getPositionPriority(a) - getPositionPriority(b);
+                                        });
+
+                                        let list = $('#selected-recipients');
+                                        let section = $('#selected-section');
+                                        list.empty();
+
+                                        if (selectedNodes.length) {
+                                            selectedNodes.forEach(name => {
+                                                list.append(`<li>${name}</li>`);
+                                            });
+                                            section.show();
+                                        } else {
+                                            section.hide();
+                                        }
+                                    });
+                                    // Listen for changes and update tujuanInput as array of user IDs
+
+                                });
+                            </script>
                         </div>
+                        <!-- Added section for displaying selected recipients -->
+                        <div style="display: none;" id="selected-section">
+                            <label style="font-size: small;" class="form-label">
+                                Daftar Penerima:
+                            </label>
+                            <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                                <ul id="selected-recipients"
+                                    style="font-size: small; padding-left: 15px; margin: 0; counter-reset: item; list-style-type: none;">
+                                </ul>
+                                <style>
+                                    #selected-recipients li {
+                                        display: block;
+                                        margin-bottom: 0.2em;
+                                    }
 
-
-                        <div class="mb-3 row">
-                            <div class="col-md-6">
-                                <label for="tgl_rapat" class="form-label">
-                                    <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal
-                                    Rapat<span class="text-danger">*</span>
-                                </label>
-                                <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"
-                                    value="{{ old('tgl_rapat') }}" placeholder="Tanggal Rapat">
-                                @error('tgl_rapat')
-                                    <div class="form-control text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="waktu" class="form-label">Waktu Rapat</label> <span
-                                    class="text-danger">*</span>
-                                <div class="d-flex align-items-center">
-                                    <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2"
-                                        placeholder="09.00" value="{{ old('waktu_mulai') }}">
-
-                                    <span class="fw-bold">s/d</span>
-                                    <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2"
-                                        placeholder="Selesai" value="{{ old('waktu_selesai') }}">
-
-                                </div>
-                                @error('waktu_mulai')
-                                    <div class="form-control text-danger">{{ $message }}</div>
-                                @enderror
-                                @error('waktu_selesai')
-                                    <div class="form-control text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
-                                <input type="text" name="tempat" id="tempat" class="form-control"
-                                    placeholder="Ruang Rapat" value="{{ old('tempat') }}">
-                                @error('tempat')
-                                    <div class="form-control text-danger">{{ $message }}</div>
-                                @enderror
+                                    #selected-recipients li:before {
+                                        content: counter(item, decimal) ". ";
+                                        counter-increment: item;
+                                        font-weight: bold;
+                                    }
+                                </style>
                             </div>
                         </div>
-                        <div class="mb-3 row">
-                            <!--TTD yang bertanda tangan-->
-                            <div class="col-md-6">
-                                <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span
-                                        class="text-danger">*</span></label>
-                                <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control">
-                                    <option value="" disabled selected style="text-align: left;">--Pilih--</option>
-                                    @foreach ($managers as $manager)
-                                        @php
-                                            preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
-                                            $kode_position = $matches[1] ?? '';
-                                        @endphp
-                                        <option value="{{ $manager->id }}">
-                                            ({{ $kode_position }})
-                                            {{ $manager->firstname }} {{ $manager->lastname }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('nama_bertandatangan')
-                                    <div class="form-control text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6 lampiran">
-                                <label for="lampiran" class="form-label">Lampiran</label>
-                                <div class="separator"></div>
-                                <div class="upload-wrapper">
-                                    <button type="button" class="btn btn-primary upload-button" id="openUploadModal"
-                                        style="margin-left: 30px;">Pilih File</button>
-                                    <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png"
-                                        style="display: none;"
-                                        onchange="if(this.files[0].size > 2097152){ alert('Ukuran maksimal 2MB'); this.value=''; }">
-
-                                    <div id="filePreview" style="display: none; text-align: center">
-                                        <img id="previewIcon" src="" alt="Preview"
-                                            style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
-                                        <span id="fileName"></span>
-                                        <button type="button" id="removeFile" class="bi bi-x remove-btn"
-                                            style="border: none; color:red; background-color: white;"></button>
-                                    </div>
-                                </div>
-                                <small id="fileError" class="text-danger" style="display:none;">File gagal diunggah. Ukuran maksimal 2MB dan harus bertipe PDF.</small>
-                            </div>
-                        </div>
-
                     </div>
-                    <div class="row mb-4 isi-surat-row">
-                        <div class="col-md-12">
-                            <img src="\img\undangan\isi-surat.png" alt="isiSurat" style=" margin-left: 10px;">
-                            <label for="isi_undangan">Agenda <span class="text-danger">*</span></label>
-                        </div>
-                        @error('isi_undangan')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                        <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
-                            <textarea id="summernote" name="isi_undangan" value="{{ old('isi_undangan') }}"></textarea>
 
+
+                    <div class="mb-3 row">
+                        <div class="col-md-6">
+                            <label for="tgl_rapat" class="form-label">
+                                <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal
+                                Rapat<span class="text-danger">*</span>
+                            </label>
+                            <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"
+                                value="{{ old('tgl_rapat') }}" placeholder="Tanggal Rapat">
+                            @error('tgl_rapat')
+                            <div class="form-control text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="waktu" class="form-label">Waktu Rapat</label> <span
+                                class="text-danger">*</span>
+                            <div class="d-flex align-items-center">
+                                <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2"
+                                    placeholder="09.00" value="{{ old('waktu_mulai') }}">
+
+                                <span class="fw-bold">s/d</span>
+                                <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2"
+                                    placeholder="Selesai" value="{{ old('waktu_selesai') }}">
+
+                            </div>
+                            @error('waktu_mulai')
+                            <div class="form-control text-danger">{{ $message }}</div>
+                            @enderror
+                            @error('waktu_selesai')
+                            <div class="form-control text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
+                            <input type="text" name="tempat" id="tempat" class="form-control"
+                                placeholder="Ruang Rapat" value="{{ old('tempat') }}">
+                            @error('tempat')
+                            <div class="form-control text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
+                    <div class="mb-3 row">
+                        <!--TTD yang bertanda tangan-->
+                        <div class="col-md-6">
+                            <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span
+                                    class="text-danger">*</span></label>
+                            <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control">
+                                <option value="" disabled selected style="text-align: left;">--Pilih--</option>
+                                @foreach ($managers as $manager)
+                                @php
+                                preg_match('/\((.*?)\)/', $manager->position->nm_position, $matches);
+                                $kode_position = $matches[1] ?? '';
+                                @endphp
+                                <option value="{{ $manager->id }}">
+                                    ({{ $kode_position }})
+                                    {{ $manager->firstname }} {{ $manager->lastname }}
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('nama_bertandatangan')
+                            <div class="form-control text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-6 lampiran">
+                            <label for="lampiran" class="form-label">Lampiran</label>
+                            <div class="separator"></div>
+                            <div class="upload-wrapper">
+                                <button type="button" class="btn btn-primary upload-button" id="openUploadModal"
+                                    style="margin-left: 30px;">Pilih File</button>
+                                <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png"
+                                    style="display: none;"
+                                    onchange="if(this.files[0].size > 2097152){ alert('Ukuran maksimal 2MB'); this.value=''; }">
+
+                                <div id="filePreview" style="display: none; text-align: center">
+                                    <img id="previewIcon" src="" alt="Preview"
+                                        style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
+                                    <span id="fileName"></span>
+                                    <button type="button" id="removeFile" class="bi bi-x remove-btn"
+                                        style="border: none; color:red; background-color: white;"></button>
+                                </div>
+                            </div>
+                            <small id="fileError" class="text-danger" style="display:none;">File gagal diunggah. Ukuran maksimal 2MB dan harus bertipe PDF.</small>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="card-footer">
-                    <button type="button" class="btn btn-cancel"><a
-                            href="{{ route('undangan.superadmin') }}">Batal</a></button>
-                    <button type="submit" class="btn btn-save">Ajukan</button>
-                    <div id="tujuan-container"></div> <!--Manggil script dibawah-->
+                <div class="row mb-4 isi-surat-row">
+                    <div class="col-md-12">
+                        <img src="\img\undangan\isi-surat.png" alt="isiSurat" style=" margin-left: 10px;">
+                        <label for="isi_undangan">Agenda <span class="text-danger">*</span></label>
+                    </div>
+                    @error('isi_undangan')
+                    <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                    <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
+                        <textarea id="summernote" name="isi_undangan" value="{{ old('isi_undangan') }}"></textarea>
+
+                    </div>
                 </div>
             </div>
-        </form>
+            <div class="card-footer">
+                <button type="button" class="btn btn-cancel"><a
+                        href="{{ route('undangan.superadmin') }}">Batal</a></button>
+                <button type="submit" class="btn btn-save">Ajukan</button>
+                <div id="tujuan-container"></div> <!--Manggil script dibawah-->
+            </div>
+    </div>
+    </form>
     </div>
     <!-- Modal Berhasil -->
     <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="submitLabel" aria-hidden="true">
@@ -372,7 +372,7 @@
                                     <span id="modalFileName"></span>
                                 </div>
                                 @error('lampiran')
-                                    <div class="text-danger">{{ $message }}</div>
+                                <div class="text-danger">{{ $message }}</div>
                                 @enderror
 
                             </div>
@@ -387,7 +387,13 @@
         </div>
     </div>
     <script>
-        $('#addUndanganForm').on('submit', function (e) {
+        $('#addUndanganForm').on('submit', function(e) {
+            const submitBtn = $(this).find('button[type="submit"]');
+
+            // Disable the button and add spinner
+            submitBtn.prop('disabled', true).html(
+                `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`
+            );
             const tujuanContainer = $('#tujuan-container');
             tujuanContainer.html(''); // bersihkan sebelum nambah
 
@@ -408,7 +414,7 @@
             if (userIds.length === 0) {
                 tujuanError.textContent = "Minimal pilih satu tujuan!";
                 tujuanError.style.display = 'block';
-
+                submitBtn.prop('disabled', false).text('Simpan');
                 // Scroll otomatis ke error
                 tujuanError.scrollIntoView({
                     behavior: 'smooth',
@@ -437,29 +443,29 @@
             }
         });
         // Modal Upload File - Menampilkan Modal
-        document.getElementById('openUploadModal').addEventListener('click', function () {
+        document.getElementById('openUploadModal').addEventListener('click', function() {
             var uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
             uploadModal.show();
         });
 
         // Membuka file input ketika tombol "Pilih File" di klik
-        document.getElementById('selectFileBtn').addEventListener('click', function () {
+        document.getElementById('selectFileBtn').addEventListener('click', function() {
             document.getElementById('fileInput').click();
         });
 
         // Menangani dragover event untuk upload box
-        document.getElementById('uploadBox').addEventListener('dragover', function (e) {
+        document.getElementById('uploadBox').addEventListener('dragover', function(e) {
             e.preventDefault();
             this.style.border = '2px dashed #007bff';
         });
 
         // Menangani dragleave event untuk upload box
-        document.getElementById('uploadBox').addEventListener('dragleave', function () {
+        document.getElementById('uploadBox').addEventListener('dragleave', function() {
             this.style.border = '2px dashed #ccc';
         });
 
         // Menangani drop event untuk upload box
-        document.getElementById('uploadBox').addEventListener('drop', function (e) {
+        document.getElementById('uploadBox').addEventListener('drop', function(e) {
             e.preventDefault();
             this.style.border = '2px dashed #ccc';
             document.getElementById('fileInput').files = e.dataTransfer.files;
@@ -467,7 +473,7 @@
         });
 
         // Menangani pemilihan file melalui file input
-        document.getElementById('fileInput').addEventListener('change', function () {
+        document.getElementById('fileInput').addEventListener('change', function() {
             const file = this.files[0];
             const uploadBtn = document.getElementById('uploadBtn');
             const fileInfo = document.getElementById('fileInfo');
@@ -495,7 +501,7 @@
         });
 
         // Meng-upload file setelah tombol "Unggah" di klik di modal
-        document.getElementById('uploadBtn').addEventListener('click', function () {
+        document.getElementById('uploadBtn').addEventListener('click', function() {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
             const lampiran = document.getElementById('lampiran');
@@ -528,14 +534,14 @@
         });
 
         // Menghapus file yang dipilih dan menyembunyikan preview
-        document.getElementById('removeFile').addEventListener('click', function () {
+        document.getElementById('removeFile').addEventListener('click', function() {
             document.getElementById('lampiran').value = ''; // Menghapus file yang dipilih
             document.getElementById('filePreview').style.display = 'none'; // Menyembunyikan preview
             document.getElementById('openUploadModal').style.display = 'block'; // Menampilkan tombol upload lagi
         });
 
         // Menangani pemilihan file di input lampiran
-        document.getElementById('lampiran').addEventListener('change', function () {
+        document.getElementById('lampiran').addEventListener('change', function() {
             const file = this.files[0];
             const filePreview = document.getElementById('filePreview');
             const fileName = document.getElementById('fileName');
@@ -557,7 +563,7 @@
             }
         });
 
-        document.getElementById('removeFile').addEventListener('click', function () {
+        document.getElementById('removeFile').addEventListener('click', function() {
             // Reset input field dan preview pada kolom input
             document.getElementById('lampiran').value = '';
             document.getElementById('filePreview').style.display = 'none';
@@ -587,8 +593,8 @@
         });
 
         // Raroh iki opo
-        $(document).ready(function () {
-            $('#dropdownMenuButton').on('change', function () {
+        $(document).ready(function() {
+            $('#dropdownMenuButton').on('change', function() {
                 // Saat opsi dipilih, teks akan ke kiri
                 $(this).css('text-align', 'left');
 
@@ -609,7 +615,7 @@
         }
     </script>
     <script>
-        $(function () {
+        $(function() {
             // Summernote inisialisasi
             $('#summernote').summernote({
                 height: 200,
