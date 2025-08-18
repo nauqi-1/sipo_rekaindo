@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable,HasApiTokens ;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -36,8 +36,8 @@ class User extends Authenticatable
         'unit_id_unit',
         'profile_image',
     ];
-    
 
+    protected $dates = ['deleted_at'];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -62,19 +62,19 @@ class User extends Authenticatable
     }
     public function role()
     {
-        return $this->belongsTo(Role::class, 'role_id_role','id_role');
+        return $this->belongsTo(Role::class, 'role_id_role', 'id_role');
     }
 
     public function position()
     {
-        return $this->belongsTo(Position::class, 'position_id_position','id_position');
+        return $this->belongsTo(Position::class, 'position_id_position', 'id_position');
     }
 
     public function divisi()
     {
-        return $this->belongsTo(Divisi::class, 'divisi_id_divisi','id_divisi');
+        return $this->belongsTo(Divisi::class, 'divisi_id_divisi', 'id_divisi');
     }
-    
+
     public function department()
     {
         return $this->belongsTo(Department::class, 'department_id_department', 'id_department');

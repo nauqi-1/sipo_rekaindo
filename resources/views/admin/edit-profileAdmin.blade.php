@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin/edit-profile.css') }}">
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -16,7 +18,7 @@
                 <a href="#"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Edit Profil</h1>
-        </div>        
+        </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
@@ -156,166 +158,171 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-     document.getElementById("editPhotoButton").addEventListener("click", function () {
+        document.getElementById("editPhotoButton").addEventListener("click", function() {
+            const fileInput = document.getElementById("fileInput");
+            fileInput.value = ""; // Reset input file setiap kali modal dibuka
+            document.getElementById("uploadBtn").disabled = true; // Nonaktifkan tombol upload
+        });
+
+        // Menangani perubahan file untuk validasi dan preview
         const fileInput = document.getElementById("fileInput");
-        fileInput.value = ""; // Reset input file setiap kali modal dibuka
-        document.getElementById("uploadBtn").disabled = true; // Nonaktifkan tombol upload
-    });
+        fileInput.addEventListener("change", handleFileChange);
 
-    // Menangani perubahan file untuk validasi dan preview
-    const fileInput = document.getElementById("fileInput");
-    fileInput.addEventListener("change", handleFileChange);
+        function handleFileChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-    function handleFileChange(event) {
-        const file = event.target.files[0];
-        if (!file) return;
+            if (!file.type.startsWith("image/")) {
+                alert("Only image files are allowed.");
+                fileInput.value = ""; // Reset input file jika file bukan gambar
+                return;
+            }
 
-        if (!file.type.startsWith("image/")) {
-            alert("Only image files are allowed.");
-            fileInput.value = ""; // Reset input file jika file bukan gambar
-            return;
-        }
+            if (file.size > 20 * 1024 * 1024) {
+                alert("File size exceeds 20MB.");
+                fileInput.value = ""; // Reset input file jika ukuran file terlalu besar
+                return;
+            }
 
-        if (file.size > 20 * 1024 * 1024) {
-            alert("File size exceeds 20MB.");
-            fileInput.value = ""; // Reset input file jika ukuran file terlalu besar
-            return;
-        }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imagePreview = document.createElement("img");
+                imagePreview.src = e.target.result;
+                imagePreview.alt = "Preview Image";
+                imagePreview.style.width = "100px"; // Sesuaikan ukuran preview
+                imagePreview.style.borderRadius = "50%"; // Pastikan berbentuk lingkaran
+                imagePreview.style.marginTop = "10px";
 
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const imagePreview = document.createElement("img");
-            imagePreview.src = e.target.result;
-            imagePreview.alt = "Preview Image";
-            imagePreview.style.width = "100px"; // Sesuaikan ukuran preview
-            imagePreview.style.borderRadius = "50%"; // Pastikan berbentuk lingkaran
-            imagePreview.style.marginTop = "10px";
-
-            const uploadContainer = document.querySelector(".upload-container");
-            uploadContainer.innerHTML = ` 
+                const uploadContainer = document.querySelector(".upload-container");
+                uploadContainer.innerHTML = ` 
                 <img src="img/setting/cloud-add.png" alt="Cloud Icon" style="width: 50px; margin-bottom: 10px;">
                 <p>Choose a file or drag & drop it here</p>
                 <p class="text-muted">Image file size no more than 20MB</p>
             `;
-            uploadContainer.appendChild(imagePreview);
-            document.getElementById("uploadBtn").disabled = false; // Aktifkan tombol upload
-        };
-        reader.readAsDataURL(file);
-    }
-
-    // Fungsi upload file yang menghindari pembekuan
-    document.getElementById("uploadBtn").addEventListener("click", function () {
-        const file = fileInput.files[0];
-        if (file) {
-            // Menjalankan proses upload secara asinkron untuk menghindari pembekuan halaman
-            uploadImageAsync(file);
-        } else {
-            alert("No file selected.");
-        }
-    });
-
-    async function uploadImageAsync(file) {
-        try {
-            // Disable tombol upload agar tidak ada klik ganda
-            document.getElementById("uploadBtn").disabled = true;
-            
-            const reader = new FileReader();
-            
-            reader.onload = function (e) {
-                const profileImage = document.getElementById("profileImage");
-                profileImage.src = e.target.result; // Ganti src dengan gambar baru
-
-                // Setelah gambar berhasil diubah, lakukan proses berikut di luar thread utama
-                setTimeout(() => {
-                    alert(`File "${file.name}" uploaded successfully.`);
-                    fileInput.value = ""; // Reset input file
-                    // Tutup modal setelah upload selesai
-                    const uploadModal = bootstrap.Modal.getInstance(document.getElementById("uploadModal"));
-                    uploadModal.hide();
-                }, 0); // Pastikan proses dilakukan di luar thread utama (UI thread)
+                uploadContainer.appendChild(imagePreview);
+                document.getElementById("uploadBtn").disabled = false; // Aktifkan tombol upload
             };
-            
             reader.readAsDataURL(file);
-        } catch (error) {
-            console.error("Error uploading image:", error);
-            alert("An error occurred while uploading the file.");
-        }
-    }
-
-    // Mengatur pengaturan untuk drag & drop
-    const uploadContainer = document.querySelector(".upload-container");
-    uploadContainer.addEventListener("dragover", function (event) {
-        event.preventDefault();
-        this.style.backgroundColor = "#f1f1f1";
-    });
-
-    uploadContainer.addEventListener("dragleave", function () {
-        this.style.backgroundColor = "#f9f9f9";
-    });
-
-    uploadContainer.addEventListener("drop", function (event) {
-        event.preventDefault();
-        this.style.backgroundColor = "#f9f9f9";
-
-        const files = event.dataTransfer.files;
-        if (files.length > 0 && files[0].type.startsWith("image/")) {
-            fileInput.files = files;
-            handleFileChange({ target: { files } });
-        } else {
-            alert("Only image files are allowed.");
-        }
-    });
-
-    // Event submit form
-    document.getElementById("editProfileForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        const password = document.getElementById("password").value.trim();
-        const confirmPassword = document.getElementById("confirm_password").value.trim();
-
-        // Validasi konfirmasi password
-        if (password !== "" && confirmPassword === "") {
-            alert("Konfirmasi kata sandi harus diisi.");
-            return;
         }
 
-        if (password !== "" && confirmPassword !== "" && password !== confirmPassword) {
-            alert("Konfirmasi kata sandi tidak sama.");
-            return;
-        }
-
-        // Ambil data form
-        const formData = new FormData(this);
-
-        try {
-            // Kirim data ke backend (ubah URL sesuai endpoint update profil)
-            const response = await fetch("/profil/update", {
-                method: "POST",
-                body: formData
-            });
-
-            if (response.ok) {
-                // Profil berhasil diupdate
-                const successModal = new bootstrap.Modal(document.getElementById('successEditProfileModal'));
-                successModal.show();
+        // Fungsi upload file yang menghindari pembekuan
+        document.getElementById("uploadBtn").addEventListener("click", function() {
+            const file = fileInput.files[0];
+            if (file) {
+                // Menjalankan proses upload secara asinkron untuk menghindari pembekuan halaman
+                uploadImageAsync(file);
             } else {
-                // Profil gagal diupdate
-                document.getElementById("failedMessage").innerText = "Gagal memperbarui profil.";
+                alert("No file selected.");
+            }
+        });
+
+        async function uploadImageAsync(file) {
+            try {
+                // Disable tombol upload agar tidak ada klik ganda
+                document.getElementById("uploadBtn").disabled = true;
+
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const profileImage = document.getElementById("profileImage");
+                    profileImage.src = e.target.result; // Ganti src dengan gambar baru
+
+                    // Setelah gambar berhasil diubah, lakukan proses berikut di luar thread utama
+                    setTimeout(() => {
+                        alert(`File "${file.name}" uploaded successfully.`);
+                        fileInput.value = ""; // Reset input file
+                        // Tutup modal setelah upload selesai
+                        const uploadModal = bootstrap.Modal.getInstance(document.getElementById("uploadModal"));
+                        uploadModal.hide();
+                    }, 0); // Pastikan proses dilakukan di luar thread utama (UI thread)
+                };
+
+                reader.readAsDataURL(file);
+            } catch (error) {
+                console.error("Error uploading image:", error);
+                alert("An error occurred while uploading the file.");
+            }
+        }
+
+        // Mengatur pengaturan untuk drag & drop
+        const uploadContainer = document.querySelector(".upload-container");
+        uploadContainer.addEventListener("dragover", function(event) {
+            event.preventDefault();
+            this.style.backgroundColor = "#f1f1f1";
+        });
+
+        uploadContainer.addEventListener("dragleave", function() {
+            this.style.backgroundColor = "#f9f9f9";
+        });
+
+        uploadContainer.addEventListener("drop", function(event) {
+            event.preventDefault();
+            this.style.backgroundColor = "#f9f9f9";
+
+            const files = event.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith("image/")) {
+                fileInput.files = files;
+                handleFileChange({
+                    target: {
+                        files
+                    }
+                });
+            } else {
+                alert("Only image files are allowed.");
+            }
+        });
+
+        // Event submit form
+        document.getElementById("editProfileForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const password = document.getElementById("password").value.trim();
+            const confirmPassword = document.getElementById("confirm_password").value.trim();
+
+            // Validasi konfirmasi password
+            if (password !== "" && confirmPassword === "") {
+                alert("Konfirmasi kata sandi harus diisi.");
+                return;
+            }
+
+            if (password !== "" && confirmPassword !== "" && password !== confirmPassword) {
+                alert("Konfirmasi kata sandi tidak sama.");
+                return;
+            }
+
+            // Ambil data form
+            const formData = new FormData(this);
+
+            try {
+                // Kirim data ke backend (ubah URL sesuai endpoint update profil)
+                const response = await fetch("/profil/update", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (response.ok) {
+                    // Profil berhasil diupdate
+                    const successModal = new bootstrap.Modal(document.getElementById('successEditProfileModal'));
+                    successModal.show();
+                } else {
+                    // Profil gagal diupdate
+                    document.getElementById("failedMessage").innerText = "Gagal memperbarui profil.";
+                    const failedModal = new bootstrap.Modal(document.getElementById('failedEditProfileModal'));
+                    failedModal.show();
+                }
+            } catch (error) {
+                document.getElementById("failedMessage").innerText = "Terjadi kesalahan koneksi.";
                 const failedModal = new bootstrap.Modal(document.getElementById('failedEditProfileModal'));
                 failedModal.show();
             }
-        } catch (error) {
-            document.getElementById("failedMessage").innerText = "Terjadi kesalahan koneksi.";
-            const failedModal = new bootstrap.Modal(document.getElementById('failedEditProfileModal'));
-            failedModal.show();
-        }
-    });
+        });
     </script>
 </body>
+
 </html>

@@ -16,20 +16,19 @@ class UserController extends Controller
 {
     public function showRole()
     {
-        
-            $role = Role::all();
-            return view('user.role', compact('role'));
-    
-    }
-     // Menampilkan form edit dengan data user
-     public function edit($id)
-     {
-         $user = User::findOrFail($id);
-         $divisi = Divisi::all();  
-         $roles = Role::all();  
-         $positions = Position::all();
 
-         $mainDirector = Director::with([
+        $role = Role::all();
+        return view('user.role', compact('role'));
+    }
+    // Menampilkan form edit dengan data user
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+        $divisi = Divisi::all();
+        $roles = Role::all();
+        $positions = Position::all();
+
+        $mainDirector = Director::with([
             'subDirectors.divisi.department.section.unit',
             'subDirectors.divisi.department.unit',
             'subDirectors.department.section.unit',
@@ -39,13 +38,13 @@ class UserController extends Controller
             'department.section.unit',
             'department.unit'
         ])->where('is_main', 1)->first();
-         
-         return view('superadmin.edit', compact('mainDirector','user', 'divisi', 'roles', 'positions'));
-     }
- 
-     // Menangani update data user
-     public function update(Request $request, $id)
-     {
+
+        return view('superadmin.edit', compact('mainDirector', 'user', 'divisi', 'roles', 'positions'));
+    }
+
+    // Menangani update data user
+    public function update(Request $request, $id)
+    {
         $user = User::findOrFail($id);
 
         $request->validate([
@@ -89,8 +88,8 @@ class UserController extends Controller
         $bagian = $request->parent_id;
         $type = $request->parent_type;
         // dd($jabatan);
-        
-        if($type == "director"){ // Direktur
+
+        if ($type == "director") { // Direktur
             $user->director_id_director = $bagian;
             $user->divisi_id_divisi = NULL;
             $user->department_id_department = NULL;
@@ -123,19 +122,19 @@ class UserController extends Controller
         }
 
         $user->save();
- 
-         return redirect()->route('user.manage')->with('success', 'User updated successfully');
-     }
-     public function destroy($id)
-     {
-         $user = User::find($id);
-         if (!$user) {
-             return response()->json(['error' => 'User tidak ditemukan'], 404);
-         }
- 
-         $user->delete();
- 
-         return response()->json(['success' => 'User berhasil dihapus'], 200);
-     }
 
+        return redirect()->route('user.manage')->with('success', 'User updated successfully');
+    }
+    public function destroy($id)
+    {
+
+        try {
+            $user = User::findOrFail($id);
+            $user->delete(); // ini hanya soft delete (update deleted_at)
+
+            return response()->json(['success' => true, 'message' => 'User berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
 }

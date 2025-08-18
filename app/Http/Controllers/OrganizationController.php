@@ -224,87 +224,102 @@ class OrganizationController extends Controller
         return $deptNode;
     }
 
-
-
-
     public function store(Request $request)
     {
-        $request->validate($this->rules());
+        try {
+            $request->validate([
+                'type'         => 'required|string|max:50',
+                'name'          => 'required|string|max:100',
+                'kode'          => 'nullable|string|max:10',
+                'parent_id'      => 'required|string|max:255',
+            ]);
+            $type = $request->type;
+            $name = $request->name;
+            $kode = !empty($request->kode) ? $request->kode : null;
+            $parent = $request->parent_id;
 
-        $type = $request->type;
-        $name = $request->name;
-        if (!empty($request->kode)) {
-            $kode = $request->kode;
-        } else {
-            $kode = NULL;
+            // Siapkan parent type & id
+            $parentType = null;
+            $parentId = null;
+            if ($parent) {
+                [$parentType, $parentId] = explode('-', $parent);
+            }
+
+            $saved = false;
+
+            switch ($type) {
+                case 'Director':
+                    $director = new Director();
+                    $director->name_director = $name;
+                    $director->kode_director = $kode;
+                    $director->is_main = 0;
+                    if ($parentType == 'director') {
+                        $director->parent_director_id = $parentId;
+                    }
+                    $saved = $director->save();
+                    break;
+
+                case 'Divisi':
+                    $divisi = new Divisi();
+                    $divisi->nm_divisi = $name;
+                    $divisi->kode_divisi = $kode;
+                    if ($parentType == 'director') {
+                        $divisi->director_id_director = $parentId;
+                    }
+                    $saved = $divisi->save();
+                    break;
+
+                case 'Department':
+                    $department = new Department();
+                    $department->name_department = $name;
+                    $department->kode_department = $kode;
+                    if ($parentType == 'divisi') {
+                        $department->divisi_id_divisi = $parentId;
+                        $divisi = Divisi::find($parentId);
+                        $department->director_id_director = $divisi?->director_id_director;
+                    } elseif ($parentType == 'director') {
+                        $department->director_id_director = $parentId;
+                    }
+                    $saved = $department->save();
+                    break;
+
+                case 'Section':
+                    $section = new Section();
+                    $section->name_section = $name;
+                    if ($parentType == 'department') {
+                        $section->department_id_department = $parentId;
+                    }
+                    $saved = $section->save();
+                    break;
+
+                case 'Unit':
+                    $unit = new Unit();
+                    $unit->name_unit = $name;
+                    if ($parentType == 'section') {
+                        $unit->section_id_section = $parentId;
+                    } elseif ($parentType == 'department') {
+                        $unit->department_id_department = $parentId;
+                    }
+                    $saved = $unit->save();
+                    break;
+            }
+
+            if ($saved) {
+                return redirect()
+                    ->route('organization.manageOrganization')
+                    ->with('success', 'Struktur Organisasi Berhasil Ditambahkan.');
+            } else {
+                return redirect()
+                    ->back()
+                    ->with('error', 'Gagal menambahkan data struktur organisasi. Silakan coba lagi.')
+                    ->withInput();
+            }
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
+                ->withInput();
         }
-        $parent = $request->parent_id;
-
-        // Siapkan parent type & id
-        $parentType = null;
-        $parentId = null;
-        if ($parent) {
-            [$parentType, $parentId] = explode('-', $parent);
-        }
-
-        switch ($type) {
-            case 'Director':
-                $director = new Director();
-                $director->name_director = $name;
-                $director->kode_director = $kode;
-                $director->is_main = 0;
-                if ($parentType == 'director') {
-                    $director->parent_director_id = $parentId;
-                }
-                $director->save();
-                break;
-
-            case 'Divisi':
-                $divisi = new Divisi();
-                $divisi->nm_divisi = $name;
-                $divisi->kode_divisi = $kode;
-                if ($parentType == 'director') {
-                    $divisi->director_id_director = $parentId;
-                }
-                $divisi->save();
-                break;
-
-            case 'Department':
-                $department = new Department();
-                $department->name_department = $name;
-                $department->kode_department = $kode;
-                if ($parentType == 'divisi') {
-                    $department->divisi_id_divisi = $parentId;
-                    $divisi = Divisi::find($parentId);
-                    $department->director_id_director = $divisi?->director_id_director;
-                } elseif ($parentType == 'director') {
-                    $department->director_id_director = $parentId;
-                }
-                $department->save();
-                break;
-
-            case 'Section':
-                $section = new Section();
-                $section->name_section = $name;
-                if ($parentType == 'department') {
-                    $section->department_id_department = $parentId;
-                }
-                $section->save();
-                break;
-
-            case 'Unit':
-                $unit = new Unit();
-                $unit->name_unit = $name;
-                if ($parentType == 'section') {
-                    $unit->section_id_section = $parentId;
-                } elseif ($parentType == 'department') {
-                    $unit->department_id_department = $parentId;
-                }
-                $unit->save();
-                break;
-        }
-
-        return redirect()->route('organization.manageOrganization')->with('success', 'User added successfully.');
     }
 
     private function rules()
@@ -318,39 +333,54 @@ class OrganizationController extends Controller
 
     public function update(Request $request, $type, $id)
     {
-        $name = $request->input('name');
-        if (!empty($request->input('kode'))) {
-            $kode = $request->input('kode');
-        } else {
-            $kode = NULL;
+        try {
+            $request->validate([
+                'name'          => 'required|string|max:100',
+                'kode'          => 'nullable|string|max:10',
+            ]);
+
+            $name = $request->input('name');
+            $kode = $request->input('kode') ?: null;
+
+            switch ($type) {
+                case 'director':
+                    $model = Director::findOrFail($id);
+                    $model->name_director = $name;
+                    $model->kode_director = $kode;
+                    break;
+                case 'divisi':
+                    $model = Divisi::findOrFail($id);
+                    $model->nm_divisi = $name;
+                    $model->kode_divisi = $kode;
+                    break;
+                case 'department':
+                    $model = Department::findOrFail($id);
+                    $model->name_department = $name;
+                    $model->kode_department = $kode;
+                    break;
+                case 'section':
+                    $model = Section::findOrFail($id);
+                    $model->name_section = $name;
+                    break;
+                case 'unit':
+                    $model = Unit::findOrFail($id);
+                    $model->name_unit = $name;
+                    break;
+                default:
+                    return back()->with('error', 'Tipe data tidak valid.');
+            }
+
+            // Cek jika tidak ada perubahan data
+            if (!$model->isDirty()) {
+                return back()->with('success', 'Tidak ada perubahan data.');
+            }
+
+            $model->save();
+
+            return back()->with('success', 'Struktur Organisasi Berhasil Diubah');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-        switch ($type) {
-            case 'director':
-                $model = Director::findOrFail($id);
-                $model->name_director = $name;
-                $model->kode_director = $kode;
-                break;
-            case 'divisi':
-                $model = Divisi::findOrFail($id);
-                $model->nm_divisi = $name;
-                $model->kode_divisi = $kode;
-                break;
-            case 'department':
-                $model = Department::findOrFail($id);
-                $model->name_department = $name;
-                $model->kode_department = $kode;
-                break;
-            case 'section':
-                $model = Section::findOrFail($id);
-                $model->name_section = $name;
-                break;
-            case 'unit':
-                $model = Unit::findOrFail($id);
-                $model->name_unit = $name;
-                break;
-        }
-        $model->save();
-        return back()->with('success', ucfirst($type) . ' berhasil diupdate');
     }
 
     public function delete($type, $id)

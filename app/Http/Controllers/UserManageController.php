@@ -16,32 +16,32 @@ use App\Models\Section;
 
 class UserManageController extends Controller
 {
-    public function index(Request $request, $id = null)
+    public function index(Request $request)
     {
-        // Ambil data dari Divisi, Role, dan Position
-        $divisi = Divisi::all();  
-        $roles = Role::all();  
+        $divisi = Divisi::all();
+        $roles = Role::all();
         $positions = Position::all();
 
-        // Mengambil parameter sorting, default 'asc'
         $sortOrder = $request->query('sort', 'asc');
+        $view = $request->query('view', 'active'); // default lihat aktif
 
-        // Query awal dengan relasi yang diperlukan
-        $users = User::with(['role', 'divisi', 'position']);
+        if ($view === 'deleted') {
+            // Hanya ambil user yang soft delete
+            $users = User::onlyTrashed()->with(['role', 'divisi', 'position']);
+        } else {
+            // Default ambil user aktif
+            $users = User::with(['role', 'divisi', 'position']);
+        }
 
-        // Jika ada pencarian, tambahkan kondisi pencarian
         if ($request->filled('search')) {
             $users->where(function ($query) use ($request) {
                 $query->where('firstname', 'like', '%' . $request->search . '%')
-                      ->orWhere('lastname', 'like', '%' . $request->search . '%');
+                    ->orWhere('lastname', 'like', '%' . $request->search . '%');
             });
         }
 
-        // Jika ada parameter sorting, lakukan pengurutan berdasarkan firstname
         $users->orderBy('firstname', $sortOrder);
-
-        // Paginate hasil query
-        $perPage = $request->get('per_page', 10); // Default ke 10 jika tidak ada input
+        $perPage = $request->get('per_page', 10);
         $users = $users->paginate($perPage);
 
         $mainDirector = Director::with([
@@ -55,11 +55,16 @@ class UserManageController extends Controller
             'department.unit'
         ])->where('is_main', 1)->first();
 
-        // Kirim data ke view user-manage
-        return view('superadmin.user-manage', compact('divisi', 'roles', 'positions', 'users', 'sortOrder', 'mainDirector'));
+        return view('superadmin.user-manage', compact(
+            'divisi',
+            'roles',
+            'positions',
+            'users',
+            'sortOrder',
+            'mainDirector',
+            'view'
+        ));
     }
-
-
 
     public function store(Request $request)
     {
@@ -91,22 +96,19 @@ class UserManageController extends Controller
             'role_id_role' => $request->role_id_role,
         ]);
 
-        
+
         return redirect()->route('user-manage')->with('success', 'User added successfully.');
-        }
-    
-        public function filter(Request $request)
-        {
-            // Mendapatkan parameter sorting dari request
-            $sortOrder = $request->query('sort', 'asc');
-
-            // Melakukan query ke database dengan pengurutan berdasarkan firstname
-            $users = User::orderBy('firstname', $sortOrder)->paginate(6);
-
-            // Mengirim data user ke view
-            return view('superadmin.user-manage', compact('users', 'sortOrder'));
-        }
-
-        
-        
     }
+
+    public function filter(Request $request)
+    {
+        // Mendapatkan parameter sorting dari request
+        $sortOrder = $request->query('sort', 'asc');
+
+        // Melakukan query ke database dengan pengurutan berdasarkan firstname
+        $users = User::orderBy('firstname', $sortOrder)->paginate(6);
+
+        // Mengirim data user ke view
+        return view('superadmin.user-manage', compact('users', 'sortOrder'));
+    }
+}
