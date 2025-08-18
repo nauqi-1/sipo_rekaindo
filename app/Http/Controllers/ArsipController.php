@@ -72,16 +72,17 @@ class ArsipController extends Controller
 
         return redirect()->back()->with('success', ucfirst($jenis_document) . ' berhasil dikembalikan!');
     }
+
+
     public function indexMemo(Request $request)
     {
         $user_id = Auth::id();
 
         // Ambil daftar arsip memo dari user
-        $arsipQuery = Arsip::where('user_id', $user_id)
-            ->where('jenis_document', 'App\Models\Memo');
+        $arsipAll = Arsip::where('user_id', $user_id)
+            ->where('jenis_document', 'App\Models\Memo')
+            ->get();
 
-        // Ambil semua document_id dari arsip terlebih dahulu
-        $arsipAll = $arsipQuery->get();
         $memoIds = $arsipAll->pluck('document_id');
 
         // Siapkan query memo berdasarkan ID dari arsip
@@ -108,59 +109,47 @@ class ArsipController extends Controller
         if ($request->filled('status')) {
             $memoQuery->where('status', $request->status);
         }
-        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
 
+        // Sorting
+        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
         $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_memo', 'judul'];
         if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'created_at'; // fallback default
         }
-        // Sorting
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
         $memoQuery->orderBy($sortBy, $sortDirection);
 
-        // Ambil hasil memo yang sudah difilter
-        $filteredMemos = $memoQuery->get();
-
-        // Ambil kembali ID memo yang tersaring
-        $filteredMemoIds = $filteredMemos->pluck('id_memo');
-
-        // Filter kembali arsip hanya untuk memo yang lolos filter
-        $filteredArsipQuery = Arsip::where('user_id', $user_id)
-            ->where('jenis_document', 'App\Models\Memo')
-            ->whereIn('document_id', $filteredMemoIds);
-
-        // Pagination arsip
+        // ✅ Pagination langsung di Memo
         $perPage = $request->get('per_page', 10);
-        $arsipMemo = $filteredArsipQuery->paginate($perPage);
+        $filteredMemos = $memoQuery->paginate($perPage);
 
-        // Sisipkan data memo ke dalam arsip
-        $memosMap = $filteredMemos->keyBy('id_memo');
-        foreach ($arsipMemo as $arsip) {
-            $arsip->document = $memosMap->get($arsip->document_id);
-        }
+        // Map arsip ke setiap memo
+        $arsipMap = $arsipAll->keyBy('document_id');
 
-        $arsipMemo->getCollection()->transform(function ($arsip) use ($user_id) {
-            $memo = $arsip->document;
+        $filteredMemos->getCollection()->transform(function ($memo) use ($arsipMap, $user_id) {
+            $arsip = $arsipMap->get($memo->id_memo);
+            $memo->arsip = $arsip;
 
-            if ($memo) {
-                if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
-                    $memo->final_status = $memo->status; // Memo dari divisi sendiri
-                } else {
-                    $statusKirim = Kirim_Document::where('id_document', $memo->id_memo)
-                        ->where('jenis_document', 'memo')
-                        ->where('id_penerima', $user_id)
-                        ->first();
+            if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
+                $memo->final_status = $memo->status; // Memo dari divisi sendiri
+            } else {
+                $statusKirim = Kirim_Document::where('id_document', $memo->id_memo)
+                    ->where('jenis_document', 'memo')
+                    ->where('id_penerima', $user_id)
+                    ->first();
 
-                    $memo->final_status = $statusKirim ? $statusKirim->status : '-';
-                }
+                $memo->final_status = $statusKirim ? $statusKirim->status : '-';
             }
 
-            return $arsip;
+            return $memo;
         });
-
-
-        return view('arsip.arsip-memo', compact('arsipMemo', 'sortDirection'));
+        
+        return view('arsip.arsip-memo', [
+            'arsipMemo' => $filteredMemos,
+            'sortDirection' => $sortDirection,
+        ]);
     }
+
 
 
 
