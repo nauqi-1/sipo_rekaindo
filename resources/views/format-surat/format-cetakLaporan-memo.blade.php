@@ -35,9 +35,9 @@
                             <table class="header1">
                                 <tr style="background-color: #92C5FF99;">
                                     <th>NO</th>
-                                    <!-- <th>SERI</th> -->
+                                    <th>SERI</th>
                                     <th>DATA MASUK</th>
-                                    <!-- <th>DATA DISAHKAN</th> -->
+                                    <th>DATA DISAHKAN</th>
                                     <th>NAMA DOKUMEN</th>
                                     <th>NO DOKUMEN</th>
                                     <th>STATUS</th>
@@ -45,9 +45,9 @@
                                 @foreach ($memos as $index => $laporan)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
-                                    <!-- <td>{{ $laporan->seri_surat }}</td> -->
+                                    <td>{{ $laporan->seri_surat }}</td>
                                     <td>{{ $laporan->tgl_dibuat ? $laporan->tgl_dibuat->format('d-m-Y') : '-' }}</td>
-                                    <!-- <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td> -->
+                                    <td>{{ $laporan->tgl_disahkan ? $laporan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                                     <td>{{ $laporan->judul ?? '-' }}</td>
                                     <td>{{ $laporan->nomor_memo ?? '-' }}</td>
                                     <td>

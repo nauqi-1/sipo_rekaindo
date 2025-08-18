@@ -108,10 +108,15 @@ class ArsipController extends Controller
         if ($request->filled('status')) {
             $memoQuery->where('status', $request->status);
         }
+        $sortBy = $request->get('sort_by', 'created_at'); // default ke created_at
 
+        $allowedSortColumns = ['created_at', 'tgl_disahkan', 'tgl_dibuat', 'nomor_memo', 'judul'];
+        if (!in_array($sortBy, $allowedSortColumns)) {
+            $sortBy = 'created_at'; // fallback default
+        }
         // Sorting
         $sortDirection = $request->get('sort_direction', 'desc') === 'asc' ? 'asc' : 'desc';
-        $memoQuery->orderBy('tgl_dibuat', $sortDirection);
+        $memoQuery->orderBy($sortBy, $sortDirection);
 
         // Ambil hasil memo yang sudah difilter
         $filteredMemos = $memoQuery->get();

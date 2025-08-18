@@ -26,8 +26,7 @@ use Illuminate\Support\Str;
 class MemoController extends Controller
 {
     public function index(Request $request)
-    {
-
+    {   
         $divisi = Divisi::all();
         $seri = Seri::all();
         $user = User::all();
