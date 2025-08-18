@@ -80,22 +80,22 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($arsipRisalah as  $arsip)
+            @foreach($arsipRisalah as  $risalah)
             <tr>
                 <td class="nomor">{{ $loop->iteration }}</td>
                <td class="nama-dokumen
-                        {{ $arsip->document->final_status == 'reject' ? 'text-danger' : ($arsip->document->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
-                        {{ $arsip->document->judul }}
+                        {{ $risalah->final_status == 'reject' ? 'text-danger' : ($risalah->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ $risalah->judul }}
                     </td>
-                    <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->nomor_risalah : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $risalah ? $risalah->tgl_dibuat->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $risalah ? $risalah->seri_surat : '-' }}</td>
+                    <td>{{ $risalah ? $risalah->nomor_risalah : '-' }}</td>
+                    <td>{{ $risalah ? $risalah->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                     <td>{{ $risalah->user->department->kode_department ?? $risalah->user->divisi->kode_divisi ?? '-' }}</td>
                     <td>
-                    @if ($arsip->document->final_status == 'reject')
+                    @if ($risalah->final_status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($arsip->document->final_status == 'pending')
+                            @elseif ($risalah->final_status == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
@@ -104,16 +104,16 @@
 
                 <td>
                     <!-- Button Unduh -->
-                    <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakrisalah',['id' => $arsip->document->id_risalah]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
+                    <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakrisalah',['id' => $risalah->id_risalah]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
 
                     <!-- Button Arsip -->
-                    @if ($arsip->document)
-                    <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipRisalahModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_risalah, 'jenis_document' => 'Risalah']) }}">
+                    @if ($risalah)
+                    <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipRisalahModal" data-route="{{ route('arsip.restore', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}">
                         <img src="/img/arsip/unarchive2.png" alt="unarchive" style="height: 16px;">
                     </button>
 
                     <!-- Button View -->
-                    <button class="btn btn-sm3" onclick="window.location.href='{{route('view.risalah-arsip',$arsip->document->id_risalah)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
+                    <button class="btn btn-sm3" onclick="window.location.href='{{route('view.risalah-arsip',$risalah->id_risalah)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
                     @endif
                 </td>
             </tr>
