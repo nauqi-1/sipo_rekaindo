@@ -120,6 +120,7 @@ Route::middleware(['auth', 'role:1'])->group(function () {
 
     // manage user
     Route::get('/user-manage/edit/{id}', [UserController::class, 'edit'])->name('user-manage.edit');
+    Route::post('/user-manage/delete/{id}', [UserController::class, 'destroy'])->name('user-manage.destroy');
     Route::delete('/user-manage/delete/{id}', [UserController::class, 'destroy'])->name('user-manage.destroy');
     Route::put('/user-manage/update/{id}', [UserController::class, 'update'])->name('user-manage/update');
     Route::get('/role-management', [UserController::class, 'showRole'])->name('user.role');
