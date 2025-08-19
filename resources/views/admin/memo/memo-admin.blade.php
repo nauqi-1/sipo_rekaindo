@@ -119,13 +119,13 @@
                 <td class="nama-dokumen 
                         {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'correction' ? 'text-warning' : ($memo->status == 'approve' ? 'text-success' : '')) }}"
                     style="{{ $memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                    {{ $memo->judul }}
+                    {{ Str::limit($memo->judul, 35, '...') }}
                 </td>
                 @else
                 <td class="nama-dokumen 
                         {{ $memo->final_status == 'reject' ? 'text-danger' : ($memo->final_status == 'correction' ? 'text-warning' : ($memo->final_status == 'approve' ? 'text-success' : '')) }}"
                     style="{{ $memo->final_status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                    {{ $memo->judul }}
+                    {{ Str::limit($memo->judul, 35, '...') }}
                 </td>
                 @endif
                 <td>
@@ -133,7 +133,6 @@
                     // Cari dokumen kiriman yang sesuai dengan ID memo
                     $kirimDocument = $kirimDocuments->firstWhere('id_document', $memo->id_memo);
                     @endphp
-
 
                     @if($kirimDocument)
                     @if($kirimDocument->divisi_penerima == $kirimDocument->divisi_pengirim && $memo->final_status == 'pending')

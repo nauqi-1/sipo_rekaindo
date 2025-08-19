@@ -152,7 +152,7 @@
                         <td class="nama-dokumen
                         {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'correction' ? 'text-warning' : ($undangan->status == 'approve' ? 'text-success' : '')) }}"
                             style="{{ $undangan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                            {{ $undangan->judul }}
+                            {{ Str::limit($undangan->judul, 35, '...') }}
                         </td>
                         <td>
                             @php
