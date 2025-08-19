@@ -26,8 +26,7 @@ use Illuminate\Support\Str;
 class MemoController extends Controller
 {
     public function index(Request $request)
-    {
-
+    {   
         $divisi = Divisi::all();
         $seri = Seri::all();
         $user = User::all();
@@ -220,7 +219,7 @@ class MemoController extends Controller
     {
         $userId = Auth::id();
         $memo = Memo::with('divisi')->findOrFail($id);
-
+        $pembuat = User::withTrashed()->find($memo->user_id);
         $memo->getCollection()->transform(function ($memo) use ($userId) {
             if ($memo->divisi_id_divisi === Auth::user()->divisi_id_divisi) {
                 $memo->final_status = $memo->status; // Memo dari divisi sendiri
@@ -236,7 +235,7 @@ class MemoController extends Controller
         });
 
 
-        return view('admin.view-memo', compact('memo'));
+        return view('admin.view-memo', compact('memo', 'pembuat'));
     }
 
 
@@ -1358,7 +1357,7 @@ class MemoController extends Controller
 
 
 
-        return redirect()->route('memo.terkirim')->with('success', 'Status memo berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Status memo berhasil diperbarui.');
     }
 
     public function edit($id)
@@ -1588,12 +1587,14 @@ class MemoController extends Controller
         $memo2 = Memo::where('id_memo', $id)->firstOrFail();
         return view('manager.memo.view-memoDiterima', compact('memo', 'memo2'));
     }
+
     public function view($id)
     {
         $userId = auth()->id(); // Ambil ID user yang sedang login
         $memo = Memo::where('id_memo', $id)->firstOrFail();
         // get kode divisi/ department
         $divDeptKode = $this->getDivDeptKode(Auth::user());
+        $pembuat = User::withTrashed()->find($memo->pembuat);
         // Ubah menjadi Collection manual
         $memoCollection = collect([$memo]); // Bungkus dalam collection
 
@@ -1613,7 +1614,7 @@ class MemoController extends Controller
         // Karena hanya satu memo, kita bisa mengambil dari collection lagi
         $memo = $memoCollection->first();
 
-        return view(Auth::user()->role->nm_role . '.memo.view-memo', compact('memo', 'divDeptKode'));
+        return view(Auth::user()->role->nm_role . '.memo.view-memo', compact('memo', 'divDeptKode', 'pembuat'));
     }
 
 

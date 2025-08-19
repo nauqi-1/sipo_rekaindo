@@ -1,202 +1,229 @@
 @extends('layouts.superadmin')
 
 @section('title', 'Arsip Undangan Rapat')
-      
-@section('content')
-<div class="container">
-    <div class="header">
-        <!-- Back Button -->
-        <div class="back-button">
-            <a href="{{route(Auth::user()->role->nm_role.'.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
-        </div>
-        <h1>Undangan Rapat</h1>
-    </div>        
-    <div class="row">
-    <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-            <div class="breadcrumb" style="gap: 5px; width: 82%;">
-                <a href="{{route(Auth::user()->role->nm_role.'.dashboard')}}">Beranda</a>/<a style="color:#565656" href="#">Arsip Undangan Rapat</a>
-            </div>
-            <form method="GET" action="{{ route('arsip.undangan') }}" class="search-filter d-flex gap-2">
-            <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
-                Show
-                <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
-                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                </select>
-                entries
-            </label>
-            </form>
-        </div>
-    </div>
 
-    <!-- Filter & Search Bar -->
-    <div class="arsip">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="title"><b>Arsip Undangan Rapat</b></h4>
-            <div class="d-flex gap-2">
-                <div class="search">
+@section('content')
+    <div class="container">
+        <div class="header">
+            <!-- Back Button -->
+            <div class="back-button">
+                <a href="{{ route(Auth::user()->role->nm_role . '.dashboard') }}"><img src="/img/user-manage/Vector_back.png"
+                        alt=""></a>
+            </div>
+            <h1>Undangan Rapat</h1>
+        </div>
+        <div class="row">
+            <div class="breadcrumb-wrapper"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div class="breadcrumb" style="gap: 5px; width: 82%;">
+                    <a href="{{ route(Auth::user()->role->nm_role . '.dashboard') }}">Beranda</a>/<a style="color:#565656"
+                        href="#">Arsip Undangan Rapat</a>
+                </div>
                 <form method="GET" action="{{ route('arsip.undangan') }}" class="search-filter d-flex gap-2">
-                    <div class="d-flex gap-2">
-                        <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
-                            <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
-                            <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()" style="outline: none; box-shadow: none;">
-                        </div>
+                    <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
+                        Show
+                        <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
+                            <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                        </select>
+                        entries
+                    </label>
+                </form>
+            </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="arsip">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="title"><b>Arsip Undangan Rapat</b></h4>
+                <div class="d-flex gap-2">
+                    <div class="search">
+                        <form method="GET" action="{{ route('arsip.undangan') }}" class="search-filter d-flex gap-2">
+                            <div class="d-flex gap-2">
+                                <div class="btn btn-search d-flex align-items-center" style="gap: 5px;">
+                                    <img src="/img/memo-admin/search.png" alt="search" style="width: 20px; height: 20px;">
+                                    <input type="text" name="search" class="form-control border-0 bg-transparent"
+                                        placeholder="Cari" value="{{ request('search') }}" onchange="this.form.submit()"
+                                        style="outline: none; box-shadow: none;">
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    </form>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Table -->
-    <table class="table-light">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama Dokumen</th>
-                <th>Tanggal Undangan
-                    <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
-                        style="color:rgb(135, 135, 148); text-decoration: none;">
-                        <span class="bi-arrow-down-up"></span>
-                    </a>
-                </th>
-                <th>Seri</th>
-                <th>Dokumen</th>
-                <th>Tanggal Disahkan
-                    <a href="{{ request()->fullUrlWithQuery(['sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}"
-                        style="color:rgb(135, 135, 148); text-decoration: none;">
-                        <span class="bi-arrow-down-up"></span>
-                    </a>
-                </th>
-                <th>Divisi</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach($arsipUndangan as  $arsip)
-            <tr>
-                <td class="nomor">{{ $loop->iteration }}</td>
-                <td class="nama-dokumen 
-                        {{ $arsip->document->status == 'reject' ? 'text-danger' : ($arsip->document->status == 'correction' ? 'text-warning' : ($arsip->document->status == 'approve' ? 'text-success' : '')) }}"
-                             style="{{ $arsip->document->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                        {{ $arsip->document->judul }}
-                    </td>
-                    <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->nomor_undangan : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $arsip->document && $arsip->document->divisi ? $arsip->document->divisi->nm_divisi : '-' }}</td>
-                    <td>
-                        @if ($arsip->document->final_status == 'reject')
+        <!-- Table -->
+        <table class="table-light">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Dokumen</th>
+                    <th>Tanggal Undangan
+                        <a href="{{ request()->fullUrlWithQuery([
+                            'sort_by' => 'tgl_dibuat',
+                            'sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc',
+                        ]) }}"
+                            style="color:rgb(135, 135, 148); text-decoration: none;">
+                            <span class="bi-arrow-down-up"></span>
+                        </a>
+                    </th>
+                    <th>Seri</th>
+                    <th>Dokumen</th>
+                    <th>Tanggal Disahkan
+                        <a href="{{ request()->fullUrlWithQuery([
+                            'sort_by' => 'tgl_disahkan',
+                            'sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc',
+                        ]) }}"
+                            style="color:rgb(135, 135, 148); text-decoration: none;">
+                            <span class="bi-arrow-down-up"></span>
+                        </a>
+                    </th>
+                    <th>Divisi</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($arsipUndangan as $undangan)
+                    <tr>
+                        <td class="nomor">{{ $loop->iteration }}</td>
+                        <td class="nama-dokumen
+                        {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'correction' ? 'text-warning' : ($undangan->status == 'approve' ? 'text-success' : '')) }}"
+                            style="{{ $undangan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
+                            {{ Str::limit($undangan->judul, 35, '...') }}
+                        </td>
+                        <td>{{ $undangan ? $undangan->tgl_dibuat->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $undangan ? $undangan->seri_surat : '-' }}</td>
+                        <td>{{ $undangan ? $undangan->nomor_undangan : '-' }}</td>
+                        <td>{{ $undangan ? $undangan->tgl_disahkan->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $undangan && $undangan->divisi ? $undangan->divisi->nm_divisi : '-' }}
+                        </td>
+                        <td>
+                            @if ($undangan->final_status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($arsip->document->final_status == 'pending')
+                            @elseif ($undangan->final_status == 'pending')
                                 <span class="badge bg-info">Diproses</span>
-                            @elseif ($arsip->document->final_status == 'pending')
+                            @elseif ($undangan->final_status == 'pending')
                                 <span class="badge bg-warning">Dikoreksi</span>
-                            @elseif ($arsip->document->final_status == 'approve')
+                            @elseif ($undangan->final_status == 'approve')
                                 <span class="badge bg-success">Diterima</span>
                             @else
                                 <span class="badge bg-secondary">-</span>
                             @endif
-                </td>
-                <td>
-                    <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakundangan',['id' => $arsip->document->id_undangan]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm1"
+                                onclick="window.location.href='{{ route('cetakundangan', ['id' => $undangan->id_undangan]) }}'"><img
+                                    src="/img/arsip/unduh.png" alt="unduh"></button>
 
-                    <!-- Button Arsip -->
-                    @if ($arsip->document)
-                    <button class="btn btn-sm3" data-bs-toggle="modal" data-bs-target="#deleteArsipUndanganModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_undangan, 'jenis_document' => 'Undangan']) }}">
-                        <img src="/img/arsip/unarchive2.png" alt="unarchive" style="height: 16px;">
-                    </button>
+                            <!-- Button Arsip -->
+                            @if ($undangan)
+                                <button class="btn btn-sm3" data-bs-toggle="modal"
+                                    data-bs-target="#deleteArsipUndanganModal"
+                                    data-route="{{ route('arsip.restore', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}">
+                                    <img src="/img/arsip/unarchive2.png" alt="unarchive" style="height: 16px;">
+                                </button>
 
-                    <button class="btn btn-sm3" onclick="window.location.href='{{route('view.undangan-arsip',$arsip->document->id_undangan)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
-                    @endif
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-    {{ $arsipUndangan->links('pagination::bootstrap-5') }}
-</div>
-
-
-<!-- Modal Hapus -->
-<div class="modal fade" id="deleteArsipUndanganModal" tabindex="-1" aria-labelledby="deleteArsipUndanganModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center p-4">
-            <!-- Close Button -->
-            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-            <img src="/img/risalah/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
-            <h5 class="modal-title mb-4"><b>Keluarkan Undangan Rapat dari Arsip?</b></h5>
-            <form id="deleteArsipUndanganForm" method="POST">
-                @csrf
-                @method('DELETE')
-                <!-- Tombol -->
-                <div class="d-flex justify-content-center mt-3">
-                    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary" id="confirmDeleteArsipUndangan">Oke</button>
-                </div>
-            </form>
-        </div>
+                                <button class="btn btn-sm3"
+                                    onclick="window.location.href='{{ route('view.undangan-arsip', $undangan->id_undangan) }}'"><img
+                                        src="/img/arsip/preview.png" alt="preview"></button>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+        {{-- {{ $arsipUndangan->links('pagination::bootstrap-5') }} --}}
+        {{ $arsipUndangan->appends(request()->query())->links('pagination::bootstrap-5') }}
     </div>
-</div>
 
-<!-- Modal Berhasil -->
-<div class="modal fade" id="deleteSuccessArsipUndanganModal" tabindex="-1" aria-labelledby="deleteSuccessArsipUndanganModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center p-4">
-            <div class="modal-body">
-                <img src="/img/risalah/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
-                <h5 class="modal-title"><b>Sukses</b></h5>
-                <p class="mt-2">Berhasil Keluarkan Undangan Rapat dari Arsip</p>
+
+    <!-- Modal Hapus -->
+    <div class="modal fade" id="deleteArsipUndanganModal" tabindex="-1" aria-labelledby="deleteArsipUndanganModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <!-- Close Button -->
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+                <img src="/img/risalah/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title mb-4"><b>Keluarkan Undangan Rapat dari Arsip?</b></h5>
+                <form id="deleteArsipUndanganForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <!-- Tombol -->
+                    <div class="d-flex justify-content-center mt-3">
+                        <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="confirmDeleteArsipUndangan">Oke</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    // Event Listener Overlay delete
-    document.addEventListener("DOMContentLoaded", function () {
-        let deleteArsipUndanganModal = document.getElementById("deleteArsipUndanganModal");
-        let deleteArsipUndanganForm = document.getElementById("deleteArsipUndanganForm");
-        let deleteArsipUndanganSuccessModal = new bootstrap.Modal(document.getElementById("deleteSuccessArsipUndanganModal"));
-        let confirmDeleteBtn = document.getElementById("confirmDeleteArsipUndangan");
+    <!-- Modal Berhasil -->
+    <div class="modal fade" id="deleteSuccessArsipUndanganModal" tabindex="-1"
+        aria-labelledby="deleteSuccessArsipUndanganModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <img src="/img/risalah/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                    <h5 class="modal-title"><b>Sukses</b></h5>
+                    <p class="mt-2">Berhasil Keluarkan Undangan Rapat dari Arsip</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        let deleteRoute = ""; // Menyimpan URL DELETE
+    <script>
+        // Event Listener Overlay delete
+        document.addEventListener("DOMContentLoaded", function() {
+            let deleteArsipUndanganModal = document.getElementById("deleteArsipUndanganModal");
+            let deleteArsipUndanganForm = document.getElementById("deleteArsipUndanganForm");
+            let deleteArsipUndanganSuccessModal = new bootstrap.Modal(document.getElementById(
+                "deleteSuccessArsipUndanganModal"));
+            let confirmDeleteBtn = document.getElementById("confirmDeleteArsipUndangan");
 
-        // Event Listener untuk Menampilkan Modal Delete
-        deleteArsipUndanganModal.addEventListener("show.bs.modal", function (event) {
-            let button = event.relatedTarget;
-            deleteRoute = button.getAttribute("data-route");
-        });
+            let deleteRoute = ""; // Menyimpan URL DELETE
 
-        // Event Listener untuk Tombol "OK" di Modal
-        confirmDeleteBtn.addEventListener("click", function (event) {
-            event.preventDefault(); // Mencegah submit default
+            // Event Listener untuk Menampilkan Modal Delete
+            deleteArsipUndanganModal.addEventListener("show.bs.modal", function(event) {
+                let button = event.relatedTarget;
+                deleteRoute = button.getAttribute("data-route");
+            });
 
-            fetch(deleteRoute, {
-                method: "POST", // Laravel menangani DELETE dengan _method
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ _method: "DELETE" })
-            }).then(response => {
-                if (response.ok) {
-                    let modalInstance = bootstrap.Modal.getInstance(deleteArsipUndanganModal);
-                    modalInstance.hide();
+            // Event Listener untuk Tombol "OK" di Modal
+            confirmDeleteBtn.addEventListener("click", function(event) {
+                event.preventDefault(); // Mencegah submit default
 
-                    setTimeout(() => {
-                        deleteArsipUndanganSuccessModal.show();
+                fetch(deleteRoute, {
+                    method: "POST", // Laravel menangani DELETE dengan _method
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content"),
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        _method: "DELETE"
+                    })
+                }).then(response => {
+                    if (response.ok) {
+                        let modalInstance = bootstrap.Modal.getInstance(deleteArsipUndanganModal);
+                        modalInstance.hide();
+
                         setTimeout(() => {
-                            location.reload(); // Refresh halaman setelah 2 detik
-                        }, 1500);
-                    }, 500);
-                }
-            }).catch(error => console.error("Error:", error));
+                            deleteArsipUndanganSuccessModal.show();
+                            setTimeout(() => {
+                                location
+                                    .reload(); // Refresh halaman setelah 2 detik
+                            }, 1500);
+                        }, 500);
+                    }
+                }).catch(error => console.error("Error:", error));
+            });
         });
-    });
-</script>
+    </script>
 @endsection

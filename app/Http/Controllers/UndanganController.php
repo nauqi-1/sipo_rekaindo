@@ -32,8 +32,11 @@ class UndanganController extends Controller
         $seri = Seri::all();
         $userId = Auth::id();
 
-        // Ambil ID undangan yang sudah diarsipkan oleh user saat ini
-        $undanganDiarsipkan = Arsip::where('user_id', $userId)->pluck('document_id')->toArray();
+        // Ambil semua document_id undangan yang sudah diarsipkan user ini
+        $undanganDiarsipkan = Arsip::where('user_id', $userId)
+            ->where('jenis_document', 'App\\Models\\Undangan') // Filter hanya undangan
+            ->pluck('document_id')
+            ->toArray();
 
         $sortBy = $request->get('sort_by', 'tgl_rapat_diff');
         $sortDirection = $request->get('sort_direction', 'asc') === 'asc' ? 'asc' : 'desc';
@@ -43,22 +46,21 @@ class UndanganController extends Controller
             $sortBy = 'tgl_rapat_diff';
         }
 
+        // Query undangan yang belum diarsipkan user ini
         $query = Undangan::whereNotIn('id_undangan', $undanganDiarsipkan)
-            ->where(function ($q) use ($userId) {
-                $q->whereHas('kirimDocument', function ($query) use ($userId) {
-                    $query->where('jenis_document', 'undangan')
-                        ->where(function ($subQuery) use ($userId) {
-                            $subQuery->where('id_pengirim', $userId)
-                                ->orWhere('id_penerima', $userId);
-                        });
-                });
+            ->whereHas('kirimDocument', function ($q) use ($userId) {
+                $q->where('jenis_document', 'undangan')
+                    ->where(function ($sub) use ($userId) {
+                        $sub->where('id_pengirim', $userId)
+                            ->orWhere('id_penerima', $userId);
+                    });
             });
 
         if ($sortBy === 'tgl_rapat_diff') {
             $query
                 ->whereNotNull('tgl_rapat')
                 ->orderByRaw("
-                CASE 
+                CASE
                     WHEN DATEDIFF(tgl_rapat, CURDATE()) < 0 THEN 1
                     ELSE 0
                 END ASC
@@ -688,7 +690,7 @@ class UndanganController extends Controller
 
         //PROSES PENGIRIMAN DOKUMEN
         $creator = Auth::user();
-        if (Auth::user()->role_id_role == 3) { // Manager 
+        if (Auth::user()->role_id_role == 3) { // Manager
 
             // PROSES TTD OLEH MANAGER
             $qrText = "Disetujui oleh: " . Auth::user()->firstname . ' ' . Auth::user()->lastname . "\nTanggal: " . now()->translatedFormat('l, d F Y');
@@ -977,8 +979,12 @@ class UndanganController extends Controller
     {
         //dd($request->all());
         $undangan = Undangan::findOrFail($id);
-        //dd('Update function masuk');
-        //dd($request->all()); 
+        // Bersihkan isi_undangan dari tag HTML & whitespace
+        $isiUndanganBersih = trim(strip_tags($request->isi_undangan));
+
+        $request->merge([
+            'isi_undangan' => $isiUndanganBersih
+        ]);
 
         // VALIDASI EMOJI DULU SEBELUM VALIDASI LAINNYA
         $emojiErrors = $this->validateNoEmoji($request);

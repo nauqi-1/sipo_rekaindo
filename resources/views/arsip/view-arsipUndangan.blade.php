@@ -19,7 +19,7 @@
                 <a href="{{route ('arsip.undangan')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Detail Arsip Undangan</h1>
-        </div>        
+        </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
@@ -29,82 +29,6 @@
                 </div>
             </div>
         </div>
-        {{-- <div class="card-body">
-            <div class="row mb-4" style="gap: 20px;">
-                <div class="col">
-                    <div class="card-blue">
-                        <label for="tgl_surat" class="form-label">No Agenda</label>
-                    </div>
-                    <div class="card-white">
-                        <label for="seri">No Seri</label>
-                        <div class="separator"></div>
-                        <input type="text" id="seri" value="{{ $undangan->seri_surat }}" readonly>
-                    </div>
-                    <div class="card-white">
-                        <label for="diterima">Diterima</label>
-                        <div class="separator"></div>
-                        <input type="text" id="diterima" value="{{ $undangan->tujuan }}" readonly>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card-blue">
-                        <label for="tgl_surat" class="form-label">Status Surat</label>
-                    </div>
-                    <div class="card-white">
-                        <label for="status">Status</label>
-                        <div class="separator"></div>
-                        <button class="status">Diterima</button>
-                    </div>
-                    <div class="card-white">
-                        <label for="tanggal">Tanggal</label>
-                        <div class="separator"></div>
-                        <input type="text" id="tanggal" value="{{ $undangan->tgl_disahkan->translatedFormat('d F Y') }}" readonly>
-                    </div>
-                </div>
-            </div>
-            <div class="row mb-4" style="gap: 20px;">
-                <div class="col">
-                    <div class="card-blue">
-                        <label for="tgl_surat" class="form-label">
-                            <img src="/img/undangan/info.png" alt="info surat">Informasi Detail Surat
-                        </label>
-                    </div>
-                    <div class="card-white">
-                        <label for="nomor">No Dokumen</label>
-                        <div class="separator"></div>
-                        <input type="text" id="nomor" value="{{ $undangan->nomor_undangan }}" readonly>
-                    </div>
-                    <div class="card-white">
-                        <label for="divisi">Divisi</label>
-                        <div class="separator"></div>
-                        <input type="text" id="divisi" value="{{ $undangan->divisi->nm_divisi }}" readonly>
-                    </div>
-                    <div class="card-white">
-                        <label for="perihal">Perihal</label>
-                        <div class="separator"></div>
-                        <input type="text" id="perihal" value="{{ $undangan->judul }}" readonly>
-                    </div>
-                    <div class="card-white">
-                        <label for="tgl">Tanggal Surat</label>
-                        <div class="separator"></div>
-                        <input type="text" id="tgl" value="{{ $undangan->tgl_dibuat->translatedFormat('d F Y') }}" readonly>
-                    </div>
-                    <!-- <div class="card-white">
-                        <label for="lampiran">Lampiran</label>
-                        <div class="separator"></div>
-                        <input type="text" id="kepada" >
-                    </div> -->
-                    <div class="card-white">
-                        <label for="file">File</label>
-                        <div class="separator"></div>
-                        <!-- <button class="btn-file"><img src="/img/mata.png" alt="view"><a href="#">Lihat</a></button>
-                        <button class="down btn-file"><img src="/img/download.png" alt="down"><a href="#">Unduh</a></button> -->
-                        <a href="{{ route('view-undanganPDF', $undangan->id_undangan)  }}" class="btn btn-file"><img src="/img/mata.png" alt="view"> Lihat</a>
-                        <a class="btn btn-file down" onclick="window.location.href='{{ route('cetakundangan',['id' => $undangan->id_undangan]) }}'"><img src="/img/download.png" alt="down">Unduh</a>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
 
         <div class="card-body">
             <div class="row mb-4" style="gap: 20px;">
@@ -149,7 +73,7 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        
+
                             @if($undangan->pembuat != Auth::user()->id)
                             @if ($undangan->status == 'reject')
                             <span class="badge bg-danger">Ditolak</span>
@@ -157,7 +81,7 @@
                             <span class="badge bg-info">Diproses</span>
                         @elseif ($undangan->status == 'correction')
                             <span class="badge bg-warning">Dikoreksi</span>
-                        @else 
+                        @else
                             <span class="badge bg-success">Diterima</span>
                         @endif
                         @else
@@ -167,11 +91,11 @@
                             <span class="badge bg-info">Diproses</span>
                         @elseif ($undangan->status == 'correction')
                             <span class="badge bg-warning">Dikoreksi</span>
-                        @else 
+                        @else
                             <span class="badge bg-success">Diterima</span>
                         @endif
                         @endif
-                    </div>                    
+                    </div>
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
@@ -193,12 +117,12 @@
                         <label for="diterima">Diterima</label>
                         <div class="separator"></div>
                         <pre style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $undangan->tujuan }}</pre>
-                    </div>   
+                    </div>
                 </div>
             <div class="row mb-4" style="gap: 20px;">
                 <div class="col">
                     <div class="card-blue1">Catatan</div>
-                    <textarea type="text" for="catatan" id="catatan"  readonly>{{$undangan->catatan}}</textarea>        
+                    <textarea type="text" for="catatan" id="catatan"  readonly>{{$undangan->catatan}}</textarea>
                 </div>
             </div>
         </div>

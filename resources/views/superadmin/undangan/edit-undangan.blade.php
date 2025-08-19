@@ -22,7 +22,7 @@
                 <a href="{{route ('undangan.superadmin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Edit Undangan Rapat</h1>
-        </div>        
+        </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
@@ -77,7 +77,7 @@
                         <label for="nama_bertandatangan" class="form-label">Nama yang Bertanda Tangan <span class="text-danger">*</span></label>
                         <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" required>
                         @foreach($managers as $manager)
-                            <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}" 
+                            <option value="{{  $manager->firstname . ' ' . $manager->lastname  }}"
                                 {{ $undangan->nama_bertandatangan == ($manager->firstname . ' ' . $manager->lastname) ? 'selected' : '' }}>
                                 {{ $manager->firstname . ' ' . $manager->lastname }}
                             </option>
@@ -93,8 +93,8 @@
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_undangan">{{ $undangan->isi_undangan }}</textarea>
                     </div>
-                </div>    
-                
+                </div>
+
             </div>
             <div class="card-footer">
                 <button type="button" class="btn btn-cancel"><a href="{{route ('undangan.superadmin')}}">Batal</a></button>
@@ -119,7 +119,7 @@
                         <input type="date" name="tgl_dibuat" id="tgl_dibuat" class="form-control" value="{{ old('tgl_dibuat',$undangan->tgl_dibuat->format('Y-m-d')) }}"  disabled>
                         <input type="hidden" name="tgl_dibuat" value="{{ $undangan->tgl_dibuat->format('Y-m-d') }}">
                         <input type="hidden" name="tgl_disahkan" >
-                        
+
                     </div>
                     <div class="col-md-6">
                         <label for="seri_surat" class="form-label">Seri Surat</label>
@@ -133,7 +133,10 @@
                     </div>
                     <div class="col-md-6" >
                         <label for="judul" class="form-label">Perihal <span class="text-danger">*</span></label>
-                        <input type="text" name="judul" id="judul" class="form-control" value="{{ $undangan->judul }}" required>
+                        <input type="text" name="judul" id="judul" class="form-control" value="{{ $undangan->judul }}">
+                        @error('judul')
+                                <div class="form-control text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
                 </div>
                 <!--Checkboxes kepada (tujuan)-->
@@ -154,6 +157,8 @@
                                                 font-weight: 500;
                                             }
                                         </style>
+                                        <small id="tujuanError" class="text-danger" style="display:none;">Minimal pilih
+                                        satu tujuan!</small>
                                     </div>
                                 </div>
                                 <script>
@@ -182,32 +187,34 @@
                         <label for="tgl_rapat" class="form-label">
                             <img src="/img/undangan/date.png" alt="date" style="margin-right: 5px;">Tanggal Rapat <span class="text-danger">*</span>
                         </label>
-                       <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"  
-                        value="{{ old('tgl_rapat', optional(\Carbon\Carbon::parse($undangan->tgl_rapat))->format('Y-m-d')) }}" required>
+                       <input type="date" name="tgl_rapat" id="tgl_rapat" class="form-control"
+                        value="{{ old('tgl_rapat', optional(\Carbon\Carbon::parse($undangan->tgl_rapat))->format('Y-m-d')) }}">
 
                         @error('tgl_rapat')
                             <div class="form-control text-danger">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <!-- Tempat Rapat -->
-                    
-                        <div class="col-md-6">
-                            <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
-                            <input type="text" name="tempat" id="tempat" class="form-control" 
-                                value="{{ old('tempat', $undangan->tempat) }}" placeholder="Ruang Rapat" required>
-                        </div>
-
                         <!-- Waktu Rapat -->
                         <div class="col-md-6">
                             <label for="waktu" class="form-label">Waktu Rapat</label> <span class="text-danger">*</span>
                             <div class="d-flex align-items-center">
-                                <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2" 
+                                <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2"
                                     value="{{ old('waktu_mulai', $undangan->waktu_mulai) }}" placeholder="Waktu Mulai" required>
                                 <span class="fw-bold">s/d</span>
-                                <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2" 
+                                <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2"
                                     value="{{ old('waktu_selesai', $undangan->waktu_selesai) }}" placeholder="Waktu Selesai" required>
                             </div>
+                        </div>
+                        <!-- Tempat Rapat -->
+
+                        <div class="col-md-6">
+                            <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
+                            <input type="text" name="tempat" id="tempat" class="form-control"
+                                value="{{ old('tempat', $undangan->tempat) }}" placeholder="Ruang Rapat">
+                                @error('tempat')
+                                <div class="form-control text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 <div class="col-md-6">
@@ -216,7 +223,7 @@
                     <input type="hidden" name="nama_bertandatangan" value="{{ $undangan->nama_bertandatangan }}">
                     <select name="nama_bertandatangan" id="nama_bertandatangan" class="form-control" disabled>
                         @foreach($managers as $manager)
-                            <option value="{{ $manager->firstname . ' ' . $manager->lastname }}" 
+                            <option value="{{ $manager->firstname . ' ' . $manager->lastname }}"
                                 {{ old('nama_bertandatangan', $undangan->nama_bertandatangan) == ($manager->firstname . ' ' . $manager->lastname) ? 'selected' : '' }}>
                                 {{ $manager->firstname . ' ' . $manager->lastname }}
                             </option>
@@ -227,7 +234,7 @@
                     @enderror
                 </div>
             </div>
-                 
+
                 <div class="row mb-4 isi-surat-row">
                     <div class="col-md-12">
                         <img src="\img\undangan\isi-surat.png" alt="isiSurat"style=" margin-left: 10px;">
@@ -236,8 +243,8 @@
                     <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_undangan">{{ $undangan->isi_undangan }}</textarea>
                     </div>
-                </div>    
-                
+                </div>
+
             </div>
             <div id="tujuan-container"></div>
 
@@ -248,7 +255,7 @@
         </div>
         </form>
     </div>
-    
+
     <!-- Modal Upload File -->
     <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -295,9 +302,19 @@
             });
 
             if (userIds.length === 0) {
-                alert("Minimal pilih satu tujuan!");
+                tujuanError.textContent = "Minimal pilih satu tujuan!";
+                tujuanError.style.display = 'block';
+
+                // Scroll otomatis ke error
+                tujuanError.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
                 e.preventDefault();
                 return false;
+            } else {
+                tujuanError.style.display = 'none';
             }
         });
         $(function () {
@@ -321,7 +338,7 @@
                 // ['insert', ['link', 'picture', 'video']],
                 // ['view', ['fullscreen', 'codeview', 'help']],
                 ],
-                fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
+                fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'],
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']
             });
         });
@@ -332,4 +349,3 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
-    

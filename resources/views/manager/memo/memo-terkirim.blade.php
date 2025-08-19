@@ -108,12 +108,12 @@
                <td class="nama-dokumen 
                         {{ $kirim->memo->status == 'reject' ? 'text-danger' : ($kirim->memo->status == 'correction' ? 'text-warning' : ($kirim->memo->status == 'approve' ? 'text-success' : '')) }}"
                     style="{{ $kirim->memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                    {{ $kirim->memo->judul }}
+                    {{ Str::limit($kirim->memo->judul, 35, '...') }}
                 </td>
                 @else
                 <td class="nama-dokumen {{ ($kirim->status == 'reject' || $kirim->status == 'correction') ? 'text-danger' : ($kirim->status == 'pending' ? '' : 'text-success') }}"
                     style="{{ $kirim->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                    {{ $kirim->memo->judul }}
+                    {{ Str::limit($kirim->memo->judul, 35, '...') }}
                 </td>
                 @endif
 
@@ -152,6 +152,13 @@
                         <img src="/img/memo-supervisor/viewBlue.png" alt="view">
                     </a>
                     @else
+                    <form action="{{ route('arsip.archive', ['document_id' => $kirim->memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
+                        @csrf
+                        @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
+                        <button type="submit" class="btn btn-sm3 submitArsipMemo">
+                            <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                        </button>
+                    </form>
                     <a class="btn btn-sm3" href="{{ route('view.memo-terkirim', $kirim->id_document) }}">
                         <img src="/img/memo-supervisor/viewBlue.png" alt="view">
                     </a>

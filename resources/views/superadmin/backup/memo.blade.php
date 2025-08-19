@@ -137,7 +137,7 @@
                 <td class="nama-dokumen 
                         {{ $memo->status == 'reject' ? 'text-danger' : ($memo->status == 'correction' ? 'text-warning' : ($memo->status == 'approve' ? 'text-success' : '')) }}"
                     style="{{ $memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                    {{ $memo->judul }}
+                    {{ Str::limit($memo->judul, 35, '...') }}
                 </td>
                 <td>{{ \Carbon\Carbon::parse($memo->tgl_dibuat)->format('d-m-Y') }}</td>
                 <td>{{ $memo->seri_surat }}</td>

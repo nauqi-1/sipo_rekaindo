@@ -18,7 +18,7 @@
                 <a href="{{route ('arsip.memo')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Detail Arsip Memo</h1>
-        </div>        
+        </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
@@ -46,16 +46,16 @@
                         @php
                         use App\Models\User;
 
-                            $tujuanNames = explode(';', $memo->tujuan_string); 
+                            $tujuanNames = explode(';', $memo->tujuan_string);
                         @endphp
 
                         @if (count($tujuanNames) === 1)
                             <input type="text" id="kepada" value="{{ trim($tujuanNames[0]) }}" readonly>
                         @else
-                         <div 
-                        style="border-radius: 8px; 
-                               padding: 8px 12px; 
-                               background-color: #fff; 
+                         <div
+                        style="border-radius: 8px;
+                               padding: 8px 12px;
+                               background-color: #fff;
                                font-size: 14px;
                                height: auto;">
                             <ol style="padding-left: 20px;">
@@ -86,13 +86,13 @@
                         <button class="status {{ $statusClass }}">
                         @if ($memo->status == 'reject')
                             <span>Ditolak</span>
-                           
+
                         @elseif ($memo->status == 'pending')
                             <span>Diproses</span>
-                            
+
                         @else
                             <span>Diterima</span>
-                         
+
                         @endif
                         </button>
                     </div>
@@ -130,12 +130,15 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl" value="{{ $memo->tgl_dibuat->translatedFormat('d F Y') }}" readonly>
                     </div>
-                    
+
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
                         <!-- <button class="view" onclick="window.location.href='{{ route('view-memoPDF', $memo->id_memo) }}'"> <img src="/img/memo-admin/view.png" alt="view">Lihat</button> -->
                         <a style="text-decoration: none;" class="view" onclick="window.location.href='{{ route('view-memoPDF',[$memo->id_memo]) }}'"><img src="/img/memo-admin/view.png" alt="view">Lihat</a>
+                        @if ($memo->status=='approve')
+                        <a style="text-decoration: none;" class="down" onclick="window.location.href='{{ route('cetakmemo',['id' => $memo->id_memo]) }}'"><img src="/img/memo-admin/down.png" alt="down">Unduh</a>
+                        @endif
                     </div>
                 </div>
             </div>

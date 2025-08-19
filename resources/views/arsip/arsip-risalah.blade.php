@@ -1,7 +1,7 @@
 @extends('layouts.superadmin')
 
 @section('title', 'Arsip Risalah')
-      
+
 @section('content')
 <div class="container">
     <div class="header">
@@ -10,7 +10,7 @@
             <a href="{{route('superadmin.dashboard')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
         </div>
         <h1>Risalah Rapat</h1>
-    </div>        
+    </div>
     <div class="row">
     <div class="breadcrumb-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div class="breadcrumb" style="gap: 5px; width: 82%;">
@@ -58,7 +58,7 @@
                 <th>Nama Dokumen</th>
                 <th>Tanggal Masuk
                 <button class="data-md">
-                    <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_dibuat', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}" 
+                    <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_dibuat', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}"
                     style="color:rgb(135, 135, 148); text-decoration: none;">
                         <span class="bi-arrow-down-up"></span>
                     </a>
@@ -68,7 +68,7 @@
                 <th>Dokumen</th>
                 <th>Tanggal Disahkan
                 <button class="data-md">
-                    <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}" 
+                    <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan', 'sort_direction' => request('sort_direction') === 'asc' ? 'desc' : 'asc']) }}"
                     style="color: rgb(135, 135, 148); text-decoration: none;">
                         <span class="bi-arrow-down-up"></span>
                     </a>
@@ -80,22 +80,22 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($arsipRisalah as  $arsip)
+            @foreach($arsipRisalah as  $risalah)
             <tr>
                 <td class="nomor">{{ $loop->iteration }}</td>
-               <td class="nama-dokumen 
-                        {{ $arsip->document->final_status == 'reject' ? 'text-danger' : ($arsip->document->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
-                        {{ $arsip->document->judul }}
+               <td class="nama-dokumen
+                        {{ $risalah->final_status == 'reject' ? 'text-danger' : ($risalah->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
+                        {{ Str::limit($risalah->judul,35,'...') }}
                     </td>
-                    <td>{{ $arsip->document ? $arsip->document->tgl_dibuat->format('d-m-Y') : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->seri_surat : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->nomor_risalah : '-' }}</td>
-                    <td>{{ $arsip->document ? $arsip->document->tgl_disahkan->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $risalah ? $risalah->tgl_dibuat->format('d-m-Y') : '-' }}</td>
+                    <td>{{ $risalah ? $risalah->seri_surat : '-' }}</td>
+                    <td>{{ $risalah ? $risalah->nomor_risalah : '-' }}</td>
+                    <td>{{ $risalah ? $risalah->tgl_disahkan->format('d-m-Y') : '-' }}</td>
                     <td>{{ $risalah->user->department->kode_department ?? $risalah->user->divisi->kode_divisi ?? '-' }}</td>
                     <td>
-                    @if ($arsip->document->final_status == 'reject')
+                    @if ($risalah->final_status == 'reject')
                                 <span class="badge bg-danger">Ditolak</span>
-                            @elseif ($arsip->document->final_status == 'pending')
+                            @elseif ($risalah->final_status == 'pending')
                                 <span class="badge bg-warning">Diproses</span>
                             @else
                                 <span class="badge bg-success">Diterima</span>
@@ -104,23 +104,24 @@
 
                 <td>
                     <!-- Button Unduh -->
-                    <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakrisalah',['id' => $arsip->document->id_risalah]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
+                    <button class="btn btn-sm1" onclick="window.location.href='{{ route('cetakrisalah',['id' => $risalah->id_risalah]) }}'"><img src="/img/arsip/unduh.png" alt="unduh"></button>
 
                     <!-- Button Arsip -->
-                    @if ($arsip->document)
-                    <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipRisalahModal" data-route="{{ route('arsip.restore', ['document_id' => $arsip->document->id_risalah, 'jenis_document' => 'Risalah']) }}">
+                    @if ($risalah)
+                    <button class="btn btn-sm2 delete-btn" data-bs-toggle="modal" data-bs-target="#deleteArsipRisalahModal" data-route="{{ route('arsip.restore', ['document_id' => $risalah->id_risalah, 'jenis_document' => 'Risalah']) }}">
                         <img src="/img/arsip/unarchive2.png" alt="unarchive" style="height: 16px;">
                     </button>
 
                     <!-- Button View -->
-                    <button class="btn btn-sm3" onclick="window.location.href='{{route('view.risalah-arsip',$arsip->document->id_risalah)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
+                    <button class="btn btn-sm3" onclick="window.location.href='{{route('view.risalah-arsip',$risalah->id_risalah)}}'"><img src="/img/arsip/preview.png" alt="preview"></button>
                     @endif
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
-    {{ $arsipRisalah->links('pagination::bootstrap-5') }}
+    {{-- {{ $arsipRisalah->links('pagination::bootstrap-5') }} --}}
+    {{ $arsipRisalah->appends(request()->query())->links('pagination::bootstrap-5') }}
 </div>
 
 <!-- Modal Hapus -->

@@ -108,6 +108,8 @@
                                                 font-weight: 500;
                                             }
                                         </style>
+                                        <small id="tujuanError" class="text-danger" style="display:none;">Minimal pilih
+                                            satu tujuan!</small>
                                     </div>
                                 </div>
                                 <script>
@@ -178,12 +180,6 @@
 
                                     });
                                 </script>
-
-                                <!-- Added section for displaying selected recipients -->
-
-                                @error('tujuan[]')
-                                    <div class="form-control text-danger">{{ $message }}</div>
-                                @enderror
                             </div>
                             <!-- Added section for displaying selected recipients -->
                             <div style="display: none;" id="selected-section">
@@ -209,8 +205,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                         <div class="mb-3 row">
                             <div class="col-md-6">
                                 <label for="tgl_rapat" class="form-label">
@@ -228,16 +222,25 @@
                                     class="text-danger">*</span>
                                 <div class="d-flex align-items-center">
                                     <input type="text" name="waktu_mulai" id="waktu_mulai" class="form-control me-2"
-                                        placeholder="09.00" value="{{ old('waktu_mulai') }}" required>
+                                        placeholder="09.00" value="{{ old('waktu_mulai') }}">
                                     <span class="fw-bold">s/d</span>
                                     <input type="text" name="waktu_selesai" id="waktu_selesai" class="form-control ms-2"
-                                        placeholder="Selesai" value="{{ old('waktu_selesai') }}" required>
+                                        placeholder="Selesai" value="{{ old('waktu_selesai') }}">
                                 </div>
+                                @error('waktu_mulai')
+                                    <div class="form-control text-danger">{{ $message }}</div>
+                                @enderror
+                                @error('waktu_selesai')
+                                    <div class="form-control text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-6">
                                 <label for="tempat">Tempat Rapat</label> <span class="text-danger">*</span>
                                 <input type="text" name="tempat" id="tempat" class="form-control"
-                                    placeholder="Ruang Rapat" value="{{ old('tempat') }}" required>
+                                    placeholder="Ruang Rapat" value="{{ old('tempat') }}">
+                                    @error('tempat')
+                                    <div class="form-control text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 row">
@@ -287,6 +290,7 @@
                                             style="border: none; color:red; background-color: white;"></button>
                                     </div>
                                 </div>
+                                <small id="fileError" class="text-danger" style="display:none;">File gagal diunggah. Ukuran maksimal 2MB dan harus bertipe PDF.</small>
                             </div>
                         </div>
 
@@ -296,11 +300,11 @@
                             <img src="\img\undangan\isi-surat.png" alt="isiSurat" style=" margin-left: 10px;">
                             <label for="isi_undangan">Agenda <span class="text-danger">*</span></label>
                         </div>
+                        @error('isi_undangan')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <div class="row editor-container col-12 mb-4" style="font-size: 12px;">
                             <textarea id="summernote" name="isi_undangan" value="{{ old('isi_undangan') }}"></textarea>
-                            @error('isi_undangan')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
                         </div>
                     </div>
                 </div>
@@ -375,6 +379,13 @@
     </div>
     <script>
         $('#addUndanganForm').on('submit', function (e) {
+            const submitBtn = $(this).find('button[type="submit"]');
+
+            // Disable the button and add spinner
+            submitBtn.prop('disabled', true).html(
+                `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`
+            );
+
             const tujuanContainer = $('#tujuan-container');
             tujuanContainer.html(''); // bersihkan sebelum nambah
 
@@ -383,19 +394,43 @@
             const userIds = selected
                 .filter(node => node.id.startsWith('user-'))
                 .map(node => node.id.replace('user-', ''));
+            const fileError = document.getElementById('fileError');
 
             userIds.forEach(userId => {
                 tujuanContainer.append(`<input type="hidden" name="tujuan[]" value="${userId}">`);
             });
 
+            // Validasi minimal pilih satu tujuan
             if (userIds.length === 0) {
-                alert("Minimal pilih satu tujuan!");
+                tujuanError.textContent = "Minimal pilih satu tujuan!";
+                tujuanError.style.display = 'block';
+
+                // Scroll otomatis ke error
+                tujuanError.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                
                 e.preventDefault();
+                submitBtn.prop('disabled', false).text('Simpan');
                 return false;
+            } else {
+                tujuanError.style.display = 'none';
             }
             if (file && file.size > 2 * 1024 * 1024) {
+                fileError.textContent = "File gagal diunggah. Ukuran maksimal 2MB dan harus bertipe PDF.";
+                fileError.style.display = 'block';
+
+                // Scroll otomatis ke error
+                fileError.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
                 e.preventDefault();
-                alert("File gagal diunggah. Pastikan ukuran file tidak lebih dari 2MB dengan Tipe File PDF.");
+                return false;
+            } else {
+                fileError.style.display = 'none';
             }
         });
         // Modal Upload File - Menampilkan Modal

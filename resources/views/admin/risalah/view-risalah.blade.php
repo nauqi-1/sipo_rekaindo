@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Memo Admin</title>
+    <title>Detail Risalah Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
@@ -19,7 +19,7 @@
                 <a href="{{route ('risalah.admin')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Detail Risalah Rapat</h1>
-        </div>        
+        </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
@@ -55,15 +55,6 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl" value="{{$risalah->tgl_dibuat->translatedFormat('d F Y')}}" readonly>
                     </div>
-                    <div class="card-white">
-                        <label for="kepada">Kepada</label>
-                        <div class="separator"></div>
-                        <input type="text"
-                            id="kepada"
-                            value="{{ $tujuanUsernames }}"
-                            title="{{ $tujuanUsernames }}"
-                            readonly>
-                    </div>
                 </div>
                 <div class="col">
                     <div class="card-blue">
@@ -74,7 +65,9 @@
                     <div class="card-white">
                         <label for="pembuat">Pembuat</label>
                         <div class="separator"></div>
-                        <input type="text" id="pembuat" value= "{{ $risalah->user->firstname }}" readonly>
+                        <input type="text" id="pembuat"
+                            value="{{ $risalah->user ? $risalah->user->firstname . ' ' . $risalah->user->lastname : 'N/A' }}"
+                            readonly>
                     </div>
                     <div class="card-white">
                         <label for="status">Status</label>
@@ -82,12 +75,14 @@
                         @if ($risalah->status == 'reject')
                             <a class="status btn bg-danger">Ditolak</a>
                         @elseif ($risalah->status == 'pending')
+                            <a class="status btn bg-info">Diproses</a>
+                        @elseif ($risalah->status == 'correction')
                             <a class="status btn bg-warning">Diproses</a>
                         @else
                             <a class="status btn bg-success">Diterima</a>
                         @endif
                     </div>
-                    
+
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
@@ -103,11 +98,26 @@
                     </div>
                 </div>
             </div>
+            <div class="row mb-4" style="gap: 20px;">
+                <div class="col">
+                    <div class="card-blue">
+                        <label for="diterima" class="form-label">
+                            <img src="/img/memo-admin/detail.png" alt="date" style="margin-right: 5px;">Daftar Tujuan
+                        </label>
+                    </div>
+                    <div class="card-white">
+                        <label for="diterima">Diterima</label>
+                        <div class="separator"></div>
+                        <pre
+                            style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $tujuanUsernames }}</pre>
+                    </div>
+                </div>
+            </div>
             @if ($risalah->status != 'approve')
                 <div class="row mb-4" style="gap: 20px;">
                     <div class="col">
                         <div class="card-blue1">Catatan</div>
-                        <textarea type="text" for="catatan" id="catatan"  readonly>{{$risalah->catatan}}</textarea>        
+                        <textarea type="text" for="catatan" id="catatan"  readonly>{{$risalah->catatan}}</textarea>
                     </div>
                 </div>
             @endif

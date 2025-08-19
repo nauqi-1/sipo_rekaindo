@@ -97,7 +97,7 @@
                 <td class="nomor">{{ $index + 1 }}</td>
 
                 <td class="nama-dokumen {{ $kirim->status == 'reject' ? 'text-danger' : ($kirim->status == 'pending' ? 'text-warning' : 'text-success') }}">
-                    {{ $kirim->memo->judul }}
+                    {{ Str::limit($kirim->memo->judul, 35, '...') }}
                 </td>
                 <!-- <td>{{ $kirim->memo->tgl_dibuat }}</td> -->
                 <td>{{ $kirim->memo->tgl_dibuat ? \Carbon\Carbon::parse($kirim->memo->tgl_dibuat)->format('d-m-Y') : '-' }}</td>
@@ -119,6 +119,13 @@
 
                 </td>
                 <td>
+                    <form action="{{ route('arsip.archive', ['document_id' => $kirim->memo->id_memo, 'jenis_document' => 'Memo']) }}" method="POST" style="display: inline;">
+                        @csrf
+                        @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
+                        <button type="submit" class="btn btn-sm3 submitArsipMemo">
+                            <img src="/img/memo-superadmin/arsip.png" alt="arsip">
+                        </button>
+                    </form>
                     <a class="btn btn-sm3" href="{{ route('view.memo-diterima',$kirim->id_document) }}">
                         <img src="/img/memo-supervisor/viewBlue.png" alt="view">
                     </a>
@@ -129,4 +136,74 @@
     </table>
     {{ $memoDiterima->appends(request()->query())->links('pagination::bootstrap-5') }}
 </div>
+
+<div class="modal fade" id="arsipMemoModal" tabindex="-1" aria-labelledby="arsipMemoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <!-- Close Button -->
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            <img src="/img/memo-admin/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
+            <h5 class="modal-title mb-4"><b>Arsip Memo?</b></h5>
+            <!-- Tombol -->
+            <div class="d-flex justify-content-center mt-3">
+                <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="confirmArsipMemo">Oke</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Arsip Berhasil -->
+<div class="modal fade" id="successArsipMemoModal" tabindex="-1" aria-labelledby="successArsipMemoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div class="modal-body">
+                <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title"><b>Sukses</b></h5>
+                <p class="mt-2">Berhasil Arsip Memo</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     // Event Listener Arsip Memo
+    document.addEventListener("DOMContentLoaded", function() {
+        const arsipButtons = document.querySelectorAll(".submitArsipMemo");
+        const confirmArsipButton = document.getElementById("confirmArsipMemo");
+        const cancelArsipButton = document.querySelector("#arsipMemoModal .btn-outline-secondary");
+        const arsipMemoModal = new bootstrap.Modal(document.getElementById("arsipMemoModal"));
+        const successArsipMemoModal = new bootstrap.Modal(document.getElementById("successArsipMemoModal"));
+
+        let currentForm = null;
+
+        // Saat tombol arsip ditekan, simpan form yang akan dikirim
+        arsipButtons.forEach(button => {
+            button.addEventListener("click", function(event) {
+                event.preventDefault(); // Mencegah submit langsung
+                currentForm = this.closest("form");
+                arsipMemoModal.show(); // Tampilkan modal konfirmasi
+            });
+        });
+
+        // Saat tombol "Batal" ditekan, tutup modal konfirmasi
+        cancelArsipButton.addEventListener("click", function() {
+            arsipMemoModal.hide();
+        });
+
+        // Saat tombol "OK" ditekan, submit form dan tampilkan modal sukses
+        confirmArsipButton.addEventListener("click", function() {
+            if (currentForm) {
+                arsipMemoModal.hide(); // Tutup modal konfirmasi
+                setTimeout(() => {
+                    successArsipMemoModal.show(); // Tampilkan modal sukses setelah modal konfirmasi tertutup
+                }, 300);
+
+                setTimeout(() => {
+                    successArsipMemoModal.hide();
+                    currentForm.submit(); // Submit form setelah modal sukses ditutup
+                }, 1500);
+            }
+        });
+    });
+</script>
 @endsection

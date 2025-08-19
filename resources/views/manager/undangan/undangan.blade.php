@@ -7,7 +7,7 @@
         <div class="header">
             <!-- Back Button -->
             <div class="back-button">
-                <a href="{{route('manager.dashboard')}}"><img src="/img/undangan/Vector_back.png" alt=""></a>
+                <a href="{{ route('manager.dashboard') }}"><img src="/img/undangan/Vector_back.png" alt=""></a>
             </div>
             <h1>Undangan Rapat</h1>
         </div>
@@ -20,7 +20,8 @@
                 <form method="GET" action="{{ route('undangan.manager') }}" class="d-flex align-items-center gap-2 mb-3">
                     <label class="d-flex align-items-center" style="font-size: 14px; color: #333; margin-bottom: 0;">
                         <span style="margin-right: 6px;">Show</span>
-                        <select name="per_page" onchange="this.form.submit()" style="
+                        <select name="per_page" onchange="this.form.submit()"
+                            style="
                     padding: 4px 10px;
                     border: 1px solid #ccc;
                     border-radius: 6px;
@@ -42,8 +43,7 @@
                         </select>
                         <span style="margin-left: 6px;">entries</span>
                     </label>
-                    </form>
-
+                </form>
             </div>
         </div>
 
@@ -51,7 +51,7 @@
         <div class="surat">
             <div class="header-tools">
                 <div class="search-filter">
-                    <form method="GET" action="{{ route('undangan.manager', Auth::user()->id) }}" 
+                    <form method="GET" action="{{ route('undangan.manager', Auth::user()->id) }}"
                         class="d-flex align-items-center gap-2 w-100">
                         <div class="dropdown">
                             <select name="status" class="form-select" onchange="this.form.submit()">
@@ -60,15 +60,18 @@
                                 </option>
                                 <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Diproses
                                 </option>
-                                <option value="correction" {{ request('status') == 'correction' ? 'selected' : '' }}>Dikoreksi
+                                <option value="correction" {{ request('status') == 'correction' ? 'selected' : '' }}>
+                                    Dikoreksi
                                 </option>
-                                <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak</option>
+                                <option value="reject" {{ request('status') == 'reject' ? 'selected' : '' }}>Ditolak
+                                </option>
                             </select>
                         </div>
                         <div class="dropdown" style="gap: 5px; position: relative; width: 180px;">
                             <select name="userid_filter" class="form-select" onchange="this.form.submit()">
                                 <option value="">Semua Undangan</option>
-                                <option value="own" {{ request('userid_filter') == 'own' ? 'selected' : '' }}>Undangan Keluar
+                                <option value="own" {{ request('userid_filter') == 'own' ? 'selected' : '' }}>Undangan
+                                    Keluar
                                 </option>
                                 <option value="other" {{ request('userid_filter') == 'other' ? 'selected' : '' }}>Undangan
                                     Masuk</option>
@@ -99,7 +102,8 @@
                             </div>
                         </div>
                     </form>
-                    <a href="{{route('undangan-admin/add')}}" class="btn btn-add">+ <span>Tambah Undangan Rapat</span></a>
+                    <a href="{{ route('undangan-admin/add') }}" class="btn btn-add">+ <span>Tambah Undangan
+                            Rapat</span></a>
                 </div>
             </div>
         </div>
@@ -142,10 +146,10 @@
                     @endphp
                     <tr>
                         <td class="nomor">{{ $index + 1 }}</td>
-                        <td class="nama-dokumen 
+                        <td class="nama-dokumen
                                 {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'correction' ? 'text-warning' : ($undangan->status == 'approve' ? 'text-success' : '')) }}"
                             style="{{ $undangan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                            {{ $undangan->judul }}
+                            {{ Str::limit($undangan->judul, 35, '...') }}
                         </td>
                         <td>{{ isset($undangan->tgl_rapat) ? \Carbon\Carbon::parse($undangan->tgl_rapat)->format('d-m-Y') : '-' }}
                         </td>
@@ -174,36 +178,18 @@
                                     <span class="badge bg-success">Diterima</span>
                                 @endif
                             @endif
-
                         </td>
                         <td>
-                            @if (Auth::user()->id == $undangan->pembuat)
-                                @if ($undangan->status == 'approve' || $undangan->status == 'reject')
-                                    {{-- <form
-                                        action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}"
-                                        method="POST" style="display: inline;">
-                                        @csrf
-                                        @method('POST')
-                                        <button type="submit" class="btn btn-sm3 submitArsipUndangan">
-                                            <img src="/img/undangan/arsip.png" alt="arsip">
-                                        </button>
-                                    </form> --}}
-
-                                @endif
-                            @elseif (Auth::user()->id != $undangan->pembuat)
-                                @if ($undangan->status == 'approve')
-                                    {{-- <form
-                                        action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}"
-                                        method="POST" style="display: inline;">
-                                        @csrf
-                                        @method('POST') <!-- Pastikan metode ini sesuai dengan route -->
-                                        <button type="submit" class="btn btn-sm3">
-                                            <img src="/img/undangan/arsip.png" alt="arsip">
-                                        </button>
-                                    </form> --}}
-                                @endif
+                            @if ($undangan->status == 'approve' || $undangan->status == 'reject')
+                                <button type="button" class="btn btn-sm3 arsip-btn"
+                                        data-document-id="{{ $undangan->id_undangan }}"
+                                        data-jenis-document="Undangan"
+                                        data-action="{{ route('arsip.archive', ['document_id' => $undangan->id_undangan, 'jenis_document' => 'Undangan']) }}">
+                                    <img src="/img/undangan/arsip.png" alt="arsip">
+                                </button>
                             @endif
-                            <a class="btn btn-sm3" href="{{route('view.undangan', ['id' => $undangan->id_undangan])}}">
+
+                            <a class="btn btn-sm3" href="{{ route('view.undangan', ['id' => $undangan->id_undangan]) }}">
                                 <img src="/img/undangan/viewBlue.png" alt="view">
                             </a>
                         </td>
@@ -213,4 +199,151 @@
         </table>
         {{ $undangans->appends(request()->query())->links('pagination::bootstrap-5') }}
     </div>
+
+    <!-- Overlay Add Undangan Success -->
+    <div class="modal fade" id="successAddUndanganModal" tabindex="-1" aria-labelledby="successModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <!-- Success Icon -->
+                    <img src="/img/user-manage/success icon component.png" alt="Success Icon" class="mb-3"
+                        style="width: 80px; height: 80px;">
+                    <!-- Success Message -->
+                    <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
+                    <p class="mt-2">Berhasil Menambahkan Undangan</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Arsip -->
+    <div class="modal fade" id="arsipUndanganModal" tabindex="-1" aria-labelledby="arsipUndanganModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                <img src="/img/undangan/konfirmasi.png" alt="Question Mark Icon" class="mb-3" style="width: 80px;">
+                <h5 class="modal-title mb-4"><b>Arsip Undangan?</b></h5>
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="confirmArsipUndangan">Oke</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Arsip Berhasil -->
+    <div class="modal fade" id="successArsipUndanganModal" tabindex="-1" aria-labelledby="successArsipUndanganModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <img src="/img/memo-admin/success.png" alt="Berhasil Ikon" class="mb-3" style="width: 80px;">
+                    <h5 class="modal-title"><b>Sukses</b></h5>
+                    <p class="mt-2">Berhasil Arsip Undangan</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden form for submission -->
+    <form id="hiddenArsipForm" method="POST" style="display: none;">
+        @csrf
+    </form>
+
+    <script>
+         // Event listener untuk modal sukses tambah undangan
+        document.addEventListener("DOMContentLoaded", function() {
+            @if (session('success') === 'Dokumen berhasil dibuat.') // merujuk ke parameter controller undangan store
+                var successModal = new bootstrap.Modal(document.getElementById("successAddUndanganModal"));
+                successModal.show();
+                setTimeout(function() {
+                    successModal.hide();
+                }, 1500);
+            @endif
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log("Initializing arsip functionality");
+
+            let currentAction = null;
+            let currentDocumentId = null;
+            let currentJenisDocument = null;
+
+            // Get modal elements
+            const arsipModal = document.getElementById("arsipUndanganModal");
+            const successModal = document.getElementById("successArsipUndanganModal");
+            const confirmButton = document.getElementById("confirmArsipUndangan");
+            const hiddenForm = document.getElementById("hiddenArsipForm");
+
+            if (!arsipModal || !successModal || !confirmButton || !hiddenForm) {
+                console.error("Required modal elements not found");
+                return;
+            }
+
+            // Initialize Bootstrap modals
+            const arsipModalInstance = new bootstrap.Modal(arsipModal);
+            const successModalInstance = new bootstrap.Modal(successModal);
+
+            // Handle arsip button clicks
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.arsip-btn')) {
+                    e.preventDefault();
+
+                    const button = e.target.closest('.arsip-btn');
+                    currentAction = button.getAttribute('data-action');
+                    currentDocumentId = button.getAttribute('data-document-id');
+                    currentJenisDocument = button.getAttribute('data-jenis-document');
+
+                    console.log('Arsip button clicked:', {
+                        action: currentAction,
+                        documentId: currentDocumentId,
+                        jenisDocument: currentJenisDocument
+                    });
+
+                    arsipModalInstance.show();
+                }
+            });
+
+            // Handle confirm button
+            confirmButton.addEventListener('click', function() {
+                console.log('Confirm button clicked');
+
+                if (currentAction && hiddenForm) {
+                    // Set form action
+                    hiddenForm.action = currentAction;
+
+                    console.log('Submitting to:', currentAction);
+
+                    // Hide confirmation modal
+                    arsipModalInstance.hide();
+
+                    // Show success modal
+                    setTimeout(() => {
+                        successModalInstance.show();
+
+                        // Auto-hide and submit
+                        setTimeout(() => {
+                            successModalInstance.hide();
+                            setTimeout(() => {
+                                hiddenForm.submit();
+                            }, 300);
+                        }, 1500);
+                    }, 300);
+                }
+            });
+
+            // Session messages
+            @if (session('success'))
+                console.log("Success:", "{{ session('success') }}");
+            @endif
+
+            @if (session('error'))
+                console.log("Error:", "{{ session('error') }}");
+            @endif
+
+            @if (session('warning'))
+                console.log("Warning:", "{{ session('warning') }}");
+            @endif
+        });
+    </script>
 @endsection

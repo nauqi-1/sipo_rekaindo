@@ -136,10 +136,10 @@
                         class="selectItem">
                 </td>
                 <td class="nomor">{{ $index + 1 }}</td>
-                <td class="nama-dokumen 
+                <td class="nama-dokumen
                         {{ $risalah->status == 'reject' ? 'text-danger' : ($risalah->status == 'correction' ? 'text-warning' : ($risalah->status == 'approve' ? 'text-success' : '')) }}"
                     style="{{ $risalah->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                    {{ $risalah->judul }}
+                    {{ Str::limit($risalah->judul, 35, '...') }}
                 </td>
                 <td>{{ \Carbon\Carbon::parse($risalah->tgl_dibuat)->format('d-m-Y') }}</td>
                 <td>{{ $risalah->seri_surat }}</td>
@@ -166,13 +166,13 @@
                         data-bs-toggle="modal"
                         data-bs-target="#restoreRisalahModal"
                         data-route="{{ route('risalah.restore', ['id' => $risalah->id_risalah]) }}">
-                        <img src="/img/restore.png" alt="restore" style="width: 20px; height: 20px;">
+                        <i class="fa-solid fa-rotate-left" style="font-size: 14px;"></i>
                     </button>
 
                     <button type="button" class="btn btn-sm2 submitDeleterisalah" data-bs-toggle="modal"
                         data-bs-target="#deleteRisalahModal" data-id="{{ $risalah->id_risalah }}"
                         data-route="{{ route('risalah.forcedestroy', $risalah->id_risalah) }}">
-                        <img src="/img/risalah/Delete.png" alt="delete" style="height: 14px;">
+                        <i class="fa-solid fa-trash" style="color: red; font-size: 14px;"></i>
                     </button>
                 </td>
 

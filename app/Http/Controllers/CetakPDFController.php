@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Mpdf\Mpdf;
 use Clegginabox\PDFMerger\PDFMerger;
 use App\Models\Memo;
 use App\Models\Undangan;
@@ -27,7 +28,8 @@ class CetakPDFController extends Controller
 
         $tujuanNames = explode(';', $memo->tujuan_string);
 
-        $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        $manager = User::withTrashed()
+            ->with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$memo->nama_bertandatangan])
             ->first();
 
@@ -96,7 +98,8 @@ class CetakPDFController extends Controller
 
         $tujuanNames = explode(';', $memo->tujuan_string);
 
-        $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        $manager = User::withTrashed()
+            ->with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$memo->nama_bertandatangan])
             ->first();
 
@@ -108,8 +111,6 @@ class CetakPDFController extends Controller
 
         $headerPath = public_path('img/bheader.png');
         $footerPath = public_path('img/bfooter.png');
-
-
 
         // Konversi gambar ke base64
         $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
@@ -180,7 +181,7 @@ class CetakPDFController extends Controller
     {
         // Ambil data dari database
         $undangan = Undangan::findOrFail($id); // Sesuaikan dengan model yang benar
-        // $path = public_path('img/border-surat.png'); 
+        // $path = public_path('img/border-surat.png');
         $headerPath = public_path('img/bheader.png');
         $footerPath = public_path('img/bfooter.png');
         $qrCode = $undangan->qr_approved_by;
@@ -203,7 +204,8 @@ class CetakPDFController extends Controller
             })
             ->values(); // reset index array
 
-        $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        $manager = User::withTrashed()
+            ->with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$undangan->nama_bertandatangan])
             ->first();
 
@@ -343,7 +345,8 @@ class CetakPDFController extends Controller
             })
             ->values(); // reset index array
 
-        $manager = User::with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
+        $manager = User::withTrashed()
+            ->with(['position', 'director', 'divisi', 'department', 'section', 'unit'])
             ->whereRaw("CONCAT(firstname, ' ', lastname) = ?", [$undangan->nama_bertandatangan])
             ->first();
 
@@ -398,15 +401,15 @@ class CetakPDFController extends Controller
         $users = collect();
 
         if ($divisi) {
-            $users = User::where('divisi_id_divisi', $divisi->id_divisi)->get();
+            $users = User::withTrashed()->where('divisi_id_divisi', $divisi->id_divisi)->get();
         } else {
             $department = Department::where('kode_department', $kode)->first();
             if ($department) {
-                $users = User::where('department_id_department', $department->id_department)->get();
+                $users = User::withTrashed()->where('department_id_department', $department->id_department)->get();
             } else {
                 $director = Director::where('kode_director', $kode)->first();
                 if ($director) {
-                    $users = User::where('director_id_director', $director->id_director)->get();
+                    $users = User::withTrashed()->where('director_id_director', $director->id_director)->get();
                 } else {
                     return response()->json(['error' => 'Kode tidak valid'], 404);
                 }
@@ -481,7 +484,6 @@ class CetakPDFController extends Controller
         return $pdf->stream('laporan-undangan.pdf');
     }
 
-
     public function laporanundanganPDF(Request $request)
     {
         // Ambil data divisi
@@ -513,6 +515,8 @@ class CetakPDFController extends Controller
             $manager = null;
         }
 
+        $undangans->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
+            ->whereDate('tgl_dibuat', '<=', $request->tgl_akhir);
         // Ambil semua data yang sudah difilter
         $undangans = $undangans->orderBy('tgl_dibuat', 'asc')->get();
 
@@ -539,15 +543,10 @@ class CetakPDFController extends Controller
         return $pdf->stream('laporan-undangan.pdf');
     }
 
+
     public function cetakrisalahPDF($id)
     {
         $risalah = Risalah::findOrFail($id);
-
-        // Header & Footer Image
-        $headerPath = public_path('img/bheader.png');
-        $footerPath = public_path('img/bfooter.png');
-        $headerBase64 = file_exists($headerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($headerPath)) : null;
-        $footerBase64 = file_exists($footerPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($footerPath)) : null;
 
         // QRCode jika ada
         $qrCode = $risalah->qr_approved_by;
@@ -565,45 +564,33 @@ class CetakPDFController extends Controller
 
         $cleanIsi = strip_tags($risalah->isi_risalah);
 
-        // Generate PDF menggunakan format yang sama dengan viewRisalahPDF
-        $pdf = PDF::loadView('format-surat.format-risalah', [
+        // mPDF debug header
+        $mpdf = new \Mpdf\Mpdf([
+            'format' => 'A4',
+            'margin_top' => 50,
+            'margin_bottom' => 30,
+        ]);
+
+        // CSS
+        $stylesheet = file_get_contents(public_path('css/format-surat/format-cetakLaporan.css'));
+        $mpdf->WriteHTML($stylesheet, \Mpdf\HTMLParserMode::HEADER_CSS);
+
+        // Set header/footer dengan text HTML biasa
+        $mpdf->SetHTMLHeader('<div style="width:100%;text-align:center;font-size:18px;padding:10px 0;border-bottom:2px solid #333;background:#ffe;">HEADER DEBUG PDF - CETAK RISALAH</div>');
+        $mpdf->SetHTMLFooter('<div style="width:100%;text-align:center;font-size:14px;padding:8px 0;border-top:2px solid #333;background:#eef;">FOOTER DEBUG PDF - CETAK RISALAH</div>');
+
+        // Render Blade (mode PDF)
+        $html = view('format-surat.format-risalah', [
             'risalah' => $risalah,
             'cleanIsi' => $cleanIsi,
             'manager' => $userBertandatangan,
-            'headerImage' => $headerBase64,
-            'footerImage' => $footerBase64,
             'qrCode' => $qrCode,
             'isPdf' => true
-        ])->setPaper('A4', 'portrait');
+        ])->render();
 
-        // Simpan PDF risalah sementara
-        $formatRisalahPath = storage_path('app/temp_format_risalah_' . $risalah->id . '.pdf');
-        $pdf->save($formatRisalahPath);
+        $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
 
-        // Jika ada lampiran, gabungkan PDF risalah + lampiran
-        if (!empty($risalah->lampiran)) {
-            $lampiranTempPath = storage_path('app/temp_lampiran_' . $risalah->id . '.pdf');
-            file_put_contents($lampiranTempPath, base64_decode($risalah->lampiran));
-
-            $pdfMerger = new \Clegginabox\PDFMerger\PDFMerger;
-            $pdfMerger->addPDF($formatRisalahPath, 'all');
-            $pdfMerger->addPDF($lampiranTempPath, 'all');
-
-            $outputPath = storage_path('app/cetak_risalah_' . $risalah->id . '.pdf');
-            $pdfMerger->merge('file', $outputPath);
-
-            // Hapus file sementara
-            if (file_exists($formatRisalahPath)) unlink($formatRisalahPath);
-            if (file_exists($lampiranTempPath)) unlink($lampiranTempPath);
-
-            return response()->download($outputPath)->deleteFileAfterSend(true);
-        } else {
-            // Jika tidak ada lampiran, langsung download PDF risalah saja
-            return response()->streamDownload(function () use ($pdf, $formatRisalahPath) {
-                echo $pdf->output();
-                if (file_exists($formatRisalahPath)) unlink($formatRisalahPath);
-            }, 'cetak_risalah_' . $risalah->id . '.pdf');
-        }
+        return response($mpdf->Output('', 'S'))->header('Content-Type', 'application/pdf');
     }
 
     public function viewrisalahPDF($id_risalah)
@@ -695,6 +682,9 @@ class CetakPDFController extends Controller
         } else {
             $manager = null;
         }
+
+        $risalahs->whereDate('tgl_dibuat', '>=', $request->tgl_awal)
+            ->whereDate('tgl_dibuat', '<=', $request->tgl_akhir);
         // Ambil semua data yang sudah difilter
         $risalahs = $risalahs->orderBy('tgl_dibuat', 'desc')->get();
 

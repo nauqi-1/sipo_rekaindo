@@ -66,7 +66,7 @@
                 <th>Nama Dokumen</th>
                 <th>Tanggal Memo
                     <button class="data-md">
-                        <a href="" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'created_at','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}" style="color:rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
                     </button>
                 </th>
                 <th>Seri</th>
@@ -74,7 +74,7 @@
                 <th>Pengirim</th>
                 <th>Tanggal Disahkan
                     <button class="data-md">
-                        <a href="" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by' => 'tgl_disahkan','sort_direction' => $sortDirection === 'desc' ? 'asc' : 'desc']) }}" style="color: rgb(135, 135, 148); text-decoration: none;"><span class="bi-arrow-down-up"></span></a>
                     </button>
                 </th>
                 <th>Status</th>

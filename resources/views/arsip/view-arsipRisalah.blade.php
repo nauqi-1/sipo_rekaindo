@@ -18,7 +18,7 @@
                 <a href="{{route ('arsip.risalah')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Detail Arsip Risalah</h1>
-        </div>        
+        </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
@@ -40,9 +40,9 @@
                         <input type="text" id="seri" value="{{ $risalah->seri_surat }}" readonly>
                     </div>
                     <div class="card-white">
-                        <label for="diterima">Diterima</label>
+                        <label for="pembuat">Pembuat</label>
                         <div class="separator"></div>
-                        <input type="text" id="diterima" value="{{ $risalah->tujuan }}">
+                        <input type="text" id="pembuat" value="{{ $risalah->user ? $risalah->user->firstname . ' ' . $risalah->user->lastname : 'N/A' }}" readonly>
                     </div>
                 </div>
                 <div class="col">
@@ -52,7 +52,27 @@
                     <div class="card-white">
                         <label for="status">Status</label>
                         <div class="separator"></div>
-                        <button class="status" >Diterima</button>
+                         @if($risalah->pembuat != Auth::user()->id)
+                            @if ($risalah->status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($risalah->status == 'pending')
+                            <span class="badge bg-info">Diproses</span>
+                        @elseif ($risalah->status == 'correction')
+                            <span class="badge bg-warning">Dikoreksi</span>
+                        @else
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
+                        @else
+                            @if ($risalah->status == 'reject')
+                            <span class="badge bg-danger">Ditolak</span>
+                        @elseif ($risalah->status == 'pending')
+                            <span class="badge bg-info">Diproses</span>
+                        @elseif ($risalah->status == 'correction')
+                            <span class="badge bg-warning">Dikoreksi</span>
+                        @else
+                            <span class="badge bg-success">Diterima</span>
+                        @endif
+                        @endif
                     </div>
                     <div class="card-white">
                         <label for="tanggal">Tanggal</label>
@@ -88,13 +108,27 @@
                         <div class="separator"></div>
                         <input type="text" id="tgl" value="{{ $risalah->tgl_dibuat->translatedFormat('d F Y') }}" readonly>
                     </div>
-                    
+
                     <div class="card-white">
                         <label for="file">File</label>
                         <div class="separator"></div>
                        <a href="{{ route('view-risalahPDF', $risalah->id_risalah)  }}" class="btn btn-file"><img src="/img/mata.png" alt="view"> Lihat</a>
                         <a class="btn btn-file down" onclick="window.location.href='{{ route('cetakrisalah',['id' => $risalah->id_risalah]) }}'"><img src="/img/download.png" alt="down">Unduh</a>
                     </div>
+                    <div class="row mb-4" style="gap: 20px;">
+                <div class="col">
+                    <div class="card-blue">
+                        <label for="diterima" class="form-label">
+                            <img src="/img/memo-admin/detail.png" alt="date" style="margin-right: 5px;">Daftar Tujuan
+                        </label>
+                    </div>
+                    <div class="card-white">
+                        <label for="diterima">Diterima</label>
+                        <div class="separator"></div>
+                        <pre style="font-family: Arial, sans-serif; font-size: 15px;padding: 10px 15px;">{{ $risalah->tujuan }}</pre>
+                    </div>
+                </div>
+            </div>
                 </div>
             </div>
         </div>
