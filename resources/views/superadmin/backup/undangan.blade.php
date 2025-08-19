@@ -160,7 +160,7 @@
                 <td class="nama-dokumen 
                             {{ $undangan->status == 'reject' ? 'text-danger' : ($undangan->status == 'correction' ? 'text-warning' : ($undangan->status == 'approve' ? 'text-success' : '')) }}"
                     style="{{ $undangan->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                    {{ $undangan->judul }}
+                    {{ Str::limit($undangan->judul,35,'...') }}
                 </td>
                 <td>{{ \Carbon\Carbon::parse($undangan->tgl_dibuat)->format('d-m-Y') }}</td>
                 <td>{{ $undangan->seri_surat }}</td>
