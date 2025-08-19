@@ -287,8 +287,8 @@
         let valid = true;
 
         // validasi password minimal 6 karakter jika ada isian
-        if (passwordInput.value.length > 0 && passwordInput.value.length < 6) {
-            passwordError.textContent = 'Password minimal 6 karakter.';
+        if (passwordInput.value.length > 0 && passwordInput.value.length < 8) {
+            passwordError.textContent = 'Password minimal 8 karakter.';
             passwordInput.classList.add('is-invalid');
             passwordError.style.display = 'block';
             valid = false;

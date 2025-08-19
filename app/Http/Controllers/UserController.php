@@ -45,86 +45,102 @@ class UserController extends Controller
     // Menangani update data user
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        try {
+            $user = User::findOrFail($id);
+            // Validasi input
+            $validated = $request->validate([
+                'firstname'         => 'required|string|max:50|regex:/^[A-Za-z.\s]+$/',
+                'lastname'          => 'required|string|max:50|regex:/^[A-Za-z.\s]+$/',
+                'username'          => 'required|string|max:25|unique:users,username,' . $id,
+                'email'             => 'required|string|email|max:70|unique:users,email,' . $id,
+                'password'          => 'nullable|min:8|confirmed',
+                'phone_number'      => 'nullable|numeric',
+                'role_id_role'      => 'required|exists:role,id_role',
+                'position'       => 'required|exists:position,id_position',
+                'parent_id'         => 'required',
+                'parent_type'       => 'required|in:director,divisi,department,section,unit',
+            ]);
 
-        $request->validate([
-            'firstname' => 'nullable|string|max:50',
-            'lastname' => 'nullable|string|max:50',
-            'username' => 'nullable|string|max:25',
-            'email' => 'nullable|string|email|max:70|unique:users,email,' . $id,
-            'password' => 'nullable|min:8|confirmed',
-            'phone_number' => 'nullable|numeric',
-            'role_id_role' => 'nullable|exists:role,id_role',
-            'position_id_position' => 'nullable|exists:position,id_position',
-            'parent_id' => 'required',
-            'parent_type' => 'required',
-        ]);
+            // Update field dasar
+            $user->firstname       = $validated['firstname'];
+            $user->lastname        = $validated['lastname'];
+            $user->username        = $validated['username'];
+            $user->email           = $validated['email'];
+            $user->phone_number    = $validated['phone_number'] ?? $user->phone_number;
+            $user->role_id_role    = $validated['role_id_role'];
+            $user->position_id_position = $validated['position'];
 
-        if ($request->filled('firstname')) {
-            $user->firstname = $request->firstname;
-        }
-        if ($request->filled('lastname')) {
-            $user->lastname = $request->lastname;
-        }
-        if ($request->filled('username')) {
-            $user->username = $request->username;
-        }
-        if ($request->filled('email')) {
-            $user->email = $request->email;
-        }
-        if ($request->filled('phone_number')) {
-            $user->phone_number = $request->phone_number;
-        }
-        if ($request->filled('password')) {
-            $user->password = bcrypt($request->password);
-        }
-        if ($request->filled('position_id_position')) {
-            $user->position_id_position = $request->position_id_position;
-        }
-        if ($request->filled('role_id_role')) {
-            $user->role_id_role = $request->role_id_role;
-        }
+            if (!empty($validated['password'])) {
+                $user->password = bcrypt($validated['password']);
+            }
 
-        $bagian = $request->parent_id;
-        $type = $request->parent_type;
-        // dd($jabatan);
+            // Handle parent/struktur organisasi
+            $bagian = $validated['parent_id'];
+            $type   = $validated['parent_type'];
 
-        if ($type == "director") { // Direktur
-            $user->director_id_director = $bagian;
-            $user->divisi_id_divisi = NULL;
-            $user->department_id_department = NULL;
-            $user->section_id_section = NULL;
-            $user->unit_id_unit = NULL;
-        } elseif ($type == "divisi") { // Divisi
-            $director = Divisi::where('id_divisi', $bagian)->value('director_id_director');
-            $user->divisi_id_divisi = $bagian;
-            $user->department_id_department = NULL;
-            $user->section_id_section = NULL;
-            $user->unit_id_unit = NULL;
-        } elseif ($type == "department") { // Department
-            $user->director_id_director = Department::where('id_department', $bagian)->value('director_id_director');
-            $user->divisi_id_divisi = Department::where('id_department', $bagian)->value('divisi_id_divisi') ?? NULL;
-            $user->department_id_department = $bagian;
-            $user->section_id_section = NULL;
-            $user->unit_id_unit = NULL;
-        } elseif ($type == "section") { // Section
-            $user->department_id_department = Section::where('id_section', $bagian)->value('department_id_department');
-            $user->director_id_director = Department::where('id_department', $user->department_id_department)->value('director_id_director');
-            $user->divisi_id_divisi = Department::where('id_department', $user->department_id_department)->value('divisi_id_divisi') ?? NULL;
-            $user->section_id_section = $bagian;
-            $user->unit_id_unit = NULL;
-        } elseif ($type == "unit") { //Unit
-            $user->department_id_department = Unit::where('id_unit', $bagian)->value('department_id_department') ?? NULL;
-            $user->section_id_section = Unit::where('id_unit', $bagian)->value('section_id_section') ?? NULL;
-            $user->director_id_director = Department::where('id_department', $user->department_id_department)->value('director_id_director');
-            $user->divisi_id_divisi = Department::where('id_department', $user->department_id_department)->value('divisi_id_divisi') ?? NULL;
-            $user->unit_id_unit = $bagian;
+            switch ($type) {
+                case "director":
+                    $user->director_id_director = $bagian;
+                    $user->divisi_id_divisi     = null;
+                    $user->department_id_department = null;
+                    $user->section_id_section   = null;
+                    $user->unit_id_unit         = null;
+                    break;
+
+                case "divisi":
+                    $divisi = Divisi::find($bagian);
+                    $user->director_id_director = $divisi?->director_id_director;
+                    $user->divisi_id_divisi     = $bagian;
+                    $user->department_id_department = null;
+                    $user->section_id_section   = null;
+                    $user->unit_id_unit         = null;
+                    break;
+
+                case "department":
+                    $department = Department::find($bagian);
+                    $user->director_id_director = $department?->director_id_director;
+                    $user->divisi_id_divisi     = $department?->divisi_id_divisi;
+                    $user->department_id_department = $bagian;
+                    $user->section_id_section   = null;
+                    $user->unit_id_unit         = null;
+                    break;
+
+                case "section":
+                    $section = Section::find($bagian);
+                    $department = $section?->department;
+                    $user->department_id_department = $section?->department_id_department;
+                    $user->director_id_director = $department?->director_id_director;
+                    $user->divisi_id_divisi     = $department?->divisi_id_divisi;
+                    $user->section_id_section   = $bagian;
+                    $user->unit_id_unit         = null;
+                    break;
+
+                case "unit":
+                    $unit = Unit::find($bagian);
+                    $department = $unit?->department;
+                    $user->department_id_department = $unit?->department_id_department;
+                    $user->section_id_section   = $unit?->section_id_section;
+                    $user->director_id_director = $department?->director_id_director;
+                    $user->divisi_id_divisi     = $department?->divisi_id_divisi;
+                    $user->unit_id_unit         = $bagian;
+                    break;
+            }
+
+
+            $user->save();
+
+            return redirect()->route('user.manage')->with('success', 'User berhasil diperbarui!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
+                ->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
+                ->withInput();
         }
-
-        $user->save();
-
-        return redirect()->route('user.manage')->with('success', 'User updated successfully');
     }
+
     public function destroy($id)
     {
 
@@ -134,7 +150,7 @@ class UserController extends Controller
 
             return response()->json(['success' => true, 'message' => 'User berhasil dihapus']);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => false, 'message' => $e->getMessage()], 500);
         }
     }
 }

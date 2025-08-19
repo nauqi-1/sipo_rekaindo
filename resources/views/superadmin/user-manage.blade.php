@@ -17,6 +17,10 @@
                 <a href="{{route('superadmin.dashboard')}}">Beranda</a> / <a href="#">Pengaturan</a> / <a href="#" style="color: #565656;">Manajemen Pengguna</a>
             </div>
             <form method="GET" action="{{ route('user.manage') }}" class="search-filter d-flex gap-2">
+                <input type="hidden" name="search" value="{{ request('search') }}">
+                <input type="hidden" name="sort" value="{{ request('sort', 'asc') }}">
+                <input type="hidden" name="view" value="{{ $view }}">
+
                 <label style="margin: 0; padding-bottom: 25px; padding-right: 12px; color: #565656;">
                     Show
                     <select name="per_page" onchange="this.form.submit()" style="color: #565656; padding: 2px 5px;">
@@ -28,6 +32,7 @@
                     entries
                 </label>
             </form>
+
         </div>
     </div>
 
@@ -38,17 +43,35 @@
             <div class="search-filter">
                 <!-- Tombol Toggle -->
                 @if($view === 'deleted')
-                <a href="{{ route('user.manage', ['view' => 'active']) }}" class="btn btn-add">
+                <a href="{{ route('user.manage', array_merge(request()->all(), ['view' => 'active'])) }}"
+                    class="btn btn-add">
                     User Aktif
                 </a>
                 @else
-                <a href="{{ route('user.manage', ['view' => 'deleted']) }}" class="btn btn-danger">
+                <a href="{{ route('user.manage', array_merge(request()->all(), ['view' => 'deleted'])) }}"
+                    class="btn btn-danger">
                     User Dihapus
                 </a>
                 @endif
 
+
                 <div class="d-flex gap-2">
-                    <form action="{{ route('user.manage') }}" method="GET" class="d-flex align-items-center btn btn-search" style="gap: 5px;"> <button type="submit" class="border-0 bg-transparent p-0" style="outline: none; box-shadow: none;"> <img src="/img/user-manage/search.png" alt="search" style="width: 20px; height: 20px; cursor: pointer;"> </button> <input type="text" name="search" value="{{ request('search') }}" class="form-control border-0 bg-transparent" placeholder="Cari berdasarkan nama ..." style="outline: none; box-shadow: none;"> </form>
+                    <form action="{{ route('user.manage') }}" method="GET"
+                        class="d-flex align-items-center btn btn-search" style="gap: 5px;">
+                        <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
+                        <input type="hidden" name="sort" value="{{ request('sort', 'asc') }}">
+                        <input type="hidden" name="view" value="{{ $view }}">
+
+                        <button type="submit" class="border-0 bg-transparent p-0">
+                            <img src="/img/user-manage/search.png" alt="search"
+                                style="width: 20px; height: 20px; cursor: pointer;">
+                        </button>
+
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            class="form-control border-0 bg-transparent"
+                            placeholder="Cari berdasarkan nama ..."
+                            style="outline: none; box-shadow: none;">
+                    </form>
                 </div>
 
                 <div class="dropdown m-3">
@@ -57,12 +80,14 @@
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'asc']) }}" style="justify-content: center; text-align: center;">
+                            <a class="dropdown-item d-flex align-items-center"
+                                href="{{ route('user.manage', array_merge(request()->all(), ['sort' => 'asc'])) }}">
                                 Urutkan abjad A-Z
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('user.manage', ['sort' => 'desc']) }}" style="justify-content: center; text-align: center;">
+                            <a class="dropdown-item d-flex align-items-center"
+                                href="{{ route('user.manage', array_merge(request()->all(), ['sort' => 'desc'])) }}">
                                 Urutkan abjad Z-A
                             </a>
                         </li>
@@ -121,7 +146,7 @@
                             @endif
                         </td>
                         <td>
-                            {{ $user->divisi->nm_divisi ?? 'No Divisi Assigned' }} <!-- Menampilkan nama divisi -->
+                            {{ $user->divisi->nm_divisi ?? $user->department->name_department ?? $user->director->name_director ?? '-' }} <!-- Menampilkan nama divisi -->
                         </td>
                         <td>
                             {{ $user->position->nm_position ?? 'No Position Assigned' }} <!-- Menampilkan nama posisi -->
@@ -129,13 +154,21 @@
                         <td>{{ $user->phone_number }}</td>
                         @if($view !== 'deleted')
                         <td>
-                            <form method="POST" action="{{ route('user-manage.edit', $user->id) }}" style="display: inline;">
-                                @csrf
-                                @method('GET') <!-- Use GET to navigate to the edit page -->
-                                <button type="submit" class="btn btn-edit">
-                                    <img src="/img/user-manage/Edit1.png" alt="edit">
-                                </button>
-                            </form>
+                            <button type="button" class="btn btn-edit"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editUserModal"
+                                data-id="{{ $user->id }}"
+                                data-firstname="{{ $user->firstname }}"
+                                data-lastname="{{ $user->lastname }}"
+                                data-username="{{ $user->username }}"
+                                data-email="{{ $user->email }}"
+                                data-phone="{{ $user->phone_number }}"
+                                data-role="{{ $user->role_id_role }}"
+                                data-position="{{ $user->position_id_position }}"
+                                data-parent="{{ $user->parent_id }}">
+                                <img src="/img/user-manage/Edit1.png" alt="edit">
+                            </button>
+
                             <button type="button" class="btn btn-delete"
                                 data-bs-toggle="modal" data-bs-target="#deleteUserModal"
                                 data-user-id="{{ $user->id }}" data-route="{{ route('user-manage.destroy', $user->id) }}">
@@ -168,7 +201,7 @@
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="id" class="form-label">ID Pengguna :</label>
+                            <label class="form-label">ID Pengguna</label>
                             <input type="text" name="id" id="id" class="form-control" disabled autocomplete="id">
                         </div>
                         <div class="col-md-6">
@@ -331,6 +364,106 @@
     </div>
 </div>
 
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="POST" id="editUserForm">
+                @csrf
+                @method('POST')
+                <div class="modal-header">
+                    <img src="/img/user-manage/addUser.png" alt="editUser" style="margin-right: 10px;">
+                    <h5 class="modal-title"><b>Edit Pengguna</b></h5>
+                    <button type="button" class="close" data-bs-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+
+                <!-- Body sama persis dengan form Amanda -->
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">ID Pengguna</label>
+                            <input type="text" id="edit_id_display" class="form-control" disabled>
+                            <input type="hidden" name="id" id="edit_id">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_email" class="form-label">Email :<span style="color : red;"> *</span></label>
+                            <input type="email" name="email" id="edit_email" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="edit_firstname" class="form-label">Nama Depan :<span style="color : red;"> *</span></label>
+                            <input type="text" name="firstname" id="edit_firstname" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_lastname" class="form-label">Nama Akhir :<span style="color : red;"> *</span></label>
+                            <input type="text" name="lastname" id="edit_lastname" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="edit_username" class="form-label">Nama Pengguna :<span style="color : red;"> *</span></label>
+                            <input type="text" name="username" id="edit_username" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_phone" class="form-label">No. Telpon :<span style="color : red;"> *</span></label>
+                            <input type="text" name="phone_number" id="edit_phone" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="edit_password" class="form-label">Kata Sandi :</label>
+                            <input type="password" name="password" id="edit_password" class="form-control" placeholder="Kosongkan jika tidak diganti">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_password_confirmation" class="form-label">Konfirmasi Kata Sandi :</label>
+                            <input type="password" name="password_confirmation" id="edit_password_confirmation" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="edit_parent_id" class="form-label">Pilih Posisi<span style="color : red;"> *</span></label>
+                            <select id="edit_parent_id" class="parent-select form-control" name="parent_id" data-target="edit" required>
+                                <option value="">-- Pilih Posisi --</option>
+                                @php if($mainDirector) renderOrgOptions($mainDirector); @endphp
+                            </select>
+                            <input type="hidden" name="parent_type" id="edit_parent_type">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_position" class="form-label">Pilih Jabatan<span style="color : red;"> *</span></label>
+                            <select class="position-select form-control" id="edit_position" name="position" data-target="edit" required disabled>
+                                @foreach($positions as $position)
+                                <option value="{{ $position->id_position }}">{{ $position->nm_position }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="izin">
+                            <label class="form-izin">Izin Akses<span style="color : red;"> *</span></label>
+                            @foreach ($roles as $role)
+                            <label for="edit_role_{{ $role->id_role }}">{{ $role->nm_role }}</label>
+                            <input type="radio" name="role_id_role" value="{{ $role->id_role }}" id="edit_role_{{ $role->id_role }}">
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Overlay Add User Success -->
 <div class="modal fade" id="successAddUserModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -356,6 +489,21 @@
                 <!-- Success Message -->
                 <h5 class="modal-title" id="successModalLabel"><b>Sukses</b></h5>
                 <p class="mt-2">Berhasil Mengubah Pengguna</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4" style="border: 2px solid #dc3545; border-radius: 12px;">
+            <div class="modal-body">
+                <!-- Error Icon -->
+                <i class="fa-solid fa-xmark" style="color: #ff0000; font-size: 80px;"></i>
+                <!-- Error Message -->
+                <h5 class="modal-title text-danger" id="errorModalLabel"><b>Gagal</b></h5>
+                <p class="mt-2 text-dark" id="errorPasswordMessage">Terjadi kesalahan</p>
             </div>
         </div>
     </div>
@@ -414,6 +562,84 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let editUserModal = document.getElementById("editUserModal");
+
+        // Saat modal Edit ditampilkan
+        editUserModal.addEventListener("show.bs.modal", function(event) {
+            let button = event.relatedTarget;
+
+            // Ambil data dari tombol
+            let id = button.getAttribute("data-id");
+            let firstname = button.getAttribute("data-firstname");
+            let lastname = button.getAttribute("data-lastname");
+            let username = button.getAttribute("data-username");
+            let email = button.getAttribute("data-email");
+            let phone = button.getAttribute("data-phone");
+            let role = button.getAttribute("data-role");
+            let position = button.getAttribute("data-position");
+            let parent = button.getAttribute("data-parent");
+
+            // Set form action
+            let form = document.getElementById("editUserForm");
+            form.action = "/user-manage/update/" + id;
+
+            // Isi input form
+            document.getElementById("edit_id_display").value = id;
+            document.getElementById("edit_id").value = id;
+            document.getElementById("edit_firstname").value = firstname || "";
+            document.getElementById("edit_lastname").value = lastname || "";
+            document.getElementById("edit_username").value = username || "";
+            document.getElementById("edit_email").value = email || "";
+            document.getElementById("edit_phone").value = phone || "";
+            document.getElementById("edit_position").value = position || "";
+
+            // SET parent & parent_type dari <option data-type="...">
+            const editParentSelect = document.getElementById("edit_parent_id");
+            const parentTypeInput = document.getElementById("edit_parent_type");
+
+            if (editParentSelect) {
+                // set value parent (id)
+                if (parent) editParentSelect.value = parent;
+
+                // ambil data-type dari option yang terpilih
+                const selected = editParentSelect.options[editParentSelect.selectedIndex];
+                const parentType = selected ? (selected.getAttribute("data-type") || selected.dataset.type || "") : "";
+
+                parentTypeInput.value = parentType;
+
+                // trigger change supaya mapping posisi (jika ada) ikut sinkron
+                editParentSelect.dispatchEvent(new Event("change"));
+            }
+
+            // Set role
+            if (role) {
+                let roleInput = document.getElementById("edit_role_" + role);
+                if (roleInput) roleInput.checked = true;
+            }
+        });
+        const editParentSelect = document.getElementById("edit_parent_id");
+        if (editParentSelect) {
+            editParentSelect.addEventListener("change", function() {
+                const selected = this.options[this.selectedIndex];
+                const parentType = selected ? (selected.getAttribute("data-type") || selected.dataset.type || "") : "";
+                document.getElementById("edit_parent_type").value = parentType;
+            });
+        }
+    });
+    // Update parent_type saat ganti parent_id manual di dropdown
+    document.getElementById("edit_parent_id").addEventListener("change", function() {
+        let selected = this.options[this.selectedIndex];
+        let parentType = selected.dataset.type || null;
+        document.getElementById("edit_parent_type").value = parentType;
+
+        console.log("parentType set to:", parentType);
+    });
+
+
+
+
+
     document.addEventListener('DOMContentLoaded', function() {
         const parentSelect = document.getElementById('parent_id');
         const parentTypeInput = document.getElementById('parent_type');
@@ -475,6 +701,68 @@
         parentSelect.addEventListener('change', updatePositions);
     });
 
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const parentSelect = document.getElementById('parent_id');
+        const parentTypeInput = document.getElementById('parent_type');
+
+        parentSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const type = selectedOption.getAttribute('data-type') || '';
+            parentTypeInput.value = type;
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const allPositions = @json($positions);
+
+        const positionMap = {
+            'director': [1],
+            'divisi': [2, 3, 4],
+            'department': [3, 4, 5, 6, 7, 8],
+            'section': [5, 6, 7, 8, 9],
+            'unit': [9]
+        };
+
+        // Ambil semua parent select
+        document.querySelectorAll('.parent-select').forEach(parentSelect => {
+            const target = parentSelect.getAttribute('data-target');
+            const positionSelect = document.querySelector(
+                `.position-select[data-target="${target}"]`
+            );
+
+            function updatePositions() {
+                const selectedOption = parentSelect.options[parentSelect.selectedIndex];
+                const type = selectedOption ? selectedOption.getAttribute('data-type') : null;
+
+                positionSelect.innerHTML = '';
+
+                if (type && positionMap[type]) {
+                    positionSelect.disabled = false;
+                    let filtered = allPositions.filter(pos => positionMap[type].includes(pos.id_position));
+                    filtered.forEach(pos => {
+                        let opt = document.createElement('option');
+                        opt.value = pos.id_position;
+                        opt.textContent = pos.nm_position;
+                        positionSelect.appendChild(opt);
+                    });
+                } else {
+                    positionSelect.disabled = true;
+                    let opt = document.createElement('option');
+                    opt.textContent = '-- Pilih posisi setelah pilih induk --';
+                    positionSelect.appendChild(opt);
+                }
+            }
+
+            // Jalankan saat pertama kali buka (misal modal edit sudah ada value)
+            updatePositions();
+
+            // Jalankan setiap kali parent berubah
+            parentSelect.addEventListener('change', updatePositions);
+        });
+    });
+
+
     // Event Listener Overlay delete
     document.addEventListener("DOMContentLoaded", function() {
         let deleteUserModal = document.getElementById("deleteUserModal");
@@ -527,6 +815,11 @@
         setTimeout(() => {
             successAddUserModal.hide();
         }, 1500);
+        @elseif(session('error')) {
+            var errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+            document.getElementById("errorPasswordMessage").innerText = "{{ session('error') }}";
+            errorModal.show();
+        }
         @endif
     });
 
