@@ -41,20 +41,6 @@
         <div class="header-tools">
             <h2 class="title">Pengguna</h2>
             <div class="search-filter">
-                <!-- Tombol Toggle -->
-                @if($view === 'deleted')
-                <a href="{{ route('user.manage', array_merge(request()->all(), ['view' => 'active'])) }}"
-                    class="btn btn-add">
-                    User Aktif
-                </a>
-                @else
-                <a href="{{ route('user.manage', array_merge(request()->all(), ['view' => 'deleted'])) }}"
-                    class="btn btn-danger">
-                    User Dihapus
-                </a>
-                @endif
-
-
                 <div class="d-flex gap-2">
                     <form action="{{ route('user.manage') }}" method="GET"
                         class="d-flex align-items-center btn btn-search" style="gap: 5px;">
@@ -93,6 +79,18 @@
                         </li>
                     </ul>
                 </div>
+
+                @if($view === 'deleted')
+                <button class="btn btn-add"
+                    onclick="window.location='{{ route('user.manage', array_merge(request()->all(), ['view' => 'active'])) }}'">
+                    User Aktif
+                </button>
+                @else
+                <button class="btn btn-danger"
+                    onclick="window.location='{{ route('user.manage', array_merge(request()->all(), ['view' => 'deleted'])) }}'">
+                    User Non-Aktif
+                </button>
+                @endif
 
                 <!-- Add User Button to Open Mod    al -->
                 <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah Pengguna</button>
