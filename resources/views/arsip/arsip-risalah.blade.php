@@ -85,7 +85,7 @@
                 <td class="nomor">{{ $loop->iteration }}</td>
                <td class="nama-dokumen
                         {{ $risalah->final_status == 'reject' ? 'text-danger' : ($risalah->final_status == 'pending' ? 'text-warning' : 'text-success') }}">
-                        {{ $risalah->judul }}
+                        {{ Str::limit($risalah->judul,35,'...') }}
                     </td>
                     <td>{{ $risalah ? $risalah->tgl_dibuat->format('d-m-Y') : '-' }}</td>
                     <td>{{ $risalah ? $risalah->seri_surat : '-' }}</td>

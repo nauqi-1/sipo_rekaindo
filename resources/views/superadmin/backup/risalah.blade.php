@@ -139,7 +139,7 @@
                 <td class="nama-dokumen
                         {{ $risalah->status == 'reject' ? 'text-danger' : ($risalah->status == 'correction' ? 'text-warning' : ($risalah->status == 'approve' ? 'text-success' : '')) }}"
                     style="{{ $risalah->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                    {{ $risalah->judul }}
+                    {{ Str::limit($risalah->judul, 35, '...') }}
                 </td>
                 <td>{{ \Carbon\Carbon::parse($risalah->tgl_dibuat)->format('d-m-Y') }}</td>
                 <td>{{ $risalah->seri_surat }}</td>
