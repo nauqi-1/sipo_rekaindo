@@ -97,7 +97,7 @@
                 <td class="nomor">{{ $index + 1 }}</td>
 
                 <td class="nama-dokumen {{ $kirim->status == 'reject' ? 'text-danger' : ($kirim->status == 'pending' ? 'text-warning' : 'text-success') }}">
-                    {{ $kirim->memo->judul }}
+                    {{ Str::limit($kirim->memo->judul, 35, '...') }}
                 </td>
                 <!-- <td>{{ $kirim->memo->tgl_dibuat }}</td> -->
                 <td>{{ $kirim->memo->tgl_dibuat ? \Carbon\Carbon::parse($kirim->memo->tgl_dibuat)->format('d-m-Y') : '-' }}</td>

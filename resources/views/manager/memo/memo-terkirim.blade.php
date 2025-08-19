@@ -108,12 +108,12 @@
                <td class="nama-dokumen 
                         {{ $kirim->memo->status == 'reject' ? 'text-danger' : ($kirim->memo->status == 'correction' ? 'text-warning' : ($kirim->memo->status == 'approve' ? 'text-success' : '')) }}"
                     style="{{ $kirim->memo->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                    {{ $kirim->memo->judul }}
+                    {{ Str::limit($kirim->memo->judul, 35, '...') }}
                 </td>
                 @else
                 <td class="nama-dokumen {{ ($kirim->status == 'reject' || $kirim->status == 'correction') ? 'text-danger' : ($kirim->status == 'pending' ? '' : 'text-success') }}"
                     style="{{ $kirim->status == 'pending' ? 'color: #0dcaf0;' : '' }}">
-                    {{ $kirim->memo->judul }}
+                    {{ Str::limit($kirim->memo->judul, 35, '...') }}
                 </td>
                 @endif
 
