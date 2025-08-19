@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
@@ -33,13 +33,13 @@
                 <form method="POST" action="{{ route('login') }}" novalidate>
                     @csrf
                     @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                     @endif
                     <!-- Session Status -->
                     <x-auth-session-status class="mb-4" :status="session('status')" />
@@ -73,7 +73,7 @@
                     <!-- Forgot Password -->
                     <div class="col">
                         @if (Route::has('forgot-password'))
-                            <a href="{{ route('forgot-password') }}">Lupa Password?</a>
+                        <a href="{{ route('forgot-password') }}">Lupa Password?</a>
                         @endif
                     </div>
 
@@ -93,17 +93,17 @@
         integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
         crossorigin="anonymous"></script>
     <script>
-    function togglePassword(el) {
-        const input = el.previousElementSibling;
-        if (input.type === "password") {
-            input.type = "text";
-            el.querySelector('i').classList.replace('fa-eye', 'fa-eye-slash');
-        } else {
-            input.type = "password";
-            el.querySelector('i').classList.replace('fa-eye-slash', 'fa-eye');
+        function togglePassword(el) {
+            const input = el.previousElementSibling;
+            if (input.type === "password") {
+                input.type = "text";
+                el.querySelector('i').classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = "password";
+                el.querySelector('i').classList.replace('fa-eye-slash', 'fa-eye');
+            }
         }
-    }
-</script>
+    </script>
 
 
 

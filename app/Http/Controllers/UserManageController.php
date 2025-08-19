@@ -42,7 +42,7 @@ class UserManageController extends Controller
 
         $users->orderBy('firstname', $sortOrder);
         $perPage = $request->get('per_page', 10);
-        $users = $users->paginate($perPage);
+        $users = $users->paginate($perPage)->appends($request->all());
 
         $mainDirector = Director::with([
             'subDirectors.divisi.department.section.unit',

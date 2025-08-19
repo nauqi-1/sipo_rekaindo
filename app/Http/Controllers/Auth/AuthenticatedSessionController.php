@@ -17,7 +17,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        return view('auth.login');
+        return view('pages.login');
     }
 
     /**
@@ -60,7 +60,7 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         if (!Auth::check()) {
-            return redirect()->route('login');
+            return redirect('/');
         }
 
         Auth::guard('web')->logout();

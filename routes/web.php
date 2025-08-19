@@ -32,10 +32,12 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+// Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
 
-Route::get('/logout', function () {
-    return redirect()->route('login');
-});
+// Route::get('/logout', function () {
+//     return redirect()->route('/');
+// });
 
 // Forgot PW Controller
 Route::middleware('web')->group(function () {
@@ -122,7 +124,7 @@ Route::middleware(['auth', 'role:1'])->group(function () {
     Route::get('/user-manage/edit/{id}', [UserController::class, 'edit'])->name('user-manage.edit');
     Route::post('/user-manage/delete/{id}', [UserController::class, 'destroy'])->name('user-manage.destroy');
     Route::delete('/user-manage/delete/{id}', [UserController::class, 'destroy'])->name('user-manage.destroy');
-    Route::put('/user-manage/update/{id}', [UserController::class, 'update'])->name('user-manage/update');
+    Route::post('/user-manage/update/{id}', [UserController::class, 'update'])->name('user-manage/update');
     Route::get('/role-management', [UserController::class, 'showRole'])->name('user.role');
     Route::get('/user-manage/paginate', [UserManageController::class, 'paginateUsers'])->name('user-manage.paginate');
     Route::get('/user-manage', [UserManageController::class, 'index'])->name('user.manage');
