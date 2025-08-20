@@ -448,7 +448,7 @@
 <!-- Modal Tambah Struktur Organisasi -->
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <form method="POST" action="{{ route('organization-manage/add') }}">
+        <form method="POST" id="addOrgForm" action="{{ route('organization-manage/add') }}">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -535,7 +535,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="submit" id="simpanOrgBtn" class="btn btn-primary">Simpan</button>
                 </div>
             </div>
         </form>
@@ -799,6 +799,26 @@
             var errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
             errorModal.show();
         }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addOrgForm = document.getElementById('addOrgForm');
+        const simpanOrgBtn = document.getElementById('simpanOrgBtn');
+
+        if (!addOrgForm || !simpanOrgBtn) return;
+
+        addOrgForm.addEventListener('submit', function(e) {
+            if (!addOrgForm.checkValidity()) {
+                return; // let browser show validation errors
+            }
+
+            // Disable button and show spinner
+            simpanOrgBtn.disabled = true;
+            simpanOrgBtn.innerHTML =
+                `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`;
+        });
     });
 </script>
 

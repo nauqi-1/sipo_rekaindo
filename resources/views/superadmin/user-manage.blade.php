@@ -355,7 +355,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="submit" id="simpanUser" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>
@@ -637,6 +637,50 @@
 
 
 
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('#addUserModal form');
+        const simpanUserBtn = document.getElementById('simpanUser');
+        //simpanUserBtn.style.display = 'none'; // Hide button initially
+
+        function validateForm() {
+            let valid = true;
+            // Check required fields
+            ['email', 'firstname', 'lastname', 'username', 'phone_number', 'password', 'password_confirmation', 'parent_id', 'position_id_position'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el || !el.value.trim()) valid = false;
+            });
+            // Check at least one role radio is checked
+            if (!form.querySelector('input[name="role_id_role"]:checked')) valid = false;
+            // Password confirmation match
+            const pwd = document.getElementById('password');
+            const pwdConf = document.getElementById('password_confirmation');
+            if (pwd && pwdConf && pwd.value !== pwdConf.value) valid = false;
+
+            simpanUserBtn.disabled = !valid;
+        }
+
+        // Attach input/change listeners to all fields
+        form.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('input', validateForm);
+            el.addEventListener('change', validateForm);
+        });
+
+        // On submit, show spinner and submit
+        simpanUserBtn.addEventListener('click', function(e) {
+            if (simpanUserBtn.disabled) {
+                e.preventDefault();
+                return;
+            }
+            simpanUserBtn.disabled = true;
+            simpanUserBtn.innerHTML =
+                `<span class=\"spinner-border spinner-border-sm me-2\" role=\"status\" aria-hidden=\"true\"></span>`;
+            form.submit();
+        });
+
+        // Initial validation
+        validateForm();
+    });
 
     document.addEventListener('DOMContentLoaded', function() {
         const parentSelect = document.getElementById('parent_id');
