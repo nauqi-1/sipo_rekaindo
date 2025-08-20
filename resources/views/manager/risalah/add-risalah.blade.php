@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,6 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin/add-risalah.css') }}">
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -20,7 +22,7 @@
                 <a href="{{route ('risalah.manager')}}"><img src="/img/user-manage/Vector_back.png" alt=""></a>
             </div>
             <h1>Tambah Risalah Rapat</h1>
-        </div>        
+        </div>
         <div class="row">
             <div class="breadcrumb-wrapper">
                 <div class="breadcrumb" style="gap: 5px;">
@@ -31,13 +33,13 @@
 
         <!-- form add undangan -->
         <form action="{{ route('risalah.store.manager') }}" method="POST" enctype="multipart/form-data">
-        @csrf 
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title" style="font-size: 18px;"><b>Formulir Tambah Risalah Rapat</b></h5>
-            </div>
-            <div class="card-body">
-            <div class="mb-3 row">
+            @csrf
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title" style="font-size: 18px;"><b>Formulir Tambah Risalah Rapat</b></h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="tgl_dibuat">Tgl. Surat</label>
                             <input type="date" name="tgl_dibuat" class="form-control" value="{{ date('Y-m-d') }}" required>
@@ -60,18 +62,17 @@
                             <select name="judul" id="judul" class="form-control select2" required>
                                 <option value="" disabled selected>Pilih Judul</option>
                                 @foreach ($undangan as $u)
-                                    <option 
-                                        value="{{ $u->judul }}"
-                                        data-tempat="{{ $u->tempat }}"
-                                        data-waktu_mulai="{{ $u->waktu_mulai }}"
-                                        data-waktu_selesai="{{ $u->waktu_selesai }}"
-                                        data-nama_ttd="{{ $u->nama_bertandatangan }}"
-                                    >
-                                        {{ $u->judul }}
-                                    </option>
+                                <option
+                                    value="{{ $u->judul }}"
+                                    data-tempat="{{ $u->tempat }}"
+                                    data-waktu_mulai="{{ $u->waktu_mulai }}"
+                                    data-waktu_selesai="{{ $u->waktu_selesai }}"
+                                    data-nama_ttd="{{ $u->nama_bertandatangan }}">
+                                    {{ $u->judul }}
+                                </option>
                                 @endforeach
                             </select>
-                        </div> 
+                        </div>
                     </div>
                     <div class="mb-3 row">
                         <div class="col-md-6">
@@ -102,18 +103,18 @@
                             <label for="lampiran" class="form-label">Lampiran</label>
                             <div class="separator"></div>
                             <div class="upload-wrapper">
-                                    <button type="button" class="btn btn-primary upload-button" id="openUploadModal" style="margin-left: 30px;">Pilih File</button>
-                                    <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
-                                    <div id="filePreview" style="display: none; text-align: center">
-                                        <img id="previewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
-                                        <span id="fileName"></span>
-                                        <button type="button" id="removeFile" class="bi bi-x remove-btn" style="border: none; color:red; background-color: white;"></button>
-                                    </div>
+                                <button type="button" class="btn btn-primary upload-button" id="openUploadModal" style="margin-left: 30px;">Pilih File</button>
+                                <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                                <div id="filePreview" style="display: none; text-align: center">
+                                    <img id="previewIcon" src="" alt="Preview" style="max-width: 18px; max-height: 18px; object-fit: contain; display: inline-block; margin-right: 10px;">
+                                    <span id="fileName"></span>
+                                    <button type="button" id="removeFile" class="bi bi-x remove-btn" style="border: none; color:red; background-color: white;"></button>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6"  id="tujuan_kosong"></div>
+                        <div class="col-md-6" id="tujuan_kosong"></div>
                     </div>
-                <div id="risalahContainer"></div>
+                    <div id="risalahContainer"></div>
                     <!-- <div class="isi-surat-row">
                         <div class="col-md-1">
                             <label for="no">No</label>
@@ -142,20 +143,20 @@
                         </div>
                     </div> -->
 
-                <div class="card-tambah" style="margin-bottom: 10px;">
-                    <button class="btn btn-tambah" id="tambahIsiRisalahBtn">Tambah Isi Risalah</button>
-                    <div id="risalahAlert" class="mt-2 text-danger" style="display:none;"></div>
-                </div>
+                    <div class="card-tambah" style="margin-bottom: 10px;">
+                        <button class="btn btn-tambah" id="tambahIsiRisalahBtn">Tambah Isi Risalah</button>
+                        <div id="risalahAlert" class="mt-2 text-danger" style="display:none;"></div>
+                    </div>
 
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-cancel"><a href="{{route ('risalah.admin')}}">Batal</a></button>
+                    <button type="submit" class="btn btn-save" id="submitBtn">Simpan</button>
+                </div>
             </div>
-            <div class="card-footer">
-                <button type="button" class="btn btn-cancel"><a href="{{route ('risalah.admin')}}">Batal</a></button>
-                <button type="submit" class="btn btn-save" id="submitBtn">Simpan</button>
-            </div>
-        </div>
         </form>
     </div>
-    
+
     <!-- Modal Upload File -->
     <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -188,8 +189,8 @@
     </div>
 
     <script>
-        $(document).ready(function () {
-            $('#judul').on('change', function () {
+        $(document).ready(function() {
+            $('#judul').on('change', function() {
                 const selected = $(this).find('option:selected');
                 const tempat = selected.data('tempat');
                 const waktuMulai = selected.data('waktu_mulai');
@@ -213,113 +214,113 @@
         $(document).ready(function() {
             $('#dropdownMenuButton').on('change', function() {
                 $(this).css('text-align', 'left');
-                if($(this).val() === null || $(this).val() === "") {
+                if ($(this).val() === null || $(this).val() === "") {
                     $(this).css('text-align', 'center');
                 }
             });
         });
 
         // Modal Upload File - Menampilkan Modal
-        document.getElementById('openUploadModal').addEventListener('click', function () {
+        document.getElementById('openUploadModal').addEventListener('click', function() {
             var uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
             uploadModal.show();
         });
 
         // Membuka file input ketika tombol "Pilih File" di klik
-        document.getElementById('selectFileBtn').addEventListener('click', function () {
+        document.getElementById('selectFileBtn').addEventListener('click', function() {
             document.getElementById('fileInput').click();
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
-    const uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
-    const lampiranInput = document.getElementById('lampiran');
-    const modalFileInput = document.getElementById('fileInput');
-    const filePreview = document.getElementById('filePreview');
-    const previewIcon = document.getElementById('previewIcon');
-    const fileName = document.getElementById('fileName');
-    const removeFile = document.getElementById('removeFile');
+        document.addEventListener("DOMContentLoaded", function() {
+            const uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
+            const lampiranInput = document.getElementById('lampiran');
+            const modalFileInput = document.getElementById('fileInput');
+            const filePreview = document.getElementById('filePreview');
+            const previewIcon = document.getElementById('previewIcon');
+            const fileName = document.getElementById('fileName');
+            const removeFile = document.getElementById('removeFile');
 
-    function updatePreview(file) {
-        if (file) {
-            fileName.textContent = file.name;
-            filePreview.style.display = 'block';
-            if (file.type.startsWith('image/')) {
-                previewIcon.src = '/img/image.png';
-            } else if (file.type === 'application/pdf') {
-                previewIcon.src = '/img/pdf.png';
-            } else {
-                previewIcon.src = '/img/file.png';
+            function updatePreview(file) {
+                if (file) {
+                    fileName.textContent = file.name;
+                    filePreview.style.display = 'block';
+                    if (file.type.startsWith('image/')) {
+                        previewIcon.src = '/img/image.png';
+                    } else if (file.type === 'application/pdf') {
+                        previewIcon.src = '/img/pdf.png';
+                    } else {
+                        previewIcon.src = '/img/file.png';
+                    }
+                    previewIcon.style.display = 'inline-block';
+                }
             }
-            previewIcon.style.display = 'inline-block';
-        }
-    }
 
-    // Saat pilih file dari modal
-    modalFileInput.addEventListener('change', function () {
-        const file = this.files[0];
-        updatePreview(file);
-    });
+            // Saat pilih file dari modal
+            modalFileInput.addEventListener('change', function() {
+                const file = this.files[0];
+                updatePreview(file);
+            });
 
-    // Saat klik tombol upload di modal
-    document.getElementById('uploadBtn').addEventListener('click', function () {
-        const file = modalFileInput.files[0];
-        if (file) {
-            // hack: clone ke lampiran input untuk submit
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            lampiranInput.files = dataTransfer.files;
-            updatePreview(file);
-            uploadModal.hide();
-        }
-    });
+            // Saat klik tombol upload di modal
+            document.getElementById('uploadBtn').addEventListener('click', function() {
+                const file = modalFileInput.files[0];
+                if (file) {
+                    // hack: clone ke lampiran input untuk submit
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    lampiranInput.files = dataTransfer.files;
+                    updatePreview(file);
+                    uploadModal.hide();
+                }
+            });
 
-    // Saat drop file di modal upload box
-    const uploadBox = document.getElementById('uploadBox');
-    uploadBox.addEventListener('dragover', function (e) {
-        e.preventDefault();
-        this.style.border = '2px dashed #007bff';
-    });
-    uploadBox.addEventListener('dragleave', function () {
-        this.style.border = '2px dashed #ccc';
-    });
-    uploadBox.addEventListener('drop', function (e) {
-        e.preventDefault();
-        this.style.border = '2px dashed #ccc';
-        modalFileInput.files = e.dataTransfer.files;
-        updatePreview(e.dataTransfer.files[0]);
-    });
+            // Saat drop file di modal upload box
+            const uploadBox = document.getElementById('uploadBox');
+            uploadBox.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.border = '2px dashed #007bff';
+            });
+            uploadBox.addEventListener('dragleave', function() {
+                this.style.border = '2px dashed #ccc';
+            });
+            uploadBox.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.border = '2px dashed #ccc';
+                modalFileInput.files = e.dataTransfer.files;
+                updatePreview(e.dataTransfer.files[0]);
+            });
 
-    // Saat remove file
-    removeFile.addEventListener('click', function () {
-        lampiranInput.value = "";
-        modalFileInput.value = "";
-        filePreview.style.display = 'none';
-    });
-});
+            // Saat remove file
+            removeFile.addEventListener('click', function() {
+                lampiranInput.value = "";
+                modalFileInput.value = "";
+                filePreview.style.display = 'none';
+            });
+        });
         $(document).ready(function() {
             $('#summernote').summernote({
                 height: 300,
                 toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'fontsize', 'color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear', 'fontname', 'fontsize', 'color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']],
                 ],
-                fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'], 
+                fontNames: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman'],
                 fontNamesIgnoreCheck: ['Arial', 'Courier Prime', 'Georgia', 'Tahoma', 'Times New Roman']
             });
         });
 
         document.getElementById('tambahIsiRisalahBtn').addEventListener('click', function(event) {
-    event.preventDefault(); // Mencegah reload halaman saat tombol diklik
+            event.preventDefault(); // Mencegah reload halaman saat tombol diklik
 
-    var risalahContainer = document.getElementById('risalahContainer');
-    var newRow = document.createElement('div');
-    newRow.classList.add('isi-surat-row', 'row', 'align-items-center');
-    newRow.style.gap = '0';
+            var risalahContainer = document.getElementById('risalahContainer');
+            var newRow = document.createElement('div');
+            newRow.classList.add('isi-surat-row', 'row', 'align-items-center');
+            newRow.style.gap = '0';
 
-    newRow.innerHTML = `
+            newRow.innerHTML = `
         <div class="col-md-2">
             <input type="text" class="form-control no-auto" name="nomor[]" readonly>
         </div>
@@ -343,45 +344,50 @@
         </div>
     `;
 
-    risalahContainer.appendChild(newRow);
-    updateNomor(); // Update nomor setiap kali baris baru ditambahkan
-});
+            risalahContainer.appendChild(newRow);
+            updateNomor(); // Update nomor setiap kali baris baru ditambahkan
+        });
 
-// Fungsi update nomor otomatis
-function updateNomor() {
-    document.querySelectorAll('.isi-surat-row').forEach((row, index) => {
-        row.querySelector('.no-auto').value = index + 1;
-    });
-}
+        // Fungsi update nomor otomatis
+        function updateNomor() {
+            document.querySelectorAll('.isi-surat-row').forEach((row, index) => {
+                row.querySelector('.no-auto').value = index + 1;
+            });
+        }
 
-//Cek apakah risalah undangan sudah ada ?
-document.querySelector('form').addEventListener('submit', function(e) {
-    var jumlahRisalah = document.querySelectorAll('.isi-surat-row').length;
-    var risalahAlert = document.getElementById('risalahAlert');
+        //Cek apakah risalah undangan sudah ada ?
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const submitBtn = $(this).find('button[type="submit"]');
+            submitBtn.prop('disabled', true).html(
+                `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`
+            );
+            var jumlahRisalah = document.querySelectorAll('.isi-surat-row').length;
+            var risalahAlert = document.getElementById('risalahAlert');
 
-    if (jumlahRisalah < 1) {
-        e.preventDefault();
-        risalahAlert.style.display = 'block';
-        risalahAlert.innerText = 'Minimal harus mengisi 1 risalah rapat!';
-    } else {
-        risalahAlert.style.display = 'none';
-        e.preventDefault();
-        this.submit();
-    }
-});
+            if (jumlahRisalah < 1) {
+                e.preventDefault();
+                submitBtn.prop('disabled', false).text('Simpan');
+                risalahAlert.style.display = 'block';
+                risalahAlert.innerText = 'Minimal harus mengisi 1 risalah rapat!';
+            } else {
+                risalahAlert.style.display = 'none';
+                e.preventDefault();
+                this.submit();
+            }
+        });
 
-// Event listener untuk tombol hapus
-document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('remove-row')) {
-        event.target.closest('.isi-surat-row').remove();
-        updateNomor(); // Perbarui nomor setelah baris dihapus
-    }
-});
-
+        // Event listener untuk tombol hapus
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('remove-row')) {
+                event.target.closest('.isi-surat-row').remove();
+                updateNomor(); // Perbarui nomor setelah baris dihapus
+            }
+        });
     </script>
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
+
 </html>

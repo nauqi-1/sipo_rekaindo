@@ -628,7 +628,7 @@ class KirimController extends Controller
             'lampiran.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
             'lampiran.max' => 'Ukuran file tidak boleh lebih dari 2 MB.',
         ]);
-
+        
         $filePath = null;
         if ($request->hasFile('lampiran')) {
             $file = $request->file('lampiran');
